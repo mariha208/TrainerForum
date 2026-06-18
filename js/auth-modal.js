@@ -1,0 +1,400 @@
+/* ═══════════════════════════════════════════════════
+   WORLD TRAINER FORUM — AUTHENTICATION MODAL JS
+   Connected Real-Time Firestore Session Integration
+═══════════════════════════════════════════════════ */
+
+'use strict';
+
+function openAuthModal(mode) {
+  let modal = document.getElementById('auth-modal');
+  if (!modal) return;
+  modal.innerHTML = `
+    <div class="auth-overlay" onclick="closeAuthModal()"></div>
+    <div class="auth-container">
+      <button class="auth-close" onclick="closeAuthModal()">✕</button>
+      <div id="auth-content" class="auth-content"></div>
+    </div>
+  `;
+  modal.classList.add('active');
+  document.body.style.overflow = 'hidden';
+  renderAuthView(mode, 'Organization'); // default role
+}
+
+function closeAuthModal() {
+  let modal = document.getElementById('auth-modal');
+  if (modal) modal.classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+function renderAuthView(mode, role) {
+  const content = document.getElementById('auth-content');
+  if (!content) return;
+
+  if (mode === 'login') {
+    content.innerHTML = buildLoginView(role);
+  } else {
+    content.innerHTML = buildRegisterView(role);
+  }
+}
+
+function buildLoginView(role) {
+  return `
+    <div class="auth-header">
+      <h2>Welcome Back</h2>
+      <p>Log in to your World Trainer Forum account</p>
+    </div>
+    
+    <div class="auth-role-tabs">
+      <button class="auth-role-tab ${role === 'Organization' ? 'active' : ''}" onclick="renderAuthView('login', 'Organization')">Organization</button>
+      <button class="auth-role-tab ${role === 'Trainer' ? 'active' : ''}" onclick="renderAuthView('login', 'Trainer')">Trainer</button>
+    </div>
+    
+    <div class="auth-form-body am-grid-1">
+      <div class="am-form-group">
+        <label>Email Address</label>
+        <input type="email" id="loginEmail" placeholder="you@example.com">
+      </div>
+      <div class="am-form-group">
+        <label>Password</label>
+        <input type="password" id="loginPassword" placeholder="••••••••">
+      </div>
+      <div class="am-opts">
+        <label class="am-checkbox-label">
+          <input type="checkbox" class="am-checkbox"> Remember me
+        </label>
+        <a href="#" class="am-link">Forgot Password?</a>
+      </div>
+    </div>
+    
+    <div class="auth-footer">
+      <button class="btn am-btn-primary" onclick="handleLogin('${role}')">Sign In</button>
+      <p class="am-switch">Don't have an account? <a href="#" onclick="renderAuthView('register', '${role}')">Create Account</a></p>
+    </div>
+  `;
+}
+
+function buildRegisterView(role) {
+  const isOrg = role === 'Organization';
+
+  let formFields = '';
+  if (isOrg) {
+    formFields = `
+      <div class="am-grid-1">
+        <div class="am-form-group"><label>First Name</label><input type="text" id="orgFirstName" placeholder="John"></div>
+        <div class="am-form-group"><label>Last Name</label><input type="text" id="orgLastName" placeholder="Doe"></div>
+        <div class="am-form-group"><label>Organization Name</label><input type="text" id="orgName" placeholder="Acme Corp"></div>
+      </div>
+      <div class="am-grid-1">
+        <div class="am-form-group"><label>Email Address</label><input type="email" id="orgEmail" placeholder="you@company.com"></div>
+        <div class="am-form-group"><label>Password</label><input type="password" id="orgPassword" placeholder="••••••••"></div>
+        <div class="am-form-group"><label>Phone Number</label><input type="tel" id="orgPhone" placeholder="+91 XXXX XXXXX"></div>
+        <div class="am-form-group"><label>Mobile Number</label><input type="tel" id="orgMobile" placeholder="+91 XXXX XXXXX"></div>
+      </div>
+      <div class="am-grid-1">
+        <div class="am-form-group">
+          <label>Event Budget</label>
+          <div class="am-select-wrap">
+            <select id="orgEventBudget">
+              <option value="" disabled selected>Select Budget...</option>
+              <option>Under ₹50,000</option>
+              <option>₹50,000 - ₹1,00,000</option>
+              <option>₹1,00,000 - ₹5,00,000</option>
+              <option>₹5,00,000 - ₹10,00,000</option>
+              <option>Above ₹10,00,000</option>
+            </select>
+          </div>
+        </div>
+        <div class="am-form-group">
+          <label>Event Type</label>
+          <div class="am-select-wrap">
+            <select id="orgEventType">
+              <option value="" disabled selected>Select Event...</option>
+              <option>Corporate Training</option>
+              <option>Leadership Training</option>
+              <option>Sales Training</option>
+              <option>Cybersecurity Training</option>
+              <option>AI Training</option>
+              <option>Technical Workshop</option>
+              <option>Keynote Speaking</option>
+              <option>Conference</option>
+              <option>Webinar</option>
+              <option>Team Building</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="am-form-group"><label>Event Location</label><input type="text" id="orgEventLocation" placeholder="e.g. Mumbai or Online"></div>
+      </div>
+      <div class="am-grid-1">
+        <div class="am-form-group">
+          <label>Tell Us About Your Event / Training Requirements</label>
+          <textarea rows="4" id="orgEventRequirement" placeholder="Describe your needs, audience size, specific topics..."></textarea>
+        </div>
+      </div>
+    `;
+  } else {
+    formFields = `
+      <div class="am-grid-1">
+        <div class="am-form-group"><label>First Name</label><input type="text" id="trainerFirstName" placeholder="First Name"></div>
+        <div class="am-form-group"><label>Last Name</label><input type="text" id="trainerLastName" placeholder="Last Name"></div>
+      </div>
+      <div class="am-grid-1">
+        <div class="am-form-group"><label>Email Address</label><input type="email" id="trainerEmail" placeholder="you@example.com"></div>
+        <div class="am-form-group"><label>Password</label><input type="password" id="trainerPassword" placeholder="••••••••"></div>
+        <div class="am-form-group"><label>Phone Number</label><input type="tel" id="trainerPhone" placeholder="+91 XXXXX XXXXX"></div>
+      </div>
+      <div class="am-grid-1">
+        <div class="am-form-group"><label>Professional Title</label><input type="text" id="trainerTitle" placeholder="e.g. Senior Business Coach"></div>
+        <div class="am-form-group">
+          <label>Expertise Category</label>
+          <div class="am-select-wrap">
+            <select id="trainerExpertiseCategory">
+              <option value="" disabled selected>Select Category...</option>
+              <option>Business Coaching</option>
+              <option>AI & Technology</option>
+              <option>Fitness & Health</option>
+              <option>Cybersecurity</option>
+              <option>Soft Skills</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="am-grid-1">
+        <div class="am-form-group"><label>Years of Experience</label><input type="number" id="trainerYearsOfExperience" placeholder="5" min="1"></div>
+        <div class="am-form-group"><label>Country</label><input type="text" id="trainerCountry" placeholder="India"></div>
+        <div class="am-form-group"><label>City</label><input type="text" id="trainerCity" placeholder="Bangalore"></div>
+      </div>
+      <div class="am-grid-1">
+        <div class="am-form-group"><label>LinkedIn Profile</label><input type="url" id="trainerLinkedIn" placeholder="https://linkedin.com/in/..."></div>
+        <div class="am-form-group"><label>Website (Optional)</label><input type="url" id="trainerWebsite" placeholder="https://..."></div>
+      </div>
+      <div class="am-grid-1">
+        <div class="am-form-group">
+          <label>Short Bio</label>
+          <textarea rows="3" id="trainerBio" placeholder="Tell us briefly about your experience and focus area..."></textarea>
+        </div>
+      </div>
+    `;
+  }
+
+  return `
+    <div class="auth-header">
+      <h2>Create Account</h2>
+      <p>Join the world's premium marketplace for expert trainers.</p>
+    </div>
+    
+    <div class="auth-role-tabs">
+      <button class="auth-role-tab ${role === 'Organization' ? 'active' : ''}" onclick="renderAuthView('register', 'Organization')">I'm Organization</button>
+      <button class="auth-role-tab ${role === 'Trainer' ? 'active' : ''}" onclick="renderAuthView('register', 'Trainer')">I'm Trainer</button>
+    </div>
+    
+    <div class="auth-form-body">
+      ${formFields}
+      
+      <div class="am-consent">
+        <label class="am-checkbox-label">
+          <input type="checkbox" class="am-checkbox"> I agree to receive communications regarding inquiries, bookings, and platform updates.
+        </label>
+        <label class="am-checkbox-label">
+          <input type="checkbox" class="am-checkbox"> I accept the <a href="#" class="am-link">Terms of Service</a> and <a href="#" class="am-link">Privacy Policy</a>.
+        </label>
+      </div>
+    </div>
+    
+    <div class="auth-footer">
+      <button class="btn am-btn-primary" onclick="handleRegistration('${role}')">CREATE ACCOUNT</button>
+      <p class="am-switch">Already have an account? <a href="#" onclick="renderAuthView('login', '${role}')">Sign in</a></p>
+    </div>
+  `;
+}
+
+// ── ACTIVE REGISTER SUBMISSION HANDLER ───────────────────────────────────────
+window.handleRegistration = async function (role) {
+  let payload = {};
+
+  if (role === 'Organization') {
+    const email = document.getElementById("orgEmail")?.value.trim();
+    const password = document.getElementById("orgPassword")?.value;
+    const firstName = document.getElementById("orgFirstName")?.value.trim() || "";
+    const lastName = document.getElementById("orgLastName")?.value.trim() || "";
+    
+    if (!email || !password || !firstName) {
+      alert("Please fill out your Email, Password, and First Name fields.");
+      return;
+    }
+    
+    payload = {
+      email,
+      password,
+      firstName,
+      lastName,
+      role: 'client', // Maps Organization to 'client' role
+      phoneNumber: document.getElementById("orgPhone")?.value || "",
+      city: document.getElementById("orgEventLocation")?.value || "",
+      bio: document.getElementById("orgEventRequirement")?.value || ""
+    };
+  } else {
+    // Trainer flow
+    const email = document.getElementById("trainerEmail")?.value.trim();
+    const password = document.getElementById("trainerPassword")?.value;
+    const firstName = document.getElementById("trainerFirstName")?.value.trim() || "";
+    const lastName = document.getElementById("trainerLastName")?.value.trim() || "";
+
+    if (!email || !password || !firstName) {
+      alert("Please fill out your Email, Password, and First Name fields.");
+      return;
+    }
+
+    payload = {
+      email,
+      password,
+      firstName,
+      lastName,
+      role: 'trainer',
+      professionalTitle: document.getElementById("trainerTitle")?.value || "Expert Instructor",
+      expertiseCategory: document.getElementById("trainerExpertiseCategory")?.value || "AI & Technology",
+      yearsOfExperience: parseInt(document.getElementById("trainerYearsOfExperience")?.value) || 0,
+      city: document.getElementById("trainerCity")?.value || "",
+      phoneNumber: document.getElementById("trainerPhone")?.value || "",
+      linkedinProfile: document.getElementById("trainerLinkedIn")?.value || "",
+      website: document.getElementById("trainerWebsite")?.value || "",
+      bio: document.getElementById("trainerBio")?.value || ""
+    };
+  }
+
+  try {
+    const res = await fetch('/api/auth/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    
+    const data = await res.json();
+    
+    if (res.ok) {
+      // Keep frontend session shape consistent
+      const sessionUser = {
+        ...data.user,
+        trainerEmail: data.user.email,
+        name: data.user.firstName + ' ' + data.user.lastName,
+        cat: data.user.expertiseCategory,
+        pn: data.user.hourlyRate || 0,
+        rate: data.user.hourlyRate || 0
+      };
+      
+      localStorage.setItem("currentTrainer", JSON.stringify(sessionUser));
+      localStorage.setItem("authToken", data.token);
+
+      // ── Persist trainer data to fallback keys so card survives logout ──────
+      if (sessionUser.role === 'trainer') {
+        const snap = JSON.stringify({
+          name: sessionUser.name,
+          tagline: sessionUser.professionalTitle || '',
+          bio: sessionUser.bio || '',
+          rate: sessionUser.hourlyRate || sessionUser.pn || 0,
+          category: sessionUser.expertiseCategory || sessionUser.cat || '',
+          location: [sessionUser.city, sessionUser.country].filter(Boolean).join(', '),
+          mode: sessionUser.mode || 'Online',
+          languages: sessionUser.languages || [],
+          tags: sessionUser.skills || [],
+          whatsapp: sessionUser.phoneNumber || '',
+          photo: sessionUser.profilePictureUrl || sessionUser.profilePic || '',
+          banner: sessionUser.coverBannerUrl || '',
+          achievements: sessionUser.achievements || [],
+          events: sessionUser.events || [],
+        });
+        if (sessionUser._id) localStorage.setItem(`tv-trainer-${sessionUser._id}-profile`, snap);
+        localStorage.setItem('tv-trainer-1-profile', snap);
+        localStorage.setItem('tv-primary-trainer-id', sessionUser._id || '');
+      }
+
+      alert("Registration successful!");
+      closeAuthModal();
+
+      if (typeof window.updateNavbarAuthUI === "function") {
+        window.updateNavbarAuthUI();
+      } else {
+        window.location.reload();
+      }
+    } else {
+      alert(data.error || "Failed to register account.");
+    }
+  } catch (error) {
+    console.error("Registration error: ", error);
+    alert("An error occurred during registration.");
+  }
+};
+
+// ── ACTIVE LOGIN VERIFICATION HANDLER ────────────────────────────────────────
+window.handleLogin = async function (role) {
+  const email = document.getElementById("loginEmail")?.value.trim();
+  const password = document.getElementById("loginPassword")?.value;
+
+  if (!email || !password) {
+    alert("Please enter your email address and password.");
+    return;
+  }
+
+  try {
+    const res = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+    
+    const data = await res.json();
+    
+    if (res.ok) {
+      // Keep frontend session shape consistent
+      const sessionUser = {
+        ...data.user,
+        trainerEmail: data.user.email,
+        name: data.user.firstName + ' ' + data.user.lastName,
+        cat: data.user.expertiseCategory,
+        pn: data.user.hourlyRate || 0,
+        rate: data.user.hourlyRate || 0
+      };
+      
+      localStorage.setItem("currentTrainer", JSON.stringify(sessionUser));
+      localStorage.setItem("authToken", data.token);
+
+      // ── Persist trainer data to fallback keys so card survives logout ──────
+      if (sessionUser.role === 'trainer') {
+        const snap = JSON.stringify({
+          name: sessionUser.name,
+          tagline: sessionUser.professionalTitle || '',
+          bio: sessionUser.bio || '',
+          rate: sessionUser.hourlyRate || sessionUser.pn || 0,
+          category: sessionUser.expertiseCategory || sessionUser.cat || '',
+          location: [sessionUser.city, sessionUser.country].filter(Boolean).join(', '),
+          mode: sessionUser.mode || 'Online',
+          languages: sessionUser.languages || [],
+          tags: sessionUser.skills || [],
+          whatsapp: sessionUser.phoneNumber || '',
+          photo: sessionUser.profilePictureUrl || sessionUser.profilePic || '',
+          banner: sessionUser.coverBannerUrl || '',
+          achievements: sessionUser.achievements || [],
+          events: sessionUser.events || [],
+        });
+        if (sessionUser._id) localStorage.setItem(`tv-trainer-${sessionUser._id}-profile`, snap);
+        localStorage.setItem('tv-trainer-1-profile', snap);
+        localStorage.setItem('tv-primary-trainer-id', sessionUser._id || '');
+      }
+
+      alert("Login successful!");
+      closeAuthModal();
+
+      if (typeof window.updateNavbarAuthUI === "function") {
+        window.updateNavbarAuthUI();
+      } else {
+        window.location.reload();
+      }
+    } else {
+      alert(data.error || "Login failed.");
+    }
+  } catch (error) {
+    console.error("Login lookup failure: ", error);
+    alert("An error occurred during authentication.");
+  }
+};

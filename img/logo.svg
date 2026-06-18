@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <circle cx="100" cy="100" r="96" fill="#F8F9FA" stroke="#C5A059" stroke-width="3"/>
+  <circle cx="100" cy="100" r="92" fill="none" stroke="#E5E8EB" stroke-width="1"/>
+  
+  <path id="top-arc" d="M 24,100 A 76,76 0 0,1 176,100" fill="none" />
+  <path id="bottom-arc" d="M 176,100 A 76,76 0 0,1 24,100" fill="none" />
+  
+  <text font-family="'Cormorant Garamond', Arial, serif" font-weight="bold" font-size="20" fill="#0A2551" letter-spacing="1">
+    <textPath href="#top-arc" startOffset="50%" text-anchor="middle">WORLD TRAINER FORUM</textPath>
+  </text>
+  <text font-family="'Outfit', Arial, sans-serif" font-size="11" fill="#008B8B" letter-spacing="1.5">
+    <textPath href="#bottom-arc" startOffset="50%" text-anchor="middle">CONNECT • COLLABORATE • GROWTH</textPath>
+  </text>
+  
+  <g transform="translate(100, 115)">
+    <path d="M -25,0 C -15,-15 -5,-35 -5,-55 C -20,-50 -35,-25 -40,-10 C -35,5 -30,5 -25,0 Z" fill="#0A2551"/>
+    <circle cx="-30" cy="-60" r="8" fill="#0A2551"/>
+    <path d="M 25,0 C 15,-15 5,-35 5,-55 C 20,-50 35,-25 40,-10 C 35,5 30,5 25,0 Z" fill="#008B8B"/>
+    <circle cx="30" cy="-60" r="8" fill="#008B8B"/>
+    <path d="M 0,10 C 10,-10 15,-40 5,-65 C -5,-65 -10,-40 0,10 Z" fill="#C5A059"/>
+    <path d="M -5,-65 C -20,-55 -30,-30 -30,-30 C -25,-25 -15,-40 -5,-55 Z" fill="#C5A059"/>
+    <path d="M 5,-65 C 20,-55 30,-30 30,-30 C 25,-25 15,-40 5,-55 Z" fill="#C5A059"/>
+    <circle cx="0" cy="-80" r="9" fill="#C5A059"/>
+  </g>
+</svg>

@@ -1,0 +1,89 @@
+[
+  {
+    "trainerId": "T-1001",
+    "fullName": "Raheman khan",
+    "tagline": "trainer",
+    "category": "AI & Technology",
+    "specialization": "soft skills",
+    "experience": 2,
+    "location": "Surat",
+    "deliveryMode": "Online Only",
+    "rate": 50000,
+    "bio": "i want to create a website Named \"World Trainer Forum\" in which different different trainers will register them selves and built a profile of them by themselves they can edit there profile by there own but they have to take membership , the main purpose of this website is to make the different different trainers available/visible to everyone by just one click , means for example \"If I need one Trainer for soft skills training in by company , I will visit this website and search for the trainer I needed and then view his/her details talk to them and book a session for my company.\" this is what I am thinking to create  , I this I want to type of signup's one as trainer and one as user ,",
+    "whatsapp": 9427167148,
+    "linkedin": "linkedin.com/in/example",
+    "website": "https://musliminbusiness.com/",
+    "instagram": "https://www.instagram.com/reel/DZPVwUsh0KK/?igsh=MTg4N3R1M2xiMG92bQ==",
+    "youtube": "https://youtu.be/_KvMXcl5Ano?si=x9qLIaDsXJ9fYZcG",
+    "twitter": "https://x.com/hombalefilms/status/2014968759782670668?s=46",
+    "facebook": "https://www.facebook.com/share/r/18jvTpk4G4/?mibextid=wwXIfr",
+    "portfolioLink": "",
+    "profileImageUrl": "https://drive.google.com/uc?export=view&id=1TFiRP0xoHrzRfiY4In4bPUVHpp6vAP98",
+    "bannerImageUrl": "https://drive.google.com/uc?export=view&id=1bJWUfY75KP1wmO82NwIahvLnTg03UCm2",
+    "certificationsBy": [
+      {
+        "name": "ABC",
+        "givenBy": "Google",
+        "year": "2024"
+      },
+      {
+        "name": "DEF",
+        "givenBy": "RBI",
+        "year": "2025"
+      },
+      {
+        "name": "GHI",
+        "givenBy": "CBI",
+        "year": "2026"
+      }
+    ],
+    "testimonialVideos": [
+      {
+        "videoUrl": "https://youtu.be/hQ3RnAvlLJs?si=o3B4LMfSB5C8kKNd"
+      },
+      {
+        "videoUrl": "https://youtu.be/EupM8-Hp4_4?si=FXxbXyUC-CaN_taK"
+      }
+    ],
+    "services": "Title : jerdnv e | Price : 10000 | Duration : 1 hr",
+    "packages": "Title : ABC | Price : 30000 | Duration : 2 week ; Title : gevsdb | Price : 20000 | Duration : 2 week",
+    "intoVideo": "https://youtu.be/LSC6KohO9OI?si=aq3ilJGFGkuIMBEc",
+    "availability": {
+      "Mon": {
+        "available": true,
+        "start": "09:00",
+        "end": "18:00"
+      },
+      "Tue": {
+        "available": true,
+        "start": "09:00",
+        "end": "18:00"
+      },
+      "Wed": {
+        "available": true,
+        "start": "09:00",
+        "end": "18:00"
+      },
+      "Thu": {
+        "available": true,
+        "start": "09:00",
+        "end": "18:00"
+      },
+      "Fri": {
+        "available": false,
+        "start": "09:00",
+        "end": "18:00"
+      },
+      "Sat": {
+        "available": true,
+        "start": "10:00",
+        "end": "14:00"
+      },
+      "Sun": {
+        "available": false,
+        "start": "10:00",
+        "end": "14:00"
+      }
+    }
+  }
+]

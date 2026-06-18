@@ -1,0 +1,299 @@
+﻿<!DOCTYPE html>
+<html lang="en" class="dark-mode">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Under Construction | World Trainer Forum</title>
+  <meta name="description" content="This page is currently under construction. World Trainer Forum — Find & Book World-Class Trainers.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/auth-modal.css">
+  <style>
+    /* ── Under Construction Page ── */
+    .uc-wrap {
+      min-height: calc(100vh - 70px - 220px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: calc(var(--nav) + 60px) 5% 60px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Background orbs */
+    .uc-wrap::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse at 25% 30%, rgba(0,139,139,0.35) 0%, transparent 55%),
+        radial-gradient(ellipse at 80% 70%, rgba(197,160,89,0.15) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    .uc-grid {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(197,160,89,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(197,160,89,0.05) 1px, transparent 1px);
+      background-size: 52px 52px;
+      pointer-events: none;
+    }
+
+    /* Floating orbs */
+    .uc-orb1 {
+      position: absolute; border-radius: 50%; filter: blur(80px); pointer-events: none;
+      width: 420px; height: 420px;
+      background: rgba(0,139,139,0.22);
+      top: -100px; right: -60px;
+      animation: orbFloat 9s ease-in-out infinite;
+    }
+    .uc-orb2 {
+      position: absolute; border-radius: 50%; filter: blur(80px); pointer-events: none;
+      width: 320px; height: 320px;
+      background: rgba(197,160,89,0.1);
+      bottom: -60px; left: -60px;
+      animation: orbFloat 12s ease-in-out infinite reverse;
+    }
+    @keyframes orbFloat {
+      0%,100% { transform: translateY(0) scale(1); }
+      50%      { transform: translateY(-30px) scale(1.05); }
+    }
+
+    /* Main content */
+    .uc-inner {
+      position: relative; z-index: 1;
+      display: flex; flex-direction: column;
+      align-items: center; gap: 2rem;
+      max-width: 680px;
+    }
+
+    /* Badge */
+    .uc-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(197,160,89,0.12);
+      border: 1px solid rgba(197,160,89,0.35);
+      border-radius: 999px; padding: 8px 22px;
+      color: var(--gold); font-size: .8rem; font-weight: 600;
+      letter-spacing: .08em; text-transform: uppercase;
+      backdrop-filter: blur(10px);
+      animation: fadeUp .5s ease both;
+    }
+    .uc-badge-dot {
+      width: 8px; height: 8px;
+      background: var(--gold); border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%,100% { opacity: 1; transform: scale(1); box-shadow: 0 0 0 0 rgba(197,160,89,.5); }
+      50%      { opacity: .7; transform: scale(1.25); box-shadow: 0 0 0 6px rgba(197,160,89,0); }
+    }
+
+    /* GIF frame */
+    .uc-gif-frame {
+      position: relative;
+      border-radius: 20px;
+      overflow: hidden;
+      border: 2px solid rgba(197,160,89,0.25);
+      box-shadow: 0 24px 80px rgba(0,0,0,.45), 0 0 40px rgba(197,160,89,.12);
+      animation: fadeUp .6s .1s ease both;
+      background: rgba(10,37,81,0.5);
+      max-width: 480px; width: 100%;
+    }
+    .uc-gif-frame img {
+      display: block; width: 100%; height: auto;
+      border-radius: 18px;
+    }
+
+    /* Heading */
+    .uc-inner h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.2rem, 5vw, 3.8rem);
+      font-weight: 700; color: var(--tp);
+      line-height: 1.1; letter-spacing: -.02em;
+      animation: fadeUp .6s .15s ease both;
+    }
+    .uc-inner h1 .gld { color: var(--gold); }
+
+    .uc-inner p {
+      font-size: clamp(.9rem, 1.5vw, 1.05rem);
+      color: var(--ts); font-weight: 300;
+      line-height: 1.85; max-width: 520px;
+      animation: fadeUp .6s .22s ease both;
+    }
+
+    /* Progress bar */
+    .uc-progress-wrap {
+      width: 100%; max-width: 400px;
+      animation: fadeUp .6s .28s ease both;
+    }
+    .uc-progress-label {
+      display: flex; justify-content: space-between;
+      font-size: .72rem; color: var(--tm); margin-bottom: 8px;
+      text-transform: uppercase; letter-spacing: .1em;
+    }
+    .uc-progress-bar {
+      height: 6px; border-radius: 999px;
+      background: rgba(255,255,255,.1);
+      overflow: hidden;
+    }
+    .uc-progress-fill {
+      height: 100%; width: 68%;
+      background: linear-gradient(90deg, var(--teal, #008B8B), var(--gold, #C5A059));
+      border-radius: 999px;
+      animation: loadBar 2.5s ease both;
+      box-shadow: 0 0 12px rgba(197,160,89,.4);
+    }
+    @keyframes loadBar {
+      from { width: 0%; }
+      to   { width: 68%; }
+    }
+
+    /* Buttons */
+    .uc-btns {
+      display: flex; gap: 12px; flex-wrap: wrap;
+      justify-content: center;
+      animation: fadeUp .6s .35s ease both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Footer overrides */
+    footer { margin-top: auto; }
+  </style>
+</head>
+
+<body>
+
+  <!-- ═══ NAVBAR (identical to all pages) ═══ -->
+  <nav id="nav">
+    <a class="logo" href="index.html">
+      <img src="img/logo.svg" alt="World Trainer Forum Logo" style="height:42px; margin-right:10px;">
+      World Trainer <span class="g">Forum</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="about.html">About</a></li>
+      <li><a href="find-trainers.html">Find Trainers</a></li>
+      <li><a href="categories.html">Categories</a></li>
+      <li><a href="pricing.html">Pricing</a></li>
+      <li><a href="under-construction.html">Blog</a></li>
+    </ul>
+    <div class="nav-r">
+      <button class="btn btn-ghost btn-sm" onclick="window.location.href='index.html'">Sign Up</button>
+      <button class="btn btn-gold btn-sm" onclick="window.location.href='index.html'">Log In</button>
+    </div>
+  </nav>
+
+  <!-- ═══ UNDER CONSTRUCTION CONTENT ═══ -->
+  <div class="uc-wrap">
+    <div class="uc-grid"></div>
+    <div class="uc-orb1"></div>
+    <div class="uc-orb2"></div>
+
+    <div class="uc-inner">
+      <!-- Badge -->
+      <div class="uc-badge">
+        <span class="uc-badge-dot"></span>
+        Work in Progress
+      </div>
+
+      <!-- GIF -->
+      <div class="uc-gif-frame">
+        <img
+          src="https://sismo.app/wp-content/uploads/2019/02/under-construction-gif-11.gif"
+          alt="Under Construction Animation"
+          loading="eager"
+          onerror="this.style.padding='40px';this.alt='🚧';this.style.fontSize='4rem';this.style.display='block';this.style.textAlign='center';"
+        >
+      </div>
+
+      <!-- Heading -->
+      <h1>This Page is <span class="gld">Under Construction</span></h1>
+
+      <!-- Description -->
+      <p>
+        We're working hard to build something amazing here. Our team is crafting this
+        page to deliver the best experience possible. Check back soon!
+      </p>
+
+      <!-- Progress bar -->
+      <div class="uc-progress-wrap">
+        <div class="uc-progress-label">
+          <span>Progress</span>
+          <span>68% Complete</span>
+        </div>
+        <div class="uc-progress-bar">
+          <div class="uc-progress-fill"></div>
+        </div>
+      </div>
+
+      <!-- Buttons -->
+      <div class="uc-btns">
+        <a href="index.html" class="btn btn-gold btn-lg">← Back to Home</a>
+        <a href="find-trainers.html" class="btn btn-ghost btn-lg">Find Trainers</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ FOOTER (identical to all pages) ═══ -->
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="logo" style="color:var(--tp);margin-bottom:4px">
+          <img src="img/logo.svg" alt="World Trainer Forum Logo" style="height:34px; margin-right:8px;">
+          World Trainer <span class="g">Forum</span>
+        </div>
+        <p>The premium marketplace connecting organizations with world-class trainers, coaches, and mentors globally.</p>
+        <div style="display:flex;gap:10px;margin-top:18px">
+          <div style="width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;font-size:.8rem;cursor:pointer">𝕏</div>
+          <div style="width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;font-size:.8rem;cursor:pointer">in</div>
+          <div style="width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;font-size:.8rem;cursor:pointer">f</div>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>For Clients</h4>
+        <ul>
+          <li><a href="find-trainers.html">Browse Trainers</a></li>
+          <li><a href="categories.html">All Categories</a></li>
+          <li><a href="#">Corporate Training</a></li>
+          <li><a href="#">Gift a Session</a></li>
+          <li><a href="pricing.html">Pricing</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>For Trainers</h4>
+        <ul>
+          <li><a href="dashboard.html">List Your Profile</a></li>
+          <li><a href="#">Trainer Resources</a></li>
+          <li><a href="#">Community Forum</a></li>
+          <li><a href="#">Success Stories</a></li>
+          <li><a href="#">Verification Process</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="under-construction.html">Blog</a></li>
+          <li><a href="#">Press</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="yr">2026</span> World Trainer Forum Technologies Pvt. Ltd. All rights reserved.</span>
+      <span>Privacy · Terms · Cookies · Sitemap</span>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('yr').textContent = new Date().getFullYear();
+  </script>
+
+</body>
+</html>

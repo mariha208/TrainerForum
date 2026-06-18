@@ -1,0 +1,201 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Simple, fair pricing for trainers on World Trainer Forum. Commission only when you earn. No monthly fees, no hidden costs.">
+  <title>Pricing — World Trainer Forum</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/trainer-modal.css">
+  <link rel="stylesheet" href="css/auth-modal.css">
+</head>
+
+<body>
+
+  <!-- ═══ NAVBAR ═══ -->
+  <nav id="nav">
+    <a class="logo" href="index.html">
+      <img src="img/logo.svg" alt="World Trainer Forum Logo" style="height:42px; margin-right:10px;">World Trainer <span class="g">Forum</span>
+    </a>
+    <ul class="nav-links">
+      <li><a id="nl-about" href="about.html">About</a></li>
+      <li><a id="nl-browse" href="find-trainers.html">Find Trainers</a></li>
+      <li><a id="nl-cats" href="categories.html">Categories</a></li>
+      <li><a id="nl-pricing" href="pricing.html" class="active">Pricing</a></li>
+      <li><a id="nl-blog" href="under-construction.html">Blog</a></li>
+      <li><a id="nl-dash" href="dashboard.html" target="_blank" style="display:none;">Dashboard</a></li>
+    </ul>
+    <div class="nav-r">
+      <button class="notif-btn" id="notif-btn" onclick="toggleNotif()">🔔<span class="notif-dot"></span></button>
+      <button class="btn btn-ghost btn-sm" id="btn-signup" onclick="openModal('register')">Sign Up</button>
+      <button class="btn btn-gold btn-sm" id="btn-login" onclick="openModal('login')">Log In</button>
+      <button class="btn btn-dark btn-sm" id="btn-logout" onclick="handleLogout()" style="display:none;">Log Out</button>
+    </div>
+  </nav>
+
+  <!-- Notification Panel -->
+  <div class="notif-panel" id="notif-panel">
+    <div class="notif-header">
+      <h4>Notifications</h4><a href="#" style="font-size:.78rem;color:var(--gold-dk)">Mark all read</a>
+    </div>
+    <div class="notif-item unread">
+      <div class="notif-ico" style="background:rgba(201,168,76,.12)">📅</div>
+      <div class="notif-text"><p><strong>Rajesh Kumar</strong> accepted your booking for May 20.</p><span>2 hours ago</span></div>
+    </div>
+    <div class="notif-item unread">
+      <div class="notif-ico" style="background:rgba(39,103,73,.12)">⭐</div>
+      <div class="notif-text"><p>Your session with <strong>Priya Mehta</strong> is in 2 days.</p><span>5 hours ago</span></div>
+    </div>
+    <div class="notif-item">
+      <div class="notif-ico" style="background:rgba(42,108,176,.12)">💬</div>
+      <div class="notif-text"><p>New message from <strong>Arun Kapoor</strong>.</p><span>Yesterday</span></div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <!-- Modal -->
+  <div class="modal-bg" id="modal-bg">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeModal()">✕</button>
+      <div id="modal-body"></div>
+    </div>
+  </div>
+
+  <!-- Auth Modal -->
+  <div id="auth-modal" aria-modal="true" role="dialog" aria-label="Authentication"></div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       PRICING PAGE
+  ═══════════════════════════════════════════════════════ -->
+  <div id="p-pricing" class="page active">
+    <div class="page-hero" style="text-align:center"><span class="section-label">Transparent Pricing</span>
+      <h1 style="font-size:3rem">Simple, <span style="color:var(--gold)">Fair Pricing</span></h1>
+      <p>Commission only when you earn. No monthly fees, no hidden costs.</p>
+    </div>
+    <section class="bg-cream">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:22px;max-width:980px;margin:0 auto 60px">
+        <div class="price-card">
+          <div style="font-size:.74rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--tm);margin-bottom:12px">Starter</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:700;color:var(--tp)">Free</div>
+          <div style="font-size:.84rem;color:var(--tm);margin:6px 0 22px">Perfect for getting started</div>
+          <div class="pf on">Basic trainer profile page</div>
+          <div class="pf on">Up to 5 bookings/month</div>
+          <div class="pf on">20% platform commission</div>
+          <div class="pf on">Standard search listing</div>
+          <div class="pf on">Client messaging</div>
+          <div class="pf off">Priority listing</div>
+          <div class="pf off">Analytics dashboard</div>
+          <div class="pf off">Intro video upload</div>
+          <div style="margin-top:22px"><button class="btn btn-dark btn-full btn-lg" onclick="openModal('register-trainer')">Get Started Free</button></div>
+        </div>
+        <div class="price-card featured" style="position:relative">
+          <div style="position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--gold);color:#0D1117;font-size:.7rem;font-weight:700;padding:3px 14px;border-radius:999px;white-space:nowrap">Most Popular</div>
+          <div style="font-size:.74rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(226,201,126,.6);margin-bottom:12px">Professional</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:700;color:#0A2551">₹999<span style="font-size:1rem;font-weight:400;color:#666">/mo</span></div>
+          <div style="font-size:.84rem;color:#666;margin:6px 0 22px">For growing trainers</div>
+          <div class="pf on">Premium profile with video intro</div>
+          <div class="pf on">Unlimited bookings</div>
+          <div class="pf on">12% platform commission</div>
+          <div class="pf on">Priority search listing</div>
+          <div class="pf on">Full analytics dashboard</div>
+          <div class="pf on">Real-time chat &amp; calendar</div>
+          <div class="pf on">Verified badge &amp; trust score</div>
+          <div class="pf on">Portfolio &amp; gallery uploads</div>
+          <div style="margin-top:22px"><button class="btn btn-gold btn-full btn-lg" onclick="openModal('register-trainer')">Start 14-Day Free Trial</button></div>
+          <p style="text-align:center;font-size:.75rem;margin-top:10px;color:#999">No credit card required</p>
+        </div>
+        <div class="price-card">
+          <div style="font-size:.74rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--tm);margin-bottom:12px">Enterprise</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:700;color:var(--tp)">Custom</div>
+          <div style="font-size:.84rem;color:var(--tm);margin:6px 0 22px">For training organisations</div>
+          <div class="pf on">Multi-trainer management</div>
+          <div class="pf on">Custom commission rates</div>
+          <div class="pf on">Dedicated account manager</div>
+          <div class="pf on">White-label options</div>
+          <div class="pf on">API &amp; CRM integrations</div>
+          <div class="pf on">Custom analytics reports</div>
+          <div class="pf on">SLA &amp; priority support</div>
+          <div class="pf on">GST &amp; invoice management</div>
+          <div style="margin-top:22px"><button class="btn btn-outline btn-full btn-lg" onclick="window.location.href='index.html'">Contact Sales</button></div>
+        </div>
+      </div>
+      <div style="max-width:680px;margin:0 auto">
+        <h2 class="section-title" style="text-align:center;margin-bottom:32px">Frequently Asked <span class="a">Questions</span></h2>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">Is there a free trial for the Professional plan? <span class="faq-arrow">▼</span></div>
+          <div class="faq-a">Yes! 14 days free on the Professional plan — no credit card required. After the trial, subscribe or downgrade to the free Starter plan.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">How does the commission work? <span class="faq-arrow">▼</span></div>
+          <div class="faq-a">We charge a percentage of each completed booking — 20% on Starter and 12% on Professional. Enterprise clients negotiate custom rates. No hidden fees.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">When do I receive my payout? <span class="faq-arrow">▼</span></div>
+          <div class="faq-a">Payouts are processed within 48 hours of session completion directly to your bank account via Razorpay. International payouts via Stripe take 7–10 business days.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">Can I cancel anytime? <span class="faq-arrow">▼</span></div>
+          <div class="faq-a">Yes. Cancel the Professional plan at any time. Your profile reverts to the free Starter plan and all data, reviews, and bookings are preserved.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">Is World Trainer Forum available for corporate clients? <span class="faq-arrow">▼</span></div>
+          <div class="faq-a">Yes! Organisations can book multiple trainers, manage team-wide training, and get dedicated GST-compliant invoicing. Contact our sales team for enterprise pricing.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Band -->
+    <div class="cta-band">
+      <h2>Ready to Grow Your Practice?</h2>
+      <p>Join 2,800+ trainers already thriving on World Trainer Forum.</p>
+      <div class="cta-btns">
+        <button class="btn btn-gold btn-xl" onclick="openModal('register-trainer')">Start Free Profile →</button>
+        <a href="find-trainers.html" class="btn btn-ghost btn-xl">Browse Trainers</a>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="logo" style="color:#0A2551;margin-bottom:4px"><img src="img/logo.svg" alt="World Trainer Forum Logo" style="height:34px; margin-right:8px;">World Trainer <span class="g">Forum</span></div>
+          <p>The premium marketplace connecting organizations with world-class trainers, coaches, and mentors globally.</p>
+        </div>
+        <div class="footer-col">
+          <h4>For Clients</h4>
+          <ul>
+            <li><a href="find-trainers.html">Browse Trainers</a></li>
+            <li><a href="categories.html">All Categories</a></li>
+            <li><a href="pricing.html">Pricing</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>For Trainers</h4>
+          <ul>
+            <li><a href="#" onclick="openModal('register-trainer')">List Your Profile</a></li>
+            <li><a href="dashboard.html" target="_blank">Trainer Dashboard</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="under-construction.html">Blog</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom"><span>© 2026 World Trainer Forum Technologies Pvt. Ltd. All rights reserved.</span><span>Privacy · Terms · Cookies · Sitemap</span></div>
+    </footer>
+  </div>
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/auth-modal.js"></script>
+  <script src="js/page-nav.js"></script>
+  <script>applyTheme();</script>
+</body>
+
+</html>

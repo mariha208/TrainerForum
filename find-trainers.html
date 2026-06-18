@@ -1,0 +1,257 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Browse and filter 2,800+ verified trainers across 140+ specialisations on World Trainer Forum. Find your perfect expert by skill, category, price and rating.">
+  <title>Find Trainers — World Trainer Forum</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/trainer-modal.css">
+  <link rel="stylesheet" href="css/auth-modal.css">
+</head>
+
+<body>
+
+  <!-- ═══ NAVBAR ═══ -->
+  <nav id="nav">
+    <a class="logo" href="index.html">
+      <img src="img/logo.svg" alt="World Trainer Forum Logo" style="height:42px; margin-right:10px;">World Trainer <span class="g">Forum</span>
+    </a>
+    <ul class="nav-links">
+      <li><a id="nl-about" href="about.html">About</a></li>
+      <li><a id="nl-browse" href="find-trainers.html" class="active">Find Trainers</a></li>
+      <li><a id="nl-cats" href="categories.html">Categories</a></li>
+      <li><a id="nl-pricing" href="pricing.html">Pricing</a></li>
+      <li><a id="nl-blog" href="under-construction.html">Blog</a></li>
+      <li><a id="nl-dash" href="dashboard.html" target="_blank" style="display:none;">Dashboard</a></li>
+    </ul>
+    <div class="nav-r">
+      <button class="notif-btn" id="notif-btn" onclick="toggleNotif()">🔔<span class="notif-dot"></span></button>
+      <button class="btn btn-ghost btn-sm" id="btn-signup" onclick="openModal('register')">Sign Up</button>
+      <button class="btn btn-gold btn-sm" id="btn-login" onclick="openModal('login')">Log In</button>
+      <button class="btn btn-dark btn-sm" id="btn-logout" onclick="handleLogout()" style="display:none;">Log Out</button>
+    </div>
+  </nav>
+
+  <!-- Notification Panel -->
+  <div class="notif-panel" id="notif-panel">
+    <div class="notif-header">
+      <h4>Notifications</h4><a href="#" style="font-size:.78rem;color:var(--gold-dk)">Mark all read</a>
+    </div>
+    <div class="notif-item unread">
+      <div class="notif-ico" style="background:rgba(201,168,76,.12)">📅</div>
+      <div class="notif-text"><p><strong>Rajesh Kumar</strong> accepted your booking for May 20.</p><span>2 hours ago</span></div>
+    </div>
+    <div class="notif-item">
+      <div class="notif-ico" style="background:rgba(42,108,176,.12)">💬</div>
+      <div class="notif-text"><p>New message from <strong>Arun Kapoor</strong>.</p><span>Yesterday</span></div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <!-- Modal -->
+  <div class="modal-bg" id="modal-bg">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeModal()">✕</button>
+      <div id="modal-body"></div>
+    </div>
+  </div>
+
+  <!-- Trainer Profile Modal -->
+  <div id="trainer-modal" aria-modal="true" role="dialog" aria-label="Trainer Profile"></div>
+  <!-- Auth Modal -->
+  <div id="auth-modal" aria-modal="true" role="dialog" aria-label="Authentication"></div>
+  <!-- Booking Modal -->
+  <div id="booking-modal" aria-modal="true" role="dialog" aria-label="Book a Session"></div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       FIND TRAINERS PAGE
+  ═══════════════════════════════════════════════════════ -->
+  <div id="p-browse" class="page active">
+    <div class="browse-hero">
+      <h1>Browse Expert Trainers</h1>
+      <p>2,800+ verified professionals across 140+ specialisations</p>
+      <div class="browse-bar">
+        <span style="color:#999">🔍</span>
+        <input type="text" id="browse-search" placeholder="Search name, skill, topic…" oninput="applyFilters()">
+        <div class="h-sep"></div>
+        <select id="f-cat" onchange="applyFilters()">
+          <option value="">All Categories</option>
+          <option>Business Coaching</option>
+          <option>AI &amp; Technology</option>
+          <option>Fitness &amp; Health</option>
+          <option>Cybersecurity</option>
+          <option>Soft Skills</option>
+          <option>Language Training</option>
+          <option>Music &amp; Dance</option>
+          <option>Career Mentoring</option>
+          <option>Sports Coaching</option>
+          <option>Finance</option>
+          <option>Motivational</option>
+          <option>Personal Dev.</option>
+        </select>
+        <div class="h-sep"></div>
+        <select onchange="document.getElementById('f-mode').value=this.value;applyFilters()">
+          <option value="">Anywhere</option>
+          <option value="Online">Online</option>
+          <option value="In-Person">In-Person</option>
+          <option value="Hybrid">Hybrid</option>
+        </select>
+        <button class="btn btn-gold btn-sm" onclick="applyFilters()">Search</button>
+      </div>
+    </div>
+    <div class="browse-layout">
+      <div class="filters-panel">
+        <h3>Filters</h3>
+        <div class="fg"><label>Category</label>
+          <select onchange="document.getElementById('f-cat').value=this.value;applyFilters()">
+            <option value="">All Categories</option>
+            <option>Business Coaching</option>
+            <option>AI &amp; Technology</option>
+            <option>Fitness &amp; Health</option>
+            <option>Cybersecurity</option>
+            <option>Soft Skills</option>
+            <option>Language Training</option>
+            <option>Music &amp; Dance</option>
+            <option>Career Mentoring</option>
+            <option>Sports Coaching</option>
+            <option>Finance</option>
+            <option>Motivational</option>
+            <option>Personal Dev.</option>
+          </select>
+        </div>
+        <div class="fg"><label>Price / hour</label>
+          <input type="range" id="f-price" min="500" max="20000" value="20000" oninput="updatePriceDisplay(this.value);applyFilters()">
+          <div style="font-size:.78rem;color:var(--tm);margin-top:4px">Up to <span id="price-out">₹20,000</span></div>
+        </div>
+        <div class="fg"><label>Minimum Rating</label>
+          <select id="f-rating" onchange="applyFilters()">
+            <option value="0">Any Rating</option>
+            <option value="4.5">4.5+ Stars</option>
+            <option value="4.0">4.0+ Stars</option>
+            <option value="3.5">3.5+ Stars</option>
+          </select>
+        </div>
+        <div class="fg"><label>Delivery Mode</label>
+          <select id="f-mode" onchange="applyFilters()">
+            <option value="">Any Mode</option>
+            <option value="Online">Online / Virtual</option>
+            <option value="In-Person">In-Person</option>
+            <option value="Hybrid">Hybrid</option>
+          </select>
+        </div>
+        <div class="fg"><label>Experience</label>
+          <select id="f-exp" onchange="applyFilters()">
+            <option value="">Any</option>
+            <option>1–3 years</option>
+            <option>3–5 years</option>
+            <option>5–10 years</option>
+            <option>10+ years</option>
+          </select>
+        </div>
+        <div class="fg"><label>Language</label>
+          <div class="check-group">
+            <label class="chk"><input type="checkbox" checked> English</label>
+            <label class="chk"><input type="checkbox"> Hindi</label>
+            <label class="chk"><input type="checkbox"> Gujarati</label>
+            <label class="chk"><input type="checkbox"> Tamil</label>
+            <label class="chk"><input type="checkbox"> Telugu</label>
+          </div>
+        </div>
+        <div class="fg"><label>Options</label>
+          <div class="check-group">
+            <label class="chk"><input type="checkbox" checked> Verified trainers only</label>
+            <label class="chk"><input type="checkbox"> Featured trainers</label>
+            <label class="chk"><input type="checkbox"> Available this week</label>
+          </div>
+        </div>
+        <button class="btn btn-gold btn-full" style="margin-top:4px" onclick="applyFilters()">Apply Filters</button>
+        <button class="btn btn-dark btn-full" style="margin-top:8px"
+          onclick="document.getElementById('f-cat').value='';document.getElementById('f-price').value=20000;updatePriceDisplay(20000);document.getElementById('f-rating').value=0;document.getElementById('f-mode').value='';applyFilters()">Reset All</button>
+      </div>
+      <div class="browse-results">
+        <div class="results-bar">
+          <div class="results-count">Showing <strong id="results-count">0</strong> trainers</div>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            <select class="sort-sel" onchange="sortResults(this.value)">
+              <option value="default">Recommended</option>
+              <option value="rating">Top Rated</option>
+              <option value="price-asc">Price: Low → High</option>
+              <option value="price-desc">Price: High → Low</option>
+              <option value="sessions">Most Booked</option>
+            </select>
+          </div>
+        </div>
+        <div class="trainers-grid" id="browse-grid"></div>
+        <div style="display:flex;justify-content:center;gap:8px;margin-top:32px;flex-wrap:wrap">
+          <button class="btn btn-dark btn-sm">← Prev</button>
+          <button class="btn btn-gold btn-sm">1</button>
+          <button class="btn btn-dark btn-sm">2</button>
+          <button class="btn btn-dark btn-sm">3</button>
+          <button class="btn btn-dark btn-sm">Next →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="logo" style="color:#0A2551;margin-bottom:4px"><img src="img/logo.svg" alt="World Trainer Forum Logo" style="height:34px; margin-right:8px;">World Trainer <span class="g">Forum</span></div>
+          <p>The premium marketplace connecting organizations with world-class trainers, coaches, and mentors globally.</p>
+        </div>
+        <div class="footer-col">
+          <h4>For Clients</h4>
+          <ul>
+            <li><a href="find-trainers.html">Browse Trainers</a></li>
+            <li><a href="categories.html">All Categories</a></li>
+            <li><a href="pricing.html">Pricing</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>For Trainers</h4>
+          <ul>
+            <li><a href="#" onclick="openModal('register-trainer')">List Your Profile</a></li>
+            <li><a href="dashboard.html" target="_blank">Trainer Dashboard</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="under-construction.html">Blog</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom"><span>© 2026 World Trainer Forum Technologies Pvt. Ltd. All rights reserved.</span><span>Privacy · Terms · Cookies · Sitemap</span></div>
+    </footer>
+  </div>
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/trainer-modal.js?v=4"></script>
+  <script src="js/auth-modal.js"></script>
+  <script src="js/page-nav.js"></script>
+  <script>
+    applyTheme();
+    // Read URL params to pre-fill filters (from category/hero search links)
+    document.addEventListener('DOMContentLoaded', function () {
+      const params = new URLSearchParams(window.location.search);
+      const cat = params.get('cat');
+      const q = params.get('q');
+      if (cat) {
+        const sel = document.getElementById('f-cat');
+        if (sel) sel.value = cat;
+      }
+      if (q) {
+        const inp = document.getElementById('browse-search');
+        if (inp) inp.value = q;
+      }
+    });
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,2096 @@
+﻿<!DOCTYPE html>
+<html lang="en" class="dark-mode">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description"
+    content="World Trainer Forum — Find, compare and book world-class trainers, coaches and mentors. LinkedIn + Fiverr + BigSpeak for every field.">
+  <title>World Trainer Forum — Find & Book World-Class Trainers</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/trainer-modal.css">
+  <link rel="stylesheet" href="css/auth-modal.css">
+</head>
+
+<body>
+
+  <!-- ═══ NAVBAR ═══ -->
+  <nav id="nav">
+    <a class="logo" href="#" onclick="nav('home')">
+      <img src="img/logo.svg" alt="World Trainer Forum Logo" style="height:42px; margin-right:10px;">World Trainer <span
+        class="g">Forum</span>
+    </a>
+    <ul class="nav-links">
+      <li><a id="nl-about" href="about.html">About</a></li>
+      <li><a id="nl-browse" href="find-trainers.html">Find Trainers</a></li>
+      <li><a id="nl-cats" href="categories.html">Categories</a></li>
+      <li><a id="nl-pricing" href="pricing.html">Pricing</a></li>
+      <li><a id="nl-blog" href="under-construction.html">Blog</a></li>
+      <li><a id="nl-dash" href="dashboard.html" target="_blank" style="display:none;">Dashboard</a></li>
+    </ul>
+    <div class="nav-r">
+      <button class="notif-btn" id="notif-btn" onclick="toggleNotif()">🔔<span class="notif-dot"></span></button>
+      <button class="btn btn-ghost btn-sm" id="btn-signup" onclick="openModal('register')">Sign Up</button>
+      <button class="btn btn-gold btn-sm" id="btn-login" onclick="openModal('login')">Log In</button>
+      <button class="btn btn-dark btn-sm" id="btn-logout" onclick="handleLogout()" style="display:none;">Log
+        Out</button>
+    </div>
+  </nav>
+
+  <!-- Notification Panel -->
+  <div class="notif-panel" id="notif-panel">
+    <div class="notif-header">
+      <h4>Notifications</h4><a href="#" style="font-size:.78rem;color:var(--gold-dk)">Mark all read</a>
+    </div>
+    <div class="notif-item unread">
+      <div class="notif-ico" style="background:rgba(201,168,76,.12)">📅</div>
+      <div class="notif-text">
+        <p><strong>Rajesh Kumar</strong> accepted your booking for May 20.</p><span>2 hours ago</span>
+      </div>
+    </div>
+    <div class="notif-item unread">
+      <div class="notif-ico" style="background:rgba(39,103,73,.12)">⭐</div>
+      <div class="notif-text">
+        <p>Your session with <strong>Priya Mehta</strong> is in 2 days.</p><span>5 hours ago</span>
+      </div>
+    </div>
+    <div class="notif-item">
+      <div class="notif-ico" style="background:rgba(42,108,176,.12)">💬</div>
+      <div class="notif-text">
+        <p>New message from <strong>Arun Kapoor</strong>.</p><span>Yesterday</span>
+      </div>
+    </div>
+    <div class="notif-item">
+      <div class="notif-ico" style="background:rgba(201,168,76,.12)">🎉</div>
+      <div class="notif-text">
+        <p>Welcome to World Trainer Forum! Complete your profile.</p><span>2 days ago</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <!-- Modal -->
+  <div class="modal-bg" id="modal-bg">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeModal()">✕</button>
+      <div id="modal-body"></div>
+    </div>
+  </div>
+
+  <!-- ═══ PREMIUM TRAINER PROFILE MODAL ═══ -->
+  <div id="trainer-modal" aria-modal="true" role="dialog" aria-label="Trainer Profile"></div>
+
+  <!-- ═══ PREMIUM AUTH MODAL ═══ -->
+  <div id="auth-modal" aria-modal="true" role="dialog" aria-label="Authentication"></div>
+
+  <!-- ═══ PREMIUM BOOKING MODAL ═══ -->
+  <div id="booking-modal" aria-modal="true" role="dialog" aria-label="Book a Session"></div>
+
+  <!-- ═══════════════════════════════════════════════════════
+     HOME PAGE
+═══════════════════════════════════════════════════════ -->
+  <div id="p-home" class="page active">
+
+    <!-- Hero -->
+    <section class="hero hero-split">
+      <div class="hero-orb h-orb1"></div>
+      <div class="hero-orb h-orb2"></div>
+      <div class="hero-grid"></div>
+      <div class="hero-inner fade-in">
+
+        <!-- Upper media placeholder -->
+        <div class="hero-media-placeholder">
+          <div class="hero-pill" style="margin-bottom:0"><span class="live-dot"></span>2,800+ verified experts live
+            now
+          </div>
+          <div class="hero-media-frame">
+            <div class="hero-media-icon">▶</div>
+            <p class="hero-media-label">Your video or hero image goes here</p>
+            <span class="hero-media-hint">16 : 9 · responsive · auto-fit</span>
+            <img src="">
+          </div>
+        </div>
+
+        <!-- Lower content block: heading + search -->
+        <div class="hero-lower">
+          <h1>Find Your <span class="gld">Expert Trainer.</span></h1>
+          <div class="hero-search">
+            <span style="color:#999;padding:0 6px;font-size:1.1rem">🔍</span>
+            <input type="text" id="hs-input" placeholder="Search trainers, skills, topics…">
+            <div class="h-sep"></div>
+            <select id="hs-cat">
+              <option value="">All Categories</option>
+              <option>Business Coaching</option>
+              <option>AI &amp; Technology</option>
+              <option>Fitness &amp; Health</option>
+              <option>Cybersecurity</option>
+              <option>Soft Skills</option>
+              <option>Language Training</option>
+              <option>Music &amp; Dance</option>
+              <option>Career Mentoring</option>
+              <option>Sports Coaching</option>
+              <option>Personal Dev.</option>
+              <option>Finance</option>
+              <option>Data &amp; Analytics</option>
+            </select>
+            <div class="h-sep"></div>
+            <select>
+              <option>Anywhere</option>
+              <option>Online</option>
+              <option>Mumbai</option>
+              <option>Delhi</option>
+              <option>Bangalore</option>
+              <option>Surat</option>
+              <option>Chennai</option>
+              <option>Pune</option>
+            </select>
+            <button class="btn btn-gold" onclick="heroSearch()">Search</button>
+          </div>
+        </div>
+        <div class="hero-nums">
+          <div class="hnum">
+            <div class="h-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+              </svg></div>
+            <div><span class="n">2,800+</span><span class="l">Expert Trainers</span></div>
+          </div>
+          <div class="hnum">
+            <div class="h-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="3" />
+                <path
+                  d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+              </svg></div>
+            <div><span class="n">140+</span><span class="l">Specialisations</span></div>
+          </div>
+          <div class="hnum">
+            <div class="h-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M8 14s1.5 2 4 2 4-2 4-2" />
+                <line x1="9" y1="9" x2="9.01" y2="9" />
+                <line x1="15" y1="9" x2="15.01" y2="9" />
+              </svg></div>
+            <div><span class="n">+</span><span class="l">Happy Clients</span></div>
+          </div>
+          <div class="hnum">
+            <div class="h-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon
+                  points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+              </svg></div>
+            <div><span class="n">4.9★</span><span class="l">Average Rating</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Categories -->
+    <section class="bg-fog">
+      <div class="section-hdr">
+        <span class="section-label">Explore</span>
+        <h2 class="section-title">Browse by <span class="a">Category</span></h2>
+        <p class="section-sub">Find top experts across every discipline — from AI to Fitness to Music.</p>
+      </div>
+      <div class="cats-grid" id="home-cats">
+        <div class="cat-card" onclick="window.location.href='find-trainers.html'">
+          <div class="cat-icon">💼</div>
+          <h3>Business Coaching</h3>
+          <p>Leadership & Strategy</p>
+        </div>
+        <div class="cat-card" onclick="window.location.href='find-trainers.html'">
+          <div class="cat-icon">🤖</div>
+          <h3>AI & Technology</h3>
+          <p>Future-proof skills</p>
+        </div>
+        <div class="cat-card" onclick="window.location.href='find-trainers.html'">
+          <div class="cat-icon">💪</div>
+          <h3>Fitness & Health</h3>
+          <p>Physical wellbeing</p>
+        </div>
+        <div class="cat-card" onclick="window.location.href='find-trainers.html'">
+          <div class="cat-icon">🛡️</div>
+          <h3>Cybersecurity</h3>
+          <p>Data protection</p>
+        </div>
+        <div class="cat-card" onclick="window.location.href='find-trainers.html'">
+          <div class="cat-icon">🗣️</div>
+          <h3>Soft Skills</h3>
+          <p>Communication & EQ</p>
+        </div>
+        <div class="cat-card" onclick="window.location.href='find-trainers.html'">
+          <div class="cat-icon">🌍</div>
+          <h3>Language Training</h3>
+          <p>Global fluency</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Featured Trainers -->
+    <section class="bg-cream">
+      <div class="section-hdr">
+        <span class="section-label">Hand-Picked</span>
+        <h2 class="section-title">Premium & Top <span class="a">Experts</span></h2>
+        <p class="section-sub">Verified professionals with outstanding track records and rave reviews.</p>
+      </div>
+      <div class="trainers-grid" id="home-grid" style="overflow:visible; padding-top:20px; padding-bottom:20px;"></div>
+      <div style="text-align:center;margin-top:36px">
+        <button class="btn btn-outline btn-lg" onclick="nav('browse')">View All 2,800+ Trainers →</button>
+      </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="bg-dark" id="how">
+      <div class="section-hdr">
+        <span class="section-label" style="color:rgba(201,168,76,.8)">Simple Process</span>
+        <h2 class="section-title" style="color:#0A2551">How <span class="a">It Works</span></h2>
+        <p class="section-sub" style="color:#666;margin:0 auto 52px">Hire your perfect trainer in three simple steps —
+          from discovery to transformation.</p>
+      </div>
+      <div class="how-grid">
+        <div class="how-step">
+          <div class="how-num">01</div>
+          <h3>Discover &amp; Filter</h3>
+          <p>Use AI-powered smart filters to browse by skill, category, city, price, rating, and availability. Watch
+            intro videos before committing.</p>
+        </div>
+        <div class="how-step">
+          <div class="how-num">02</div>
+          <h3>Book &amp; Pay Securely</h3>
+          <p>Request a session, chat with your trainer to clarify goals, then complete your booking via our encrypted
+            Razorpay / Stripe payment gateway.</p>
+        </div>
+        <div class="how-step">
+          <div class="how-num">03</div>
+          <h3>Learn, Grow &amp; Review</h3>
+          <p>Attend your session online or in-person. Track progress, leave honest feedback, and rebook your favourite
+            trainers anytime.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- For Trainers -->
+    <section class="bg-fog">
+      <div style="display:flex;align-items:center;gap:60px;flex-wrap:wrap;max-width:1100px;margin:0 auto">
+        <div style="flex:1;min-width:280px">
+          <span class="section-label">For Trainers &amp; Coaches</span>
+          <h2 class="section-title">Grow Your <span class="a">Practice</span><br>on One Platform</h2>
+          <p style="color:var(--ts);font-weight:300;line-height:1.85;margin-bottom:26px">Create a stunning professional
+            profile, showcase your expertise, set your own rates, and manage bookings — all in one place. Join 2,800+
+            trainers already thriving on World Trainer Forum.</p>
+          <div class="check-item">Beautiful customisable profile with video intro</div>
+          <div class="check-item">Built-in booking &amp; availability calendar</div>
+          <div class="check-item">Secure Razorpay / Stripe payouts directly to you</div>
+          <div class="check-item">Direct WhatsApp contact with clients</div>
+          <div class="check-item">Verified badge, ratings &amp; trust reviews</div>
+          <div class="check-item">Full analytics dashboard — bookings, earnings, views</div>
+          <div style="margin-top:28px;display:flex;gap:12px;flex-wrap:wrap">
+            <button class="btn btn-gold btn-lg" onclick="openModal('register-trainer')">Start Free Profile →</button>
+            <button class="btn btn-outline" onclick="nav('pricing')">View Plans</button>
+          </div>
+        </div>
+        <div style="flex:1;min-width:260px;display:grid;grid-template-columns:1fr 1fr;gap:14px">
+          <div class="quick-stat">
+            <div style="font-size:1.5rem;margin-bottom:8px">📈</div>
+            <div class="qs-num">18×</div>
+            <div class="qs-lbl">Avg. growth in bookings within 90 days</div>
+          </div>
+          <div class="quick-stat">
+            <div style="font-size:1.5rem;margin-bottom:8px">💰</div>
+            <div class="qs-num">₹2.4L</div>
+            <div class="qs-lbl">Avg. monthly earnings for top trainers</div>
+          </div>
+          <div class="quick-stat">
+            <div style="font-size:1.5rem;margin-bottom:8px">⭐</div>
+            <div class="qs-num">4.9</div>
+            <div class="qs-lbl">Platform average across 40,000+ reviews</div>
+          </div>
+          <div class="quick-stat">
+            <div style="font-size:1.5rem;margin-bottom:8px">🌏</div>
+            <div class="qs-num">62</div>
+            <div class="qs-lbl">Countries with active trainers &amp; clients</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="bg-cream">
+      <div class="section-hdr">
+        <span class="section-label">Social Proof</span>
+        <h2 class="section-title">What <span class="a">Clients Say</span></h2>
+        <p class="section-sub">Real outcomes from real people — organizations and trainers alike.</p>
+      </div>
+      <div class="testi-grid" id="home-testimonials">
+      </div>
+    </section>
+
+    <!-- Trust Logos -->
+    <section style="padding:44px 5%;background:var(--fog);text-align:center">
+      <p
+        style="font-size:.76rem;color:var(--tm);font-weight:600;letter-spacing:.1em;text-transform:uppercase;margin-bottom:22px">
+        Trainers from top institutions worldwide</p>
+      <div
+        style="display:flex;justify-content:center;gap:36px;flex-wrap:wrap;align-items:center;opacity:.45;font-weight:700;font-size:1.1rem">
+        <span>IIT
+          Bombay</span><span>McKinsey</span><span>Google</span><span>Deloitte</span><span>Amazon</span><span>TCS</span><span>Goldman
+          Sachs</span>
+      </div>
+    </section>
+
+    <!-- CTA Band -->
+    <div class="cta-band">
+      <h2>Ready to Transform Your Journey?</h2>
+      <p>Join 40,000+ organizations who've found their perfect trainer on World Trainer Forum.</p>
+      <div class="cta-btns">
+        <button class="btn btn-gold btn-xl" onclick="openModal('register')">Find My Trainer →</button>
+        <button class="btn btn-ghost btn-xl" onclick="window.location.href='dashboard.html'">List as Trainer</button>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="logo" style="color:#0A2551;margin-bottom:4px"><img src="img/logo.svg"
+              alt="World Trainer Forum Logo" style="height:34px; margin-right:8px;">World Trainer <span
+              class="g">Forum</span></div>
+          <p>The premium marketplace connecting organizations with world-class trainers, coaches, and mentors globally.
+            LinkedIn + Fiverr + BigSpeak — for every field.</p>
+          <div style="display:flex;gap:10px;margin-top:18px">
+            <div
+              style="width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;font-size:.8rem;cursor:pointer">
+              𝕏</div>
+            <div
+              style="width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;font-size:.8rem;cursor:pointer">
+              in</div>
+            <div
+              style="width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;font-size:.8rem;cursor:pointer">
+              f</div>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>For Clients</h4>
+          <ul>
+            <li><a href="find-trainers.html">Browse Trainers</a></li>
+            <li><a href="categories.html">All Categories</a></li>
+            <li><a href="#">Corporate Training</a></li>
+            <li><a href="#">Gift a Session</a></li>
+            <li><a href="pricing.html">Pricing</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>For Trainers</h4>
+          <ul>
+            <li><a href="#" onclick="openModal('register-trainer')">List Your Profile</a></li>
+            <li><a href="#">Trainer Resources</a></li>
+            <li><a href="#">Community Forum</a></li>
+            <li><a href="#">Success Stories</a></li>
+            <li><a href="#">Verification Process</a></li>
+            <li><a href="#" onclick="nav('trainer-dash')">Trainer Dashboard</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="under-construction.html">Blog</a></li>
+            <li><a href="#">Press</a></li>
+            <li><a href="#">Careers</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom"><span>© 2026 World Trainer Forum Technologies Pvt. Ltd. All rights
+          reserved.</span><span>Privacy · Terms · Cookies · Sitemap</span></div>
+    </footer>
+  </div>
+
+  <!-- Browse, Categories, Pricing, About, Blog moved to separate pages -->
+  <!-- find-trainers.html | categories.html | pricing.html | about.html | blog.html -->
+
+  <!-- ═══════════════════════════════════════════════════════
+     (removed — now at find-trainers.html)
+═══════════════════════════════════════════════════════ -->
+  <div id="p-browse" class="page" style="display:none">
+    <div class="browse-hero">
+      <h1>Browse Expert Trainers</h1>
+      <p>2,800+ verified professionals across 140+ specialisations</p>
+      <div class="browse-bar">
+        <span style="color:#999">🔍</span>
+        <input type="text" id="browse-search" placeholder="Search name, skill, topic…" oninput="applyFilters()">
+        <div class="h-sep"></div>
+        <select id="f-cat" onchange="applyFilters()">
+          <option value="">All Categories</option>
+          <option>Business Coaching</option>
+          <option>AI &amp; Technology</option>
+          <option>Fitness &amp; Health</option>
+          <option>Cybersecurity</option>
+          <option>Soft Skills</option>
+          <option>Language Training</option>
+          <option>Music &amp; Dance</option>
+          <option>Career Mentoring</option>
+          <option>Sports Coaching</option>
+          <option>Finance</option>
+          <option>Motivational</option>
+          <option>Personal Dev.</option>
+        </select>
+        <div class="h-sep"></div>
+        <select onchange="document.getElementById('f-mode').value=this.value;applyFilters()">
+          <option value="">Anywhere</option>
+          <option value="Online">Online</option>
+          <option value="In-Person">In-Person</option>
+          <option value="Hybrid">Hybrid</option>
+        </select>
+        <button class="btn btn-gold btn-sm" onclick="applyFilters()">Search</button>
+      </div>
+    </div>
+    <div class="browse-layout">
+      <div class="filters-panel">
+        <h3>Filters</h3>
+        <div class="fg"><label>Category</label>
+          <select onchange="document.getElementById('f-cat').value=this.value;applyFilters()">
+            <option value="">All Categories</option>
+            <option>Business Coaching</option>
+            <option>AI &amp; Technology</option>
+            <option>Fitness &amp; Health</option>
+            <option>Cybersecurity</option>
+            <option>Soft Skills</option>
+            <option>Language Training</option>
+            <option>Music &amp; Dance</option>
+            <option>Career Mentoring</option>
+            <option>Sports Coaching</option>
+            <option>Finance</option>
+            <option>Motivational</option>
+            <option>Personal Dev.</option>
+          </select>
+        </div>
+        <div class="fg"><label>Price / hour</label>
+          <input type="range" id="f-price" min="500" max="20000" value="20000"
+            oninput="updatePriceDisplay(this.value);applyFilters()">
+          <div style="font-size:.78rem;color:var(--tm);margin-top:4px">Up to <span id="price-out">₹20,000</span></div>
+        </div>
+        <div class="fg"><label>Minimum Rating</label>
+          <select id="f-rating" onchange="applyFilters()">
+            <option value="0">Any Rating</option>
+            <option value="4.5">4.5+ Stars</option>
+            <option value="4.0">4.0+ Stars</option>
+            <option value="3.5">3.5+ Stars</option>
+          </select>
+        </div>
+        <div class="fg"><label>Delivery Mode</label>
+          <select id="f-mode" onchange="applyFilters()">
+            <option value="">Any Mode</option>
+            <option value="Online">Online / Virtual</option>
+            <option value="In-Person">In-Person</option>
+            <option value="Hybrid">Hybrid</option>
+          </select>
+        </div>
+        <div class="fg"><label>Experience</label>
+          <select id="f-exp" onchange="applyFilters()">
+            <option value="">Any</option>
+            <option>1–3 years</option>
+            <option>3–5 years</option>
+            <option>5–10 years</option>
+            <option>10+ years</option>
+          </select>
+        </div>
+        <div class="fg"><label>Language</label>
+          <div class="check-group">
+            <label class="chk"><input type="checkbox" checked> English</label>
+            <label class="chk"><input type="checkbox"> Hindi</label>
+            <label class="chk"><input type="checkbox"> Gujarati</label>
+            <label class="chk"><input type="checkbox"> Tamil</label>
+            <label class="chk"><input type="checkbox"> Telugu</label>
+          </div>
+        </div>
+        <div class="fg"><label>Options</label>
+          <div class="check-group">
+            <label class="chk"><input type="checkbox" checked> Verified trainers only</label>
+            <label class="chk"><input type="checkbox"> Featured trainers</label>
+            <label class="chk"><input type="checkbox"> Available this week</label>
+          </div>
+        </div>
+        <button class="btn btn-gold btn-full" style="margin-top:4px" onclick="applyFilters()">Apply Filters</button>
+        <button class="btn btn-dark btn-full" style="margin-top:8px"
+          onclick="document.getElementById('f-cat').value='';document.getElementById('f-price').value=20000;updatePriceDisplay(20000);document.getElementById('f-rating').value=0;document.getElementById('f-mode').value='';applyFilters()">Reset
+          All</button>
+      </div>
+      <div class="browse-results">
+        <div class="results-bar">
+          <div class="results-count">Showing <strong id="results-count">12</strong> trainers</div>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            <button class="btn btn-dark btn-sm" onclick="nav('compare')">⚖️ Compare</button>
+            <select class="sort-sel" onchange="sortResults(this.value)">
+              <option value="default">Recommended</option>
+              <option value="rating">Top Rated</option>
+              <option value="price-asc">Price: Low → High</option>
+              <option value="price-desc">Price: High → Low</option>
+              <option value="sessions">Most Booked</option>
+            </select>
+          </div>
+        </div>
+        <div class="trainers-grid" id="browse-grid"></div>
+        <div style="display:flex;justify-content:center;gap:8px;margin-top:32px;flex-wrap:wrap">
+          <button class="btn btn-dark btn-sm">← Prev</button>
+          <button class="btn btn-gold btn-sm">1</button>
+          <button class="btn btn-dark btn-sm">2</button>
+          <button class="btn btn-dark btn-sm">3</button>
+          <button class="btn btn-dark btn-sm">Next →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+     TRAINER PROFILE PAGE
+═══════════════════════════════════════════════════════ -->
+  <div id="p-profile" class="page">
+    <div class="prof-banner gb-blue" id="prof-banner">
+      <div class="overlay"></div>
+    </div>
+    <div class="prof-header">
+      <div class="prof-header-inner">
+        <div class="prof-av" id="prof-av" style="background:#2d5fa8">RK</div>
+        <div class="prof-info">
+          <h1 id="prof-name">Rajesh Kumar</h1>
+          <p class="sub" id="prof-subtitle">Senior AI &amp; ML Trainer · 12yr Experience · Mumbai / Online</p>
+          <div style="display:flex;gap:7px;flex-wrap:wrap">
+            <span class="verified">✓ Verified Expert</span>
+
+            <span class="chip">🏆 Top Rated 2025</span>
+            <span class="chip"><span id="prof-stat-sessions">1.2K</span> sessions</span>
+          </div>
+        </div>
+        <div class="prof-actions">
+          <button class="btn btn-dark btn-sm" onclick="toggleFav(this,currentTrainer?.id||1)">♡ Save</button>
+          <button class="btn btn-dark btn-sm" id="msg-btn-header" onclick="openWhatsApp()">💬 WhatsApp</button>
+          <button class="btn btn-dark btn-sm"
+            onclick="toggleCompare(currentTrainer?.id||1);toast('⚖️ Added to compare!')">⚖️ Compare</button>
+          <button class="btn btn-gold btn-sm" onclick="scrollToId('booking-widget')">Book Session</button>
+        </div>
+      </div>
+      <div class="prof-tabs">
+        <button class="ptab on" data-tab="ov" onclick="switchPTab('ov')">Overview</button>
+        <button class="ptab" data-tab="sv" onclick="switchPTab('sv')">Services &amp; Packages</button>
+
+        <button class="ptab" data-tab="av" onclick="switchPTab('av')">Availability</button>
+        <button class="ptab" data-tab="po" onclick="switchPTab('po')">Portfolio</button>
+      </div>
+    </div>
+    <div class="prof-body">
+      <div class="prof-main">
+
+        <!-- Overview -->
+        <div id="pt-ov" class="ptab-content">
+          <div class="card" style="margin-bottom:20px">
+            <h3>About</h3>
+            <p id="prof-bio" style="color:var(--ts);line-height:1.88;font-size:.93rem"></p>
+          </div>
+          <div class="card" style="margin-bottom:20px">
+            <h3>Expertise Areas</h3>
+            <div id="prof-etags" style="margin-top:4px"></div>
+          </div>
+          <div id="prof-skills-wrap"></div>
+          <div id="prof-achievements-wrap"></div>
+          <div id="prof-events-wrap"></div>
+
+        </div>
+
+        <!-- Services -->
+        <div id="pt-sv" class="ptab-content" style="display:none">
+          <div class="card">
+            <h3>Training Packages &amp; Pricing</h3>
+            <div id="prof-packages-list"></div>
+          </div>
+        </div>
+
+
+
+        <!-- Availability -->
+        <div id="pt-av" class="ptab-content" style="display:none">
+          <div class="card">
+            <h3>Availability</h3>
+            <p style="font-size:.82rem;color:var(--tm);margin-bottom:16px">Weekly availability and working hours (IST).
+            </p>
+            <div id="prof-availability-list"></div>
+            <div class="cal-legend">
+              <span>
+                <div class="cal-dot" style="background:rgba(39,103,73,.15);border:1px solid rgba(39,103,73,.4)"></div>
+                Available
+              </span>
+              <span>
+                <div class="cal-dot" style="background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.4)"></div>
+                Booked
+              </span>
+              <span>
+                <div class="cal-dot" style="background:var(--bd)"></div>Unavailable
+              </span>
+            </div>
+            <div
+              style="margin-top:18px;background:var(--fog);border-radius:var(--r);padding:14px;font-size:.84rem;color:var(--ts)">
+              <strong>Available time slots:</strong> 9:00 AM · 11:00 AM · 2:00 PM · 4:00 PM · 7:00 PM (IST)
+            </div>
+          </div>
+        </div>
+
+        <!-- Portfolio -->
+        <div id="pt-po" class="ptab-content" style="display:none">
+
+          <!-- Introduction Video (shown only if trainer has set a YT link) -->
+          <div class="card" style="margin-bottom:20px" id="pub-intro-video-card">
+            <h3>Introduction Video</h3>
+            <div id="pub-intro-video-wrap" style="margin-top:8px">
+              <!-- Injected by renderPublicPortfolio() -->
+            </div>
+          </div>
+
+
+
+          <!-- Testimonial Videos (shown only if trainer has added YT links) -->
+          <div class="card" style="margin-bottom:20px" id="pub-testimonial-card">
+            <h3>Testimonial Videos</h3>
+            <div id="pub-testimonial-wrap"
+              style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-top:8px">
+              <!-- Injected by renderPublicPortfolio() -->
+            </div>
+          </div>
+
+          <!-- Companies Worked With (shown only if trainer has uploaded logos) -->
+          <div class="card" id="pub-companies-card">
+            <h3>Companies Worked With</h3>
+            <div id="pub-companies-wrap"
+              style="display:flex;flex-wrap:wrap;gap:20px;align-items:center;margin-top:14px;justify-content:center">
+              <!-- Injected by renderPublicPortfolio() -->
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+      <!-- Booking Sidebar -->
+      <div class="prof-sidebar">
+        <div class="booking-widget" id="booking-widget">
+          <div class="bw-price"><span class="amt" id="prof-price-amt">₹3,500</span><span class="per"> / hour</span>
+          </div>
+          <div class="bw-stats">
+            <div class="bw-stat">
+              <div class="v" style="color:var(--gold)" id="prof-stat-rating2">4.9★</div>
+              <div class="k">Rating</div>
+            </div>
+            <div class="bw-stat">
+              <div class="v" id="prof-stat-sessions2">1.2K</div>
+              <div class="k">Sessions</div>
+            </div>
+            <div class="bw-stat">
+              <div class="v" id="prof-stat-exp">12yr</div>
+              <div class="k">Exp.</div>
+            </div>
+          </div>
+          <div class="form-group"><label>Session Type</label><select id="bw-type">
+              <option>1-on-1 Session</option>
+              <option>Group Session (2–5)</option>
+              <option>Corporate Training</option>
+              <option>Workshop</option>
+            </select></div>
+          <div class="form-group"><label>Preferred Date</label><input type="date" id="bw-date" value="2026-05-20"></div>
+          <div class="form-group"><label>Preferred Time</label><select id="bw-time">
+              <option>09:00 AM</option>
+              <option>11:00 AM</option>
+              <option>02:00 PM</option>
+              <option>04:00 PM</option>
+              <option>07:00 PM</option>
+            </select></div>
+          <div class="form-group"><label>Duration</label><select id="bw-dur" onchange="updateBookingPrice()">
+              <option value="60">60 minutes</option>
+              <option value="90">90 minutes</option>
+              <option value="120">120 minutes</option>
+            </select></div>
+          <div
+            style="display:flex;justify-content:space-between;margin-bottom:14px;padding:12px;background:var(--fog);border-radius:var(--r)">
+            <span style="font-size:.84rem;color:var(--ts)">Total</span>
+            <span style="font-weight:700;color:var(--gold-dk)" id="bw-total">₹3,500</span>
+          </div>
+          <button class="btn btn-gold btn-full" style="padding:13px;margin-bottom:10px"
+            onclick="openModal('book')">Request Booking</button>
+          <button class="btn btn-dark btn-full"
+            style="padding:11px;background:linear-gradient(135deg,#25d366,#128c7e);border:none;color:#fff"
+            id="msg-btn-sidebar" onclick="openWhatsApp()">💬 Message on WhatsApp</button>
+          <p style="text-align:center;font-size:.72rem;color:var(--tm);margin-top:12px">🔒 Secure payment · Free
+            cancellation 24h before</p>
+        </div>
+        <div class="card" style="margin-top:18px">
+          <h3>Quick Details</h3>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;justify-content:space-between;font-size:.83rem"><span
+                style="color:var(--tm)">Response time</span><span style="font-weight:600">Within 2 hours</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:.83rem"><span
+                style="color:var(--tm)">Languages</span><span style="font-weight:600" id="prof-lang">English,
+                Hindi</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:.83rem"><span
+                style="color:var(--tm)">Mode</span><span style="font-weight:600" id="prof-mode">Online /
+                In-Person</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:.83rem"><span
+                style="color:var(--tm)">Member since</span><span style="font-weight:600">Mar 2022</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:.83rem"><span
+                style="color:var(--tm)">Repeat clients</span><span style="font-weight:600;color:var(--ok)">78%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+     CATEGORIES  |  PRICING  |  ABOUT  |  BLOG  |  CONTACT  |  COMPARE
+═══════════════════════════════════════════════════════ -->
+
+  <div id="p-categories" class="page">
+    <div class="page-hero"><span class="section-label">All Specialisations</span>
+      <h1>Explore <span style="color:var(--gold)">Every Field</span></h1>
+      <p>140+ specialisations · 2,800+ verified trainers · 62 countries</p>
+    </div>
+    <section class="bg-cream">
+      <div class="cats-grid" id="all-cats"></div>
+    </section>
+  </div>
+
+  <div id="p-pricing" class="page">
+    <div class="page-hero" style="text-align:center"><span class="section-label">Transparent Pricing</span>
+      <h1 style="font-size:3rem">Simple, <span style="color:var(--gold)">Fair Pricing</span></h1>
+      <p>Commission only when you earn. No monthly fees, no hidden costs.</p>
+    </div>
+    <section class="bg-cream">
+      <div
+        style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:22px;max-width:980px;margin:0 auto 60px">
+        <div class="price-card">
+          <div
+            style="font-size:.74rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--tm);margin-bottom:12px">
+            Starter</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:700;color:var(--tp)">Free
+          </div>
+          <div style="font-size:.84rem;color:var(--tm);margin:6px 0 22px">Perfect for getting started</div>
+          <div class="pf on">Basic trainer profile page</div>
+          <div class="pf on">Up to 5 bookings/month</div>
+          <div class="pf on">20% platform commission</div>
+          <div class="pf on">Standard search listing</div>
+          <div class="pf on">Client messaging</div>
+          <div class="pf off">Priority listing</div>
+          <div class="pf off">Analytics dashboard</div>
+          <div class="pf off">Intro video upload</div>
+          <div style="margin-top:22px"><button class="btn btn-dark btn-full btn-lg"
+              onclick="openModal('register-trainer')">Get Started Free</button></div>
+        </div>
+        <div class="price-card featured" style="position:relative">
+          <div
+            style="position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--gold);color:#0D1117;font-size:.7rem;font-weight:700;padding:3px 14px;border-radius:999px;white-space:nowrap">
+            Most Popular</div>
+          <div
+            style="font-size:.74rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(226,201,126,.6);margin-bottom:12px">
+            Professional</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:700;color:#0A2551">₹999<span
+              style="font-size:1rem;font-weight:400;color:#666">/mo</span></div>
+          <div style="font-size:.84rem;color:#666;margin:6px 0 22px">For growing trainers</div>
+          <div class="pf on">Premium profile with video intro</div>
+          <div class="pf on">Unlimited bookings</div>
+          <div class="pf on">12% platform commission</div>
+          <div class="pf on">Priority search listing</div>
+          <div class="pf on">Full analytics dashboard</div>
+          <div class="pf on">Real-time chat &amp; calendar</div>
+          <div class="pf on">Verified badge &amp; trust score</div>
+          <div class="pf on">Portfolio &amp; gallery uploads</div>
+          <div style="margin-top:22px"><button class="btn btn-gold btn-full btn-lg"
+              onclick="openModal('register-trainer')">Start 14-Day Free Trial</button></div>
+          <p style="text-align:center;font-size:.75rem;margin-top:10px;color:#999">No credit card required</p>
+        </div>
+        <div class="price-card">
+          <div
+            style="font-size:.74rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--tm);margin-bottom:12px">
+            Enterprise</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:700;color:var(--tp)">Custom
+          </div>
+          <div style="font-size:.84rem;color:var(--tm);margin:6px 0 22px">For training organisations</div>
+          <div class="pf on">Multi-trainer management</div>
+          <div class="pf on">Custom commission rates</div>
+          <div class="pf on">Dedicated account manager</div>
+          <div class="pf on">White-label options</div>
+          <div class="pf on">API &amp; CRM integrations</div>
+          <div class="pf on">Custom analytics reports</div>
+          <div class="pf on">SLA &amp; priority support</div>
+          <div class="pf on">GST &amp; invoice management</div>
+          <div style="margin-top:22px"><button class="btn btn-outline btn-full btn-lg" onclick="nav('contact')">Contact
+              Sales</button></div>
+        </div>
+      </div>
+      <div style="max-width:680px;margin:0 auto">
+        <h2 class="section-title" style="text-align:center;margin-bottom:32px">Frequently Asked <span
+            class="a">Questions</span></h2>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">Is there a free trial for the Professional plan? <span
+              class="faq-arrow">▼</span></div>
+          <div class="faq-a">Yes! 14 days free on the Professional plan — no credit card required. After the trial,
+            subscribe or downgrade to the free Starter plan.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">How does the commission work? <span class="faq-arrow">▼</span>
+          </div>
+          <div class="faq-a">We charge a percentage of each completed booking — 20% on Starter and 12% on Professional.
+            Enterprise clients negotiate custom rates. No hidden fees.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">When do I receive my payout? <span class="faq-arrow">▼</span>
+          </div>
+          <div class="faq-a">Payouts are processed within 48 hours of session completion directly to your bank account
+            via Razorpay. International payouts via Stripe take 7–10 business days.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">Can I cancel anytime? <span class="faq-arrow">▼</span></div>
+          <div class="faq-a">Yes. Cancel the Professional plan at any time. Your profile reverts to the free Starter
+            plan and all data, reviews, and bookings are preserved.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">Is World Trainer Forum available for corporate clients? <span
+              class="faq-arrow">▼</span></div>
+          <div class="faq-a">Yes! Organisations can book multiple trainers, manage team-wide training, and get dedicated
+            GST-compliant invoicing. Contact our sales team for enterprise pricing.</div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div id="p-about" class="page">
+    <div class="page-hero" style="text-align:center"><span class="section-label">Our Story</span>
+      <h1 style="font-size:3rem">Building the <span style="color:var(--gold)">Future of Learning</span></h1>
+      <p style="max-width:540px;margin:10px auto 0">World Trainer Forum was founded with a belief: expert knowledge
+        should be accessible to everyone, and talented trainers deserve a platform that truly supports their growth.</p>
+    </div>
+    <section class="bg-cream">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:22px;margin-bottom:60px">
+        <div class="card">
+          <div style="font-size:2rem;margin-bottom:12px">🎯</div>
+          <h3 style="margin-bottom:10px">Our Mission</h3>
+          <p style="color:var(--ts);font-size:.9rem;line-height:1.8">To democratise access to world-class expertise,
+            connecting ambitious organizations with transformative trainers across every field and geography.</p>
+        </div>
+        <div class="card">
+          <div style="font-size:2rem;margin-bottom:12px">👁️</div>
+          <h3 style="margin-bottom:10px">Our Vision</h3>
+          <p style="color:var(--ts);font-size:.9rem;line-height:1.8">A world where every expert can build a thriving
+            practice online, and every organization can find the perfect guide for their unique journey.</p>
+        </div>
+        <div class="card">
+          <div style="font-size:2rem;margin-bottom:12px">💎</div>
+          <h3 style="margin-bottom:10px">Our Values</h3>
+          <p style="color:var(--ts);font-size:.9rem;line-height:1.8">Trust, transparency, and quality above all. Every
+            trainer is verified. Every interaction protected. Every outcome matters deeply to us.</p>
+        </div>
+      </div>
+      <div class="section-hdr" style="margin-bottom:32px">
+        <h2 class="section-title">Meet the <span class="a">Team</span></h2>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:20px;margin-bottom:56px">
+        <div class="team-card">
+          <div class="team-av" style="background:#2d5fa8">AK</div>
+          <div style="font-weight:700;margin-bottom:4px">Arjun Kapoor</div>
+          <div style="font-size:.82rem;color:var(--tm)">Co-Founder &amp; CEO</div>
+        </div>
+        <div class="team-card">
+          <div class="team-av" style="background:#2d8a4e">PM</div>
+          <div style="font-weight:700;margin-bottom:4px">Priya Malhotra</div>
+          <div style="font-size:.82rem;color:var(--tm)">Co-Founder &amp; CTO</div>
+        </div>
+        <div class="team-card">
+          <div class="team-av" style="background:#7b3db8">DS</div>
+          <div style="font-weight:700;margin-bottom:4px">Divya Shah</div>
+          <div style="font-size:.82rem;color:var(--tm)">Head of Growth</div>
+        </div>
+        <div class="team-card">
+          <div class="team-av" style="background:#e67e22">RS</div>
+          <div style="font-weight:700;margin-bottom:4px">Rohit Sharma</div>
+          <div style="font-size:.82rem;color:var(--tm)">Head of Product</div>
+        </div>
+        <div class="team-card">
+          <div class="team-av" style="background:#1a7a7a">TK</div>
+          <div style="font-weight:700;margin-bottom:4px">Tanya Khanna</div>
+          <div style="font-size:.82rem;color:var(--tm)">Trainer Success</div>
+        </div>
+      </div>
+      <div
+        style="background:var(--fog);border-radius:var(--rl);padding:48px;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:28px;text-align:center">
+        <div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:2.4rem;font-weight:700;color:var(--gold)">2026
+          </div>
+          <div style="font-size:.84rem;color:var(--tm)">Founded</div>
+        </div>
+        <div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:2.4rem;font-weight:700;color:var(--gold)">2,800+
+          </div>
+          <div style="font-size:.84rem;color:var(--tm)">Trainers</div>
+        </div>
+        <div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:2.4rem;font-weight:700;color:var(--gold)">40K+
+          </div>
+          <div style="font-size:.84rem;color:var(--tm)">Clients</div>
+        </div>
+        <div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:2.4rem;font-weight:700;color:var(--gold)">62
+          </div>
+          <div style="font-size:.84rem;color:var(--tm)">Countries</div>
+        </div>
+        <div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:2.4rem;font-weight:700;color:var(--gold)">₹48Cr+
+          </div>
+          <div style="font-size:.84rem;color:var(--tm)">Trainer Earnings</div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div id="p-blog" class="page">
+    <div class="page-hero"><span class="section-label">Resources</span>
+      <h1>Blog &amp; <span style="color:var(--gold)">Resources</span></h1>
+      <p>Insights for trainers and organizations — tips, strategies, and success stories.</p>
+    </div>
+    <section class="bg-cream">
+      <div class="trainers-grid" id="blog-grid"></div>
+    </section>
+  </div>
+
+  <div id="p-contact" class="page">
+    <div class="page-hero"><span class="section-label">Get in Touch</span>
+      <h1>Contact <span style="color:var(--gold)">Us</span></h1>
+      <p>Our team typically responds within 4 hours. We'd love to hear from you.</p>
+    </div>
+    <section class="bg-cream">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:40px;flex-wrap:wrap">
+        <div class="card">
+          <h3>Send Us a Message</h3>
+          <div class="form-group"><label>Your Name</label><input type="text" placeholder="Full name"></div>
+          <div class="form-group"><label>Email Address</label><input type="email" placeholder="you@example.com"></div>
+          <div class="form-group"><label>Subject</label><select>
+              <option>General Enquiry</option>
+              <option>Trainer Support</option>
+              <option>Client Support</option>
+              <option>Partnership</option>
+              <option>Press / Media</option>
+              <option>Bug Report</option>
+            </select></div>
+          <div class="form-group"><label>Message</label><textarea rows="5" placeholder="How can we help?"></textarea>
+          </div>
+          <button class="btn btn-gold btn-full btn-lg" onclick="submitContact()">Send Message →</button>
+        </div>
+        <div>
+          <div class="card" style="margin-bottom:18px">
+            <h3>Contact Information</h3>
+            <div style="display:flex;gap:14px;margin-bottom:18px">
+              <div class="contact-ico">📧</div>
+              <div>
+                <div style="font-weight:600;margin-bottom:3px">Email</div>
+                <div style="font-size:.85rem;color:var(--ts)">hello@World Trainer Forum.com</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:14px;margin-bottom:18px">
+              <div class="contact-ico">📞</div>
+              <div>
+                <div style="font-weight:600;margin-bottom:3px">Phone</div>
+                <div style="font-size:.85rem;color:var(--ts)">+91 98765 43210</div>
+                <div style="font-size:.8rem;color:var(--tm)">Mon–Fri 9AM–6PM IST</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:14px">
+              <div class="contact-ico">📍</div>
+              <div>
+                <div style="font-weight:600;margin-bottom:3px">Office</div>
+                <div style="font-size:.85rem;color:var(--ts)">Bandra Kurla Complex, Mumbai 400051</div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <h3>Platform Status</h3>
+            <div style="margin-bottom:12px"><span
+                style="display:inline-flex;align-items:center;gap:6px;background:rgba(39,103,73,.1);color:var(--ok);padding:5px 14px;border-radius:999px;font-size:.8rem;font-weight:600">●
+                All systems operational</span></div>
+            <p style="font-size:.82rem;color:var(--tm);line-height:1.8">Bookings · Payments · Messaging · Profiles — All
+              running normally.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div id="p-compare" class="page">
+    <div class="page-hero"><span class="section-label">Side by Side</span>
+      <h1>Compare <span style="color:var(--gold)">Premium & Top Trainers</span></h1>
+      <p>Compare our highest-rated and most experienced trainers side by side.</p>
+    </div>
+    <section class="bg-cream">
+      <div style="margin-bottom:24px">
+        <div style="display:flex;flex-wrap:wrap;gap:10px">
+          <button class="btn btn-outline btn-sm" onclick="nav('browse')">Browse All Trainers →</button>
+        </div>
+      </div>
+      <div id="compare-content"></div>
+    </section>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+     TRAINER DASHBOARD
+═══════════════════════════════════════════════════════ -->
+  <div id="p-trainer-dash" class="page" style="padding-top:var(--nav)">
+    <div class="dash-wrap">
+      <div class="dash-sidebar">
+        <div class="ds-sec">Main</div>
+        <button class="ds-link on" onclick="switchDashSection(this,'overview')"><span
+            class="ds-ico">📊</span>Dashboard</button>
+        <button class="ds-link" onclick="switchDashSection(this,'profile')"><span class="ds-ico">👤</span>My
+          Profile</button>
+        <button class="ds-link" onclick="switchDashSection(this,'bookings')"><span
+            class="ds-ico">📅</span>Bookings</button>
+        <button class="ds-link" onclick="switchDashSection(this,'messages')"><span class="ds-ico">💬</span>WhatsApp
+          Contact<span class="ds-badge">✓</span></button>
+        <div class="ds-sec">Business</div>
+        <button class="ds-link" onclick="switchDashSection(this,'earnings')"><span
+            class="ds-ico">💰</span>Earnings</button>
+        <button class="ds-link" onclick="switchDashSection(this,'reviews')"><span
+            class="ds-ico">⭐</span>Reviews</button>
+        <button class="ds-link" onclick="switchDashSection(this,'packages')"><span
+            class="ds-ico">📦</span>Packages</button>
+        <button class="ds-link" onclick="switchDashSection(this,'availability')"><span
+            class="ds-ico">🗓️</span>Availability</button>
+        <button class="ds-link" onclick="switchDashSection(this,'portfolio')"><span
+            class="ds-ico">🎬</span>Portfolio</button>
+        <div class="ds-sec">Account</div>
+        <button class="ds-link" onclick="switchDashSection(this,'settings')"><span
+            class="ds-ico">⚙️</span>Settings</button>
+        <button class="ds-link" onclick="toggleNotif()"><span class="ds-ico">🔔</span>Notifications<span
+            class="ds-badge">2</span></button>
+        <button class="ds-link" onclick="nav('home')"><span class="ds-ico">🏠</span>Back to Site</button>
+      </div>
+      <div class="dash-main">
+
+        <!-- Overview -->
+        <div id="ds-overview" class="dash-section on">
+          <div class="dash-topbar">
+            <div>
+              <h2>Good morning, Rajesh 👋</h2>
+              <p>Here's what's happening with your training business today.</p>
+            </div>
+            <div style="display:flex;gap:10px"><button class="btn btn-dark btn-sm"
+                onclick="toggleNotif()">🔔</button><button class="btn btn-gold btn-sm" onclick="nav('profile')">View My
+                Profile →</button></div>
+          </div>
+          <div class="kpi-row">
+            <div class="kpi">
+              <div class="ico">💰</div>
+              <div class="lbl">Earnings (May)</div>
+              <div class="val">₹1,24,500</div>
+              <div class="chg up">↑ 18% vs April</div>
+            </div>
+            <div class="kpi">
+              <div class="ico">📅</div>
+              <div class="lbl">Active Bookings</div>
+              <div class="val">23</div>
+              <div class="chg up">↑ 5 new this week</div>
+            </div>
+            <div class="kpi">
+              <div class="ico">⭐</div>
+              <div class="lbl">Avg. Rating</div>
+              <div class="val">4.9</div>
+              <div class="chg up">87 total reviews</div>
+            </div>
+            <div class="kpi">
+              <div class="ico">👁️</div>
+              <div class="lbl">Profile Views</div>
+              <div class="val">3,240</div>
+              <div class="chg up">↑ 32% this month</div>
+            </div>
+          </div>
+          <div class="dash-row">
+            <div class="dash-card">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+                <h3>Revenue (6 Months)</h3><select class="sort-sel" style="font-size:.75rem;padding:5px 10px">
+                  <option>Last 6 months</option>
+                  <option>This year</option>
+                </select>
+              </div>
+              <div class="bar-chart">
+                <div class="bw">
+                  <div class="bar" style="height:55%"></div>
+                  <div class="bar-lbl">Dec</div>
+                </div>
+                <div class="bw">
+                  <div class="bar" style="height:40%"></div>
+                  <div class="bar-lbl">Jan</div>
+                </div>
+                <div class="bw">
+                  <div class="bar" style="height:66%"></div>
+                  <div class="bar-lbl">Feb</div>
+                </div>
+                <div class="bw">
+                  <div class="bar" style="height:74%"></div>
+                  <div class="bar-lbl">Mar</div>
+                </div>
+                <div class="bw">
+                  <div class="bar" style="height:82%"></div>
+                  <div class="bar-lbl">Apr</div>
+                </div>
+                <div class="bw">
+                  <div class="bar hi" style="height:96%"></div>
+                  <div class="bar-lbl">May</div>
+                </div>
+              </div>
+            </div>
+            <div class="dash-card">
+              <h3>Booking Status</h3>
+              <div style="display:flex;flex-direction:column;gap:12px;margin-top:6px">
+                <div style="display:flex;justify-content:space-between;align-items:center"><span
+                    style="font-size:.84rem;color:var(--ts)">Confirmed</span>
+                  <div style="display:flex;align-items:center;gap:10px">
+                    <div style="width:110px;height:5px;background:var(--bd);border-radius:3px;overflow:hidden">
+                      <div style="width:70%;height:100%;background:var(--ok);border-radius:3px"></div>
+                    </div><span style="font-size:.8rem;font-weight:600">16</span>
+                  </div>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center"><span
+                    style="font-size:.84rem;color:var(--ts)">Pending</span>
+                  <div style="display:flex;align-items:center;gap:10px">
+                    <div style="width:110px;height:5px;background:var(--bd);border-radius:3px;overflow:hidden">
+                      <div style="width:26%;height:100%;background:var(--warn);border-radius:3px"></div>
+                    </div><span style="font-size:.8rem;font-weight:600">6</span>
+                  </div>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center"><span
+                    style="font-size:.84rem;color:var(--ts)">Completed (May)</span>
+                  <div style="display:flex;align-items:center;gap:10px">
+                    <div style="width:110px;height:5px;background:var(--bd);border-radius:3px;overflow:hidden">
+                      <div style="width:85%;height:100%;background:var(--info);border-radius:3px"></div>
+                    </div><span style="font-size:.8rem;font-weight:600">204</span>
+                  </div>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center"><span
+                    style="font-size:.84rem;color:var(--ts)">Cancelled</span>
+                  <div style="display:flex;align-items:center;gap:10px">
+                    <div style="width:110px;height:5px;background:var(--bd);border-radius:3px;overflow:hidden">
+                      <div style="width:5%;height:100%;background:var(--err);border-radius:3px"></div>
+                    </div><span style="font-size:.8rem;font-weight:600">4</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="dash-card">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+              <h3>Recent Bookings</h3><button class="btn btn-dark btn-sm"
+                onclick="switchDashSection(null,'bookings')">View All</button>
+            </div>
+            <div style="overflow-x:auto">
+              <table class="dt">
+                <thead>
+                  <tr>
+                    <th>Client</th>
+                    <th>Service</th>
+                    <th>Date &amp; Time</th>
+                    <th>Amount</th>
+                    <th>Mode</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Ananya Patel</strong></td>
+                    <td>AI Bootcamp (4wk)</td>
+                    <td>May 14, 2026 · 10AM</td>
+                    <td><strong>₹18,000</strong></td>
+                    <td>Online</td>
+                    <td><span class="pill p-warn">Pending</span></td>
+                    <td style="display:flex;gap:5px;padding:12px 0"><button class="btn btn-ok btn-sm"
+                        style="padding:4px 10px;font-size:.74rem"
+                        onclick="toast('✅ Booking accepted!')">Accept</button><button class="btn btn-err btn-sm"
+                        style="padding:4px 10px;font-size:.74rem" onclick="toast('Booking declined.')">Decline</button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Rahul Singh</strong></td>
+                    <td>1-on-1 Session (90min)</td>
+                    <td>May 12 · 2PM</td>
+                    <td><strong>₹5,250</strong></td>
+                    <td>Online</td>
+                    <td><span class="pill p-ok">Confirmed</span></td>
+                    <td><button class="btn btn-dark btn-sm" style="padding:4px 10px;font-size:.74rem">View</button></td>
+                  </tr>
+                  <tr>
+                    <td><strong>TechCorp India</strong></td>
+                    <td>Corporate Training (2 days)</td>
+                    <td>May 16–17</td>
+                    <td><strong>₹95,000</strong></td>
+                    <td>In-Person</td>
+                    <td><span class="pill p-ok">Confirmed</span></td>
+                    <td><button class="btn btn-dark btn-sm" style="padding:4px 10px;font-size:.74rem">View</button></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Neha Gupta</strong></td>
+                    <td>Intro Session</td>
+                    <td>May 8 · 11AM</td>
+                    <td><strong>₹2,500</strong></td>
+                    <td>Online</td>
+                    <td><span class="pill p-info">Completed</span></td>
+                    <td><button class="btn btn-dark btn-sm" style="padding:4px 10px;font-size:.74rem">Invoice</button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Vikram Rao</strong></td>
+                    <td>Advanced LLMs (6 sessions)</td>
+                    <td>Apr 28 – May 5</td>
+                    <td><strong>₹28,000</strong></td>
+                    <td>Online</td>
+                    <td><span class="pill p-info">Completed</span></td>
+                    <td><button class="btn btn-dark btn-sm" style="padding:4px 10px;font-size:.74rem">Invoice</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Profile Edit -->
+        <div id="ds-profile" class="dash-section">
+          <div class="dash-topbar">
+            <div>
+              <h2>Edit My Profile</h2>
+              <p>Keep your profile up to date to attract more clients.</p>
+            </div><button class="btn btn-gold btn-sm" onclick="saveCompactProfile()">Save Changes</button>
+          </div>
+          <div class="dash-card" style="margin-bottom:20px">
+            <h3>Basic Information</h3>
+            <div class="grid2">
+              <div class="form-group"><label>Full Name</label><input id="cp-name" value="Rajesh Kumar"></div>
+              <div class="form-group"><label>Professional Title</label><input id="cp-title"
+                  value="Senior AI &amp; ML Trainer"></div>
+            </div>
+            <div class="form-group"><label>Bio</label><textarea id="cp-bio"
+                rows="4">With over 12 years of hands-on experience in AI and ML, I have trained 2,000+ professionals…</textarea>
+            </div>
+            <div class="grid2">
+              <div class="form-group"><label>Hourly Rate (₹)</label><input id="cp-rate" type="number" value="3500">
+              </div>
+              <div class="form-group"><label>Primary Category</label><select id="cp-category">
+                  <option>AI &amp; Technology</option>
+                </select></div>
+            </div>
+            <div class="grid2">
+              <div class="form-group"><label>City</label><input id="cp-city" value="Mumbai"></div>
+              <div class="form-group"><label>Delivery Mode</label><select id="cp-mode">
+                  <option>Online &amp; In-Person</option>
+                  <option>Online Only</option>
+                </select></div>
+            </div>
+            <div class="form-group"><label>Languages</label><input id="cp-lang" value="English, Hindi"></div>
+            <div class="form-group"><label>Expertise Tags</label><input id="cp-tags"
+                value="Python, LLMs, Deep Learning, RAG, MLOps, TensorFlow, PyTorch"></div>
+            <div class="form-group"><label>WhatsApp Number</label><input id="cp-whatsapp" value="+91 98765 43210"></div>
+          </div>
+          <div class="dash-card">
+            <h3>Profile Photo &amp; Banner</h3>
+            <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:center">
+              <div style="text-align:center">
+                <div
+                  style="width:88px;height:88px;border-radius:50%;background:#C5A059;display:flex;align-items:center;justify-content:center;font-size:1.8rem;font-weight:700;color:#fff;margin:0 auto 10px">
+                  RK</div><button class="btn btn-dark btn-sm"
+                  onclick="toast('📸 Photo upload in full implementation.')">Change Photo</button>
+              </div>
+              <div
+                style="flex:1;min-width:200px;height:90px;background:linear-gradient(135deg,#D1E5F7,#E8F2FA);border-radius:var(--r);display:flex;align-items:center;justify-content:center;cursor:pointer"
+                onclick="toast('🖼️ Banner upload in full implementation.')"><span
+                  style="color:#0A2551;font-size:.84rem">Click to change cover banner</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bookings -->
+        <div id="ds-bookings" class="dash-section">
+          <div class="dash-topbar">
+            <div>
+              <h2>All Bookings</h2>
+              <p>Manage your sessions and client requests.</p>
+            </div>
+            <div style="display:flex;gap:8px"><select class="sort-sel">
+                <option>All Status</option>
+                <option>Pending</option>
+                <option>Confirmed</option>
+                <option>Completed</option>
+                <option>Cancelled</option>
+              </select><button class="btn btn-dark btn-sm">Export CSV</button></div>
+          </div>
+          <div class="dash-card">
+            <div style="overflow-x:auto">
+              <table class="dt">
+                <thead>
+                  <tr>
+                    <th>Client</th>
+                    <th>Service</th>
+                    <th>Date</th>
+                    <th>Amount</th>
+                    <th>Mode</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Ananya Patel</strong></td>
+                    <td>AI Bootcamp (4wk)</td>
+                    <td>May 14, 2026</td>
+                    <td>₹18,000</td>
+                    <td>Online</td>
+                    <td><span class="pill p-warn">Pending</span></td>
+                    <td><button class="btn btn-ok btn-sm" onclick="toast('✅ Accepted!')">Accept</button></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Rahul Singh</strong></td>
+                    <td>1-on-1 Session</td>
+                    <td>May 12, 2026</td>
+                    <td>₹5,250</td>
+                    <td>Online</td>
+                    <td><span class="pill p-ok">Confirmed</span></td>
+                    <td><button class="btn btn-dark btn-sm"
+                        onclick="openWhatsAppClient('919876543210', 'Rahul Singh')">💬 WhatsApp</button></td>
+                  </tr>
+                  <tr>
+                    <td><strong>TechCorp India</strong></td>
+                    <td>Corporate 2-day</td>
+                    <td>May 16–17</td>
+                    <td>₹95,000</td>
+                    <td>In-Person</td>
+                    <td><span class="pill p-ok">Confirmed</span></td>
+                    <td><button class="btn btn-dark btn-sm">View</button></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Neha Gupta</strong></td>
+                    <td>Intro Session</td>
+                    <td>May 8, 2026</td>
+                    <td>₹2,500</td>
+                    <td>Online</td>
+                    <td><span class="pill p-info">Completed</span></td>
+                    <td><button class="btn btn-dark btn-sm">Invoice</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Earnings -->
+        <div id="ds-earnings" class="dash-section">
+          <div class="dash-topbar">
+            <div>
+              <h2>Earnings</h2>
+              <p>Track your revenue and payouts.</p>
+            </div><button class="btn btn-gold btn-sm"
+              onclick="toast('💰 Payout requested! Arrives in 48 hours.')">Request Payout</button>
+          </div>
+          <div class="kpi-row">
+            <div class="kpi">
+              <div class="ico">💰</div>
+              <div class="lbl">Total Earned (All Time)</div>
+              <div class="val">₹18.4L</div>
+              <div class="chg up">Since Mar 2022</div>
+            </div>
+            <div class="kpi">
+              <div class="ico">📅</div>
+              <div class="lbl">This Month (May)</div>
+              <div class="val">₹1,24,500</div>
+              <div class="chg up">↑ 18% vs Apr</div>
+            </div>
+            <div class="kpi">
+              <div class="ico">💸</div>
+              <div class="lbl">Pending Payout</div>
+              <div class="val">₹48,750</div>
+              <div class="chg up">Clears in 48h</div>
+            </div>
+            <div class="kpi">
+              <div class="ico">📊</div>
+              <div class="lbl">Commission (May)</div>
+              <div class="val">₹14,940</div>
+              <div class="chg">12% of ₹1,24,500</div>
+            </div>
+          </div>
+          <div class="dash-card">
+            <h3>Payout History</h3>
+            <div style="overflow-x:auto">
+              <table class="dt">
+                <thead>
+                  <tr>
+                    <th>Period</th>
+                    <th>Gross Revenue</th>
+                    <th>Commission (12%)</th>
+                    <th>Net Payout</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>May 1–11, 2026</td>
+                    <td>₹1,24,500</td>
+                    <td>₹14,940</td>
+                    <td><strong>₹1,09,560</strong></td>
+                    <td><span class="pill p-warn">Pending</span></td>
+                    <td>—</td>
+                  </tr>
+                  <tr>
+                    <td>April 2026</td>
+                    <td>₹1,05,500</td>
+                    <td>₹12,660</td>
+                    <td><strong>₹92,840</strong></td>
+                    <td><span class="pill p-ok">Paid</span></td>
+                    <td>May 3, 2026</td>
+                  </tr>
+                  <tr>
+                    <td>March 2026</td>
+                    <td>₹88,000</td>
+                    <td>₹10,560</td>
+                    <td><strong>₹77,440</strong></td>
+                    <td><span class="pill p-ok">Paid</span></td>
+                    <td>Apr 3, 2026</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Availability -->
+        <div id="ds-availability" class="dash-section">
+          <div class="dash-topbar">
+            <div>
+              <h2>Availability Calendar</h2>
+              <p>Set your available slots for clients to book.</p>
+            </div><button class="btn btn-gold btn-sm" onclick="toast('🗓️ Availability saved!')">Save Changes</button>
+          </div>
+          <div class="dash-card">
+            <h3>Weekly Availability Template</h3>
+            <div
+              style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px;margin-top:12px">
+              <div style="border:1px solid var(--bd);border-radius:var(--r);padding:14px;text-align:center">
+                <div style="font-weight:600;margin-bottom:8px">Monday</div><label class="chk"
+                  style="justify-content:center"><input type="checkbox" checked> Active</label>
+                <div style="margin-top:8px;font-size:.78rem;color:var(--tm)">9AM–6PM</div>
+              </div>
+              <div style="border:1px solid var(--bd);border-radius:var(--r);padding:14px;text-align:center">
+                <div style="font-weight:600;margin-bottom:8px">Tuesday</div><label class="chk"
+                  style="justify-content:center"><input type="checkbox"> Active</label>
+                <div style="margin-top:8px;font-size:.78rem;color:var(--tm)">Not set</div>
+              </div>
+              <div style="border:1px solid var(--bd);border-radius:var(--r);padding:14px;text-align:center">
+                <div style="font-weight:600;margin-bottom:8px">Wednesday</div><label class="chk"
+                  style="justify-content:center"><input type="checkbox" checked> Active</label>
+                <div style="margin-top:8px;font-size:.78rem;color:var(--tm)">9AM–6PM</div>
+              </div>
+              <div style="border:1px solid var(--bd);border-radius:var(--r);padding:14px;text-align:center">
+                <div style="font-weight:600;margin-bottom:8px">Thursday</div><label class="chk"
+                  style="justify-content:center"><input type="checkbox" checked> Active</label>
+                <div style="margin-top:8px;font-size:.78rem;color:var(--tm)">2PM–8PM</div>
+              </div>
+              <div style="border:1px solid var(--bd);border-radius:var(--r);padding:14px;text-align:center">
+                <div style="font-weight:600;margin-bottom:8px">Friday</div><label class="chk"
+                  style="justify-content:center"><input type="checkbox" checked> Active</label>
+                <div style="margin-top:8px;font-size:.78rem;color:var(--tm)">9AM–6PM</div>
+              </div>
+              <div style="border:1px solid var(--bd);border-radius:var(--r);padding:14px;text-align:center">
+                <div style="font-weight:600;margin-bottom:8px">Saturday</div><label class="chk"
+                  style="justify-content:center"><input type="checkbox" checked> Active</label>
+                <div style="margin-top:8px;font-size:.78rem;color:var(--tm)">10AM–4PM</div>
+              </div>
+              <div style="border:1px solid var(--bd);border-radius:var(--r);padding:14px;text-align:center">
+                <div style="font-weight:600;margin-bottom:8px">Sunday</div><label class="chk"
+                  style="justify-content:center"><input type="checkbox"> Active</label>
+                <div style="margin-top:8px;font-size:.78rem;color:var(--tm)">Off</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Settings -->
+        <div id="ds-settings" class="dash-section">
+          <div class="dash-topbar">
+            <div>
+              <h2>Account Settings</h2>
+              <p>Manage preferences, security, and payments.</p>
+            </div>
+          </div>
+          <div class="dash-card" style="margin-bottom:18px">
+            <h3>Security</h3>
+            <div class="grid2">
+              <div class="form-group"><label>Current Password</label><input type="password" placeholder="••••••••">
+              </div>
+              <div class="form-group"><label>New Password</label><input type="password" placeholder="New password">
+              </div>
+            </div><button class="btn btn-gold btn-sm" onclick="toast('🔒 Security updated!')">Update Security</button>
+          </div>
+          <div class="dash-card" style="margin-bottom:18px">
+            <h3>Payment Details</h3>
+            <div class="grid2">
+              <div class="form-group"><label>Bank Account</label><input placeholder="XXXX XXXX XXXX 1234"></div>
+              <div class="form-group"><label>IFSC Code</label><input placeholder="SBIN0000123"></div>
+            </div>
+            <div class="form-group"><label>UPI ID</label><input placeholder="rajesh@paytm"></div><button
+              class="btn btn-gold btn-sm" onclick="toast('💳 Payment details saved!')">Save</button>
+          </div>
+          <div class="dash-card">
+            <h3>Notification Preferences</h3>
+            <div style="display:flex;flex-direction:column;gap:12px">
+              <div style="display:flex;justify-content:space-between;align-items:center;font-size:.88rem"><span
+                  style="color:var(--ts)">New booking requests</span><label class="chk"><input type="checkbox" checked>
+                  Email &amp; SMS</label></div>
+              <div style="display:flex;justify-content:space-between;align-items:center;font-size:.88rem"><span
+                  style="color:var(--ts)">Session reminders</span><label class="chk"><input type="checkbox" checked>
+                  Email &amp; SMS</label></div>
+              <div style="display:flex;justify-content:space-between;align-items:center;font-size:.88rem"><span
+                  style="color:var(--ts)">New reviews</span><label class="chk"><input type="checkbox" checked> Email
+                  only</label></div>
+              <div style="display:flex;justify-content:space-between;align-items:center;font-size:.88rem"><span
+                  style="color:var(--ts)">Payout processed</span><label class="chk"><input type="checkbox" checked>
+                  Email &amp; SMS</label></div>
+            </div><button class="btn btn-gold btn-sm" style="margin-top:16px"
+              onclick="toast('🔔 Preferences saved!')">Save Preferences</button>
+          </div>
+        </div>
+
+        <!-- Placeholders -->
+        <div id="ds-messages" class="dash-section">
+          <div class="dash-topbar">
+            <div>
+              <h2>WhatsApp Contact</h2>
+              <p>Clients message you directly on WhatsApp — no in-app chat needed.</p>
+            </div>
+          </div>
+          <div class="dash-card">
+            <div
+              style="background:linear-gradient(135deg,rgba(37,211,102,.12),rgba(18,140,126,.12));border:1px solid rgba(37,211,102,.3);border-radius:var(--r);padding:20px;display:flex;align-items:center;gap:16px;margin-bottom:16px">
+              <div style="font-size:2.4rem">💬</div>
+              <div style="flex:1">
+                <div style="font-weight:700;font-size:1rem;margin-bottom:4px;color:#25d366">WhatsApp Direct Messaging
+                </div>
+                <div style="font-size:.84rem;color:var(--ts)" id="dash-wa-display">No WhatsApp number set — add it in My
+                  Profile</div>
+              </div>
+              <button class="btn btn-sm"
+                style="background:linear-gradient(135deg,#25d366,#128c7e);border:none;color:#fff;padding:10px 18px;border-radius:var(--r);font-weight:600;cursor:pointer"
+                onclick="switchDashSection(null,'profile')">Set Number →</button>
+            </div>
+            <p style="color:var(--tm);font-size:.88rem;margin-bottom:14px">When clients click the <strong
+                style="color:#25d366">💬 Message on WhatsApp</strong> button on your profile, they are redirected
+              directly to your WhatsApp. No platform messaging required.</p>
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <div
+                style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--fog);border-radius:var(--r)">
+                <div style="font-size:1.2rem">✅</div>
+                <div style="font-size:.84rem;color:var(--ts)">Client clicks <strong>Message on WhatsApp</strong> on your
+                  profile page</div>
+              </div>
+              <div
+                style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--fog);border-radius:var(--r)">
+                <div style="font-size:1.2rem">📲</div>
+                <div style="font-size:.84rem;color:var(--ts)">WhatsApp opens directly with a pre-filled introduction
+                  message</div>
+              </div>
+              <div
+                style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--fog);border-radius:var(--r)">
+                <div style="font-size:1.2rem">💬</div>
+                <div style="font-size:.84rem;color:var(--ts)">You chat, discuss requirements, and close the booking on
+                  WhatsApp</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="ds-reviews" class="dash-section">
+          <div class="dash-topbar">
+            <h2>My Reviews</h2>
+          </div>
+          <div class="dash-card">
+            <div class="rev-item">
+              <div class="rev-head">
+                <div class="rev-av" style="background:#2d5fa8">VR</div>
+                <div>
+                  <div class="rev-name">Vikram Rao</div>
+                  <div class="rev-stars">★★★★★</div>
+                </div><span class="rev-date">3 days ago</span>
+              </div>
+              <p class="rev-text">Absolutely phenomenal trainer.</p>
+            </div>
+          </div>
+        </div>
+        <div id="ds-packages" class="dash-section">
+          <div class="dash-topbar">
+            <h2>Packages</h2><button class="btn btn-gold btn-sm" onclick="toast('📦 Add package!')">+ Add
+              Package</button>
+          </div>
+          <div class="dash-card">
+            <div class="pkg-card">
+              <div>
+                <div class="pkg-name">Introductory Session</div>
+                <div class="pkg-desc">60 min · 1-on-1</div>
+              </div>
+              <div style="text-align:right">
+                <div class="pkg-price">₹2,500</div><button class="btn btn-dark btn-sm"
+                  style="margin-top:6px">Edit</button>
+              </div>
+            </div>
+            <div class="pkg-card popular" style="position:relative">
+              <div class="pkg-badge">Popular</div>
+              <div>
+                <div class="pkg-name">AI Bootcamp</div>
+                <div class="pkg-desc">4 weeks · 8 sessions</div>
+              </div>
+              <div style="text-align:right">
+                <div class="pkg-price">₹18,000</div><button class="btn btn-dark btn-sm"
+                  style="margin-top:6px">Edit</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="ds-portfolio" class="dash-section">
+          <div class="dash-topbar">
+            <h2>Portfolio</h2><button class="btn btn-gold btn-sm"
+              onclick="toast('📁 Upload feature in full implementation.')">+ Add Project</button>
+          </div>
+
+          <!-- ── Introduction Video ── -->
+          <div class="dash-card mb-16">
+            <h3 style="margin-bottom:8px">🎬 Introduction Video</h3>
+            <p style="font-size:.82rem;color:var(--tm);margin-bottom:14px">Paste your YouTube video link. Clients will
+              be redirected to YouTube when they click play on your profile. If left empty, this section will be hidden
+              on your public profile.</p>
+            <div class="form-group" style="margin-bottom:10px">
+              <input class="form-control" type="url" id="idx-intro-video-url"
+                placeholder="https://www.youtube.com/watch?v=..." oninput="toast('Saving...');autoSave()">
+            </div>
+          </div>
+
+          <!-- ── Resources & Media ── -->
+          <div class="dash-card mb-16">
+            <h3 style="margin-bottom:8px">📂 Resources & Media</h3>
+            <p style="font-size:.82rem;color:var(--tm);margin-bottom:14px">Upload PDFs, slides, or session recordings to
+              showcase your expertise.</p>
+            <button class="btn btn-dark btn-sm" onclick="toast('Upload feature in full implementation.')">📤 Upload
+              Resource</button>
+          </div>
+
+          <!-- ── Testimonial Videos ── -->
+          <div class="dash-card mb-16">
+            <h3 style="margin-bottom:8px">🗣️ Testimonial Videos</h3>
+            <p style="font-size:.82rem;color:var(--tm);margin-bottom:14px">Add YouTube links of client testimonial
+              videos. If none are added, this section will be hidden on your public profile.</p>
+            <button class="btn btn-gold btn-sm" onclick="toast('Add Video functionality in full implementation.')">+ Add
+              Video Link</button>
+          </div>
+
+          <!-- ── Companies Worked With ── -->
+          <div class="dash-card mb-16">
+            <h3 style="margin-bottom:8px">🏢 Companies Worked With</h3>
+            <p style="font-size:.82rem;color:var(--tm);margin-bottom:14px">Upload up to 5 company logos. They will
+              appear in a "Companies Worked With" section on your public profile. If none are uploaded, this section
+              will be hidden.</p>
+            <button class="btn btn-dark btn-sm" onclick="toast('Upload Logo functionality in full implementation.')">📤
+              Upload Logo</button>
+            <span style="font-size:.76rem;color:var(--tm);margin-left:10px">Max 5 logos</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+     USER DASHBOARD
+═══════════════════════════════════════════════════════ -->
+  <div id="p-user-dash" class="page" style="padding-top:var(--nav)">
+    <div class="dash-wrap">
+      <div class="dash-sidebar">
+        <div class="ds-sec">My Account</div>
+        <button class="ds-link on"><span class="ds-ico">📊</span>Dashboard</button>
+        <button class="ds-link"><span class="ds-ico">📅</span>My Bookings</button>
+        <button class="ds-link" onclick="renderFavGrid()"><span class="ds-ico">❤️</span>Saved Trainers</button>
+        <button class="ds-link"><span class="ds-ico">⭐</span>My Reviews</button>
+        <button class="ds-link"><span class="ds-ico">💳</span>Payments</button>
+        <div class="ds-sec">Account</div>
+        <button class="ds-link"><span class="ds-ico">⚙️</span>Settings</button>
+        <button class="ds-link" onclick="nav('home')"><span class="ds-ico">🏠</span>Back to Site</button>
+      </div>
+      <div class="dash-main">
+        <div class="dash-topbar">
+          <div>
+            <h2>Welcome back, Rahul 👋</h2>
+            <p>You have 2 upcoming sessions this week.</p>
+          </div><button class="btn btn-gold btn-sm" onclick="nav('browse')">Find More Trainers →</button>
+        </div>
+        <div class="kpi-row">
+          <div class="kpi">
+            <div class="ico">📅</div>
+            <div class="lbl">Upcoming Sessions</div>
+            <div class="val">2</div>
+            <div class="chg up">This week</div>
+          </div>
+          <div class="kpi">
+            <div class="ico">✅</div>
+            <div class="lbl">Completed Sessions</div>
+            <div class="val">14</div>
+            <div class="chg up">All-time</div>
+          </div>
+          <div class="kpi">
+            <div class="ico">❤️</div>
+            <div class="lbl">Saved Trainers</div>
+            <div class="val">7</div>
+            <div class="chg">Click to view</div>
+          </div>
+          <div class="kpi">
+            <div class="ico">💰</div>
+            <div class="lbl">Total Spent</div>
+            <div class="val">₹62,500</div>
+            <div class="chg">14 sessions</div>
+          </div>
+        </div>
+        <div class="dash-card" style="margin-bottom:20px">
+          <h3>Upcoming Sessions</h3>
+          <div style="display:flex;flex-direction:column;gap:14px;margin-top:8px">
+            <div
+              style="display:flex;align-items:center;gap:14px;padding:14px;background:var(--fog);border-radius:var(--r);border:1px solid rgba(201,168,76,.2)">
+              <div
+                style="width:48px;height:48px;border-radius:50%;background:#2d5fa8;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;flex-shrink:0">
+                RK</div>
+              <div style="flex:1">
+                <div style="font-weight:600">Rajesh Kumar — AI Bootcamp Session 3</div>
+                <div style="font-size:.82rem;color:var(--tm)">May 14, 2026 · 10:00 AM IST · Online (Zoom link sent)
+                </div>
+              </div>
+              <div style="display:flex;gap:8px"><button class="btn btn-dark btn-sm">Join</button><button
+                  class="btn btn-err btn-sm" onclick="toast('❌ Cancellation request sent.')">Cancel</button></div>
+            </div>
+            <div
+              style="display:flex;align-items:center;gap:14px;padding:14px;background:var(--fog);border-radius:var(--r)">
+              <div
+                style="width:48px;height:48px;border-radius:50%;background:#2d8a4e;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;flex-shrink:0">
+                PM</div>
+              <div style="flex:1">
+                <div style="font-weight:600">Priya Mehta — Fitness Assessment</div>
+                <div style="font-size:.82rem;color:var(--tm)">May 17, 2026 · 7:00 PM IST · Online</div>
+              </div>
+              <button class="btn btn-dark btn-sm">Details</button>
+            </div>
+          </div>
+        </div>
+        <div class="dash-card">
+          <h3>Saved Trainers</h3>
+          <div class="trainers-grid" id="fav-grid" style="margin-top:8px">
+            <p style="color:var(--tm);font-size:.88rem">Heart ♡ trainers while browsing to save them here.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+     ADMIN DASHBOARD
+═══════════════════════════════════════════════════════ -->
+  <div id="p-admin" class="page" style="padding-top:var(--nav)">
+    <div class="page-hero" style="padding-top:40px;padding-bottom:30px"><span class="section-label">Super Admin</span>
+      <h1>Admin Dashboard</h1>
+      <p>World Trainer Forum Platform Management · Full access</p>
+    </div>
+    <div style="padding:28px 5%;display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap">
+      <div style="width:200px;flex-shrink:0">
+        <button class="atab on" onclick="switchAdminTab(this,'at-overview')">📊 Overview</button>
+        <button class="atab" onclick="switchAdminTab(this,'at-trainers')">👥 Trainers</button>
+        <button class="atab" onclick="switchAdminTab(this,'at-clients')">🎓 Clients</button>
+        <button class="atab" onclick="switchAdminTab(this,'at-bookings')">📅 Bookings</button>
+        <button class="atab" onclick="switchAdminTab(this,'at-payments')">💰 Payments</button>
+        <button class="atab" onclick="switchAdminTab(this,'at-reviews')">⭐ Reviews</button>
+        <button class="atab" onclick="switchAdminTab(this,'at-categories')">🏷️ Categories</button>
+        <button class="atab" onclick="switchAdminTab(this,'at-analytics')">📈 Analytics</button>
+        <button class="atab" onclick="nav('home')">🏠 Back to Site</button>
+      </div>
+      <div style="flex:1;min-width:0">
+        <div id="at-overview" class="admin-section on">
+          <div class="kpi-row">
+            <div class="kpi">
+              <div class="ico">👤</div>
+              <div class="lbl">Total Trainers</div>
+              <div class="val">2,847</div>
+              <div class="chg up">↑ 124 this month</div>
+            </div>
+            <div class="kpi">
+              <div class="ico">🎓</div>
+              <div class="lbl">Total Clients</div>
+              <div class="val">41,280</div>
+              <div class="chg up">↑ 1,840 this month</div>
+            </div>
+            <div class="kpi">
+              <div class="ico">📅</div>
+              <div class="lbl">Total Bookings</div>
+              <div class="val">8,924</div>
+              <div class="chg up">↑ 18% vs last month</div>
+            </div>
+            <div class="kpi">
+              <div class="ico">💰</div>
+              <div class="lbl">Platform Revenue</div>
+              <div class="val">₹48.2L</div>
+              <div class="chg up">↑ 22% vs last month</div>
+            </div>
+          </div>
+          <div class="dash-card" style="margin-bottom:20px">
+            <h3>Pending Approvals (12)</h3>
+            <div style="overflow-x:auto">
+              <table class="dt">
+                <thead>
+                  <tr>
+                    <th>Trainer</th>
+                    <th>Category</th>
+                    <th>Applied</th>
+                    <th>Documents</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Sneha Iyer</strong></td>
+                    <td>Fitness &amp; Health</td>
+                    <td>May 9, 2026</td>
+                    <td><span class="pill p-ok">All submitted</span></td>
+                    <td style="display:flex;gap:5px;padding:12px 0"><button class="btn btn-ok btn-sm"
+                        onclick="toast('✅ Sneha Iyer approved!')">Approve</button><button class="btn btn-err btn-sm"
+                        onclick="toast('Rejected.')">Reject</button></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Arjun Mehta</strong></td>
+                    <td>Cybersecurity</td>
+                    <td>May 8, 2026</td>
+                    <td><span class="pill p-warn">Missing cert.</span></td>
+                    <td><button class="btn btn-dark btn-sm" onclick="toast('📧 Doc request sent.')">Request
+                        Docs</button></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Divya Shah</strong></td>
+                    <td>Language Training</td>
+                    <td>May 7, 2026</td>
+                    <td><span class="pill p-ok">All submitted</span></td>
+                    <td style="display:flex;gap:5px;padding:12px 0"><button class="btn btn-ok btn-sm"
+                        onclick="toast('✅ Divya Shah approved!')">Approve</button><button
+                        class="btn btn-err btn-sm">Reject</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="dash-card">
+            <h3>Platform Revenue (6 Months)</h3>
+            <div class="bar-chart" style="margin-top:12px">
+              <div class="bw">
+                <div class="bar" style="height:48%"></div>
+                <div class="bar-lbl">Dec</div>
+              </div>
+              <div class="bw">
+                <div class="bar" style="height:36%"></div>
+                <div class="bar-lbl">Jan</div>
+              </div>
+              <div class="bw">
+                <div class="bar" style="height:60%"></div>
+                <div class="bar-lbl">Feb</div>
+              </div>
+              <div class="bw">
+                <div class="bar" style="height:70%"></div>
+                <div class="bar-lbl">Mar</div>
+              </div>
+              <div class="bw">
+                <div class="bar" style="height:79%"></div>
+                <div class="bar-lbl">Apr</div>
+              </div>
+              <div class="bw">
+                <div class="bar hi" style="height:96%"></div>
+                <div class="bar-lbl">May</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="at-trainers" class="admin-section">
+          <div class="dash-card">
+            <div
+              style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+              <h3>All Trainers (2,847)</h3>
+              <div style="display:flex;gap:8px"><input type="text" placeholder="Search…"
+                  style="padding:8px 12px;border:1px solid var(--bd);border-radius:var(--r);font-size:.84rem;background:var(--fog);color:var(--tp);outline:none;width:160px"><select
+                  class="sort-sel">
+                  <option>All Status</option>
+                  <option>Active</option>
+                  <option>Pending</option>
+                  <option>Suspended</option>
+                </select><button class="btn btn-dark btn-sm">Export</button></div>
+            </div>
+            <div style="overflow-x:auto">
+              <table class="dt">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Rating</th>
+                    <th>Bookings</th>
+                    <th>Revenue</th>
+                    <th>Status</th>
+                    <th>Featured</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Rajesh Kumar</strong></td>
+                    <td>AI &amp; Technology</td>
+                    <td>⭐ 4.9</td>
+                    <td>1,240</td>
+                    <td>₹18.4L</td>
+                    <td><span class="pill p-ok">Active</span></td>
+                    <td><input type="checkbox" checked style="accent-color:var(--gold-dk)"></td>
+                    <td><button class="btn btn-dark btn-sm" style="font-size:.74rem">Manage</button></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Priya Mehta</strong></td>
+                    <td>Fitness &amp; Health</td>
+                    <td>⭐ 4.8</td>
+                    <td>890</td>
+                    <td>₹8.2L</td>
+                    <td><span class="pill p-ok">Active</span></td>
+                    <td><input type="checkbox" style="accent-color:var(--gold-dk)"></td>
+                    <td><button class="btn btn-dark btn-sm" style="font-size:.74rem">Manage</button></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Arun Kapoor</strong></td>
+                    <td>Business Coaching</td>
+                    <td>⭐ 4.9</td>
+                    <td>2,100</td>
+                    <td>₹32.1L</td>
+                    <td><span class="pill p-ok">Active</span></td>
+                    <td><input type="checkbox" checked style="accent-color:var(--gold-dk)"></td>
+                    <td><button class="btn btn-dark btn-sm" style="font-size:.74rem">Manage</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div id="at-clients" class="admin-section">
+          <div class="dash-card">
+            <h3>Client Management (41,280 users)</h3>
+            <p style="color:var(--tm);font-size:.88rem;margin-top:8px">Full client management — search, filter, view
+              history, manage accounts, handle disputes and send notifications.</p>
+          </div>
+        </div>
+        <div id="at-bookings" class="admin-section">
+          <div class="dash-card">
+            <h3>All Bookings (8,924)</h3>
+            <p style="color:var(--tm);font-size:.88rem;margin-top:8px">Complete booking management with filtering by
+              status, date, trainer, client, and category.</p>
+          </div>
+        </div>
+        <div id="at-payments" class="admin-section">
+          <div class="dash-card">
+            <h3>Payments &amp; Commission</h3>
+            <p style="color:var(--tm);font-size:.88rem;margin-top:8px">Full payment ledger, commission tracking, payout
+              management, Razorpay/Stripe integration, GST reports.</p>
+          </div>
+        </div>
+        <div id="at-reviews" class="admin-section">
+          <div class="dash-card">
+            <h3>Review Moderation</h3>
+            <p style="color:var(--tm);font-size:.88rem;margin-top:8px">Review queue with approve/reject/flag controls.
+              Spam detection with manual override.</p>
+          </div>
+        </div>
+        <div id="at-categories" class="admin-section">
+          <div class="dash-card">
+            <h3>Category Management</h3>
+            <div style="overflow-x:auto;margin-top:12px">
+              <table class="dt">
+                <thead>
+                  <tr>
+                    <th>Category</th>
+                    <th>Trainers</th>
+                    <th>Bookings</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Business Coaching</td>
+                    <td>245</td>
+                    <td>2,840</td>
+                    <td><span class="pill p-ok">Active</span></td>
+                    <td><button class="btn btn-dark btn-sm">Edit</button></td>
+                  </tr>
+                  <tr>
+                    <td>AI &amp; Technology</td>
+                    <td>189</td>
+                    <td>1,920</td>
+                    <td><span class="pill p-ok">Active</span></td>
+                    <td><button class="btn btn-dark btn-sm">Edit</button></td>
+                  </tr>
+                  <tr>
+                    <td>Fitness &amp; Health</td>
+                    <td>312</td>
+                    <td>3,200</td>
+                    <td><span class="pill p-ok">Active</span></td>
+                    <td><button class="btn btn-dark btn-sm">Edit</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div><button class="btn btn-gold btn-sm" style="margin-top:14px"
+              onclick="toast('🏷️ Add category panel.')">+ Add Category</button>
+          </div>
+        </div>
+        <div id="at-analytics" class="admin-section">
+          <div class="dash-card">
+            <h3>Analytics &amp; Reports</h3>
+            <div class="kpi-row" style="margin-top:12px">
+              <div class="kpi">
+                <div class="lbl">Daily Active Users</div>
+                <div class="val">4,820</div>
+                <div class="chg up">↑ 12%</div>
+              </div>
+              <div class="kpi">
+                <div class="lbl">Conversion Rate</div>
+                <div class="val">3.8%</div>
+                <div class="chg up">↑ 0.4 pts</div>
+              </div>
+              <div class="kpi">
+                <div class="lbl">Avg. Session Value</div>
+                <div class="val">₹8,240</div>
+                <div class="chg up">↑ 6%</div>
+              </div>
+              <div class="kpi">
+                <div class="lbl">Trainer Retention</div>
+                <div class="val">91%</div>
+                <div class="chg up">30-day active</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- Modals -->
+  <div id="trainer-modal"></div>
+  <div id="auth-modal"></div>
+
+
+
+  <script src="js/app.js"></script>
+  <script src="js/trainer-modal.js?v=4"></script>
+  <script src="js/auth-modal.js"></script>
+  <script src="js/theme.js"></script>
+  <script>applyTheme();</script>
+  <!-- page-nav not loaded on index — SPA nav() stays active here -->
+</body>
+
+</html>

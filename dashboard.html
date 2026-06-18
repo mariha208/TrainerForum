@@ -1,0 +1,1956 @@
+<!DOCTYPE html>
+<html lang="en" class="dark-mode">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description"
+    content="World Trainer Form Trainer Dashboard — Manage your profile, bookings, earnings and grow your training business.">
+  <title>Trainer Dashboard — World Trainer Form</title>
+  <link rel="stylesheet" href="css/dashboard.css">
+</head>
+
+<body>
+
+  <!-- ═══════════════════════════════════════════════
+       TOP NAVIGATION BAR
+  ═══════════════════════════════════════════════ -->
+  <nav class="db-topnav">
+    <div class="logo-area">
+      <button class="mobile-menu-btn" onclick="toggleSidebar()" id="mob-menu-btn">☰</button>
+      <img src="img/logo.svg" alt="World Trainer Form Logo" style="height:34px; margin-right:8px;">
+      <div class="logo-txt">World Trainer <span>Form</span></div>
+    </div>
+    <div class="nav-center">
+      <div class="nav-search">
+        <span class="search-ico">🔍</span>
+        <input type="text" placeholder="Search bookings, clients, messages…" id="global-search">
+      </div>
+      <div class="auto-save-pulse" id="autosave-indicator" style="opacity:0">Saved</div>
+    </div>
+    <div class="nav-r">
+      <div class="nav-icon-btn" onclick="toggleNotif()" id="notif-trigger" title="Notifications">
+        🔔<span class="badge" id="notif-count">4</span>
+      </div>
+      <a href="index.html" class="nav-icon-btn" title="Back to site">🌐</a>
+      <div class="nav-profile-btn" onclick="showSection('settings')">
+        <div class="nav-av" id="nav-av"></div>
+        <div>
+          <div class="nav-name" id="nav-name"></div>
+          <div class="nav-role">Pro Trainer</div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Notifications Dropdown -->
+  <div class="notif-dropdown" id="notif-dropdown">
+    <div class="notif-header">
+      <h4>🔔 Notifications</h4>
+      <a href="#" onclick="markAllRead()">Mark all read</a>
+    </div>
+    <div class="notif-list" id="notif-list"></div>
+    <div class="notif-footer">
+      <button class="btn btn-ghost btn-sm btn-full">View All Notifications</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       SIDEBAR
+  ═══════════════════════════════════════════════ -->
+  <aside class="db-sidebar" id="db-sidebar">
+    <div class="sidebar-profile">
+      <div class="sidebar-profile-card">
+        <div class="sidebar-avatar" id="sidebar-avatar"></div>
+        <div class="sidebar-profile-info">
+          <div class="name" id="sidebar-name"></div>
+          <div class="handle" id="sidebar-handle"></div>
+          <div class="plan"><span class="dot"></span> Pro Plan · Active</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="completion-bar-wrap">
+      <div class="cb-label">
+        <span>Profile Completion</span>
+        <span class="cb-pct" id="cp-pct">72%</span>
+      </div>
+      <div class="completion-bar">
+        <div class="cb-fill" id="cp-fill" style="width:72%"></div>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Management</div>
+      <a class="sidebar-nav-item active" href="javascript:void(0)" data-section="profile"
+        onclick="showSection('profile')">
+        <span class="nav-ico">👤</span><span class="nav-label">Edit Profile</span>
+      </a>
+      <a class="sidebar-nav-item" href="javascript:void(0)" data-section="settings" onclick="showSection('settings')">
+        <span class="nav-ico">⚙️</span><span class="nav-label">Account Settings</span>
+      </a>
+      <a class="sidebar-nav-item" href="javascript:void(0)" onclick="openPublicProfile()">
+        <span class="nav-ico">🌐</span><span class="nav-label">View Public Profile</span>
+      </a>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Business</div>
+      <a class="sidebar-nav-item" href="javascript:void(0)" data-section="services" onclick="showSection('services')">
+        <span class="nav-ico">📦</span><span class="nav-label">Services & Packages</span>
+      </a>
+      <a class="sidebar-nav-item" href="javascript:void(0)" data-section="availability"
+        onclick="showSection('availability')">
+        <span class="nav-ico">🗓️</span><span class="nav-label">Availability</span>
+      </a>
+      <a class="sidebar-nav-item" href="javascript:void(0)" data-section="portfolio" onclick="showSection('portfolio')">
+        <span class="nav-ico">🖼️</span><span class="nav-label">Portfolio</span>
+      </a>
+    </div>
+
+    <div class="sidebar-bottom">
+      <div class="sidebar-nav-item" style="color:var(--red)" onclick="confirmLogout()">
+        <span class="nav-ico">🚪</span><span class="nav-label">Logout</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ═══════════════════════════════════════════════
+       MAIN CONTENT
+  ═══════════════════════════════════════════════ -->
+  <main class="db-main">
+
+    <!-- ════════════════════════════════
+         1. OVERVIEW / HOME
+    ════════════════════════════════ -->
+    <section class="db-section" id="sec-overview">
+      <div class="db-page-header">
+        <div class="phead-left">
+          <h1>Good evening, <span class="grad-text" id="greeting-name"></span> 👋</h1>
+          <p>Here's what's happening with your training business today.</p>
+        </div>
+        <div class="phead-right">
+          <button class="btn btn-dark btn-sm" onclick="showSection('profile')">✏️ Edit Profile</button>
+          <button class="btn btn-gold btn-sm" onclick="openPublicProfile()">🌐 View Public Profile</button>
+        </div>
+      </div>
+
+      <!-- KPI Row -->
+      <div class="grid-4 mb-24">
+        <div class="kpi-card">
+          <div class="kpi-ico gold">📅</div>
+          <div class="kpi-info">
+            <div class="label">Total Bookings</div>
+            <div class="value">1,248</div>
+            <div class="sub"><span class="up">↑ 18%</span> vs last month</div>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-ico green">💰</div>
+          <div class="kpi-info">
+            <div class="label">Total Earnings</div>
+            <div class="value">₹18.4L</div>
+            <div class="sub"><span class="up">↑ 22%</span> this year</div>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-ico blue">👁️</div>
+          <div class="kpi-info">
+            <div class="label">Profile Views</div>
+            <div class="value">9,240</div>
+            <div class="sub"><span class="up">↑ 34%</span> this month</div>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-ico" style="background:rgba(142,68,173,.15)">⭐</div>
+          <div class="kpi-info">
+            <div class="label">Avg Rating</div>
+            <div class="value">4.9</div>
+            <div class="sub">From <span style="color:var(--gold)">87 reviews</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2 mb-24" style="align-items:start">
+        <!-- Pending Bookings -->
+        <div class="db-card">
+          <div class="card-title">
+            <div class="ct-ico">📅</div>Pending Booking Requests
+            <div class="ct-action"><span class="pill pill-orange">3 new</span></div>
+          </div>
+          <div id="pending-bookings-list"></div>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="db-card">
+          <div class="card-title">
+            <div class="ct-ico">📊</div>This Month at a Glance
+          </div>
+          <div class="bar-chart-h" id="month-chart"></div>
+        </div>
+      </div>
+
+      <div class="grid-2 mb-24" style="align-items:start">
+        <!-- Recent Activity -->
+        <div class="db-card">
+          <div class="card-title">
+            <div class="ct-ico">🔔</div>Recent Activity
+          </div>
+          <div id="activity-feed"></div>
+        </div>
+
+        <!-- AI Profile Score -->
+        <div class="ai-panel">
+          <div class="ai-header">
+            <div class="ai-icon">🤖</div>
+            <div>
+              <h3>AI Profile Health Score</h3>
+              <p>Powered by World Trainer Form AI</p>
+            </div>
+            <div class="ai-score-ring" style="margin-left:auto">
+              <svg width="80" height="80" viewBox="0 0 80 80">
+                <circle cx="40" cy="40" r="34" fill="none" stroke="var(--border)" stroke-width="8" />
+                <circle cx="40" cy="40" r="34" fill="none" stroke="var(--gold)" stroke-width="8"
+                  stroke-dasharray="213.6" stroke-dashoffset="59.8" stroke-linecap="round" />
+              </svg>
+              <div class="score-txt">72<span>/ 100</span></div>
+            </div>
+          </div>
+          <div id="ai-suggestions-mini"></div>
+          <button class="btn btn-gold btn-sm w-100 mt-12" onclick="showSection('ai')">View Full AI Analysis →</button>
+        </div>
+      </div>
+
+      <!-- Top Reviews Preview -->
+      <div class="db-card">
+        <div class="card-title">
+          <div class="ct-ico">⭐</div>Featured Reviews
+          <div class="ct-action"><button class="btn btn-dark btn-sm" onclick="showSection('reviews')">Manage
+              All</button></div>
+        </div>
+        <div class="grid-3" id="featured-reviews-mini"></div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════
+         2. EDIT PROFILE
+    ════════════════════════════════ -->
+    <section class="db-section active" id="sec-profile">
+      <div class="db-page-header">
+        <div class="phead-left">
+          <h1>Edit Profile</h1>
+          <p>Your changes auto-save and instantly update your public profile across the platform</p>
+        </div>
+        <div class="phead-right" style="display:flex;gap:8px;align-items:center;">
+          <div class="auto-save-pulse" id="profile-save-status" style="opacity:0;margin-right:10px;">✓ All changes saved
+          </div>
+          <button class="btn btn-gold btn-sm" onclick="openModal('certificate')">+ Add Certificate</button>
+          <button class="btn btn-gold btn-sm" onclick="openModal('event')">+ Add Event</button>
+          <button class="btn btn-outline-gold btn-sm" onclick="previewProfile()">👁️ Preview</button>
+          <button class="btn btn-gold btn-sm" id="save-profile-btn" style="font-weight:700">💾 Save Profile</button>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 280px;gap:24px;align-items:start">
+        <div>
+          <!-- Photos & Banner Media Section -->
+          <div class="db-card mb-16">
+            <div class="card-title">
+              <div class="ct-ico">📸</div>Profile Photo & Banner
+            </div>
+
+            <div class="form-section-title">Cover Banner</div>
+            <!-- Local File Upload For Banner Image Layout (No DB required) -->
+            <input type="file" accept="image/*" id="upload-banner-file" style="display:none" onchange="autoSave()">
+            <div class="banner-preview" id="profile-banner"
+              style="position:relative;height:140px;background:linear-gradient(135deg,#2d5fa8,#1a3d8a);border-radius:var(--r);overflow:hidden;margin-bottom:10px">
+              <div class="ban-overlay" id="banner-overlay"
+                style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.3);color:white;font-size:1rem">
+                📁 Click 'Change Banner' to choose local file
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;margin-bottom:16px">
+              <button class="btn btn-dark btn-sm" onclick="document.getElementById('upload-banner-file').click()">🖼️
+                Click to change banner</button>
+            </div>
+
+            <div class="form-section-title">Profile Photo (Database URL Path Mapping)</div>
+            <!-- Hidden file input for mock-remote upload pipeline -->
+            <input type="file" accept="image/jpeg,image/png,image/webp,image/gif" id="upload-photo-file"
+              style="display:none">
+            <div style="display:flex;gap:16px;align-items:flex-start">
+              <div style="position:relative;flex-shrink:0">
+                <div class="photo-preview" id="photo-preview"
+                  style="width:100px;height:100px;border-radius:50%;background:#2d5fa8;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:2rem;color:#fff;background-size:cover;background-position:center;">
+                  <span id="photo-initials"></span>
+                </div>
+                <button onclick="document.getElementById('upload-photo-file').click()" title="Upload photo"
+                  style="position:absolute;bottom:2px;right:2px;width:28px;height:28px;border-radius:50%;background:var(--gold);border:2px solid var(--bg2);color:#000;font-size:.85rem;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1">📷</button>
+              </div>
+              <div style="flex-grow:1">
+                <label style="font-weight:600;font-size:.88rem;margin-bottom:6px;display:block;">Remote Profile Image
+                  Database URL</label>
+                <input class="form-control" type="text" id="p-photo-url"
+                  placeholder="e.g. https://cdn.example.com/user.jpg or /uploads/profiles/user.jpg"
+                  style="margin-bottom:8px;">
+                <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+                  <button class="btn btn-dark btn-sm" onclick="document.getElementById('upload-photo-file').click()">📤
+                    Upload Photo (Simulate S3)</button>
+                  <span id="photo-upload-status" style="font-size:.76rem;color:var(--tm)">No file selected</span>
+                </div>
+                <div style="font-size:.76rem;color:var(--tm);margin-top:6px">Uploading locally simulates a network save
+                  to S3/Cloudinary and writes the server URL into the field above automatically.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Basic Information -->
+          <div class="db-card mb-16">
+            <div class="card-title">
+              <div class="ct-ico">📝</div>Basic Information
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Full Name <span>*</span></label>
+                <input class="form-control" id="p-name" type="text" value="">
+              </div>
+              <div class="form-group">
+                <label>Tagline <span class="hint">— shown below your name</span></label>
+                <input class="form-control" id="p-tagline" type="text" value="" maxlength="100">
+                <div class="form-footer">
+                  <div></div>
+                  <div class="char-count" id="tagline-count">0/100</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Category</label>
+                <select class="form-control" id="p-category">
+                  <option>AI &amp; Technology</option>
+                  <option>Business Coaching</option>
+                  <option>Fitness &amp; Health</option>
+                  <option>Cybersecurity</option>
+                  <option>Soft Skills</option>
+                  <option>Language Training</option>
+                  <option>Music &amp; Dance</option>
+                  <option>Career Mentoring</option>
+                  <option>Sports Coaching</option>
+                  <option>Finance</option>
+                  <option>Personal Dev.</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Specialization</label>
+                <input class="form-control" id="p-spec" type="text" value="">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Experience (years)</label>
+                <input class="form-control" id="p-exp" type="number" value="" min="0">
+              </div>
+              <div class="form-group">
+                <label>Location</label>
+                <input class="form-control" id="p-location" type="text" value="">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Delivery Mode</label>
+                <select class="form-control" id="p-mode">
+                  <option>Online &amp; In-Person</option>
+                  <option>Online Only</option>
+                  <option>In-Person Only</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Session Rate (₹/hour)</label>
+                <div class="input-icon-wrap">
+                  <span class="i-ico">₹</span>
+                  <input class="form-control" id="p-rate" type="number" value="">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bio -->
+          <div class="db-card mb-16">
+            <div class="card-title">
+              <div class="ct-ico">📖</div>Professional Bio
+            </div>
+            <div class="form-group">
+              <label>About You</label>
+              <textarea class="form-control" id="p-bio" rows="4" maxlength="5000"></textarea>
+              <div class="form-footer">
+                <div style="font-size:.72rem;color:var(--tm)">Tip: A compelling bio increases profile views by 3×</div>
+                <div class="char-count" id="bio-count">0/5000</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Connect / Social Links -->
+          <div class="db-card mb-16">
+            <div class="card-title">
+              <div class="ct-ico" style="background:rgba(42,108,176,.15)">🌐</div>Connect & Social Links
+              <div class="ct-action"><span class="pill pill-blue" style="font-size:.68rem">Public Profile Links</span>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>WhatsApp Number <span class="hint">— clients will message you here</span></label>
+                <div class="input-icon-wrap">
+                  <span class="i-ico">📱</span>
+                  <input class="form-control" id="p-whatsapp" type="tel" placeholder="+91 98765 43210"
+                    style="padding-left:2.4rem">
+                </div>
+              </div>
+              <div class="form-group">
+                <label>LinkedIn</label>
+                <div class="input-icon-wrap">
+                  <span class="i-ico" style="font-weight: bold;">in</span>
+                  <input class="form-control" id="p-linkedin" type="url" placeholder="https://linkedin.com/in/..."
+                    style="padding-left:2.4rem">
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Instagram</label>
+                <div class="input-icon-wrap">
+                  <span class="i-ico">📷</span>
+                  <input class="form-control" id="p-instagram" type="url" placeholder="https://instagram.com/..."
+                    style="padding-left:2.4rem">
+                </div>
+              </div>
+              <div class="form-group">
+                <label>YouTube</label>
+                <div class="input-icon-wrap">
+                  <span class="i-ico" style="color: red;">▶</span>
+                  <input class="form-control" id="p-youtube" type="url" placeholder="https://youtube.com/c/..."
+                    style="padding-left:2.4rem">
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Twitter / X</label>
+                <div class="input-icon-wrap">
+                  <span class="i-ico">𝕏</span>
+                  <input class="form-control" id="p-twitter" type="url" placeholder="https://twitter.com/..."
+                    style="padding-left:2.4rem">
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Facebook</label>
+                <div class="input-icon-wrap">
+                  <span class="i-ico" style="font-weight: bold;">f</span>
+                  <input class="form-control" id="p-facebook" type="url" placeholder="https://facebook.com/..."
+                    style="padding-left:2.4rem">
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Website</label>
+                <div class="input-icon-wrap">
+                  <span class="i-ico">🌐</span>
+                  <input class="form-control" id="p-website" type="url" placeholder="https://yourwebsite.com"
+                    style="padding-left:2.4rem">
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Portfolio Link (PDF)</label>
+                <div class="input-icon-wrap">
+                  <span class="i-ico">🗂</span>
+                  <input class="form-control" id="p-portfolio" type="file" accept="application/pdf"
+                    style="padding-left:2.4rem; padding-top:6px;">
+                  <input type="hidden" id="p-portfolio-base64">
+                </div>
+                <div id="p-portfolio-status" style="font-size:0.8rem; color:var(--gold); margin-top:4px;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Expertise Tags -->
+          <div class="db-card mb-16">
+            <div class="card-title">
+              <div class="ct-ico">🏷️</div>Expertise Tags (for SEO Layout Structure)
+            </div>
+            <div class="form-group">
+              <label>Tags (comma-separated list)</label>
+              <input class="form-control" id="p-tags" type="text" value="">
+              <div style="font-size:.72rem;color:var(--tm);margin-top:6px">Add keywords separated by commas (helps with
+                search visibility functionality)</div>
+            </div>
+          </div>
+
+          <!-- Certifications By — Unified Panel -->
+          <div class="db-card mb-16" id="certifications-by-card">
+            <div class="card-title">
+              <div class="ct-ico">🏅</div>Certifications By
+              <div class="ct-action">
+                <button class="btn btn-gold btn-sm" id="add-cert-row-btn" onclick="addCertificationRow()">+ Add
+                  Row</button>
+              </div>
+            </div>
+            <div class="db-table-wrap" style="overflow-x:auto;">
+              <table class="db-table" id="certifications-by-table" style="width:100%;border-collapse:collapse;">
+                <thead>
+                  <tr>
+                    <th style="width:40%">NAME</th>
+                    <th style="width:35%">GIVEN BY</th>
+                    <th style="width:15%">YEAR</th>
+                    <th style="width:10%;text-align:center">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="certifications-by-body">
+                  <!-- Rows injected by JS -->
+                </tbody>
+              </table>
+              <div id="certifications-by-empty"
+                style="display:none;padding:20px;text-align:center;color:var(--tm);font-size:.85rem;">
+                No certifications added yet. Click <strong>+ Add Row</strong> to begin.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sticky Layout Right Preview Panel -->
+        <div class="profile-preview-panel" id="profile-preview-panel" style="position:sticky;top:88px">
+          <div class="pp-banner" id="profile-banner-preview"
+            style="background:linear-gradient(135deg,#2d5fa8,#1a3d8a);height:100px;border-radius:8px 8px 0 0"></div>
+          <div class="pp-body"
+            style="padding:16px;background:var(--bg2);border-radius:0 0 8px 8px;border:1px solid var(--border)">
+            <div class="pp-avatar" id="pp-avatar"
+              style="width:60px;height:60px;background:#2d5fa8;color:#fff;font-weight:700;font-size:1.5rem;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-top:-30px;margin-bottom:12px;border:2px solid var(--bg2);background-size:cover;background-position:center;">
+            </div>
+            <div class="verified-badge mb-12" style="font-size:.72rem;color:var(--green);margin-bottom:8px">✓ Verified
+              Expert</div>
+            <div class="pp-name" id="pp-name" style="font-size:1.1rem;font-weight:700;margin-bottom:4px"></div>
+            <div class="pp-tagline" id="pp-tagline" style="font-size:.82rem;color:var(--tm);margin-bottom:8px"></div>
+            <div class="pp-chips" id="pp-chips" style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:12px"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════
+         3. ANALYTICS
+    ════════════════════════════════ -->
+    <section class="db-section" id="sec-analytics">
+      <div class="db-page-header">
+        <div class="phead-left">
+          <h1>Analytics</h1>
+          <p>Track your growth, views, and performance metrics</p>
+        </div>
+        <div class="phead-right">
+          <select class="btn btn-dark btn-sm" id="analytics-range">
+            <option value="7">Last 7 days</option>
+            <option value="30" selected>Last 30 days</option>
+            <option value="90">Last 3 months</option>
+            <option value="365">Last year</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid-4 mb-24">
+        <div class="kpi-card gold">
+          <div class="kpi-ico gold">👁️</div>
+          <div class="kpi-info">
+            <div class="label">Profile Views</div>
+            <div class="value">9,240</div>
+            <div class="sub"><span class="up">↑ 34%</span></div>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-ico green">🔄</div>
+          <div class="kpi-info">
+            <div class="label">Conversion Rate</div>
+            <div class="value">4.2%</div>
+            <div class="sub"><span class="up">↑ 0.8 pts</span></div>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-ico blue">⏱️</div>
+          <div class="kpi-info">
+            <div class="label">Avg Session Length</div>
+            <div class="value">82 min</div>
+            <div class="sub">+7 min vs last period</div>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-ico" style="background:rgba(142,68,173,.15)">🔁</div>
+          <div class="kpi-info">
+            <div class="label">Repeat Clients</div>
+            <div class="value">78%</div>
+            <div class="sub"><span class="up">↑ 5%</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2 mb-24">
+        <div class="db-card">
+          <div class="card-title">
+            <div class="ct-ico">📈</div>Profile Views (Last 30 Days)
+          </div>
+          <div style="position:relative;height:180px;display:flex;align-items:flex-end;gap:5px;padding:8px 0"
+            id="views-bar-chart"></div>
+          <div style="display:flex;justify-content:space-between;font-size:.72rem;color:var(--tm);margin-top:6px"
+            id="views-bar-labels"></div>
+        </div>
+
+        <div class="db-card">
+          <div class="card-title">
+            <div class="ct-ico">📅</div>Bookings Trend
+          </div>
+          <div style="position:relative;height:180px;display:flex;align-items:flex-end;gap:5px;padding:8px 0"
+            id="bookings-bar-chart"></div>
+          <div style="display:flex;justify-content:space-between;font-size:.72rem;color:var(--tm);margin-top:6px"
+            id="bookings-bar-labels"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════
+         4. BOOKINGS VIEWPANELS
+    ════════════════════════════════ -->
+    <section class="db-section" id="sec-bookings">
+      <div class="db-page-header">
+        <div class="phead-left">
+          <h1>Bookings Routing Management</h1>
+          <p>Manage incoming assignment confirmation schedules safely</p>
+        </div>
+        <div class="phead-right">
+          <button class="btn btn-gold btn-sm" onclick="openModal('new-session')">+ New Session</button>
+        </div>
+      </div>
+      <div class="grid-2" id="bookings-grid"></div>
+    </section>
+
+    <!-- ════════════════════════════════
+         5. EARNINGS & PAYOUTS
+    ════════════════════════════════ -->
+    <section class="db-section" id="sec-earnings">
+      <div class="db-page-header">
+        <div class="phead-left">
+          <h1>Earnings & Payouts</h1>
+          <p>Track your income, commissions, and payout history</p>
+        </div>
+        <div class="phead-right">
+          <button class="btn btn-dark btn-sm">📥 Export CSV</button>
+          <button class="btn btn-gold btn-sm" onclick="openModal('payout')">💸 Request Payout</button>
+        </div>
+      </div>
+
+      <div class="grid-4 mb-24">
+        <div class="kpi-card green">
+          <div class="kpi-ico green">💰</div>
+          <div class="kpi-info">
+            <div class="label">Total Earned</div>
+            <div class="value">₹18.4L</div>
+            <div class="sub"><span class="up">↑ 22%</span> YTD</div>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-ico gold">📅</div>
+          <div class="kpi-info">
+            <div class="label">This Month</div>
+            <div class="value">₹1.84L</div>
+            <div class="sub"><span class="up">↑ 18%</span></div>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-ico blue">⏳</div>
+          <div class="kpi-info">
+            <div class="label">Pending Payout</div>
+            <div class="value">₹32,500</div>
+            <div class="sub">Processing next Friday</div>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-ico" style="background:rgba(46,204,113,.15)">💳</div>
+          <div class="kpi-info">
+            <div class="label">Wallet Balance</div>
+            <div class="value">₹45,800</div>
+            <div class="sub">Available to withdraw</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2 mb-24" style="align-items:start">
+        <div class="db-card">
+          <div class="card-title">
+            <div class="ct-ico">📈</div>Earnings Distribution
+          </div>
+          <div style="position:relative;height:180px;display:flex;align-items:flex-end;gap:12px;padding:8px 0"
+            id="earnings-bar-chart"></div>
+          <div style="display:flex;justify-content:space-between;font-size:.72rem;color:var(--tm);margin-top:6px"
+            id="earnings-bar-labels"></div>
+        </div>
+
+        <div class="db-card">
+          <div class="card-title">
+            <div class="ct-ico">🏦</div>Payout Configuration
+          </div>
+          <div class="form-group mb-12">
+            <label>Bank Name</label>
+            <input type="text" class="form-control" value="HDFC Bank Ltd" readonly>
+          </div>
+          <div class="form-group mb-12">
+            <label>Account Number</label>
+            <input type="text" class="form-control" value="•••• •••• 5019" readonly>
+          </div>
+          <div class="form-group">
+            <label>UPI ID</label>
+            <input type="text" class="form-control" id="p-upi" value="trainer@okhdfc">
+          </div>
+        </div>
+      </div>
+
+      <div class="db-card">
+        <div class="card-title">
+          <div class="ct-ico">📝</div>Recent Payout History
+        </div>
+        <div class="db-table-wrap">
+          <table class="db-table">
+            <thead>
+              <tr>
+                <th>Reference ID</th>
+                <th>Method</th>
+                <th>Amount</th>
+                <th>Requested Date</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="payout-history-list"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════
+         6. SERVICES & PACKAGES
+    ════════════════════════════════ -->
+    <section class="db-section" id="sec-services">
+      <div class="db-page-header">
+        <div class="phead-left">
+          <h1>Services & Packages</h1>
+          <p>Create and edit offerings that clients can book directly from your profile</p>
+        </div>
+        <div class="phead-right" style="display:flex;gap:8px">
+          <button class="btn btn-dark btn-sm" onclick="openModal('package')">+ Add Package</button>
+          <button class="btn btn-gold btn-sm" onclick="openModal('service')">+ Add Service</button>
+        </div>
+      </div>
+      <h3 style="font-size:1.1rem;margin-bottom:12px;color:var(--ts)">Services</h3>
+      <div class="grid-3" id="services-container" style="margin-bottom:24px"></div>
+      <h3 style="font-size:1.1rem;margin-bottom:12px;color:var(--ts)">Packages</h3>
+      <div class="grid-3" id="packages-container"></div>
+    </section>
+
+    <!-- ════════════════════════════════
+         7. AVAILABILITY
+    ════════════════════════════════ -->
+    <section class="db-section" id="sec-availability">
+      <div class="db-page-header">
+        <div class="phead-left">
+          <h1>Availability Settings</h1>
+          <p>Define your active hours and calendar preferences for incoming bookable slots</p>
+        </div>
+        <div class="phead-right">
+          <button class="btn btn-gold btn-sm" onclick="saveAvailability()">💾 Save Slots</button>
+        </div>
+      </div>
+
+      <div class="grid-2" style="align-items:start">
+        <div class="db-card">
+          <div class="card-title">
+            <div class="ct-ico">⏰</div>Weekly Recurring Hours
+          </div>
+          <div id="weekly-hours-container" style="display:flex; flex-direction:column; gap:12px;"></div>
+        </div>
+
+        <div class="db-card">
+          <div class="card-title">
+            <div class="ct-ico">📅</div>Monthly Availability Calendar
+          </div>
+          <p class="text-sm text-muted mb-12">Automatically syncs with your weekly hours. Days marked in red are
+            unavailable.</p>
+          <div id="db-calendar-widget"
+            style="width:100%; border:1px solid var(--border); border-radius:10px; overflow:hidden;">
+            <!-- Calendar rendered via JS -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════
+         8. PORTFOLIO SHOWCASE
+    ════════════════════════════════ -->
+    <section class="db-section" id="sec-portfolio">
+      <div class="db-page-header">
+        <div class="phead-left">
+          <h1>Portfolio Showcase</h1>
+          <p>Upload files, case studies, transformation logs, or past media assets</p>
+        </div>
+        <div class="phead-right">
+          <input type="file" id="portfolio-file-upload" accept="image/*" style="display:none">
+          <button class="btn btn-gold btn-sm" onclick="document.getElementById('portfolio-file-upload').click()">+
+            Upload Media</button>
+        </div>
+      </div>
+      <div class="grid-4" id="portfolio-gallery" style="margin-bottom:32px"></div>
+
+      <!-- ── Permanent Sub-Sections ── -->
+      <div class="grid-2" style="align-items:start;gap:24px">
+
+        <!-- 1. YOUR INTRO VIDEO -->
+        <div class="db-card">
+          <div class="card-title">
+            <div class="ct-ico">🎬</div>Your Intro Video
+          </div>
+          <p class="text-sm text-muted mb-12">Paste your YouTube intro video link. It will show as a clickable thumbnail
+            on your public profile.</p>
+          <div class="form-group mb-12">
+            <label>YouTube Video URL</label>
+            <input type="url" class="form-control" id="intro-video-url"
+              placeholder="https://www.youtube.com/watch?v=..." oninput="_previewIntroThumb()">
+          </div>
+          <div id="intro-thumb-preview"
+            style="display:none;margin-bottom:12px;border-radius:10px;overflow:hidden;position:relative;cursor:pointer">
+            <img id="intro-thumb-img" src="" alt="Intro thumbnail"
+              style="width:100%;height:160px;object-fit:cover;display:block">
+            <div
+              style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.4)">
+              <span style="font-size:2.5rem">▶</span>
+            </div>
+          </div>
+          <button class="btn btn-gold w-100" onclick="saveIntroVideo()">💾 Save Intro Video</button>
+        </div>
+
+        <!-- 2. TESTIMONIAL VIDEOS -->
+        <div class="db-card">
+          <div class="card-title">
+            <div class="ct-ico">▶️</div>Testimonial Videos <span
+              style="font-size:0.7rem;color:var(--tm);font-weight:400;margin-left:4px">(Max 5)</span>
+          </div>
+          <p class="text-sm text-muted mb-12">Add YouTube testimonial videos from clients. Each shows as a thumbnail on
+            your public profile.</p>
+          <div id="testi-inputs-container">
+            <!-- rows injected by JS on load -->
+          </div>
+          <button class="btn btn-dark btn-sm" style="margin-top:8px" onclick="_addTestiRow()">+ Add Video</button>
+          <button class="btn btn-gold w-100" style="margin-top:12px" onclick="saveTestiVideos()">💾 Save
+            Testimonials</button>
+        </div>
+
+      </div>
+
+      <!-- 3. COMPANIES WORKED WITH -->
+      <div class="db-card" style="margin-top:24px">
+        <div class="card-title">
+          <div class="ct-ico">🏢</div>Companies Worked With <span
+            style="font-size:0.7rem;color:var(--tm);font-weight:400;margin-left:4px">(Max 5 logos)</span>
+        </div>
+        <p class="text-sm text-muted mb-16">Upload company logos. They display in a "Trusted By" strip on your public
+          profile.</p>
+        <div id="company-logos-grid" style="display:flex;flex-wrap:wrap;gap:16px;margin-bottom:16px"></div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <input type="file" id="company-logo-file" accept="image/*" style="display:none">
+          <button class="btn btn-dark btn-sm" onclick="_pickCompanyLogo()">+ Upload Logo</button>
+          <span style="font-size:0.78rem;color:var(--tm)" id="company-logo-count">0 / 5 added</span>
+        </div>
+      </div>
+
+    </section>
+
+
+
+    <!-- ════════════════════════════════
+         9. ACCOUNT SETTINGS
+    ════════════════════════════════ -->
+    <section class="db-section" id="sec-settings">
+      <div class="db-page-header">
+        <div class="phead-left">
+          <h1>Account Settings</h1>
+          <p>Manage infrastructure configurations, credential details, and access integrations</p>
+        </div>
+      </div>
+
+      <div class="grid-2" style="align-items:start">
+        <div class="db-card">
+          <div class="card-title">
+            <div class="ct-ico">🔒</div>Security Settings
+          </div>
+          <div class="form-group mb-12">
+            <label>Current Password</label>
+            <input type="password" class="form-control" placeholder="••••••••">
+          </div>
+          <div class="form-group mb-12">
+            <label>New Password</label>
+            <input type="password" class="form-control">
+          </div>
+          <button class="btn btn-dark btn-sm mt-4">Update Password</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════
+         10. AI PROFILE DIAGNOSTICS
+    ════════════════════════════════ -->
+    <section class="db-section" id="sec-ai">
+      <div class="db-page-header">
+        <div class="phead-left">
+          <h1>Full AI Engine Analysis</h1>
+          <p>Advanced diagnostic checks evaluating your public placement conversion rate</p>
+        </div>
+      </div>
+      <div class="ai-panel">
+        <div id="ai-suggestions-detailed"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ═══════════════════════════════════════════════
+       MODALS & GLOBAL OVERLAYS
+  ═══════════════════════════════════════════════ -->
+  <style>
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: 999;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+
+    .modal-backdrop.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .db-modal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.95);
+      background: var(--card-bg, #1e1e1e);
+      border: 1px solid var(--border, #333);
+      border-radius: 12px;
+      padding: 24px;
+      width: 90%;
+      max-width: 500px;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .db-modal.active {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .modal-header h3 {
+      margin: 0;
+      font-size: 1.25rem;
+      color: var(--ts, #fff);
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      color: var(--tm, #888);
+      cursor: pointer;
+      padding: 0;
+      line-height: 1;
+    }
+
+    .close-btn:hover {
+      color: #fff;
+    }
+  </style>
+  <div class="modal-backdrop" id="modal-backdrop" onclick="closeAllModals()"></div>
+
+  <div class="db-modal" id="global-modal">
+    <div class="modal-header">
+      <h3 id="modal-title">Modal Title</h3>
+      <button class="close-btn" onclick="closeAllModals()">✕</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       APPLICATION ROUTING ENGINE
+  ═══════════════════════════════════════════════ -->
+
+  <script src="js/dashboard.js"></script>
+  <script>
+    // ─────────────────────────────────────────────────
+    // SECTION ROUTING
+    // ─────────────────────────────────────────────────
+    function showSection(sectionId) {
+      document.querySelectorAll('.db-section').forEach(sec => sec.classList.remove('active'));
+      document.querySelectorAll('.sidebar-nav-item').forEach(item => item.classList.remove('active'));
+
+      const targetSec = document.getElementById(`sec-${sectionId}`);
+      if (targetSec) targetSec.classList.add('active');
+
+      const activeLink = document.querySelector(`.sidebar-nav-item[data-section="${sectionId}"]`);
+      if (activeLink) activeLink.classList.add('active');
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      const sidebar = document.getElementById('db-sidebar');
+      if (sidebar && sidebar.classList.contains('mobile-open')) {
+        toggleSidebar();
+      }
+    }
+
+    function toggleSidebar() {
+      const sidebar = document.getElementById('db-sidebar');
+      const btn = document.getElementById('mob-menu-btn');
+      if (sidebar.classList.contains('mobile-open')) {
+        sidebar.classList.remove('mobile-open');
+        btn.innerHTML = "☰";
+      } else {
+        sidebar.classList.add('mobile-open');
+        btn.innerHTML = "✕";
+      }
+    }
+
+    function toggleNotif() {
+      const drop = document.getElementById('notif-dropdown');
+      drop.style.display = drop.style.display === 'block' ? 'none' : 'block';
+    }
+
+    // ─────────────────────────────────────────────────
+    // MODAL FRAMEWORK
+    // ─────────────────────────────────────────────────
+    function closeAllModals() {
+      document.getElementById('modal-backdrop').classList.remove('active');
+      const modal = document.getElementById('global-modal');
+      modal.classList.remove('active');
+      // Purge all inputs to prevent context leakage between opens
+      setTimeout(() => {
+        document.getElementById('modal-body').innerHTML = '';
+        document.getElementById('modal-title').innerText = '';
+      }, 250);
+    }
+
+    function openModal(type) {
+      const backdrop = document.getElementById('modal-backdrop');
+      const modal = document.getElementById('global-modal');
+      const title = document.getElementById('modal-title');
+      const body = document.getElementById('modal-body');
+      backdrop.classList.add('active');
+      modal.classList.add('active');
+
+      if (type === 'payout') {
+        title.innerText = 'Request Wallet Withdrawal';
+        body.innerHTML = '<div class="form-group mb-16"><label>Amount to Withdraw (Max 45,800)</label><input type="number" class="form-control" id="withdraw-amount" value="45800" max="45800"></div><button class="btn btn-gold w-100" onclick="closeAllModals()">Submit Transfer Request</button>';
+
+      } else if (type === 'new-session') {
+        title.innerText = 'Schedule Manual Booking Slot';
+        body.innerHTML = '<div class="form-group mb-12"><label>Client Email Reference</label><input type="email" class="form-control" placeholder="client@example.com"></div><div class="form-group mb-12"><label>Date and Time</label><input type="datetime-local" class="form-control"></div><button class="btn btn-gold w-100" onclick="closeAllModals()">Lock Manual Assignment</button>';
+
+      } else if (type === 'certificate') {
+        title.innerText = 'Add Achievement or Certification';
+        body.innerHTML = '<div class="form-group mb-12"><label>Name <span style="color:var(--red)">*</span></label><input class="form-control" type="text" id="modal-cert-title" placeholder="e.g. Certified AI Trainer 2025"></div><div class="form-group mb-12"><label>Given by <span style="color:var(--red)">*</span></label><input class="form-control" type="text" id="modal-cert-issuer" placeholder="e.g. Global AI Institute 2025"></div><div class="form-group mb-16"><label>Upload Certificate</label><input type="file" id="modal-cert-file" accept="image/jpeg,image/png,image/webp" style="display:block;width:100%"><div id="modal-cert-img-preview" style="margin-top:10px;width:100%;height:0;background-size:contain;background-position:center;background-repeat:no-repeat;border-radius:6px;transition:height .3s"></div></div><div style="display:flex;gap:8px"><button class="btn btn-gold" style="flex:1" onclick="saveCertificate()">Save</button><button class="btn btn-dark" onclick="closeAllModals()">Cancel</button></div>';
+        document.getElementById('modal-cert-file').addEventListener('change', function () {
+          var file = this.files[0];
+          if (!file || !file.type.startsWith('image/')) return;
+          var prev = document.getElementById('modal-cert-img-preview');
+          prev.style.backgroundImage = 'url("' + URL.createObjectURL(file) + '")';
+          prev.style.height = '160px';
+          prev.style.border = '1px solid var(--border)';
+        });
+
+      } else if (type === 'event') {
+        title.innerText = 'Add Past Event';
+        body.innerHTML = '<div class="form-group mb-12"><label>Company Name <span style="color:var(--red)">*</span></label><input class="form-control" type="text" id="modal-event-company" placeholder="e.g. Google India"></div><div class="form-group mb-12"><label>Guest Name <span style="color:var(--red)">*</span></label><input class="form-control" type="text" id="modal-event-name" placeholder="e.g. Keynote Speaker"></div><div class="form-group mb-12"><label>Date</label><input class="form-control" type="date" id="modal-event-date"></div><div class="form-group mb-16"><label>Upload Logo</label><input type="file" id="modal-logo-file" accept="image/*" style="display:block;width:100%"><div style="margin-top:10px;display:flex;align-items:center;gap:12px"><img id="modal-logo-preview" src="#" alt="Logo" style="display:none;width:52px;height:52px;object-fit:contain;border-radius:6px;border:1px solid var(--border);"><span id="modal-logo-label" style="font-size:.78rem;color:var(--tm)"></span></div></div><div style="display:flex;gap:8px"><button class="btn btn-gold" style="flex:1" onclick="saveEvent()">Save</button><button class="btn btn-dark" onclick="closeAllModals()">Cancel</button></div>';
+        document.getElementById('modal-logo-file').addEventListener('change', function () {
+          var file = this.files[0];
+          if (!file || !file.type.startsWith('image/')) return;
+          if (file.size > 2097152) { alert('Logo must be under 2MB.'); this.value = ''; return; }
+          var img = document.getElementById('modal-logo-preview');
+          img.src = URL.createObjectURL(file);
+          img.style.display = 'block';
+          document.getElementById('modal-logo-label').textContent = file.name;
+        });
+
+      } else if (type === 'service') {
+        title.innerText = 'Create Custom Service';
+        body.innerHTML = '<div class="form-group mb-12"><label>Service Name <span style="color:var(--red)">*</span></label><input class="form-control" type="text" id="modal-svc-name" placeholder="e.g. 1-on-1 Consultation"></div><div class="form-group mb-12"><label>Description</label><textarea class="form-control" id="modal-svc-desc" rows="2" placeholder="Brief description of the service"></textarea></div><div class="grid-2 mb-12" style="gap:12px"><div class="form-group"><label>Duration</label><input class="form-control" type="text" id="modal-svc-duration" placeholder="e.g. 60 mins"></div><div class="form-group"><label>Price (₹)</label><input class="form-control" type="number" id="modal-svc-price" placeholder="1500"></div></div><div class="grid-2 mb-16" style="gap:12px"><div class="form-group"><label>Mode</label><select class="form-control" id="modal-svc-mode"><option>Online</option><option>In-Person</option><option>Hybrid</option></select></div><div class="form-group"><label>Type</label><select class="form-control" id="modal-svc-type"><option>1-on-1</option><option>Group</option><option>Corporate</option></select></div></div><div class="form-group mb-16" style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="modal-svc-featured" style="width:18px;height:18px;accent-color:var(--gold)"> <label style="margin:0;cursor:pointer" for="modal-svc-featured">Mark as Featured Service</label></div><div style="display:flex;gap:8px"><button class="btn btn-gold" style="flex:1" onclick="saveService()">Save Service</button><button class="btn btn-dark" onclick="closeAllModals()">Cancel</button></div>';
+
+      } else if (type === 'package') {
+        title.innerText = 'Create Training Package';
+        body.innerHTML = '<div class="form-group mb-12"><label>Package Name <span style="color:var(--red)">*</span></label><input class="form-control" type="text" id="modal-pkg-name" placeholder="e.g. 4-Week Transformation"></div><div class="form-group mb-12"><label>Description</label><textarea class="form-control" id="modal-pkg-desc" rows="2" placeholder="Brief description"></textarea></div><div class="grid-2 mb-12" style="gap:12px"><div class="form-group"><label>Duration</label><input class="form-control" type="text" id="modal-pkg-duration" placeholder="e.g. 4 Weeks"></div><div class="form-group"><label>Price (₹)</label><input class="form-control" type="number" id="modal-pkg-price" placeholder="12000"></div></div><div class="form-group mb-12"><label>Features (comma separated)</label><textarea class="form-control" id="modal-pkg-features" rows="2" placeholder="Diet Plan, Weekly Calls, 24/7 Support"></textarea></div><div class="form-group mb-16" style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="modal-pkg-featured" style="width:18px;height:18px;accent-color:var(--gold)"> <label style="margin:0;cursor:pointer" for="modal-pkg-featured">Mark as Featured Package</label></div><div style="display:flex;gap:8px"><button class="btn btn-gold" style="flex:1" onclick="savePackage()">Save Package</button><button class="btn btn-dark" onclick="closeAllModals()">Cancel</button></div>';
+
+      } else if (type === 'portfolio') {
+        title.innerText = 'Add Portfolio Item';
+        body.innerHTML = '<div style="width:100%;height:160px;background-size:cover;background-position:center;border-radius:8px;margin-bottom:16px;border:1px solid var(--border)" id="modal-port-img"></div><div class="form-group mb-12"><label>Title <span style="color:var(--red)">*</span></label><input class="form-control" type="text" id="modal-port-title" placeholder="e.g. 90-Day Transformation"></div><div class="grid-2 mb-12" style="gap:12px"><div class="form-group"><label>Category</label><select class="form-control" id="modal-port-category"><option value="case-study">Case Study</option><option value="photo">Photo</option><option value="video">Video</option><option value="certificate">Certificate</option></select></div><div class="form-group"><label>Client / Company</label><input class="form-control" type="text" id="modal-port-client" placeholder="e.g. Acme Corp"></div></div><div class="form-group mb-16"><label>Tags (comma separated)</label><input class="form-control" type="text" id="modal-port-tags" placeholder="e.g. Weight Loss, Muscle Gain"></div><div style="display:flex;gap:8px"><button class="btn btn-gold" style="flex:1" onclick="savePortfolioItem()">Save Item</button><button class="btn btn-dark" onclick="closeAllModals()">Cancel</button></div>';
+      }
+    }
+
+    function saveCertificate() {
+      var t = (document.getElementById('modal-cert-title') || {}).value || '';
+      var s = (document.getElementById('modal-cert-issuer') || {}).value || '';
+      var f = document.getElementById('modal-cert-file');
+      t = t.trim(); s = s.trim();
+      if (!t) { alert('Please enter the Certificate Title.'); return; }
+      if (!s) { alert('Please enter the Issuing Organization.'); return; }
+
+      function _doSaveCert(imgUrl) {
+        var cache = JSON.parse(localStorage.getItem('currentTrainer')) || {};
+        if (!Array.isArray(cache.achievements)) cache.achievements = [];
+        var item = { id: Date.now(), title: t, sub: s, ico: imgUrl };
+        cache.achievements.push(item);
+        localStorage.setItem('currentTrainer', JSON.stringify(cache));
+        _renderCertificateItem(item);
+        closeAllModals();
+      }
+
+      if (f && f.files[0]) {
+        if (f.files[0].size > 10485760) { alert('Image must be under 10MB.'); return; }
+        var reader = new FileReader();
+        reader.onload = function (e) { _doSaveCert(e.target.result); };
+        reader.readAsDataURL(f.files[0]);
+      } else {
+        _doSaveCert('');
+      }
+    }
+
+    function _renderCertificateItem(item) {
+      var list = document.getElementById('achievements-list');
+      if (!list) return;
+      var ph = list.querySelector('.cert-empty-msg');
+      if (ph) ph.remove();
+      var div = document.createElement('div');
+      div.id = 'cert-' + item.id;
+      div.style.cssText = 'flex:0 0 220px;background:var(--bg2);padding:14px;border-radius:12px;border:1px solid var(--border);position:relative;display:flex;flex-direction:column;gap:8px;';
+      var imgHtml = item.ico ? '<div style="width:100%;height:140px;border-radius:8px;background:var(--bg3) url(\'' + item.ico + '\') center/cover no-repeat;border:1px solid var(--border);"></div>' : '<div style="width:100%;height:140px;border-radius:8px;background:var(--bg3);display:flex;align-items:center;justify-content:center;color:var(--tm);border:1px dashed var(--border);">No Image</div>';
+      div.innerHTML = imgHtml + '<div style="font-weight:600;font-size:1rem;color:var(--ts);margin-top:4px;">' + item.title + '</div><div style="font-size:.85rem;color:var(--tm)">Given by: <span style="color:var(--gold);">' + item.sub + '</span></div><button onclick="_deleteCertificate(' + item.id + ')" style="position:absolute;top:8px;right:8px;background:rgba(0,0,0,0.6);border:none;cursor:pointer;color:#fff;font-size:1.1rem;padding:4px;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;line-height:1;" onmouseover="this.style.background=\'rgba(231,76,60,.9)\'" onmouseout="this.style.background=\'rgba(0,0,0,0.6)\'">&#10005;</button>';
+      list.appendChild(div);
+    }
+
+    function _deleteCertificate(id) {
+      if (!confirm('Remove this certificate?')) return;
+      var el = document.getElementById('cert-' + id);
+      if (el) el.remove();
+      var cache = JSON.parse(localStorage.getItem('currentTrainer')) || {};
+      if (Array.isArray(cache.achievements)) {
+        cache.achievements = cache.achievements.filter(function (a) { return a.id !== id; });
+        localStorage.setItem('currentTrainer', JSON.stringify(cache));
+      }
+      var list = document.getElementById('achievements-list');
+      if (list && list.children.length === 0) _showCertEmptyState();
+    }
+
+    function _showCertEmptyState() {
+      var list = document.getElementById('achievements-list');
+      if (list) list.innerHTML = '<div class="cert-empty-msg" style="text-align:center;padding:20px;color:var(--tm);font-size:.85rem">No achievements yet. Click <strong>+ Add Certificate</strong> to begin.</div>';
+    }
+
+    function saveEvent() {
+      var company = ((document.getElementById('modal-event-company') || {}).value || '').trim();
+      var name = ((document.getElementById('modal-event-name') || {}).value || '').trim();
+      var date = (document.getElementById('modal-event-date') || {}).value || '';
+      var f = document.getElementById('modal-logo-file');
+      if (!company) { alert('Please enter the Company Name.'); return; }
+      if (!name) { alert('Please enter the Guest Name.'); return; }
+
+      function _doSaveEvent(logoUrl) {
+        var cache = JSON.parse(localStorage.getItem('currentTrainer')) || {};
+        if (!Array.isArray(cache.events)) cache.events = [];
+        var item = { id: Date.now(), company: company, event: name, date: date, logo: logoUrl };
+        cache.events.push(item);
+        localStorage.setItem('currentTrainer', JSON.stringify(cache));
+        _renderEventRow(item);
+        closeAllModals();
+      }
+
+      if (f && f.files[0]) {
+        if (f.files[0].size > 2097152) { alert('Logo must be under 2MB.'); return; }
+        var reader = new FileReader();
+        reader.onload = function (e) { _doSaveEvent(e.target.result); };
+        reader.readAsDataURL(f.files[0]);
+      } else {
+        _doSaveEvent('');
+      }
+    }
+
+    /* ── Services Logic ── */
+    function saveService() {
+      var name = (document.getElementById('modal-svc-name').value || '').trim();
+      if (!name) return alert('Service Name is required.');
+      var item = {
+        id: Date.now(),
+        name: name,
+        desc: document.getElementById('modal-svc-desc').value || '',
+        duration: document.getElementById('modal-svc-duration').value || '',
+        price: document.getElementById('modal-svc-price').value || '0',
+        mode: document.getElementById('modal-svc-mode').value,
+        type: document.getElementById('modal-svc-type').value,
+        featured: document.getElementById('modal-svc-featured').checked
+      };
+      var cache = JSON.parse(localStorage.getItem('currentTrainer')) || {};
+      if (!Array.isArray(cache.services)) cache.services = [];
+      cache.services.push(item);
+      localStorage.setItem('currentTrainer', JSON.stringify(cache));
+      _renderServiceItem(item);
+      closeAllModals();
+
+      // POST to decoupled apps script backend
+      var currentTrainerId = cache.trainerId || cache._id || cache.id || "T-1001";
+      var payload = {
+        trainerId: currentTrainerId,
+        services: [{
+          title: item.name,
+          price: item.price,
+          duration: item.duration,
+          features: item.desc
+        }]
+      };
+      fetch('/api/gsheet', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      }).catch(console.error);
+    }
+    function _renderServiceItem(item) {
+      var cont = document.getElementById('services-container');
+      if (!cont) return;
+      var empty = cont.querySelector('.empty-msg');
+      if (empty) empty.remove();
+      var div = document.createElement('div');
+      div.id = 'svc-' + item.id;
+      div.className = 'db-card';
+      div.style.position = 'relative';
+      div.innerHTML = '<button onclick="_deleteService(' + item.id + ')" style="position:absolute;top:10px;right:10px;background:none;border:none;color:var(--red);cursor:pointer;font-size:1.2rem">&#128465;</button><div style="font-weight:700;font-size:1.05rem;color:var(--ts);margin-bottom:6px">' + item.name + (item.featured ? '<span style="font-size:0.65rem;background:rgba(197,160,89,0.2);color:var(--gold);padding:2px 6px;border-radius:4px;margin-left:6px;vertical-align:middle">Featured</span>' : '') + '</div><div style="font-size:0.82rem;color:var(--tm);margin-bottom:12px;line-height:1.4">' + item.desc + '</div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px"><span style="font-size:0.75rem;padding:2px 8px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;color:var(--tm)">⏱ ' + item.duration + '</span><span style="font-size:0.75rem;padding:2px 8px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;color:var(--tm)">📍 ' + item.mode + '</span><span style="font-size:0.75rem;padding:2px 8px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;color:var(--tm)">👥 ' + item.type + '</span></div><div style="font-size:1.1rem;font-weight:700;color:var(--gold)">₹' + item.price + '</div>';
+      cont.appendChild(div);
+    }
+    function _deleteService(id) {
+      if (!confirm('Delete service?')) return;
+      var el = document.getElementById('svc-' + id); if (el) el.remove();
+      var cache = JSON.parse(localStorage.getItem('currentTrainer')) || {};
+      if (Array.isArray(cache.services)) {
+        cache.services = cache.services.filter(function (s) { return s.id !== id });
+        localStorage.setItem('currentTrainer', JSON.stringify(cache));
+      }
+      var c = document.getElementById('services-container');
+      if (c && c.children.length === 0) c.innerHTML = '<div class="empty-msg" style="grid-column:1/-1;text-align:center;padding:20px;color:var(--tm);font-size:.85rem">No services defined.</div>';
+    }
+
+    /* ── Packages Logic ── */
+    function savePackage() {
+      var name = (document.getElementById('modal-pkg-name').value || '').trim();
+      if (!name) return alert('Package Name is required.');
+      var feats = document.getElementById('modal-pkg-features').value || '';
+      var item = {
+        id: Date.now(),
+        name: name,
+        desc: document.getElementById('modal-pkg-desc').value || '',
+        duration: document.getElementById('modal-pkg-duration').value || '',
+        price: document.getElementById('modal-pkg-price').value || '0',
+        features: feats.split(',').map(function (s) { return s.trim() }).filter(Boolean),
+        featured: document.getElementById('modal-pkg-featured').checked
+      };
+      var cache = JSON.parse(localStorage.getItem('currentTrainer')) || {};
+      if (!Array.isArray(cache.packages)) cache.packages = [];
+      cache.packages.push(item);
+      localStorage.setItem('currentTrainer', JSON.stringify(cache));
+      _renderPackageItem(item);
+      closeAllModals();
+
+      // POST to decoupled apps script backend — send the FULL updated array
+      var currentTrainerId = cache.trainerId || cache._id || cache.id || "T-1001";
+      var payload = {
+        trainerId: currentTrainerId,
+        packages: cache.packages.map(function (p) {
+          return {
+            title: p.name,
+            price: p.price,
+            duration: p.duration,
+            features: Array.isArray(p.features) ? p.features : (p.features || '').split(',').map(function (s) { return s.trim(); }).filter(Boolean)
+          };
+        })
+      };
+      fetch('/api/gsheet', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      }).catch(console.error);
+    }
+    function _renderPackageItem(item) {
+      var cont = document.getElementById('packages-container');
+      if (!cont) return;
+      var empty = cont.querySelector('.empty-msg');
+      if (empty) empty.remove();
+      // Ensure item has an id (may be missing when loaded from API)
+      if (!item.id) item.id = Date.now() + Math.floor(Math.random() * 9999);
+      // Ensure features is always an array
+      if (!Array.isArray(item.features)) {
+        item.features = typeof item.features === 'string' ? item.features.split(',').map(function(s){return s.trim();}).filter(Boolean) : [];
+      }
+      var div = document.createElement('div');
+      div.id = 'pkg-' + item.id;
+      div.className = 'db-card';
+      div.style.position = 'relative';
+      if (item.featured) div.style.borderColor = 'var(--gold)';
+      var featsHtml = item.features.map(function (f) { return '<li style="font-size:0.8rem;color:var(--tm);margin-bottom:4px;display:flex;gap:6px"><span style="color:var(--gold)">✓</span> ' + f + '</li>' }).join('');
+      var descHtml = item.desc ? '<div style="font-size:0.82rem;color:var(--tm);margin-bottom:12px;line-height:1.4">' + item.desc + '</div>' : '';
+      div.innerHTML = '<button onclick="_deletePackage(' + item.id + ')" style="position:absolute;top:10px;right:10px;background:none;border:none;color:var(--red);cursor:pointer;font-size:1.2rem">&#128465;</button>' + (item.featured ? '<div style="font-size:0.65rem;color:var(--gold);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">⭐ Featured Package</div>' : '') + '<div style="font-weight:700;font-size:1.1rem;color:var(--ts);margin-bottom:6px">' + (item.name || 'Package') + '</div><div style="font-size:1.2rem;font-weight:700;color:var(--ts);margin-bottom:12px">₹' + (item.price || '0') + ' <span style="font-size:0.8rem;color:var(--tm);font-weight:400">/ ' + (item.duration || '') + '</span></div>' + descHtml + '<ul style="list-style:none;padding:0;margin:0">' + featsHtml + '</ul>';
+      cont.appendChild(div);
+    }
+    function _deletePackage(id) {
+      if (!confirm('Delete package?')) return;
+      var el = document.getElementById('pkg-' + id); if (el) el.remove();
+      var cache = JSON.parse(localStorage.getItem('currentTrainer')) || {};
+      if (Array.isArray(cache.packages)) {
+        cache.packages = cache.packages.filter(function (s) { return s.id !== id });
+        localStorage.setItem('currentTrainer', JSON.stringify(cache));
+      }
+      var c = document.getElementById('packages-container');
+      if (c && c.children.length === 0) c.innerHTML = '<div class="empty-msg" style="grid-column:1/-1;text-align:center;padding:20px;color:var(--tm);font-size:.85rem">No packages defined.</div>';
+    }
+
+    /* ── Availability Logic ── */
+    function _parseAvailabilityString(str) {
+      // Parses "Mon-Fri | 9:00 AM - 6:00 PM" or "Mon,Wed,Fri | 09:00-18:00" into structured object
+      var result = {
+        Mon: { available: false, start: '09:00', end: '18:00' }, Tue: { available: false, start: '09:00', end: '18:00' },
+        Wed: { available: false, start: '09:00', end: '18:00' }, Thu: { available: false, start: '09:00', end: '18:00' },
+        Fri: { available: false, start: '09:00', end: '18:00' }, Sat: { available: false, start: '10:00', end: '14:00' },
+        Sun: { available: false, start: '10:00', end: '14:00' }
+      };
+      if (!str || typeof str !== 'string') return null;
+      var parts = str.split('|');
+      if (parts.length < 2) return null;
+      var dayPart = parts[0].trim(); // e.g. "Mon-Fri" or "Mon,Wed"
+      var timePart = parts[1].trim(); // e.g. "9:00 AM - 6:00 PM"
+      // Convert time like "9:00 AM" to "09:00" 24h
+      function to24h(t) {
+        var m = t.match(/(\d+):(\d+)\s*(AM|PM)?/i);
+        if (!m) return t.trim();
+        var h = parseInt(m[1]), min = m[2], ap = m[3];
+        if (ap && ap.toUpperCase() === 'PM' && h < 12) h += 12;
+        if (ap && ap.toUpperCase() === 'AM' && h === 12) h = 0;
+        return (h < 10 ? '0' : '') + h + ':' + min;
+      }
+      var timeRange = timePart.split('-').map(function(t){ return to24h(t.trim()); });
+      var startT = timeRange[0] || '09:00', endT = timeRange[1] || '18:00';
+      var dayOrder = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+      // Expand range like Mon-Fri
+      if (dayPart.includes('-')) {
+        var bounds = dayPart.split('-').map(function(d){ return d.trim().slice(0,3); });
+        var si = dayOrder.indexOf(bounds[0]), ei = dayOrder.indexOf(bounds[1]);
+        if (si >= 0 && ei >= 0) {
+          for (var i = si; i <= ei; i++) { result[dayOrder[i]] = { available: true, start: startT, end: endT }; }
+        }
+      } else {
+        // Comma-separated list
+        dayPart.split(',').forEach(function(d) {
+          var key = d.trim().slice(0,3);
+          if (result[key] !== undefined) result[key] = { available: true, start: startT, end: endT };
+        });
+      }
+      return result;
+    }
+
+    function _renderAvailabilitySettings() {
+      var cont = document.getElementById('weekly-hours-container');
+      if (!cont) return;
+      var cache = JSON.parse(localStorage.getItem('currentTrainer')) || {};
+      var avs = cache.availability;
+      if (typeof avs === 'string') {
+        // Try JSON first, then plain string format like "Mon-Fri | 9:00 AM - 6:00 PM"
+        try { avs = JSON.parse(avs); } catch (e) {
+          avs = _parseAvailabilityString(cache.availability);
+        }
+      }
+      avs = avs || {
+        Mon: { available: true, start: '09:00', end: '18:00' }, Tue: { available: true, start: '09:00', end: '18:00' },
+        Wed: { available: true, start: '09:00', end: '17:00' }, Thu: { available: true, start: '10:00', end: '18:00' },
+        Fri: { available: true, start: '09:00', end: '17:00' }, Sat: { available: true, start: '10:00', end: '14:00' },
+        Sun: { available: false, start: '10:00', end: '14:00' }
+      };
+      var days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+      cont.innerHTML = days.map(function (d) {
+        var info = avs[d] || { available: false, start: '09:00', end: '17:00' };
+        // Fallback for older data format
+        var isAvail = typeof info.available !== 'undefined' ? info.available : info.enabled;
+        var tStart = info.start || info.from || '09:00';
+        var tEnd = info.end || info.to || '17:00';
+        return '<div class="avail-row" data-day="' + d + '" style="display:flex;align-items:center;gap:12px;padding:8px;background:var(--bg2);border:1px solid var(--border);border-radius:8px"><div style="width:50px;font-weight:600;color:var(--ts);font-size:.9rem">' + d + '</div><input type="checkbox" class="avail-toggle" style="width:18px;height:18px;accent-color:var(--gold)" ' + (isAvail ? 'checked' : '') + '> <div style="flex:1"></div> <input type="time" class="form-control avail-from" style="width:110px" value="' + tStart + '" ' + (isAvail ? '' : 'disabled') + '> <span style="color:var(--tm)">to</span> <input type="time" class="form-control avail-to" style="width:110px" value="' + tEnd + '" ' + (isAvail ? '' : 'disabled') + '></div>';
+      }).join('');
+      // Attach toggle listeners
+      cont.querySelectorAll('.avail-toggle').forEach(function (chk) {
+        chk.addEventListener('change', function () {
+          var row = this.closest('.avail-row');
+          row.querySelector('.avail-from').disabled = !this.checked;
+          row.querySelector('.avail-to').disabled = !this.checked;
+          renderDashboardCalendar();
+        });
+      });
+      renderDashboardCalendar();
+    }
+    function saveAvailability() {
+      var cont = document.getElementById('weekly-hours-container');
+      var avs = {};
+      cont.querySelectorAll('.avail-row').forEach(function (row) {
+        var d = row.dataset.day;
+        avs[d] = {
+          available: row.querySelector('.avail-toggle').checked,
+          start: row.querySelector('.avail-from').value,
+          end: row.querySelector('.avail-to').value
+        };
+      });
+      var cache = JSON.parse(localStorage.getItem('currentTrainer')) || {};
+      cache.availability = avs;
+      localStorage.setItem('currentTrainer', JSON.stringify(cache));
+      renderDashboardCalendar();
+
+      // Push to Google Sheets API
+      var currentTrainerId = cache.trainerId || cache._id || cache.id || "T-1001";
+      var payload = {
+        trainerId: currentTrainerId,
+        availability: JSON.stringify(avs)
+      };
+
+      window.toast && window.toast('Saving availability to database...', 3000);
+
+      fetch('/api/gsheet', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      }).then(res => {
+        window.toast ? window.toast('✅ Availability slots synchronized!') : alert('Availability saved successfully!');
+      }).catch(err => {
+        console.error('Failed to save availability to db', err);
+        window.toast ? window.toast('⚠️ Saved locally, but cloud sync failed.') : alert('Saved locally, but cloud sync failed.');
+      });
+    }
+
+    /* ── Dashboard Calendar ── */
+    var _dbCalMonth = new Date().getMonth();
+    var _dbCalYear = new Date().getFullYear();
+    var _DB_DAY_MAP = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+    function _getAvailMap() {
+      var avs = {};
+      var cont = document.getElementById('weekly-hours-container');
+      if (cont) {
+        cont.querySelectorAll('.avail-row').forEach(function (row) {
+          avs[row.dataset.day] = row.querySelector('.avail-toggle').checked;
+        });
+      } else {
+        var stored = (JSON.parse(localStorage.getItem('currentTrainer')) || {}).availability;
+        if (typeof stored === 'string') { try { stored = JSON.parse(stored); } catch (e) { stored = {}; } }
+        stored = stored || {};
+        Object.keys(stored).forEach(function (d) {
+          var info = stored[d] || {};
+          var isAvail = typeof info.available !== 'undefined' ? info.available : info.enabled;
+          avs[d] = isAvail !== false;
+        });
+      }
+      return avs;
+    }
+
+    function renderDashboardCalendar() {
+      var widget = document.getElementById('db-calendar-widget');
+      if (!widget) return;
+      var avs = _getAvailMap();
+      var firstOfMonth = new Date(_dbCalYear, _dbCalMonth, 1);
+      var mLabel = firstOfMonth.toLocaleString('default', { month: 'long', year: 'numeric' });
+      var firstDay = firstOfMonth.getDay();
+      var daysInMonth = new Date(_dbCalYear, _dbCalMonth + 1, 0).getDate();
+      var today = new Date();
+      var dayNames = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+      var headerHtml = dayNames.map(function (n) {
+        return '<div style="text-align:center;font-size:.68rem;font-weight:700;color:rgba(255,255,255,0.3);padding:5px 0">' + n + '</div>';
+      }).join('');
+      var cells = '';
+      for (var i = 0; i < firstDay; i++) cells += '<div></div>';
+      for (var day = 1; day <= daysInMonth; day++) {
+        var d = new Date(_dbCalYear, _dbCalMonth, day);
+        var dayKey = _DB_DAY_MAP[d.getDay()];
+        var enabled = avs[dayKey] !== false;
+        var isToday = (day === today.getDate() && _dbCalMonth === today.getMonth() && _dbCalYear === today.getFullYear());
+        var bg = enabled ? (isToday ? 'rgba(197,160,89,0.25)' : 'rgba(255,255,255,0.03)') : 'rgba(239,68,68,0.15)';
+        var bdr = enabled ? (isToday ? '1.5px solid #C5A059' : '1px solid rgba(255,255,255,0.06)') : '1px solid rgba(239,68,68,0.3)';
+        var clr = enabled ? (isToday ? '#C5A059' : 'rgba(237,242,247,0.8)') : 'rgba(239,68,68,0.85)';
+        cells += '<div style="text-align:center;padding:7px 3px;border-radius:7px;background:' + bg + ';border:' + bdr + ';font-size:.76rem;font-weight:600;color:' + clr + '">' + day + '</div>';
+      }
+      widget.innerHTML =
+        '<div style="padding:10px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);background:var(--bg2)">'
+        + '<button onclick="_dbCalPrev()" style="background:none;border:none;color:var(--gold);cursor:pointer;font-size:1.2rem;line-height:1;padding:2px 8px">&#8249;</button>'
+        + '<div style="font-size:.84rem;font-weight:700;color:rgba(237,242,247,0.9)">' + mLabel + '</div>'
+        + '<button onclick="_dbCalNext()" style="background:none;border:none;color:var(--gold);cursor:pointer;font-size:1.2rem;line-height:1;padding:2px 8px">&#8250;</button>'
+        + '</div>'
+        + '<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;padding:10px">' + headerHtml + cells + '</div>'
+        + '<div style="padding:4px 14px 12px;display:flex;gap:14px;font-size:.68rem;color:rgba(237,242,247,0.4)">'
+        + '<span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:2px;background:rgba(239,68,68,0.4);display:inline-block"></span>Unavailable</span>'
+        + '<span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:2px;background:rgba(197,160,89,0.25);display:inline-block"></span>Today</span>'
+        + '</div>';
+    }
+    function _dbCalPrev() { if (--_dbCalMonth < 0) { _dbCalMonth = 11; _dbCalYear--; } renderDashboardCalendar(); }
+    function _dbCalNext() { if (++_dbCalMonth > 11) { _dbCalMonth = 0; _dbCalYear++; } renderDashboardCalendar(); }
+
+    /* ── Portfolio Logic ── */
+    window.tempPortfolioImgUrl = '';
+    var portInput = document.getElementById('portfolio-file-upload');
+    if (portInput) {
+      portInput.addEventListener('change', function () {
+        var file = this.files[0];
+        if (!file) return;
+        var reader = new FileReader();
+        reader.onload = function (e) {
+          window.tempPortfolioImgUrl = e.target.result;
+          openModal('portfolio');
+          setTimeout(function () {
+            var imgDiv = document.getElementById('modal-port-img');
+            if (imgDiv) imgDiv.style.backgroundImage = 'url("' + window.tempPortfolioImgUrl + '")';
+          }, 50);
+        };
+        reader.readAsDataURL(file);
+        this.value = '';
+      });
+    }
+    function savePortfolioItem() {
+      var title = (document.getElementById('modal-port-title').value || '').trim();
+      if (!title) return alert('Title is required');
+      var item = {
+        id: Date.now(),
+        title: title,
+        category: document.getElementById('modal-port-category').value,
+        client: document.getElementById('modal-port-client').value || '',
+        tags: (document.getElementById('modal-port-tags').value || '').split(',').map(function (s) { return s.trim() }).filter(Boolean),
+        thumbUrl: window.tempPortfolioImgUrl
+      };
+      var cache = JSON.parse(localStorage.getItem('currentTrainer')) || {};
+      if (!Array.isArray(cache.portfolio)) cache.portfolio = [];
+      cache.portfolio.push(item);
+      localStorage.setItem('currentTrainer', JSON.stringify(cache));
+      _renderPortfolioItem(item);
+      closeAllModals();
+    }
+    function _renderPortfolioItem(item) {
+      var cont = document.getElementById('portfolio-gallery');
+      if (!cont) return;
+      var empty = cont.querySelector('.empty-msg');
+      if (empty) empty.remove();
+      var div = document.createElement('div');
+      div.id = 'port-' + item.id;
+      div.style.cssText = 'background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:12px;position:relative';
+      var tagHtml = item.tags.slice(0, 2).map(function (t) { return '<span style="font-size:0.65rem;background:var(--bg3);padding:2px 6px;border-radius:4px;color:var(--tm);border:1px solid var(--border)">' + t + '</span>' }).join('');
+      div.innerHTML = '<button onclick="_deletePortfolio(' + item.id + ')" style="position:absolute;top:18px;right:18px;background:rgba(0,0,0,0.6);border:none;color:#fff;cursor:pointer;font-size:1.1rem;padding:4px;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;z-index:2" onmouseover="this.style.background=\'rgba(231,76,60,.9)\'" onmouseout="this.style.background=\'rgba(0,0,0,0.6)\'">&#10005;</button><div style="width:100%;height:120px;border-radius:8px;background:var(--bg3) url(\'' + item.thumbUrl + '\') center/cover;border:1px solid var(--border);margin-bottom:10px"></div><div style="font-size:0.6rem;text-transform:uppercase;color:var(--gold);letter-spacing:1px;font-weight:700;margin-bottom:4px">' + item.category + '</div><div style="font-weight:600;font-size:.9rem;color:var(--ts);margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + item.title + '</div>' + (item.client ? '<div style="font-size:0.75rem;color:var(--tm);margin-bottom:8px">🏢 ' + item.client + '</div>' : '') + '<div style="display:flex;gap:4px;flex-wrap:wrap">' + tagHtml + '</div>';
+      cont.appendChild(div);
+    }
+    function _deletePortfolio(id) {
+      if (!confirm('Delete portfolio item?')) return;
+      var el = document.getElementById('port-' + id); if (el) el.remove();
+      var cache = JSON.parse(localStorage.getItem('currentTrainer')) || {};
+      if (Array.isArray(cache.portfolio)) {
+        cache.portfolio = cache.portfolio.filter(function (s) { return s.id !== id });
+        localStorage.setItem('currentTrainer', JSON.stringify(cache));
+      }
+      var c = document.getElementById('portfolio-gallery');
+      if (c && c.children.length === 0) c.innerHTML = '<div class="empty-msg" style="grid-column:1/-1;text-align:center;padding:20px;color:var(--tm);font-size:.85rem">No portfolio media uploaded yet.</div>';
+    }
+
+    /* ═══════════════════════════════════════
+       INTRO VIDEO
+    ═══════════════════════════════════════ */
+    function _ytIdFromUrl(url) {
+      var m = String(url || '').match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=|shorts\/|live\/))([\w-]{11})/);
+      return m ? m[1] : '';
+    }
+    function _previewIntroThumb() {
+      var url = (document.getElementById('intro-video-url') || {}).value || '';
+      var vid = _ytIdFromUrl(url);
+      var prev = document.getElementById('intro-thumb-preview');
+      if (!prev) return;
+      if (vid) {
+        prev.innerHTML = '<iframe width="100%" height="100%" src="https://www.youtube.com/embed/' + vid + '?rel=0&modestbranding=1" frameborder="0" allowfullscreen style="position:absolute;inset:0;"></iframe>';
+        prev.style.display = 'block';
+      } else {
+        prev.style.display = 'none';
+      }
+    }
+    function saveIntroVideo() {
+      var url = ((document.getElementById('intro-video-url') || {}).value || '').trim();
+      if (!url) return alert('Please enter a YouTube video URL.');
+      if (!_ytIdFromUrl(url)) return alert('That does not look like a valid YouTube URL.');
+      var cache = JSON.parse(localStorage.getItem('currentTrainer')) || {};
+      cache.introVideo = { url: url, type: 'youtube' };
+      localStorage.setItem('currentTrainer', JSON.stringify(cache));
+
+      // POST to decoupled apps script backend
+      var currentTrainerId = cache.trainerId || cache._id || cache.id || "T-1001";
+      fetch('/api/gsheet', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ trainerId: currentTrainerId, introVideo: url })
+      }).catch(console.error);
+
+      alert('✅ Intro video saved! It will appear on your public profile.');
+    }
+    function _loadIntroVideo() {
+      var cache = JSON.parse(localStorage.getItem('currentTrainer')) || {};
+      if (cache.introVideo && cache.introVideo.url) {
+        var inp = document.getElementById('intro-video-url');
+        if (inp) { inp.value = cache.introVideo.url; _previewIntroThumb(); }
+      }
+    }
+
+    /* ═══════════════════════════════════════
+       TESTIMONIAL VIDEOS
+    ═══════════════════════════════════════ */
+    function _addTestiRow(data) {
+      var cont = document.getElementById('testi-inputs-container');
+      if (!cont) return;
+      var rows = cont.querySelectorAll('.testi-row');
+      if (rows.length >= 5) return alert('Maximum 5 testimonial videos allowed.');
+      var idx = Date.now();
+      var row = document.createElement('div');
+      row.className = 'testi-row';
+      row.style.cssText = 'display:flex;gap:8px;align-items:center;margin-bottom:10px;background:var(--bg3);padding:8px 10px;border-radius:8px;border:1px solid var(--border)';
+      var thumbId = 'testi-thumb-' + idx;
+      row.innerHTML =
+        '<div id="' + thumbId + '" style="position:relative;flex:0 0 64px;height:36px;border-radius:6px;background:var(--bg2);overflow:hidden;border:1px solid var(--border)">' +
+        (data && _ytIdFromUrl(data.url) ? '<iframe src="https://www.youtube.com/embed/' + _ytIdFromUrl(data.url) + '?rel=0&modestbranding=1" frameborder="0" allowfullscreen style="position:absolute;inset:0;width:100%;height:100%;"></iframe>' : '<div style="display:flex;height:100%;align-items:center;justify-content:center;font-size:0.9rem;color:var(--tm)">▶</div>') +
+        '</div>' +
+        '<input type="url" class="form-control testi-url" placeholder="YouTube URL" style="flex:1" value="' + (data ? data.url : '') + '" oninput="_updateTestiThumb(this,\'' + thumbId + '\')">' +
+        '<input type="text" class="form-control testi-label" placeholder="Label (optional)" style="flex:0 0 130px" value="' + (data ? (data.label || '') : '') + '">' +
+        '<button onclick="this.closest(\'.testi-row\').remove()" style="background:none;border:none;cursor:pointer;color:var(--red);font-size:1.2rem;padding:0 4px">✕</button>';
+      cont.appendChild(row);
+    }
+    function _updateTestiThumb(input, thumbId) {
+      var vid = _ytIdFromUrl(input.value);
+      var box = document.getElementById(thumbId);
+      if (!box) return;
+      box.innerHTML = vid
+        ? '<iframe src="https://www.youtube.com/embed/' + vid + '?rel=0&modestbranding=1" frameborder="0" allowfullscreen style="position:absolute;inset:0;width:100%;height:100%;"></iframe>'
+        : '<div style="display:flex;height:100%;align-items:center;justify-content:center;font-size:0.9rem;color:var(--tm)">▶</div>';
+    }
+    function saveTestiVideos() {
+      var rows = document.querySelectorAll('#testi-inputs-container .testi-row');
+      var arr = [];
+      var hasError = false;
+      rows.forEach(function (row) {
+        var url = row.querySelector('.testi-url').value.trim();
+        var label = row.querySelector('.testi-label').value.trim();
+        if (!url) return;
+        if (!_ytIdFromUrl(url)) { hasError = true; return; }
+        arr.push({ url: url, label: label });
+      });
+      if (hasError) return alert('One or more URLs are not valid YouTube links. Please fix them.');
+      var cache = JSON.parse(localStorage.getItem('currentTrainer')) || {};
+      cache.testis = arr;
+      localStorage.setItem('currentTrainer', JSON.stringify(cache));
+      // Write to all fallback keys so data survives logout
+      localStorage.setItem('tv-port-testi-urls', JSON.stringify(arr));
+      localStorage.setItem('tv-trainer-1-portfolio-testis', JSON.stringify(arr));
+
+      // Also store in cache.testimonials so it matches sheet fetch key
+      cache.testimonials = arr;
+      localStorage.setItem('currentTrainer', JSON.stringify(cache));
+
+      // POST full {url, label} objects to sheet backend
+      var currentTrainerId = cache.trainerId || cache._id || cache.id || "T-1001";
+      fetch('/api/gsheet', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ trainerId: currentTrainerId, testimonials: arr })
+      }).catch(console.error);
+
+      alert('✅ Testimonial videos saved (' + arr.length + ')!');
+    }
+    function _loadTestiVideos() {
+      var cache = JSON.parse(localStorage.getItem('currentTrainer')) || {};
+
+      // Prefer cache.testimonials (populated from sheet fetch), then local testis, then portfolioLinks string
+      var raw = [];
+      if (Array.isArray(cache.testimonials) && cache.testimonials.length > 0) {
+        raw = cache.testimonials;
+      } else if (Array.isArray(cache.testis) && cache.testis.length > 0) {
+        raw = cache.testis;
+      } else if (cache.portfolioLinks && typeof cache.portfolioLinks === 'string' && cache.portfolioLinks.trim() && cache.portfolioLinks.trim() !== 'N/A') {
+        // Fallback: split portfolioLinks string by ;; to get individual video URLs
+        raw = cache.portfolioLinks.split(';;').map(function(u) { return { url: u.trim(), label: '' }; }).filter(function(i){ return i.url; });
+      }
+
+      // Normalise: sheet may store plain URL strings or {url,label} objects
+      var arr = raw.map(function (item) {
+        if (typeof item === 'string') return { url: item.trim(), label: '' };
+        return { url: (item.url || '').trim(), label: item.label || '' };
+      }).filter(function (item) { return item.url; });
+
+      if (arr.length === 0) { _addTestiRow(); return; }
+      arr.forEach(function (item) { _addTestiRow(item); });
+    }
+
+    /* ═══════════════════════════════════════
+       COMPANY LOGOS
+    ═══════════════════════════════════════ */
+    function _pickCompanyLogo() {
+      var cache = JSON.parse(localStorage.getItem('currentTrainer')) || {};
+      var logos = Array.isArray(cache.logos) ? cache.logos : [];
+      if (logos.length >= 5) return alert('Maximum 5 company logos allowed.');
+      document.getElementById('company-logo-file').click();
+    }
+    function _updateLogoCount() {
+      var cache = JSON.parse(localStorage.getItem('currentTrainer')) || {};
+      var logos = Array.isArray(cache.logos) ? cache.logos : [];
+      var el = document.getElementById('company-logo-count');
+      if (el) el.textContent = logos.length + ' / 5 added';
+    }
+    function _renderCompanyLogos() {
+      var grid = document.getElementById('company-logos-grid');
+      if (!grid) return;
+      var cache = JSON.parse(localStorage.getItem('currentTrainer')) || {};
+      var logos = Array.isArray(cache.logos) ? cache.logos : [];
+      grid.innerHTML = '';
+      logos.forEach(function (logo, i) {
+        var div = document.createElement('div');
+        div.style.cssText = 'position:relative;display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;width:90px';
+        div.innerHTML = '<button onclick="_deleteCompanyLogo(' + i + ')" style="position:absolute;top:4px;right:4px;background:rgba(0,0,0,0.6);border:none;color:#fff;cursor:pointer;font-size:.75rem;border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center" onmouseover="this.style.background=\'rgba(231,76,60,.9)\'" onmouseout="this.style.background=\'rgba(0,0,0,0.6)\'">✕</button>' +
+          '<img src="' + logo.src + '" alt="' + logo.name + '" style="width:52px;height:52px;object-fit:contain;border-radius:6px">' +
+          '<div style="font-size:0.65rem;color:var(--tm);text-align:center;max-width:70px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + logo.name + '</div>';
+        grid.appendChild(div);
+      });
+      _updateLogoCount();
+    }
+    function _deleteCompanyLogo(idx) {
+      if (!confirm('Remove this logo?')) return;
+      var cache = JSON.parse(localStorage.getItem('currentTrainer')) || {};
+      var logos = Array.isArray(cache.logos) ? cache.logos : [];
+      logos.splice(idx, 1);
+      cache.logos = logos;
+      localStorage.setItem('currentTrainer', JSON.stringify(cache));
+      localStorage.setItem('tv-port-company-logos', JSON.stringify(logos));
+      localStorage.setItem('tv-trainer-1-portfolio-logos', JSON.stringify(logos));
+      _renderCompanyLogos();
+    }
+
+    // Wire up company logo file input
+    (function () {
+      var inp = document.getElementById('company-logo-file');
+      if (!inp) return;
+      inp.addEventListener('change', function () {
+        var file = this.files[0];
+        if (!file) return;
+        if (!file.type.startsWith('image/')) return alert('Please select an image file.');
+        if (file.size > 2097152) return alert('Logo must be under 2MB.');
+        var reader = new FileReader();
+        reader.onload = function (e) {
+          var cache = JSON.parse(localStorage.getItem('currentTrainer')) || {};
+          var logos = Array.isArray(cache.logos) ? cache.logos : [];
+          if (logos.length >= 5) return alert('Maximum 5 logos allowed.');
+          var name = file.name.replace(/\.[^.]+$/, '').replace(/[_-]/g, ' ').substring(0, 20);
+          logos.push({ src: e.target.result, name: name });
+          cache.logos = logos;
+          localStorage.setItem('currentTrainer', JSON.stringify(cache));
+          localStorage.setItem('tv-port-company-logos', JSON.stringify(logos));
+          localStorage.setItem('tv-trainer-1-portfolio-logos', JSON.stringify(logos));
+          _renderCompanyLogos();
+        };
+        reader.readAsDataURL(file);
+        this.value = '';
+      });
+    })();
+
+    function _renderEventRow(item) {
+
+      var tbody = document.getElementById('events-list');
+      if (!tbody) return;
+      var empty = tbody.querySelector('.event-empty-row');
+      if (empty) empty.remove();
+      var tr = document.createElement('tr');
+      tr.id = 'event-' + item.id;
+      var logoCell = item.logo
+        ? '<img src="' + item.logo + '" alt="' + item.company + '" style="width:36px;height:36px;object-fit:contain;border-radius:4px;background:var(--bg3);border:1px solid var(--border);">'
+        : '<div style="width:36px;height:36px;background:var(--bg3);border:1px solid var(--border);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:1.1rem">&#127970;</div>';
+      tr.innerHTML = '<td>' + logoCell + '</td><td style="font-weight:500;color:var(--ts)">' + item.company + '</td><td style="color:var(--ts)">' + item.event + '</td><td style="color:var(--tm)">' + (item.date || '&#8212;') + '</td><td style="text-align:right"><button onclick="_deleteEvent(' + item.id + ')" style="background:none;border:none;cursor:pointer;color:var(--red);font-size:1.1rem;padding:2px 6px;border-radius:4px" onmouseover="this.style.background=\'rgba(231,76,60,.12)\'" onmouseout="this.style.background=\'none\'">&#128465;</button></td>';
+      tbody.appendChild(tr);
+    }
+
+    function _deleteEvent(id) {
+      if (!confirm('Remove this event?')) return;
+      var el = document.getElementById('event-' + id);
+      if (el) el.remove();
+      var cache = JSON.parse(localStorage.getItem('currentTrainer')) || {};
+      if (Array.isArray(cache.events)) {
+        cache.events = cache.events.filter(function (e) { return e.id !== id; });
+        localStorage.setItem('currentTrainer', JSON.stringify(cache));
+      }
+      var tbody = document.getElementById('events-list');
+      if (tbody && tbody.children.length === 0) {
+        tbody.innerHTML = '<tr class="event-empty-row"><td colspan="5" style="text-align:center;padding:20px;color:var(--tm);font-size:.85rem">No events yet. Click <strong>+ Add Event</strong> to begin.</td></tr>';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      var certBtn = document.getElementById('add-cert-btn');
+      if (certBtn) certBtn.addEventListener('click', function () { openModal('certificate'); });
+      var eventBtn = document.getElementById('add-event-btn');
+      if (eventBtn) eventBtn.addEventListener('click', function () { openModal('event'); });
+
+      var cache = JSON.parse(localStorage.getItem('currentTrainer')) || {};
+      if (Array.isArray(cache.achievements) && cache.achievements.length > 0) {
+        cache.achievements.forEach(function (item) { _renderCertificateItem(item); });
+      } else { _showCertEmptyState(); }
+
+      if (Array.isArray(cache.events) && cache.events.length > 0) {
+        cache.events.forEach(function (item) { _renderEventRow(item); });
+      } else {
+        var tbody = document.getElementById('events-list');
+        if (tbody) tbody.innerHTML = '<tr class="event-empty-row"><td colspan="5" style="text-align:center;padding:20px;color:var(--tm);font-size:.85rem">No events yet. Click <strong>+ Add Event</strong> to begin.</td></tr>';
+      }
+
+      // Load Services
+      var sCont = document.getElementById('services-container');
+      if (Array.isArray(cache.services) && cache.services.length > 0) {
+        cache.services.forEach(function (item) { _renderServiceItem(item); });
+      } else if (sCont) sCont.innerHTML = '<div class="empty-msg" style="grid-column:1/-1;text-align:center;padding:20px;color:var(--tm);font-size:.85rem">No services defined.</div>';
+
+      // Load Packages
+      var pCont = document.getElementById('packages-container');
+      if (Array.isArray(cache.packages) && cache.packages.length > 0) {
+        cache.packages.forEach(function (item) { _renderPackageItem(item); });
+      } else if (pCont) pCont.innerHTML = '<div class="empty-msg" style="grid-column:1/-1;text-align:center;padding:20px;color:var(--tm);font-size:.85rem">No packages defined.</div>';
+
+      // Load Availability
+      if (typeof _renderAvailabilitySettings === 'function') _renderAvailabilitySettings();
+
+      // Load Portfolio
+      var portCont = document.getElementById('portfolio-gallery');
+      if (Array.isArray(cache.portfolio) && cache.portfolio.length > 0) {
+        cache.portfolio.forEach(function (item) { _renderPortfolioItem(item); });
+      } else if (portCont) portCont.innerHTML = '<div class="empty-msg" style="grid-column:1/-1;text-align:center;padding:20px;color:var(--tm);font-size:.85rem">No portfolio media uploaded yet.</div>';
+
+      // ── Load Intro Video ──────────────────────────────────────────
+      if (typeof _loadIntroVideo === 'function') _loadIntroVideo();
+
+      // ── Load Testimonial Videos ───────────────────────────────────
+      if (typeof _loadTestiVideos === 'function') _loadTestiVideos();
+
+      // ── Load Company Logos ────────────────────────────────────────
+      if (typeof _renderCompanyLogos === 'function') _renderCompanyLogos();
+
+
+      // Profile Image Upload Asset Processing
+      var uploadPhotoFile = document.getElementById('upload-photo-file');
+      if (uploadPhotoFile) {
+        uploadPhotoFile.addEventListener('change', function (e) {
+          var file = e.target.files[0];
+          if (!file) return;
+
+          var statusSpan = document.getElementById('photo-upload-status');
+          if (statusSpan) {
+            statusSpan.innerHTML = 'Uploading... <span style="display:inline-block;animation:spin 1s linear infinite">⏳</span>';
+          }
+
+          // Simulate asynchronous background upload routine
+          setTimeout(function () {
+            // Generate mock backend path string URL
+            var mockUrl = '/assets/db/profile_' + file.name.replace(/\\s+/g, '_').toLowerCase();
+
+            // Assign to core form state data field
+            var urlInput = document.getElementById('p-photo-url');
+            if (urlInput) urlInput.value = mockUrl;
+
+            // Update preview canvas circle and front trainer card circular preview
+            var objectUrl = URL.createObjectURL(file);
+            var photoPreview = document.getElementById('photo-preview');
+            if (photoPreview) {
+              photoPreview.style.backgroundImage = 'url("' + objectUrl + '")';
+              photoPreview.style.backgroundSize = 'cover';
+              photoPreview.style.backgroundPosition = 'center';
+              var initials = document.getElementById('photo-initials');
+              if (initials) initials.style.display = 'none';
+            }
+
+            var ppAvatar = document.getElementById('pp-avatar');
+            if (ppAvatar) {
+              ppAvatar.style.backgroundImage = 'url("' + objectUrl + '")';
+              ppAvatar.style.backgroundSize = 'cover';
+              ppAvatar.style.backgroundPosition = 'center';
+              ppAvatar.innerHTML = '';
+            }
+
+            if (statusSpan) {
+              statusSpan.innerHTML = '<span style="color:var(--green)">✓ Uploaded successfully</span>';
+            }
+
+            if (typeof autoSave === 'function') autoSave();
+          }, 1200);
+        });
+      }
+
+      // Banner Image Upload Asset Processing
+      var uploadBannerFile = document.getElementById('upload-banner-file');
+      if (uploadBannerFile) {
+        uploadBannerFile.addEventListener('change', function (e) {
+          var file = e.target.files[0];
+          if (!file) return;
+
+          var objectUrl = URL.createObjectURL(file);
+
+          var profileBanner = document.getElementById('profile-banner');
+          if (profileBanner) {
+            profileBanner.style.backgroundImage = 'url("' + objectUrl + '")';
+            profileBanner.style.backgroundSize = 'cover';
+            profileBanner.style.backgroundPosition = 'center';
+          }
+
+          var bannerOverlay = document.getElementById('banner-overlay');
+          if (bannerOverlay) bannerOverlay.style.display = 'none';
+
+          var ppBannerPreview = document.getElementById('profile-banner-preview');
+          if (ppBannerPreview) {
+            ppBannerPreview.style.backgroundImage = 'url("' + objectUrl + '")';
+            ppBannerPreview.style.backgroundSize = 'cover';
+            ppBannerPreview.style.backgroundPosition = 'center';
+          }
+
+          if (typeof autoSave === 'function') autoSave();
+        });
+      }
+    });
+
+    document.addEventListener('click', function (e) {
+      var notifDrop = document.getElementById('notif-dropdown');
+      var notifTrigger = document.getElementById('notif-trigger');
+      if (notifDrop && notifDrop.style.display === 'block' && !notifDrop.contains(e.target) && !notifTrigger.contains(e.target)) {
+        notifDrop.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+
+</html>
