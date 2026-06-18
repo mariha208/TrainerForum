@@ -492,21 +492,21 @@ function subscribeToTrainers() {
                 <!-- Social icons -->
                 <div onclick="event.stopPropagation();" style="display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:14px;">
                   <a href="${waHref}" target="_blank" rel="noopener"
-                     style="width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(37,211,102,0.15);transition:transform 0.2s;"
+                     style="width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(37,211,102,0.15);transition:transform 0.2s; ${phoneStr ? '' : 'opacity:0.3;pointer-events:none;'}"
                      title="WhatsApp" onmouseover="this.style.transform='scale(1.2)';" onmouseout="this.style.transform='';"
-                     ${phoneStr ? '' : 'onclick="return false;" style="opacity:0.3;pointer-events:none;"'}>
+                     ${phoneStr ? '' : 'onclick="return false;"'}>
                     <i class="fab fa-whatsapp" style="color:#25D366;font-size:14px;"></i>
                   </a>
                   <a href="${liHref}" target="_blank" rel="noopener"
-                     style="width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(10,102,194,0.15);transition:transform 0.2s;"
+                     style="width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(10,102,194,0.15);transition:transform 0.2s; ${linkedinStr ? '' : 'opacity:0.3;pointer-events:none;'}"
                      title="LinkedIn" onmouseover="this.style.transform='scale(1.2)';" onmouseout="this.style.transform='';"
-                     ${linkedinStr ? '' : 'onclick="return false;" style="opacity:0.3;pointer-events:none;"'}>
+                     ${linkedinStr ? '' : 'onclick="return false;"'}>
                     <i class="fab fa-linkedin" style="color:#0077B5;font-size:14px;"></i>
                   </a>
                   <a href="${webHref}" target="_blank" rel="noopener"
-                     style="width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(180,145,100,0.15);transition:transform 0.2s;"
+                     style="width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(180,145,100,0.15);transition:transform 0.2s; ${websiteStr ? '' : 'opacity:0.3;pointer-events:none;'}"
                      title="Website" onmouseover="this.style.transform='scale(1.2)';" onmouseout="this.style.transform='';"
-                     ${websiteStr ? '' : 'onclick="return false;" style="opacity:0.3;pointer-events:none;"'}>
+                     ${websiteStr ? '' : 'onclick="return false;"'}>
                     <i class="fas fa-globe" style="color:#B49164;font-size:14px;"></i>
                   </a>
                 </div>
