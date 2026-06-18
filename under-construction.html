@@ -186,8 +186,30 @@
     <div class="nav-r">
       <button class="btn btn-ghost btn-sm" onclick="window.location.href='index.html'">Sign Up</button>
       <button class="btn btn-gold btn-sm" onclick="window.location.href='index.html'">Log In</button>
+    <button class="ham-btn" id="ham-btn" onclick="toggleMobileMenu()" aria-label="Toggle Menu">
+        <span></span><span></span><span></span>
+      </button>
     </div>
   </nav>
+
+  <!-- Mobile Nav Drawer -->
+  <div class="mobile-nav" id="mobile-nav">
+    <div style="display:flex; justify-content:flex-end; margin-bottom: 20px;">
+      <button onclick="toggleMobileMenu()" style="background:none; border:none; color:#fff; font-size:2rem; cursor:pointer;" aria-label="Close Menu">&times;</button>
+    </div>
+    <a href="about.html">About</a>
+    <a href="find-trainers.html">Find Trainers</a>
+    <a href="categories.html">Categories</a>
+    <a href="pricing.html">Pricing</a>
+    <a href="under-construction.html">Blog</a>
+    <a href="dashboard.html" id="mn-dash" style="display:none; color:var(--gold);">Dashboard</a>
+    
+    <div class="mn-actions" style="margin-top:30px; display:flex; flex-direction:column; gap:12px;">
+      <button class="btn btn-ghost" id="mn-btn-signup" onclick="toggleMobileMenu(); openModal('register')">Sign Up</button>
+      <button class="btn btn-gold" id="mn-btn-login" onclick="toggleMobileMenu(); openModal('login')">Log In</button>
+      <button class="btn btn-dark" id="mn-btn-logout" onclick="handleLogout()" style="display:none;">Log Out</button>
+    </div>
+  </div>
 
   <!-- ═══ UNDER CONSTRUCTION CONTENT ═══ -->
   <div class="uc-wrap">
@@ -296,5 +318,6 @@
     document.getElementById('yr').textContent = new Date().getFullYear();
   </script>
 
+<script src="js/mobile-nav.js"></script>
 </body>
 </html>
