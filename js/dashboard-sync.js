@@ -29,7 +29,7 @@ async function loadTrainerProfile() {
   if (!session || !session._id) return;
 
   try {
-    const res = await fetch(`/api/trainer/profile/${session._id}`, {
+    const res = await fetch(`/api/users/${session._id}`, {
       headers: token ? { Authorization: `Bearer ${token}` } : {}
     });
     if (res.ok) window.TDB_STATE = await res.json();
@@ -61,6 +61,17 @@ function hydrateForm() {
 
   if (s.profilePictureUrl) setAvatarPreview(s.profilePictureUrl);
   if (s.coverBannerUrl) setBannerPreview(s.coverBannerUrl);
+
+  // Membership UI Population
+  const memTypeEl = document.getElementById('db-membership-type');
+  if (memTypeEl) memTypeEl.innerText = s.membershipType || 'FREE';
+
+  const memStatusEl = document.getElementById('db-membership-status');
+  if (memStatusEl) memStatusEl.innerText = s.membershipStatus || 'ACTIVE';
+
+  const payStatusEl = document.getElementById('db-payment-status');
+  if (payStatusEl) payStatusEl.innerText = s.paymentStatus || 'FREE';
+
 }
 
 // ── LIVE PREVIEW BINDING (keyup/change → sticky card) ──────────────────────
@@ -109,7 +120,7 @@ async function handleAvatarUpload(event) {
   fd.append('avatar', file);
 
   try {
-    const res = await fetch('/api/trainer/profile/upload-avatar', {
+    const res = await fetch('/api/users/profile/upload-avatar', {
       method: 'POST',
       headers: token ? { Authorization: `Bearer ${token}` } : {},
       body: fd
@@ -413,8 +424,8 @@ async function saveTrainerProfile() {
 
   // ── STEP 2: Attempt server save (best-effort, non-blocking for the card) ──
   try {
-    const res = await fetch(`/api/trainers/profile/${session._id}`, {
-      method: 'PUT',
+    const res = await fetch(`/api/users/${session._id}`, {
+      method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`

@@ -257,8 +257,22 @@ function buildPremiumModal(t, isOwner = false) {
   }
 
   const timeSlots = ['9:00 AM', '11:00 AM', '1:00 PM', '3:00 PM', '5:00 PM', '7:00 PM'];
-  const skills = _arr(t.allSkills || t.etags || t.tags, []);
-  const tagsArr = _arr(t.tags, []);
+  // Build skills from all possible fields
+  const _rawSkills = t.allSkills || t.etags || t.skills || t.tags;
+  let skills = [];
+  if (Array.isArray(_rawSkills) && _rawSkills.length > 0) {
+    skills = _rawSkills.map(s => String(s).trim()).filter(Boolean);
+  } else if (typeof _rawSkills === 'string' && _rawSkills.trim()) {
+    skills = _rawSkills.split(',').map(s => s.trim()).filter(Boolean);
+  }
+  // Fallback: use specialization and category as pill tags if skills still empty
+  if (skills.length === 0) {
+    const spec = String(t.specialization || t.spec || '').trim();
+    const cat  = String(t.category || t.cat || '').trim();
+    if (spec) spec.split(',').map(s => s.trim()).filter(Boolean).forEach(s => skills.push(s));
+    if (cat && !skills.includes(cat)) skills.push(cat);
+  }
+  const tagsArr = skills; // keep same reference for de-dupe below
 
   // Reviews data — loaded from Firestore trainer document (reviewsData field)
   const reviews = _arr(t.reviewsData, []);
@@ -384,8 +398,10 @@ function buildPremiumModal(t, isOwner = false) {
           <div class="tpm-section">
             <div class="tpm-section-title"><span class="tpm-sec-icon">💡</span> Skills & Expertise</div>
             <div class="tpm-skill-tags">
-              ${skills.map((s, i) => `<span class="tpm-skill-tag ${i % 3 === 0 ? 'gold' : ''}">${s}</span>`).join('')}
-              ${tagsArr.filter(tg => !skills.includes(tg)).map(tg => `<span class="tpm-skill-tag gold">${tg}</span>`).join('')}
+              ${skills.length
+                ? skills.map((s, i) => `<span class="tpm-skill-tag ${i % 3 === 0 ? 'gold' : ''}">${s}</span>`).join('')
+                : `<span style="color:rgba(237,242,247,0.35);font-size:0.82rem;">No skills listed yet.</span>`
+              }
             </div>
           </div>
 
@@ -505,11 +521,12 @@ function buildPremiumModal(t, isOwner = false) {
             <div class="tpm-section-title"><span class="tpm-sec-icon">🏅</span> Certifications By</div>
 
             ${(() => {
-      // Parse the certificationsBy field from Google Sheets flat string or array
-      const rawCerts = t.certificationsBy || '';
+      // Read from all possible field aliases
+      const rawCerts = t.certificationsBy || t.achievements || t.certifications || '';
       let certRows = [];
       if (Array.isArray(rawCerts) && rawCerts.length > 0) {
-        certRows = rawCerts;
+        // Filter out empty/invalid rows (must have at least a name or givenBy)
+        certRows = rawCerts.filter(r => r && (r.name || r.givenBy || r.year) && !r.id /* skip achievement-format objects */);
       } else if (typeof rawCerts === 'string' && rawCerts.trim() && rawCerts.trim() !== 'N/A') {
         certRows = rawCerts.split(' ;; ').map(chunk => {
           const parts = chunk.split(' | ');
@@ -578,8 +595,8 @@ function buildPremiumModal(t, isOwner = false) {
       let videoId = '';
       const ytMatch = String(tst.url || '').match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=|shorts\/|live\/))([\w-]{11})/);
       if (ytMatch && ytMatch[1]) videoId = ytMatch[1];
-      
-      const metadataHtml = (tst.companyName || tst.guestName || tst.date) 
+
+      const metadataHtml = (tst.companyName || tst.guestName || tst.date)
         ? `<div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent, rgba(0,0,0,0.9));color:#fff;font-size:0.75rem;padding:20px 10px 8px;pointer-events:none;display:flex;flex-direction:column;gap:2px;">
              ${tst.companyName ? `<span style="font-weight:700;color:var(--tm)">🏢 ${tst.companyName}</span>` : ''}
              ${tst.guestName ? `<span style="opacity:0.9">👤 ${tst.guestName}</span>` : ''}
@@ -1462,11 +1479,11 @@ window.openReviewModal = function (tid) {
 
     <button onclick="submitReview('${t.id}')" style="width:100%;padding:14px;background:linear-gradient(135deg,#C5A059,#E6C97A);border:none;border-radius:10px;color:#071A3A;font-family:'Outfit',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;box-shadow:0 6px 20px rgba(197,160,89,0.35);transition:transform .2s">Submit Review</button>
   </div>`;
-  
+
   modal.style.display = 'flex';
 };
 
-window.setReviewStars = function(val) {
+window.setReviewStars = function (val) {
   document.getElementById('review-stars-val').value = val;
   const spans = document.getElementById('review-stars-input').querySelectorAll('span');
   spans.forEach((span, i) => {
@@ -1474,23 +1491,24 @@ window.setReviewStars = function(val) {
   });
 };
 
-window.closeReviewModal = function() {
+window.closeReviewModal = function () {
   const modal = document.getElementById('review-modal');
   if (modal) modal.style.display = 'none';
 };
 
-window.submitReview = function(tid) {
+window.submitReview = function (tid) {
   const stars = document.getElementById('review-stars-val').value;
-  if(stars === '0') {
+  if (stars === '0') {
     alert('Please select a star rating.');
     return;
   }
   // Dummy submit for front-end
   const btn = document.querySelector('#review-modal button[onclick^="submitReview"]');
-  if(btn) btn.textContent = 'Submitting...';
-  
+  if (btn) btn.textContent = 'Submitting...';
+
   setTimeout(() => {
     closeReviewModal();
     window.toast && window.toast('⭐ Review submitted successfully! Pending approval.');
   }, 1000);
 };
+

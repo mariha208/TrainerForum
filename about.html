@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" class="dark-mode">
 
 <head>
@@ -83,21 +83,28 @@
 
 <body>
   <!-- ═══ NAVBAR (same on every page) ═══ -->
+  <!-- ═══ NAVBAR ═══ -->
   <nav id="nav">
     <a class="logo" href="index.html">
-      <img src="img/logo.svg" alt="World Trainer Forum Logo" style="height:42px; margin-right:10px;">World Trainer <span class="g">Forum</span>
+      <img src="img/logo.svg" alt="World Trainer Forum Logo" style="height:42px; margin-right:10px;">World Trainer <span
+        class="g">Forum</span>
     </a>
     <ul class="nav-links">
-      <li><a href="about.html" class="active">About</a></li>
-      <li><a href="find-trainers.html">Find Trainers</a></li>
-      <li><a href="categories.html">Categories</a></li>
-      <li><a href="pricing.html">Pricing</a></li>
-      <li><a href="under-construction.html">Blog</a></li>
+      <li><a id="nl-home" href="index.html">Home</a></li>
+      <li><a id="nl-about" href="about.html" class="active">About</a></li>
+      <li><a id="nl-browse" href="find-trainers.html">Find Trainers</a></li>
+      <li><a id="nl-cats" href="categories.html">Categories</a></li>
+      <li><a id="nl-pricing" href="pricing.html">Pricing</a></li>
+      <li><a id="nl-blog" href="under-construction.html">Blog</a></li>
+      <li><a id="nl-dash" href="dashboard.html" target="_blank" style="display:none;">Dashboard</a></li>
     </ul>
     <div class="nav-r">
-      <button class="btn btn-ghost btn-sm" onclick="window.location.href='index.html'">Sign Up</button>
-      <button class="btn btn-gold btn-sm" onclick="window.location.href='index.html'">Log In</button>
-    <button class="ham-btn" id="ham-btn" onclick="toggleMobileMenu()" aria-label="Toggle Menu">
+      <button class="notif-btn" id="notif-btn" onclick="toggleNotif()">🔔<span class="notif-dot"></span></button>
+      <button class="btn btn-ghost btn-sm" id="btn-signup" onclick="openModal('register')">Sign Up</button>
+      <button class="btn btn-gold btn-sm" id="btn-login" onclick="openModal('login')">Log In</button>
+      <button class="btn btn-dark btn-sm" id="btn-logout" onclick="handleLogout()" style="display:none;">Log
+        Out</button>
+      <button class="ham-btn" id="ham-btn" onclick="toggleMobileMenu()" aria-label="Toggle Menu">
         <span></span><span></span><span></span>
       </button>
     </div>
@@ -106,17 +113,21 @@
   <!-- Mobile Nav Drawer -->
   <div class="mobile-nav" id="mobile-nav">
     <div style="display:flex; justify-content:flex-end; margin-bottom: 20px;">
-      <button onclick="toggleMobileMenu()" style="background:none; border:none; color:#fff; font-size:2rem; cursor:pointer;" aria-label="Close Menu">&times;</button>
+      <button onclick="toggleMobileMenu()"
+        style="background:none; border:none; color:#fff; font-size:2rem; cursor:pointer;"
+        aria-label="Close Menu">&times;</button>
     </div>
+    <a href="index.html">Home</a>
     <a href="about.html">About</a>
     <a href="find-trainers.html">Find Trainers</a>
     <a href="categories.html">Categories</a>
     <a href="pricing.html">Pricing</a>
     <a href="under-construction.html">Blog</a>
     <a href="dashboard.html" id="mn-dash" style="display:none; color:var(--gold);">Dashboard</a>
-    
+
     <div class="mn-actions" style="margin-top:30px; display:flex; flex-direction:column; gap:12px;">
-      <button class="btn btn-ghost" id="mn-btn-signup" onclick="toggleMobileMenu(); openModal('register')">Sign Up</button>
+      <button class="btn btn-ghost" id="mn-btn-signup" onclick="toggleMobileMenu(); openModal('register')">Sign
+        Up</button>
       <button class="btn btn-gold" id="mn-btn-login" onclick="toggleMobileMenu(); openModal('login')">Log In</button>
       <button class="btn btn-dark" id="mn-btn-logout" onclick="handleLogout()" style="display:none;">Log Out</button>
     </div>
@@ -131,7 +142,7 @@
       <div class="container">
         <div class="hero-content reveal is-visible">
           <p class="eyebrow">Global Trainer Community</p>
-          <h1>Empowering Professionals. Inspiring Growth. Creating Global Impact.</h1>
+          <h2>Empowering Professionals. Inspiring Growth. Creating Global Impact.</h2>
           <p class="lead">A powerful community where trainers, coaches, mentors, consultants, HR professionals,
             facilitators and learning experts connect, collaborate and grow together.</p>
           <div class="btn-row">
@@ -154,7 +165,7 @@
             </a>
           </div>
 
-          <div class="hero-stats">
+          <div class="hero-stats" style="display: grid; grid-template-columns: repeat(3, 1fr);">
             <div class="hero-stat">
               <strong data-count="64">0</strong>
               <span>Countries Represented</span>
@@ -260,52 +271,24 @@
      ============================================================ -->
     <section class="section about-us" id="about" aria-labelledby="about-heading">
       <div class="container about-grid">
-        <div class="about-visual reveal" aria-hidden="true">
-          <svg viewBox="0 0 420 460" xmlns="http://www.w3.org/2000/svg" role="img"
-            aria-label="Illustration of professionals collaborating around a shared knowledge hub">
-            <defs>
-              <linearGradient id="aboutGrad" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stop-color="#008B8B" stop-opacity=".12" />
-                <stop offset="100%" stop-color="#C5A059" stop-opacity=".10" />
-              </linearGradient>
-            </defs>
-            <rect x="14" y="14" width="392" height="432" rx="32" fill="url(#aboutGrad)" />
-            <rect x="14" y="14" width="392" height="432" rx="32" fill="none" stroke="#0A2551" stroke-opacity=".08" />
-            <g transform="translate(60,70)">
-              <circle cx="150" cy="40" r="38" fill="#0A2551" />
-              <path d="M120 95c10-18 32-26 30-26h0c-2 0-12 8-22 26z" fill="none" />
-              <circle cx="150" cy="40" r="38" fill="none" stroke="#C5A059" stroke-width="2" stroke-dasharray="3 7"
-                style="animation:spinSlow 14s linear infinite; transform-origin:150px 40px;" />
-              <path d="M150 40h-46M150 40h46M150 40v-46M150 40v46" stroke="#008B8B" stroke-opacity=".35"
-                stroke-width="1.5" />
-              <circle cx="104" cy="40" r="20" fill="#008B8B" />
-              <circle cx="196" cy="40" r="20" fill="#008B8B" />
-              <circle cx="150" cy="-6" r="20" fill="#C5A059" />
-              <circle cx="150" cy="86" r="20" fill="#008B8B" opacity=".7" />
-            </g>
-            <g transform="translate(40,240)" stroke="#0A2551" stroke-opacity=".1">
-              <line x1="0" y1="0" x2="300" y2="0" />
-              <line x1="0" y1="40" x2="300" y2="40" />
-              <line x1="0" y1="80" x2="220" y2="80" />
-            </g>
-            <rect x="40" y="350" width="130" height="68" rx="16" fill="#FFFFFF" stroke="#D4D9DE" />
-            <circle cx="64" cy="374" r="9" fill="#008B8B" opacity=".7" />
-            <rect x="80" y="368" width="70" height="6" rx="3" fill="#0A2551" opacity=".18" />
-            <rect x="80" y="380" width="50" height="6" rx="3" fill="#0A2551" opacity=".1" />
-            <rect x="56" y="396" width="98" height="14" rx="7" fill="#008B8B" opacity=".12" />
-
-            <rect x="200" y="320" width="160" height="98" rx="18" fill="#0A2551" />
-            <circle cx="228" cy="350" r="11" fill="#C5A059" />
-            <rect x="246" y="344" width="90" height="6" rx="3" fill="#FFFFFF" opacity=".7" />
-            <rect x="246" y="356" width="64" height="6" rx="3" fill="#FFFFFF" opacity=".35" />
-            <rect x="222" y="376" width="116" height="26" rx="13" fill="#C5A059" opacity=".18" />
-            <rect x="234" y="384" width="60" height="6" rx="3" fill="#C5A059" />
-          </svg>
+        <div class="about-visual reveal">
+          <div class="image-slider">
+            <div class="slider-wrapper">
+              <img src="img/slider1.png" alt="Corporate Training Session" class="slide active">
+              <img src="img/slider2.png" alt="Executive Coaching" class="slide">
+              <img src="img/slider3.png" alt="Professional Seminar" class="slide">
+            </div>
+            <div class="slider-nav">
+              <button class="dot active" aria-label="Slide 1" onclick="currentSlide(0)"></button>
+              <button class="dot" aria-label="Slide 2" onclick="currentSlide(1)"></button>
+              <button class="dot" aria-label="Slide 3" onclick="currentSlide(2)"></button>
+            </div>
+          </div>
         </div>
 
         <div class="about-copy reveal reveal-delay-1">
           <p class="eyebrow" id="about-heading-label">Who We Are</p>
-          <h2 id="about-heading">A global home for the people who develop people</h2>
+          <h2 id="about-heading">A global platform for the people who develop people</h2>
           <p class="lead" style="margin-top:1.25rem;">World Trainer Forum is a global professional community dedicated
             to empowering trainers, coaches, mentors, consultants, motivational speakers, facilitators, HR
             professionals and Learning &amp; Development experts.</p>
@@ -716,69 +699,241 @@
   </main>
 
   <!-- ═══ FOOTER (same on every page) ═══ -->
-  <footer>
-    <div class="footer-grid">
-      <div class="footer-brand">
-        <div class="logo" style="color:var(--tp);margin-bottom:4px">
-          <img src="img/logo.svg" alt="World Trainer Forum Logo" style="height:34px; margin-right:8px;">World Trainer <span class="g">Forum</span>
+  <footer id="site-footer">
+
+    <!-- ── MAIN FOOTER BODY ── -->
+    <div class="footer-main">
+
+      <!-- ROW 1: Brand + 4 link columns + Newsletter -->
+      <div class="footer-top-grid">
+
+        <!-- SECTION 1: Brand + Trust -->
+        <div class="footer-brand-col">
+          <a class="footer-logo" href="index.html">
+            <img src="img/logo.svg" alt="World Trainer Forum Logo">
+            <span>World Trainer <span class="g">Forum</span></span>
+          </a>
+          <p class="footer-tagline">Connecting organizations with world-class trainers, coaches, mentors, and speakers
+            worldwide.</p>
+
+          <!-- Trust Indicators -->
+          <ul class="footer-trust-list">
+            <li><i class="fa-solid fa-circle-check"></i> Verified Trainers</li>
+            <li><i class="fa-solid fa-globe"></i> Global Community</li>
+            <li><i class="fa-solid fa-lock"></i> Secure Payments</li>
+            <li><i class="fa-solid fa-building"></i> Corporate Solutions</li>
+            <li><i class="fa-solid fa-headset"></i> 24/7 Support</li>
+          </ul>
+
+          <!-- Stats Row -->
+          <div class="footer-stats">
+            <div class="footer-stat-card">
+              <i class="fa-solid fa-users"></i>
+              <span class="fsc-num">50K+</span>
+              <span class="fsc-lbl">Trainers</span>
+            </div>
+            <div class="footer-stat-card">
+              <i class="fa-solid fa-earth-asia"></i>
+              <span class="fsc-num">120+</span>
+              <span class="fsc-lbl">Countries</span>
+            </div>
+            <div class="footer-stat-card">
+              <i class="fa-solid fa-graduation-cap"></i>
+              <span class="fsc-num">1M+</span>
+              <span class="fsc-lbl">Learners</span>
+            </div>
+            <div class="footer-stat-card">
+              <i class="fa-solid fa-calendar-check"></i>
+              <span class="fsc-num">10K+</span>
+              <span class="fsc-lbl">Sessions</span>
+            </div>
+          </div>
+
+          <!-- Social Icons -->
+          <div class="footer-social">
+            <a href="#" class="fsoc-btn" aria-label="LinkedIn" title="LinkedIn">
+              <i class="fa-brands fa-linkedin-in"></i>
+            </a>
+            <a href="#" class="fsoc-btn" aria-label="Facebook" title="Facebook">
+              <i class="fa-brands fa-facebook-f"></i>
+            </a>
+            <a href="#" class="fsoc-btn" aria-label="Instagram" title="Instagram">
+              <i class="fa-brands fa-instagram"></i>
+            </a>
+            <a href="#" class="fsoc-btn" aria-label="YouTube" title="YouTube">
+              <i class="fa-brands fa-youtube"></i>
+            </a>
+            <a href="#" class="fsoc-btn" aria-label="X / Twitter" title="X / Twitter">
+              <i class="fa-brands fa-x-twitter"></i>
+            </a>
+          </div>
         </div>
-        <p>The premium marketplace connecting organizations with world-class trainers, coaches, and mentors globally. LinkedIn + Fiverr + BigSpeak — for every field.</p>
-        <div style="display:flex;gap:10px;margin-top:18px">
-          <div style="width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;font-size:.8rem;cursor:pointer">𝕏</div>
-          <div style="width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;font-size:.8rem;cursor:pointer">in</div>
-          <div style="width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;font-size:.8rem;cursor:pointer">f</div>
+
+        <!-- SECTION 2: For Clients -->
+        <div class="footer-col">
+          <h4 class="footer-col-hd">For Clients</h4>
+          <ul class="footer-links">
+            <li><a href="find-trainers.html">Browse Trainers</a></li>
+            <li><a href="categories.html">All Categories</a></li>
+            <li><a href="corporate-training.html">Corporate Training</a></li>
+            <li><a href="gift-a-session.html">Gift a Session</a></li>
+            <li><a href="pricing.html">Pricing</a></li>
+            <li><a href="leadership-training.html">Leadership Training</a></li>
+            <li><a href="sales-training.html">Sales Training</a></li>
+            <li><a href="soft-skills-training.html">Soft Skills Training</a></li>
+            <li><a href="technology-training.html">Technology Training</a></li>
+            <li><a href="executive-coaching.html">Executive Coaching</a></li>
+            <li><a href="team-building.html">Team Building Programs</a></li>
+            <li><a href="request-custom-training.html">Request Custom Training</a></li>
+          </ul>
+        </div>
+
+        <!-- SECTION 3: For Trainers -->
+        <div class="footer-col">
+          <h4 class="footer-col-hd">For Trainers</h4>
+          <ul class="footer-links">
+            <li><a href="dashboard.html">List Your Profile</a></li>
+            <li><a href="trainer-resources.html">Trainer Resources</a></li>
+            <li><a href="community-forum.html">Community Forum</a></li>
+            <li><a href="success-stories.html">Success Stories</a></li>
+            <li><a href="verification-process.html">Verification Process</a></li>
+            <li><a href="dashboard.html">Trainer Dashboard</a></li>
+            <li><a href="become-verified.html">Become Verified</a></li>
+            <li><a href="trainer-academy.html">Trainer Academy</a></li>
+            <li><a href="learning-center.html">Learning Center</a></li>
+            <li><a href="certification-support.html">Certification Support</a></li>
+            <li><a href="events-workshops.html">Events &amp; Workshops</a></li>
+            <li><a href="earnings-program.html">Earnings Program</a></li>
+            <li><a href="partner-program.html">Partner Program</a></li>
+          </ul>
+        </div>
+
+        <!-- SECTION 5: Company -->
+        <div class="footer-col">
+          <h4 class="footer-col-hd">Company</h4>
+          <ul class="footer-links">
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="blog.html">Blog</a></li>
+            <li><a href="press.html">Press</a></li>
+            <li><a href="careers.html">Careers</a></li>
+            <li><a href="privacy-policy.html">Privacy Policy</a></li>
+            <li><a href="contact.html">Contact Us</a></li>
+            <li><a href="terms-conditions.html">Terms &amp; Conditions</a></li>
+            <li><a href="faqs.html">FAQs</a></li>
+            <li><a href="help-center.html">Help Center</a></li>
+            <li><a href="affiliate-program.html">Affiliate Program</a></li>
+            <li><a href="partners.html">Partners</a></li>
+            <li><a href="media-kit.html">Media Kit</a></li>
+          </ul>
+        </div>
+
+
+        <!-- SECTION 6: Newsletter -->
+        <div class="footer-newsletter-col">
+          <div class="footer-newsletter-card">
+            <div class="fnl-icon"><i class="fa-solid fa-paper-plane"></i></div>
+            <h4 class="fnl-title">Stay Updated</h4>
+            <p class="fnl-sub">Get training insights, industry trends, and expert resources.</p>
+            <form class="fnl-form" onsubmit="return false;">
+              <div class="fnl-input-wrap">
+                <i class="fa-regular fa-envelope fnl-input-ico"></i>
+                <input type="email" class="fnl-input" placeholder="Your email address"
+                  aria-label="Email for newsletter">
+                <button type="submit" class="fnl-btn">Subscribe</button>
+              </div>
+            </form>
+            <ul class="fnl-features">
+              <li><i class="fa-solid fa-circle-check"></i> Weekly insights</li>
+              <li><i class="fa-solid fa-circle-check"></i> Trainer resources</li>
+              <li><i class="fa-solid fa-circle-check"></i> Event updates</li>
+            </ul>
+          </div>
+        </div>
+
+      </div><!-- /footer-top-grid -->
+
+      <!-- SECTION 4: Popular Training Topics (Chips) -->
+      <div class="footer-topics">
+        <h4 class="footer-topics-hd">Popular Training Topics</h4>
+        <div class="footer-chips">
+          <a href="#" class="footer-chip">Leadership</a>
+          <a href="#" class="footer-chip">Communication Skills</a>
+          <a href="#" class="footer-chip">AI &amp; Technology</a>
+          <a href="#" class="footer-chip">Sales &amp; Marketing</a>
+          <a href="#" class="footer-chip">HR Training</a>
+          <a href="#" class="footer-chip">Public Speaking</a>
+          <a href="#" class="footer-chip">Personal Development</a>
+          <a href="#" class="footer-chip">Business Strategy</a>
+          <a href="#" class="footer-chip">Finance</a>
+          <a href="#" class="footer-chip">Health &amp; Wellness</a>
+          <a href="#" class="footer-chip">Executive Coaching</a>
+          <a href="#" class="footer-chip">Team Building</a>
         </div>
       </div>
-      <div class="footer-col">
-        <h4>For Clients</h4>
-        <ul>
-          <li><a href="find-trainers.html">Browse Trainers</a></li>
-          <li><a href="categories.html">All Categories</a></li>
-          <li><a href="under-construction.html">Corporate Training</a></li>
-          <li><a href="under-construction.html">Gift a Session</a></li>
-          <li><a href="pricing.html">Pricing</a></li>
-        </ul>
+
+      <!-- SECTION 7: Trust & Security Strip -->
+      <div class="footer-trust-strip">
+        <div class="fts-item">
+          <i class="fa-solid fa-shield-halved"></i>
+          <span>SSL Secure</span>
+        </div>
+        <div class="fts-divider"></div>
+        <div class="fts-item">
+          <i class="fa-solid fa-scale-balanced"></i>
+          <span>GDPR Compliant</span>
+        </div>
+        <div class="fts-divider"></div>
+        <div class="fts-item">
+          <i class="fa-solid fa-user-check"></i>
+          <span>Verified Profiles</span>
+        </div>
+        <div class="fts-divider"></div>
+        <div class="fts-item">
+          <i class="fa-solid fa-credit-card"></i>
+          <span>Safe Payments</span>
+        </div>
+        <div class="fts-divider"></div>
+        <div class="fts-item">
+          <i class="fa-solid fa-earth-americas"></i>
+          <span>Trusted Worldwide</span>
+        </div>
       </div>
-      <div class="footer-col">
-        <h4>For Trainers</h4>
-        <ul>
-          <li><a href="dashboard.html">List Your Profile</a></li>
-          <li><a href="under-construction.html">Trainer Resources</a></li>
-          <li><a href="under-construction.html">Community Forum</a></li>
-          <li><a href="under-construction.html">Success Stories</a></li>
-          <li><a href="under-construction.html">Verification Process</a></li>
-          <li><a href="dashboard.html">Trainer Dashboard</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h4>Company</h4>
-        <ul>
-          <li><a href="about.html">About Us</a></li>
-          <li><a href="under-construction.html">Blog</a></li>
-          <li><a href="under-construction.html">Press</a></li>
-          <li><a href="under-construction.html">Careers</a></li>
-          <li><a href="under-construction.html">Privacy Policy</a></li>
-        </ul>
+
+    </div><!-- /footer-main -->
+
+    <!-- SECTION 8: Bottom Legal Bar -->
+    <div class="footer-legal">
+      <div class="footer-legal-inner">
+        <span class="fl-copy">© 2026 World Trainer Forum Technologies Pvt. Ltd. All rights reserved.</span>
+        <nav class="fl-links" aria-label="Legal links">
+          <a href="#">Privacy Policy</a>
+          <span class="fl-dot">·</span>
+          <a href="#">Terms</a>
+          <span class="fl-dot">·</span>
+          <a href="#">Cookies</a>
+          <span class="fl-dot">·</span>
+          <a href="#">Accessibility</a>
+          <span class="fl-dot">·</span>
+          <a href="#">Sitemap</a>
+        </nav>
+        <span class="fl-tagline">Made for Global Learning &amp; Growth 🌍</span>
       </div>
     </div>
-    <div class="footer-bottom">
-      <span>© <span id="footerYear">2026</span> World Trainer Forum Technologies Pvt. Ltd. All rights reserved.</span>
-      <span>Privacy · Terms · Cookies · Sitemap</span>
-    </div>
+
   </footer>
 
   <script>
     /* Reveal animations for about page */
     var revealEls = document.querySelectorAll('.reveal');
     if ('IntersectionObserver' in window) {
-      var io = new IntersectionObserver(function(entries) {
-        entries.forEach(function(e) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
           if (e.isIntersecting) { e.target.classList.add('is-visible'); io.unobserve(e.target); }
         });
       }, { threshold: .15, rootMargin: '0px 0px -60px 0px' });
-      revealEls.forEach(function(el) { io.observe(el); });
+      revealEls.forEach(function (el) { io.observe(el); });
     } else {
-      revealEls.forEach(function(el) { el.classList.add('is-visible'); });
+      revealEls.forEach(function (el) { el.classList.add('is-visible'); });
     }
 
     /* Animated counters */
@@ -795,19 +950,53 @@
       })(performance.now());
     }
     if ('IntersectionObserver' in window && counters.length) {
-      var cio = new IntersectionObserver(function(entries) {
-        entries.forEach(function(e) { if (e.isIntersecting) { animateCounter(e.target); cio.unobserve(e.target); } });
+      var cio = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) { if (e.isIntersecting) { animateCounter(e.target); cio.unobserve(e.target); } });
       }, { threshold: .5 });
-      counters.forEach(function(c) { cio.observe(c); });
+      counters.forEach(function (c) { cio.observe(c); });
     } else {
-      counters.forEach(function(c) { c.textContent = (c.getAttribute('data-count') || '0') + (c.getAttribute('data-suffix') || ''); });
+      counters.forEach(function (c) { c.textContent = (c.getAttribute('data-count') || '0') + (c.getAttribute('data-suffix') || ''); });
     }
 
     /* Footer year */
     var yr = document.getElementById('footerYear');
     if (yr) yr.textContent = new Date().getFullYear();
+
+    /* Image Slider Logic */
+    var slideIndex = 0;
+    var slides = document.querySelectorAll('.image-slider .slide');
+    var dots = document.querySelectorAll('.image-slider .dot');
+    var sliderInterval;
+
+    function showSlide(n) {
+      if (!slides.length) return;
+      slideIndex = n;
+      if (slideIndex >= slides.length) { slideIndex = 0; }
+      if (slideIndex < 0) { slideIndex = slides.length - 1; }
+
+      slides.forEach(function (s) { s.classList.remove('active'); });
+      dots.forEach(function (d) { d.classList.remove('active'); });
+
+      slides[slideIndex].classList.add('active');
+      if (dots[slideIndex]) dots[slideIndex].classList.add('active');
+    }
+
+    function currentSlide(n) {
+      clearInterval(sliderInterval);
+      showSlide(n);
+      startSlider();
+    }
+
+    function startSlider() {
+      if (!slides.length) return;
+      sliderInterval = setInterval(function () {
+        showSlide(slideIndex + 1);
+      }, 4000);
+    }
+
+    startSlider();
   </script>
-<script src="js/mobile-nav.js"></script>
+  <script src="js/mobile-nav.js"></script>
 </body>
 
 </html>

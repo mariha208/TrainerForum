@@ -6,10 +6,18 @@
 'use strict';
 
 // ═══════════════════════════════════════════════════
-// CRITICAL CONFIGURATION: PASTE YOUR GOOGLE WEB APP URL HERE
+// MONGODB BACKEND CONFIGURATION
 // ═══════════════════════════════════════════════════
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwHHlofzvb_rdgb6goyLhu8BPdeRX5g3eS-fCWgUrPKd4MipkzNsCaAZNz1SnhsSDVs/exec';
-const TARGET_TRAINER_ID = "T-1001"; // Must match across GET and POST operations exactly
+const API_BASE_URL = '/api/users';
+
+// Get the logged-in user's real MongoDB _id from localStorage
+function getLoggedInUserId() {
+  try {
+    const session = JSON.parse(localStorage.getItem('currentTrainer') || 'null');
+    return session && session._id ? session._id : null;
+  } catch (e) { return null; }
+}
+
 
 // ── UTILITY 1: UI CARD SYNC COUPLING MATRIX ──────────────────────────────────
 function syncDisplayCardUI(data) {
@@ -35,6 +43,7 @@ function syncDisplayCardUI(data) {
   setUIInnerText("greeting-name", nameString.split(" ")[0]);
   setUIInnerText("pp-name", nameString);
   setUIInnerText("pp-tagline", taglineString);
+  setUIInnerText("db-membership-type", data.membershipType || "FREE");
 
   document.querySelectorAll('.profile-card h3, .preview-card h3, .trainer-card-name, #card-name').forEach(el => el.innerText = nameString);
   document.querySelectorAll('.profile-card p, .preview-card p, .trainer-card-tagline, #card-tagline').forEach(el => {
@@ -85,8 +94,12 @@ function populateDashboardInputs(data) {
   const linksInput = document.getElementById("p-portfolio-links") || document.querySelector('input[placeholder*="External Portfolio" i]');
   if (linksInput) linksInput.value = initialLinks;
 
-  if (document.getElementById("p-tags") && data.tags) {
-    document.getElementById("p-tags").value = Array.isArray(data.tags) ? data.tags.join(', ') : data.tags;
+  const _tagsEl = document.getElementById("p-tags");
+  if (_tagsEl) {
+    const _skillsRaw = data.skills || data.tags;
+    if (_skillsRaw) {
+      _tagsEl.value = Array.isArray(_skillsRaw) ? _skillsRaw.join(', ') : _skillsRaw;
+    }
   }
 
   const profilePhotoUrl = data.profileImageUrl || data.profilePictureUrl || "";
@@ -197,11 +210,17 @@ function populateDashboardInputs(data) {
 }
 
 // ── UTILITY 3: COLLECT & SAVE RESTRUCTURINGS ─────────────────────────────────
-function commitLocalProfileChanges() {
+window.commitLocalProfileChanges = function commitLocalProfileChanges() {
+  const userId = getLoggedInUserId();
+  if (!userId) {
+    alert('You must be logged in to save your profile.');
+    return;
+  }
+
   let cached = JSON.parse(localStorage.getItem("currentTrainer")) || {};
 
   const payload = {
-    trainerId: TARGET_TRAINER_ID,
+
     fullName: document.getElementById("p-name")?.value?.trim() || "",
     tagline: document.getElementById("p-tagline")?.value?.trim() || "",
     category: document.getElementById("p-category")?.value?.trim() || "",
@@ -235,42 +254,126 @@ function commitLocalProfileChanges() {
       return arr;
     })(),
 
-    services: cached.services || "N/A",
-    packages: cached.packages || [],
-    portfolioVideo: document.querySelector('input[placeholder*="youtube.com" i]')?.value?.trim() || cached.portfolioVideo || "",
-
-    // Testimonials is correctly retrieved from cache if managed via separate module, or an input if present.
+    services: typeof window._getServices === 'function' ? window._getServices() : (cached.services || []),
+    packages: typeof window._getPackages === 'function' ? window._getPackages() : (cached.packages || []),
+    testimonialVideos: typeof window._getTestiVideos === 'function' ? window._getTestiVideos() : (cached.testimonialVideos || []),
+    introVideo: document.getElementById('intro-video-url')?.value?.trim() || (typeof cached.introVideo === 'object' ? cached.introVideo.url : cached.introVideo) || "",
     testimonials: typeof window._getTestimonials === 'function' ? window._getTestimonials() : (cached.testimonials || document.getElementById("p-portfolio-links")?.value?.trim() || cached.portfolioLinks || "N/A"),
 
-    availability: typeof window._getAvailability === 'function' ? window._getAvailability() : (cached.availability || "Mon-Fri | 9:00 AM - 6:00 PM")
+    availability: typeof window._getAvailability === 'function' ? window._getAvailability() : (cached.availability || "Mon-Fri | 9:00 AM - 6:00 PM"),
+
+    // Skills / Expertise tags
+    skills: (() => {
+      const raw = (document.getElementById('p-tags')?.value || '').trim();
+      if (!raw) return cached.skills || cached.tags || [];
+      return raw.split(',').map(s => s.trim()).filter(Boolean);
+    })()
   };
 
-  if (window._profileImageBase64) payload.profileImageBase64 = window._profileImageBase64;
-  if (window._bannerImageBase64) payload.bannerImageBase64 = window._bannerImageBase64;
+  console.log('Sending to MongoDB:', JSON.stringify(payload, null, 2));
 
-  console.log("🚀 Syncing payload data directly to target Google macro row...", payload);
+  // ── DRIVE UPLOAD THEN PATCH ───────────────────────────────────────────────
+  // If a new profile or banner photo was staged, upload it to Google Drive first
+  // to get a permanent URL, then include that URL in the MongoDB payload.
+  async function _uploadStagedImages() {
+    const uploads = [];
 
-  fetch('/api/gsheet', {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload)
-  })
+    if (window._stagedProfileFile) {
+      uploads.push(
+        _uploadImageToDrive(window._stagedProfileFile, 'profile')
+          .then(url => { payload.profileImageUrl = url; })
+      );
+    }
+
+    if (window._stagedBannerFile) {
+      uploads.push(
+        _uploadImageToDrive(window._stagedBannerFile, 'banner')
+          .then(url => { payload.bannerImageUrl = url; })
+      );
+    }
+
+    await Promise.all(uploads);
+  }
+
+  async function _uploadImageToDrive(file, type) {
+    const statusEl = document.getElementById(type === 'profile' ? 'photo-upload-status' : 'banner-upload-status');
+    try {
+      if (statusEl) { statusEl.textContent = `⏳ Uploading ${type} photo to Drive...`; statusEl.style.color = 'var(--gold)'; }
+      console.log(`[Drive] Uploading ${type} image...`);
+
+      const formData = new FormData();
+      formData.append('image', file);
+      formData.append('type', type);
+
+      const res = await fetch('/api/upload-image', {
+        method: 'POST',
+        body: formData  // No Content-Type header — browser sets it automatically with boundary
+      });
+
+      if (!res.ok) {
+        const errData = await res.json();
+        throw new Error(errData.error || `Upload failed: ${res.status}`);
+      }
+
+      const data = await res.json();
+      console.log(`[Drive] ${type} upload success:`, data.url);
+
+      if (statusEl) { statusEl.textContent = `✓ ${type} photo uploaded!`; statusEl.style.color = '#27ae60'; }
+      return data.url;
+    } catch (err) {
+      console.error(`[Drive] ${type} upload error:`, err);
+      if (statusEl) { statusEl.textContent = `❌ Upload failed: ${err.message}`; statusEl.style.color = '#e74c3c'; }
+      throw err;
+    }
+  }
+
+  // Run uploads then PATCH MongoDB
+  _uploadStagedImages()
     .then(() => {
-      console.log("✅ Everything successfully synced to Google Sheets row!");
+      return fetch(`/api/users/${userId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+    })
+    .then(res => {
+      if (!res.ok) {
+        console.error("Response Status:", res.status, res.statusText);
+        throw new Error(`Sync Failed: ${res.status} ${res.statusText}`);
+      }
+      return res.json();
+    })
+    .then(updatedData => {
+      console.log("✅ Everything successfully synced to MongoDB!", updatedData);
 
-      const cleanCacheObj = { ...cached, ...payload };
-      cleanCacheObj.portfolioLinks = payload.testimonials;
+      // Clear staged files after successful save
+      window._stagedProfileFile = null;
+      window._stagedBannerFile = null;
+
+      // Update profile/banner images in UI with the new Drive URLs
+      if (updatedData.profileImageUrl) {
+        _applyProfilePhotoToUI(updatedData.profileImageUrl);
+        const profilePicEl = document.getElementById('profilePic');
+        if (profilePicEl) profilePicEl.src = updatedData.profileImageUrl;
+      }
+      if (updatedData.bannerImageUrl) {
+        _applyBannerPhotoToUI(updatedData.bannerImageUrl);
+      }
+
+      const cleanCacheObj = { ...cached, ...updatedData };
+      cleanCacheObj.portfolioLinks = updatedData.testimonials || updatedData.portfolioLinks || payload.testimonials || "";
 
       delete cleanCacheObj.profileImageBase64;
       delete cleanCacheObj.bannerImageBase64;
 
       localStorage.setItem("currentTrainer", JSON.stringify(cleanCacheObj));
+      populateDashboardInputs(cleanCacheObj);
 
       const statusEl = document.getElementById("profile-save-status");
       if (statusEl) {
         statusEl.style.opacity = "1";
         statusEl.style.color = "#27ae60";
-        statusEl.textContent = "✓ All dashboard elements saved!";
+        statusEl.textContent = "✓ All dashboard elements saved to database!";
         setTimeout(() => { statusEl.style.opacity = "0"; }, 3000);
       }
     })
@@ -396,7 +499,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (!currentTrainerData) {
     currentTrainerData = {
-      trainerId: TARGET_TRAINER_ID,
+      trainerId: getLoggedInUserId() || '',
       fullName: "Ananya Sharma",
       tagline: "Certified Senior Fitness & Tech Instructor",
       category: "AI & Technology",
@@ -419,22 +522,49 @@ document.addEventListener('DOMContentLoaded', () => {
   // Populate form inputs immediately on layout load
   populateDashboardInputs(currentTrainerData);
 
-  // Fetch fresh data from Google Apps Script (via server proxy to avoid CORS)
-  fetch('/api/gsheet', {
+  // Fetch fresh data from MongoDB Backend
+  const userId = getLoggedInUserId();
+  if (!userId) {
+    console.warn('[Dashboard] No logged-in user found. Showing local data only.');
+    return;
+  }
+
+  fetch(`${API_BASE_URL}/${userId}`, {
     method: "GET",
-    mode: "same-origin"
+    headers: { 'Content-Type': 'application/json' }
   })
     .then(res => {
       if (!res.ok) throw new Error("Failed to fetch dashboard data");
       return res.json();
     })
     .then(data => {
-      if (Array.isArray(data) && data.length > 0) {
-        const matchedData = data.find(d => String(d.trainerId) === TARGET_TRAINER_ID) || data[0];
+      if (data) {
+        // TrainerProfile field names → dashboard field names
+        const matchedData = {
+          ...data,
+          _id: data._id,
+          fullName: data.fullName || [data.firstName, data.lastName].filter(Boolean).join(' ') || '',
+          tagline: data.professionalTitle || data.tagline || '',
+          category: data.expertiseCategory || data.category || '',
+          location: data.city || data.location || '',
+          deliveryMode: data.mode || data.deliveryMode || 'Online',
+          rate: String(data.hourlyRate || data.rate || ''),
+          experience: String(data.yearsOfExperience || data.experience || ''),
+          whatsapp: data.phoneNumber || data.whatsapp || '',
+          linkedin: data.linkedinProfile || data.linkedin || '',
+          profileImageUrl: data.profilePictureUrl || data.profileImageUrl || '',
+          bannerImageUrl: data.coverBannerUrl || data.bannerImageUrl || '',
+          portfolioVideo: data.videoIntro || data.portfolioVideo || '',
+          certificationsBy: data.certificationsBy || data.achievements || [],
+          instagram: data.socialLinks?.instagram || data.instagram || '',
+          youtube: data.socialLinks?.youtube || data.youtube || '',
+          twitter: data.socialLinks?.twitter || data.twitter || '',
+          facebook: data.socialLinks?.facebook || data.facebook || '',
+        };
 
         currentTrainerData = {
           ...currentTrainerData,
-          trainerId: matchedData.trainerId || TARGET_TRAINER_ID,
+          trainerId: matchedData.trainerId || matchedData._id || getLoggedInUserId() || '',
           fullName: matchedData.fullName || matchedData.name || currentTrainerData.fullName || "",
           tagline: matchedData.tagline || currentTrainerData.tagline || "",
           specialization: matchedData.specialization || currentTrainerData.specialization || "",
@@ -528,11 +658,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         localStorage.setItem("currentTrainer", JSON.stringify(currentTrainerData));
         populateDashboardInputs(currentTrainerData);
-        console.log("Successfully loaded dashboard data from Google Sheets.", currentTrainerData);
+        console.log("Successfully loaded dashboard data from MongoDB.", currentTrainerData);
       }
     })
     .catch(err => {
-      console.error("Failed to fetch live dashboard data from Google Sheets:", err);
+      console.error("Failed to fetch live dashboard data from MongoDB:", err);
     });
 
   // Bind save button
@@ -544,7 +674,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  // --- BANNER IMAGE HANDLER ---
+  // --- BANNER IMAGE HANDLER --- Upload to Drive on Save ---
   const bannerInput = document.getElementById("upload-banner-file");
   if (bannerInput) {
     bannerInput.addEventListener("change", function () {
@@ -556,18 +686,22 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
+      // Show live preview using an object URL (does not upload yet)
       const objectUrl = URL.createObjectURL(file);
       _applyBannerPhotoToUI(objectUrl);
 
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        window._bannerImageBase64 = e.target.result;
-      };
-      reader.readAsDataURL(file);
+      // Stage the file for upload when Save Profile is clicked
+      window._stagedBannerFile = file;
+
+      const statusEl = document.getElementById("banner-upload-status");
+      if (statusEl) {
+        statusEl.textContent = "📷 Banner ready — will upload on Save Profile";
+        statusEl.style.color = "var(--gold)";
+      }
     });
   }
 
-  // --- PROFILE PHOTO HANDLER ---
+  // --- PROFILE PHOTO HANDLER --- Upload to Drive on Save ---
   const photoFileInput = document.getElementById("upload-photo-file");
   const photoStatusEl = document.getElementById("photo-upload-status");
 
@@ -576,23 +710,17 @@ document.addEventListener('DOMContentLoaded', () => {
       const file = this.files[0];
       if (!file) return;
 
+      // Show live preview using an object URL (does not upload yet)
       const localPreviewUrl = URL.createObjectURL(file);
       _applyProfilePhotoToUI(localPreviewUrl);
 
+      // Stage the file for upload when Save Profile is clicked
+      window._stagedProfileFile = file;
+
       if (photoStatusEl) {
-        photoStatusEl.textContent = "⏳ Reading image...";
+        photoStatusEl.textContent = "📷 Photo ready — will upload to Drive on Save Profile";
         photoStatusEl.style.color = "var(--gold)";
       }
-
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        window._profileImageBase64 = e.target.result;
-        if (photoStatusEl) {
-          photoStatusEl.textContent = "✓ Image ready — updates on Save Profile";
-          photoStatusEl.style.color = "#27ae60";
-        }
-      };
-      reader.readAsDataURL(file);
     });
   }
 });
@@ -640,21 +768,60 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-// ── INITIAL DASHBOARD FETCH ──────────────────────────────────────────────
+// -- INITIAL DASHBOARD FETCH (uses logged-in user _id) --
 document.addEventListener("DOMContentLoaded", () => {
-  // Always fetch fresh data from the server (which uses no cache now) when dashboard loads
-  fetch('/api/gsheet?nocache=' + Date.now())
-    .then(res => res.json())
-    .then(dataArr => {
-      let data = Array.isArray(dataArr) ? dataArr.find(d => d.trainerId === TARGET_TRAINER_ID || d.id === TARGET_TRAINER_ID) || dataArr[0] : (dataArr.data ? dataArr.data[0] : dataArr);
-      if (data) {
-        // Store the fresh data to cache immediately so UI components can use it
-        localStorage.setItem("currentTrainer", JSON.stringify(data));
-        // Populate inputs
-        populateDashboardInputs(data);
-        syncDisplayCardUI(data);
-        console.log("Dashboard re-rendered with fresh Google Sheet data.");
+  const userId = getLoggedInUserId();
+  if (!userId) return; // Not logged in — skip server fetch
+
+  fetch(`${API_BASE_URL}/${userId}?nocache=${Date.now()}`, {
+    method: "GET",
+    headers: { 'Content-Type': 'application/json' }
+  })
+    .then(res => {
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return res.json();
+    })
+    .then(data => {
+      if (data && data._id) {
+        const normalised = {
+          ...data,
+          fullName: data.fullName || [data.firstName, data.lastName].filter(Boolean).join(' ') || '',
+          tagline: data.professionalTitle || data.tagline || '',
+          category: data.expertiseCategory || data.category || '',
+          location: data.city || data.location || '',
+          deliveryMode: data.mode || data.deliveryMode || 'Online',
+          rate: String(data.hourlyRate || data.rate || ''),
+          experience: String(data.yearsOfExperience || data.experience || ''),
+          whatsapp: data.phoneNumber || data.whatsapp || '',
+          linkedin: data.linkedinProfile || data.linkedin || '',
+          profileImageUrl: data.profilePictureUrl || data.profilePic || data.profileImageUrl || '',
+          bannerImageUrl: data.coverBannerUrl || data.coverBanner || data.bannerImageUrl || '',
+          certificationsBy: data.certificationsBy || data.achievements || [],
+          instagram: data.socialLinks?.instagram || data.instagram || '',
+          youtube: data.socialLinks?.youtube || data.youtube || '',
+          twitter: data.socialLinks?.twitter || data.twitter || '',
+          facebook: data.socialLinks?.facebook || data.facebook || '',
+          videoIntro: data.videoIntro || '',
+          testimonials: data.testimonials || [],
+          services: data.services || [],
+          packages: data.packages || [],
+          availability: data.availability || {},
+          tags: data.tags || data.skills || [],
+        };
+        const merged = { ...(JSON.parse(localStorage.getItem('currentTrainer') || '{}')), ...normalised };
+        localStorage.setItem("currentTrainer", JSON.stringify(merged));
+        populateDashboardInputs(merged);
+        syncDisplayCardUI(merged);
+        console.log("Dashboard re-rendered with fresh MongoDB data.");
       }
     })
-    .catch(err => console.error("Error fetching fresh dashboard data:", err));
+    .catch(err => {
+      console.error("Error fetching fresh dashboard data:", err);
+      if (err.message.includes('404')) {
+        alert("Your session is invalid or the database was reset. Please log in or register again.");
+        localStorage.removeItem("currentTrainer");
+        localStorage.removeItem("authToken");
+        window.location.href = "index.html"; // Redirect to home so they can register
+      }
+    });
 });

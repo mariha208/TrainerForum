@@ -31,15 +31,19 @@ document.addEventListener('DOMContentLoaded', () => {
   verifyUserSessionToken();
 });
 
-// ── SYNC ENGINE: STREAM GOOGLE SHEETS LIVE DATA ROWS ──────────────────────────
+// ── SYNC ENGINE: STREAM MONGODB LIVE DATA ROWS ──────────────────────────
 function subscribeToTrainers() {
-  const appsScriptUrl = '/api/gsheet'; // Uses server.js proxy to avoid CORS issues
+  const API_BASE_URL = '/api/users?role=trainer';
 
-  console.log("📡 Connecting live spreadsheet arrays to original card matrix...");
+  console.log("📡 Connecting live database arrays to original card matrix...");
 
-  fetch(appsScriptUrl, { method: "GET", mode: "same-origin" })
+  fetch(API_BASE_URL, {
+    method: "GET",
+    mode: "cors",
+    headers: { 'Content-Type': 'application/json' }
+  })
     .then(res => {
-      if (!res.ok) throw new Error("Google database handshake failed: HTTP " + res.status);
+      if (!res.ok) throw new Error("Database handshake failed: HTTP " + res.status);
       return res.json();
     })
     .then(data => {
@@ -53,9 +57,11 @@ function subscribeToTrainers() {
       // Handle both array and {data: [...]} wrapper formats
       const rows = Array.isArray(data) ? data : (Array.isArray(data?.data) ? data.data : []);
 
+      const isHomeGrid = grid.id === 'home-grid';
+
       if (rows.length > 0) {
         rows.forEach(row => {
-
+          
           // Helper to bypass Google Drive CORS / embedding blocks for images
           const getDriveDirectUrl = (url) => {
             const str = String(url || '').trim();
@@ -69,8 +75,8 @@ function subscribeToTrainers() {
 
           const normalizedTrainer = {
             // ── Core identity ──────────────────────────────────────────────
-            id: String(row.trainerId || row.TrainerId || 'T-1001'),
-            trainerId: String(row.trainerId || row.TrainerId || 'T-1001'),
+            id: String(row._id || row.id || row.trainerId || row.TrainerId || 'T-1001'),
+            trainerId: String(row._id || row.id || row.trainerId || row.TrainerId || 'T-1001'),
             name: String(row.fullName || row.FullName || 'Unnamed Trainer'),
             fullName: String(row.fullName || row.FullName || 'Unnamed Trainer'),
             tagline: String(row.tagline || row.Tagline || ''),
@@ -94,19 +100,23 @@ function subscribeToTrainers() {
             pn: parseInt(String(row.rate || row.Rate || row.price || '0').replace(/[^\d.]/g, ''), 10) || 0,
             rate: String(row.rate || row.Rate || '0'),
 
+            // ── Membership ─────────────────────────────────────────────────
+            membershipType: String(row.membershipType || 'FREE').toUpperCase(),
+
             // ── Experience ────────────────────────────────────────────────
             experience: String(row.experience || row.Experience || '0'),
             exp: String(row.experience || row.Experience || '0'), // modal alias
 
             // ── Social contacts ───────────────────────────────────────────
-            phone: String(row.whatsapp || row.Whatsapp || row.phone || ''),
-            whatsapp: String(row.whatsapp || row.Whatsapp || row.phone || ''), // modal alias
-            linkedin: String(row.linkedin || row.Linkedin || ''),
-            website: String(row.website || row.Website || ''),
-            instagram: String(row.instagram || row.Instagram || ''),
-            youtube: String(row.youtube || row.Youtube || ''),
-            twitter: String(row.twitter || row.Twitter || row.x || ''),
-            facebook: String(row.facebook || row.Facebook || ''),
+            phone: String(row.whatsapp || row.Whatsapp || row.phone || row.phoneNumber || ''),
+            whatsapp: String(row.whatsapp || row.Whatsapp || row.phone || row.phoneNumber || ''), // modal alias
+            linkedin: String(row.linkedin || row.Linkedin || row.linkedinProfile || (row.socialLinks && row.socialLinks.linkedin) || ''),
+            website: String(row.website || row.Website || (row.socialLinks && row.socialLinks.website) || ''),
+            instagram: String(row.instagram || row.Instagram || (row.socialLinks && row.socialLinks.instagram) || ''),
+            youtube: String(row.youtube || row.Youtube || (row.socialLinks && row.socialLinks.youtube) || ''),
+            twitter: String(row.twitter || row.Twitter || row.x || (row.socialLinks && row.socialLinks.twitter) || ''),
+            facebook: String(row.facebook || row.Facebook || (row.socialLinks && row.socialLinks.facebook) || ''),
+            socialLinks: row.socialLinks || {}, // pass through for modal
             portfolioUrl: String(row.portfolioUrl || row.PortfolioUrl || row.portfolioLink || row.portfolio || row.Portfolio || ''),
 
             // ── Images (Parsed to bypass Drive CORS) ──────────────────────
@@ -126,7 +136,7 @@ function subscribeToTrainers() {
                 return raw.split(/\s*;;?\s*/).map(chunk => {
                   const fields = {};
                   const parts = chunk.split('|').map(p => p.trim());
-                  
+
                   // Check if this chunk uses key-value format
                   if (parts.some(p => p.includes(':'))) {
                     parts.forEach(part => {
@@ -162,8 +172,24 @@ function subscribeToTrainers() {
             portfolioLinks: String(row.portfolioLinks || row.portfolioLink || row.PortfolioLinks || 'N/A'),
 
             // ── Tags / skills ─────────────────────────────────────────────
-            tags: String(row.tags || row.Tags || row.specialization || row.category || ''),
-            etags: String(row.tags || row.Tags || row.specialization || row.category || ''), // modal alias
+            tags: (() => {
+              const raw = row.skills || row.tags || row.Tags;
+              if (Array.isArray(raw) && raw.length > 0) return raw;
+              if (typeof raw === 'string' && raw.trim()) return raw.split(',').map(s => s.trim()).filter(Boolean);
+              return [];
+            })(),
+            etags: (() => {
+              const raw = row.skills || row.tags || row.Tags;
+              if (Array.isArray(raw) && raw.length > 0) return raw;
+              if (typeof raw === 'string' && raw.trim()) return raw.split(',').map(s => s.trim()).filter(Boolean);
+              return [];
+            })(), // modal alias — must be array for _arr() in trainer-modal
+            allSkills: (() => {
+              const raw = row.skills || row.tags || row.Tags;
+              if (Array.isArray(raw) && raw.length > 0) return raw;
+              if (typeof raw === 'string' && raw.trim()) return raw.split(',').map(s => s.trim()).filter(Boolean);
+              return [];
+            })(), // trainer-modal reads t.allSkills first
 
             // ── Ratings / session counts ───────────────────────────────────
             rating: parseFloat(String(row.rating || '5.0')) || 5.0,
@@ -192,6 +218,8 @@ function subscribeToTrainers() {
               } catch (e) { }
               return String(raw);
             })(),
+            // ── Membership ─────────────────────────────────────────────────
+            membershipType: String(row.membershipType || 'FREE').toUpperCase(),
           };
 
           // ── COMPLEX DESERIALIZATION (Decoupled JSON Arrays) ──────────────────────────
@@ -199,7 +227,17 @@ function subscribeToTrainers() {
           // Services
           try {
             let rowServices = row.services || row.Services || '';
-            if (rowServices && typeof rowServices === 'string' && rowServices.startsWith('[')) {
+            if (Array.isArray(rowServices) && rowServices.length > 0) {
+              normalizedTrainer.services = rowServices.map(s => ({
+                name: s.title || s.name || '',
+                price: s.price || '0',
+                duration: s.duration || '',
+                mode: s.mode || 'Online',
+                type: s.type || '1-on-1',
+                desc: s.features || s.desc || '',
+                active: true
+              })).filter(s => s.name);
+            } else if (rowServices && typeof rowServices === 'string' && rowServices.startsWith('[')) {
               normalizedTrainer.services = JSON.parse(rowServices).map(s => ({
                 name: s.title || s.name || '',
                 price: s.price || '0',
@@ -216,7 +254,7 @@ function subscribeToTrainers() {
                 normalizedTrainer.services = rawServicesStr.split(/\s*;\s*/).map(s => {
                   const parts = s.split('|').map(p => p.trim());
                   const fields = {};
-                  
+
                   if (parts.some(p => p.includes(':'))) {
                     parts.forEach(part => {
                       const colonIdx = part.indexOf(':');
@@ -286,7 +324,7 @@ function subscribeToTrainers() {
                 normalizedTrainer.packages = trimmed.split(/\s*;\s*/).map(block => {
                   const parts = block.split('|').map(p => p.trim());
                   const fields = {};
-                  
+
                   if (parts.some(p => p.includes(':'))) {
                     parts.forEach(part => {
                       const colonIdx = part.indexOf(':');
@@ -340,7 +378,7 @@ function subscribeToTrainers() {
                 rowTestis = row.portfolioLinks;
               }
             }
-            
+
             if (typeof rowTestis === 'string' && rowTestis.trim()) {
               if (rowTestis.trim().startsWith('[')) {
                 try {
@@ -355,7 +393,7 @@ function subscribeToTrainers() {
                       date: item.date || ''
                     };
                   }).filter(item => item && item.url);
-                } catch(e) {}
+                } catch (e) { }
               } else {
                 normalizedTrainer.testimonials = rowTestis.split(';;').map(block => {
                   if (!block.includes('|') && (block.includes('youtu') || block.includes('http'))) {
@@ -391,11 +429,18 @@ function subscribeToTrainers() {
                 normalizedTrainer.availability = JSON.stringify(rowAvail);
               }
             }
-          } catch(e) { console.error("Error parsing availability:", e); }
+          } catch (e) { console.error("Error parsing availability:", e); }
 
           TRAINERS.push(normalizedTrainer);
+        });
 
-          // ── GRADIENT POOL ──────────────────────────────────────────────────
+        // ── SORT: PREMIUM first, then STANDARD, then FREE ──────────────────
+        const tierOrder = { 'PREMIUM': 0, 'STANDARD': 1, 'FREE': 2 };
+        TRAINERS.sort((a, b) => (tierOrder[a.membershipType] ?? 2) - (tierOrder[b.membershipType] ?? 2));
+
+        // ── RENDER sorted trainers ─────────────────────────────────────────
+        TRAINERS.forEach(normalizedTrainer => {
+          const row = normalizedTrainer; // alias for inline helpers below
           const _catGradients = {
             'AI & Technology': 'linear-gradient(135deg,#0f2c6b 0%,#0e7490 100%)',
             'Business Coaching': 'linear-gradient(135deg,#4c1d95 0%,#7c3aed 100%)',
@@ -446,18 +491,30 @@ function subscribeToTrainers() {
           const webHref = websiteStr ? (websiteStr.startsWith('http') ? websiteStr : 'https://' + websiteStr) : '#';
 
           // ── PREMIUM GRADIENT-SPLIT CARD ────────────────────────────────────
+          const isPremium = normalizedTrainer.membershipType === 'PREMIUM';
+          const isStandard = normalizedTrainer.membershipType === 'STANDARD';
+          const memberBadgeHtml = isPremium
+            ? `<div style="position:absolute;top:10px;left:10px;background:linear-gradient(90deg,#C5A059,#F5C842);color:#000;font-size:9px;font-weight:800;padding:3px 9px;border-radius:99px;letter-spacing:.05em;z-index:20;">⭐ FEATURED</div>`
+            : isStandard
+            ? `<div style="position:absolute;top:10px;left:10px;background:rgba(10,37,81,0.85);color:rgba(245,200,66,0.85);font-size:9px;font-weight:700;padding:3px 9px;border-radius:99px;letter-spacing:.05em;border:1px solid rgba(245,200,66,0.3);z-index:20;">PRO</div>`
+            : '';
+          const cardBorderStyle = isPremium
+            ? 'border:1.5px solid rgba(245,200,66,0.5); box-shadow:0 8px 32px rgba(245,200,66,0.12), 0 0 0 1px rgba(245,200,66,0.08);'
+            : 'box-shadow:0 8px 32px rgba(0,0,0,0.35);';
           const cardHtml = `
             <div class="trainer-card wtf-pcard"
                  data-category="${normalizedTrainer.category}"
                  data-id="${normalizedTrainer.id}"
+                 data-membership="${normalizedTrainer.membershipType}"
                  onclick="openTrainerModal('${normalizedTrainer.id}')"
-                 style="background:#0A2551; border-radius:18px; overflow:visible; position:relative; cursor:pointer; display:flex; flex-direction:column; min-height:360px; box-shadow:0 8px 32px rgba(0,0,0,0.35); transition:transform 0.28s cubic-bezier(.34,1.56,.64,1), box-shadow 0.28s ease;"
+                 style="background:#0A2551; border-radius:18px; overflow:visible; position:relative; cursor:pointer; display:flex; flex-direction:column; min-height:360px; ${cardBorderStyle} transition:transform 0.28s cubic-bezier(.34,1.56,.64,1), box-shadow 0.28s ease;"
                  onmouseover="this.style.transform='translateY(-8px) scale(1.015)'; this.style.boxShadow='0 24px 56px rgba(0,0,0,0.5)';"
-                 onmouseout="this.style.transform=''; this.style.boxShadow='0 8px 32px rgba(0,0,0,0.35)';">
+                 onmouseout="this.style.transform=''; this.style.boxShadow='${isPremium ? '0 8px 32px rgba(245,200,66,0.12)' : '0 8px 32px rgba(0,0,0,0.35)'}';">
 
               <!-- TOP GRADIENT BANNER (40%) -->
               <div style="height:120px; border-radius:18px 18px 0 0; background:${bannerStyle}; position:relative; flex-shrink:0;">
                 <div style="position:absolute; inset:0; background:linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(10,37,81,0.8)); border-radius:18px 18px 0 0;"></div>
+                ${memberBadgeHtml}
                 <!-- Heart button -->
                 <button onclick="event.stopPropagation();"
                         style="position:absolute;top:10px;right:10px;width:34px;height:34px;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.4);backdrop-filter:blur(4px);color:rgba(255,255,255,0.7);font-size:14px;transition:color 0.2s;"
@@ -523,8 +580,60 @@ function subscribeToTrainers() {
                 </div>
               </div>
             </div>`;
-          grid.insertAdjacentHTML('beforeend', cardHtml);
-        });
+          
+          if (isHomeGrid) {
+            if (normalizedTrainer.membershipType === 'PREMIUM' || normalizedTrainer.isFeatured === true) {
+              grid.insertAdjacentHTML('beforeend', cardHtml);
+            }
+          } else {
+            grid.insertAdjacentHTML('beforeend', cardHtml);
+          }
+        }); // end TRAINERS.forEach
+
+        // ── RENDER DYNAMIC CATEGORIES ─────────────────────────────────────
+        const homeCats = document.getElementById('home-cats');
+        if (homeCats) {
+          const catCounts = {};
+          TRAINERS.forEach(t => {
+            const c = t.category || 'General';
+            catCounts[c] = (catCounts[c] || 0) + 1;
+          });
+          const topCats = Object.keys(catCounts).sort((a, b) => catCounts[b] - catCounts[a]).slice(0, 5);
+          
+          const catMeta = {
+            'Business Coaching': { icon: '💼', p: 'Leadership & Strategy' },
+            'AI & Technology': { icon: '🤖', p: 'Future-proof skills' },
+            'Fitness & Health': { icon: '💪', p: 'Physical wellbeing' },
+            'Cybersecurity': { icon: '🛡️', p: 'Data protection' },
+            'Soft Skills': { icon: '🗣️', p: 'Communication & EQ' },
+            'Language Training': { icon: '🌍', p: 'Global fluency' },
+            'Music & Dance': { icon: '🎵', p: 'Creative arts' },
+            'Career Mentoring': { icon: '🎯', p: 'Professional growth' },
+            'Sports Coaching': { icon: '🏃', p: 'Athletic performance' },
+            'Finance': { icon: '💰', p: 'Wealth & Investment' },
+            'Motivational': { icon: '⭐', p: 'Inspiring talks' }
+          };
+
+          let catsHtml = '';
+          topCats.forEach(cat => {
+            const meta = catMeta[cat] || { icon: '✨', p: 'Expert Training' };
+            catsHtml += `
+            <div class="cat-card" onclick="window.location.href='find-trainers.html?category=${encodeURIComponent(cat)}'">
+              <div class="cat-icon">${meta.icon}</div>
+              <h3>${cat}</h3>
+              <p>${meta.p}</p>
+            </div>`;
+          });
+          
+          catsHtml += `
+            <div class="cat-card" onclick="window.location.href='categories.html'" style="background:rgba(255,255,255,0.02); border:1px dashed var(--border); display:flex; flex-direction:column; justify-content:center; align-items:center; transition: .3s;">
+              <div class="cat-icon" style="background:rgba(245,200,66,0.1); color:var(--gold); border:1px solid rgba(245,200,66,0.3);">+</div>
+              <h3 style="color:var(--gold);">More</h3>
+              <p>View all categories</p>
+            </div>`;
+            
+          homeCats.innerHTML = catsHtml;
+        }
 
         // Setup filter mechanics mapping newly generated .trainer-card elements
         setupFilterToggles();
@@ -573,7 +682,7 @@ window.viewTrainerProfileModal = function (id) {
             <div style="font-size:.78rem;color:rgba(237,242,247,0.55);margin-top:2px">${c.givenBy || ''}${c.year ? ' · ' + c.year : ''}</div>
           </div>
         </div>`).
-      join('');
+        join('');
     } else {
       certContainer.innerHTML = "<p style='color:rgba(237,242,247,0.4);font-size:.88rem;padding:12px 0'>No certifications added yet.</p>";
     }
@@ -693,6 +802,31 @@ function setupFilterToggles() {
       });
     };
   });
+
+  // Auto-apply filter from URL query parameter
+  const params = new URLSearchParams(window.location.search);
+  const urlCat = params.get('category') || params.get('cat');
+  if (urlCat) {
+    const targetPill = document.querySelector(`.category-pill[data-target-category="${urlCat}"]`);
+    if (targetPill) {
+      targetPill.click();
+    } else {
+      document.querySelectorAll(".category-pill").forEach(p => p.classList.remove("active"));
+      document.querySelectorAll(".trainer-card").forEach(card => {
+        if (card.getAttribute("data-category") === urlCat) {
+          card.style.display = "block";
+        } else {
+          card.style.display = "none";
+        }
+      });
+    }
+    const fCatSelect = document.getElementById('f-cat');
+    if (fCatSelect) fCatSelect.value = urlCat;
+  }
+  
+  if (window.applyFilters && document.getElementById('browse-search')) {
+      window.applyFilters();
+  }
 }
 
 // ── ENGINE SEARCH HANDLER ───────────────────────────────────────────────────
@@ -777,4 +911,86 @@ window.handleLogout = function () {
   window.loggedInTrainerId = null;
   verifyUserSessionToken();
   if (typeof updateNavbarAuthUI === 'function') updateNavbarAuthUI();
+}
+
+// ── BROWSE PAGE FILTER & SORT HANDLERS ──────────────────────────────────────
+window.applyFilters = function() {
+  const searchStr = (document.getElementById('browse-search')?.value || '').toLowerCase();
+  const catFilter = document.getElementById('f-cat')?.value || '';
+  const priceFilter = parseInt(document.getElementById('f-price')?.value || '100000', 10);
+  const ratingFilter = parseFloat(document.getElementById('f-rating')?.value || '0');
+  const modeFilter = document.getElementById('f-mode')?.value || '';
+  const expFilter = document.getElementById('f-exp')?.value || '';
+
+  let visibleCount = 0;
+  
+  document.querySelectorAll('.trainer-card').forEach(card => {
+    const id = card.getAttribute('data-id');
+    const trainer = window.TRAINERS.find(t => t.id === id);
+    if (!trainer) return;
+
+    let show = true;
+
+    if (searchStr) {
+      const fullText = (trainer.name + ' ' + trainer.category + ' ' + trainer.specialization + ' ' + trainer.tags).toLowerCase();
+      if (!fullText.includes(searchStr)) show = false;
+    }
+    if (show && catFilter && trainer.category !== catFilter) show = false;
+    
+    const p = parseFloat(trainer.price.replace(/[^0-9.]/g, '')) || 0;
+    if (show && p > priceFilter) show = false;
+    
+    if (show && trainer.rating < ratingFilter) show = false;
+    
+    if (show && modeFilter && trainer.deliveryMode !== modeFilter && trainer.deliveryMode !== 'Hybrid') show = false;
+    
+    if (show && expFilter) {
+      const e = parseInt(trainer.experience || '0', 10);
+      if (expFilter.includes('1–3') && (e < 1 || e > 3)) show = false;
+      else if (expFilter.includes('3–5') && (e < 3 || e > 5)) show = false;
+      else if (expFilter.includes('5–10') && (e < 5 || e > 10)) show = false;
+      else if (expFilter.includes('10+') && e < 10) show = false;
+    }
+
+    card.style.display = show ? 'flex' : 'none';
+    if (show) visibleCount++;
+  });
+
+  const countEl = document.getElementById('results-count');
+  if (countEl) countEl.innerText = visibleCount;
 };
+
+window.updatePriceDisplay = function(val) {
+  const el = document.getElementById('price-out');
+  if (el) el.innerText = '₹' + Number(val).toLocaleString('en-IN');
+};
+
+window.sortResults = function(sortBy) {
+  const grid = document.querySelector('.trainers-grid');
+  if (!grid) return;
+  const cards = Array.from(grid.querySelectorAll('.trainer-card'));
+  
+  cards.sort((a, b) => {
+    const tA = window.TRAINERS.find(t => t.id === a.getAttribute('data-id'));
+    const tB = window.TRAINERS.find(t => t.id === b.getAttribute('data-id'));
+    if (!tA || !tB) return 0;
+    
+    if (sortBy === 'rating') return tB.rating - tA.rating;
+    if (sortBy === 'price-asc') {
+      const pA = parseFloat(tA.price.replace(/[^0-9.]/g, '')) || 0;
+      const pB = parseFloat(tB.price.replace(/[^0-9.]/g, '')) || 0;
+      return pA - pB;
+    }
+    if (sortBy === 'price-desc') {
+      const pA = parseFloat(tA.price.replace(/[^0-9.]/g, '')) || 0;
+      const pB = parseFloat(tB.price.replace(/[^0-9.]/g, '')) || 0;
+      return pB - pA;
+    }
+    if (sortBy === 'sessions') return parseInt(tB.sessions || '0') - parseInt(tA.sessions || '0');
+    
+    const tierOrder = { 'PREMIUM': 0, 'STANDARD': 1, 'FREE': 2 };
+    return (tierOrder[tA.membershipType] ?? 2) - (tierOrder[tB.membershipType] ?? 2);
+  });
+  
+  cards.forEach(card => grid.appendChild(card));
+};;

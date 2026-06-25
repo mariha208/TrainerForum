@@ -1,10 +1,10 @@
 [
   {
     "trainerId": "T-1001",
-    "fullName": "Raheman khan",
+    "fullName": "Mariyah khan",
     "tagline": "trainer",
     "category": "AI & Technology",
-    "specialization": "soft skills",
+    "specialization": "Cyber Security",
     "experience": 2,
     "location": "Surat",
     "deliveryMode": "Online Only",
@@ -37,53 +37,10 @@
         "year": "2026"
       }
     ],
-    "testimonialVideos": [
-      {
-        "videoUrl": "https://youtu.be/hQ3RnAvlLJs?si=o3B4LMfSB5C8kKNd"
-      },
-      {
-        "videoUrl": "https://youtu.be/EupM8-Hp4_4?si=FXxbXyUC-CaN_taK"
-      }
-    ],
+    "testimonialVideos": [],
     "services": "Title : jerdnv e | Price : 10000 | Duration : 1 hr",
-    "packages": "Title : ABC | Price : 30000 | Duration : 2 week ; Title : gevsdb | Price : 20000 | Duration : 2 week",
-    "intoVideo": "https://youtu.be/LSC6KohO9OI?si=aq3ilJGFGkuIMBEc",
-    "availability": {
-      "Mon": {
-        "available": true,
-        "start": "09:00",
-        "end": "18:00"
-      },
-      "Tue": {
-        "available": true,
-        "start": "09:00",
-        "end": "18:00"
-      },
-      "Wed": {
-        "available": true,
-        "start": "09:00",
-        "end": "18:00"
-      },
-      "Thu": {
-        "available": true,
-        "start": "09:00",
-        "end": "18:00"
-      },
-      "Fri": {
-        "available": false,
-        "start": "09:00",
-        "end": "18:00"
-      },
-      "Sat": {
-        "available": true,
-        "start": "10:00",
-        "end": "14:00"
-      },
-      "Sun": {
-        "available": false,
-        "start": "10:00",
-        "end": "14:00"
-      }
-    }
+    "packages": "Title : gevsdb | Price : 20000 | Duration : 2 week",
+    "intoVideo": "https://youtu.be/-tbgigaf0hM?si=9JufRMzR_6nrVWoR",
+    "availability": "Mon-Fri | 9:00 AM - 6:00 PM"
   }
 ]

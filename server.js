@@ -4,6 +4,8 @@ const express = require('express');
 const path = require('path');
 const connectDB = require('./db');
 const fs = require('fs');
+const multer = require('multer');
+const { uploadFileToCloudinary } = require('./services/driveUpload');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -124,9 +126,49 @@ app.post('/api/gsheet', async (req, res) => {
   }
 });
 
+// ── Image Upload Route ───────────────────────────────────────────────────────
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB max
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype.startsWith('image/')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only image files are allowed'), false);
+    }
+  }
+});
+
+app.post('/api/upload-image', upload.single('image'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: 'No image file provided' });
+    }
+
+    const imageType = req.body.type || 'profile'; // 'profile' or 'banner'
+    const ext = req.file.originalname.split('.').pop() || 'jpg';
+    const timestamp = Date.now();
+    const fileName = `trainer-${imageType}-${timestamp}.${ext}`;
+
+    console.log(`[Upload] Received ${imageType} image: ${req.file.originalname} (${req.file.size} bytes)`);
+
+    const publicUrl = await uploadFileToCloudinary(
+      req.file.buffer,
+      req.file.mimetype,
+      fileName,
+      imageType
+    );
+
+    res.json({ url: publicUrl, type: imageType });
+  } catch (err) {
+    console.error('[Upload] Cloudinary upload error:', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 app.use('/api/users', require('./routes/users'));
 app.use('/api/payments', require('./routes/payment.routes'));
-app.use('/api/trainers', require('./routes/trainerProfile.routes'));
+
 app.use('/api/images', require('./routes/images'));
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/reviews', require('./routes/reviews'));

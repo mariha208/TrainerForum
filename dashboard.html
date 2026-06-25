@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" class="dark-mode">
 
 <head>
@@ -168,6 +168,37 @@
             <div class="label">Avg Rating</div>
             <div class="value">4.9</div>
             <div class="sub">From <span style="color:var(--gold)">87 reviews</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Membership Status -->
+      <div class="db-card mb-24" style="background: linear-gradient(to right, rgba(10,37,81,0.8), rgba(20,20,20,0.9)); color: white; border: 1px solid var(--gold);">
+        <div style="display:flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+          <div style="flex:1">
+            <h3 style="color:var(--gold); margin-bottom: 15px; display:flex; align-items:center; gap:8px"><span class="ct-ico" style="background:var(--gold); color:#000; padding:4px 8px; border-radius:50%; font-size:0.8rem;">👑</span> Membership Status</h3>
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px;">
+              <div>
+                <p style="color:rgba(255,255,255,0.7); font-size: 0.8rem; margin:0">Current Plan</p>
+                <p><strong id="db-membership-type" style="color:white; font-size: 1.1rem; text-transform: uppercase;">FREE</strong></p>
+              </div>
+              <div>
+                <p style="color:rgba(255,255,255,0.7); font-size: 0.8rem; margin:0">Status</p>
+                <p><strong id="db-membership-status" style="color:#2ecc71; font-size: 1.1rem;">ACTIVE</strong></p>
+              </div>
+              <div>
+                <p style="color:rgba(255,255,255,0.7); font-size: 0.8rem; margin:0">Payment</p>
+                <p><strong id="db-payment-status" style="color:white; font-size: 1.1rem;">FREE</strong></p>
+              </div>
+              <div>
+                <p style="color:rgba(255,255,255,0.7); font-size: 0.8rem; margin:0">Expiry</p>
+                <p><strong id="db-plan-expiry" style="color:white; font-size: 1.1rem;">Never</strong></p>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:10px">
+            <button class="btn btn-gold" onclick="window.location.href='pricing.html'">Upgrade Plan</button>
+            <button class="btn btn-outline-gold" onclick="window.location.href='pricing.html'">Renew Membership</button>
           </div>
         </div>
       </div>
@@ -1224,23 +1255,6 @@
       localStorage.setItem('currentTrainer', JSON.stringify(cache));
       _renderServiceItem(item);
       closeAllModals();
-
-      // POST to decoupled apps script backend
-      var currentTrainerId = cache.trainerId || cache._id || cache.id || "T-1001";
-      var payload = {
-        trainerId: currentTrainerId,
-        services: [{
-          title: item.name,
-          price: item.price,
-          duration: item.duration,
-          features: item.desc
-        }]
-      };
-      fetch('/api/gsheet', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      }).catch(console.error);
     }
     function _renderServiceItem(item) {
       var cont = document.getElementById('services-container');
@@ -1287,24 +1301,7 @@
       _renderPackageItem(item);
       closeAllModals();
 
-      // POST to decoupled apps script backend — send the FULL updated array
-      var currentTrainerId = cache.trainerId || cache._id || cache.id || "T-1001";
-      var payload = {
-        trainerId: currentTrainerId,
-        packages: cache.packages.map(function (p) {
-          return {
-            title: p.name,
-            price: p.price,
-            duration: p.duration,
-            features: Array.isArray(p.features) ? p.features : (p.features || '').split(',').map(function (s) { return s.trim(); }).filter(Boolean)
-          };
-        })
-      };
-      fetch('/api/gsheet', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      }).catch(console.error);
+      if (typeof commitLocalProfileChanges === 'function') commitLocalProfileChanges();
     }
     function _renderPackageItem(item) {
       var cont = document.getElementById('packages-container');
@@ -1444,16 +1441,7 @@
 
       window.toast && window.toast('Saving availability to database...', 3000);
 
-      fetch('/api/gsheet', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      }).then(res => {
-        window.toast ? window.toast('✅ Availability slots synchronized!') : alert('Availability saved successfully!');
-      }).catch(err => {
-        console.error('Failed to save availability to db', err);
-        window.toast ? window.toast('⚠️ Saved locally, but cloud sync failed.') : alert('Saved locally, but cloud sync failed.');
-      });
+      if (typeof commitLocalProfileChanges === 'function') { commitLocalProfileChanges(); window.toast ? window.toast('? Availability slots synchronized!') : alert('Availability saved successfully!'); }
     }
 
     /* ── Dashboard Calendar ── */
@@ -1606,25 +1594,34 @@
       var url = ((document.getElementById('intro-video-url') || {}).value || '').trim();
       if (!url) return alert('Please enter a YouTube video URL.');
       if (!_ytIdFromUrl(url)) return alert('That does not look like a valid YouTube URL.');
+
+      // Store as plain string - commitLocalProfileChanges reads from input field directly
       var cache = JSON.parse(localStorage.getItem('currentTrainer')) || {};
-      cache.introVideo = { url: url, type: 'youtube' };
+      cache.introVideo = url;
+      cache.videoIntro = url;
       localStorage.setItem('currentTrainer', JSON.stringify(cache));
 
-      // POST to decoupled apps script backend
-      var currentTrainerId = cache.trainerId || cache._id || cache.id || "T-1001";
-      fetch('/api/gsheet', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ trainerId: currentTrainerId, introVideo: url })
-      }).catch(console.error);
+      // Make sure the input field has the exact URL so the payload picks it up
+      var inp = document.getElementById('intro-video-url');
+      if (inp) inp.value = url;
 
-      alert('✅ Intro video saved! It will appear on your public profile.');
+      // Call the main save function to push to MongoDB
+      if (typeof window.commitLocalProfileChanges === 'function') {
+        window.commitLocalProfileChanges();
+      } else {
+        alert('✅ Intro video saved locally! Click Save Profile to sync to database.');
+      }
     }
     function _loadIntroVideo() {
       var cache = JSON.parse(localStorage.getItem('currentTrainer')) || {};
-      if (cache.introVideo && cache.introVideo.url) {
+      var vidUrl = '';
+      if (cache.introVideo && cache.introVideo.url) vidUrl = cache.introVideo.url;
+      else if (typeof cache.introVideo === 'string') vidUrl = cache.introVideo;
+      else if (cache.videoIntro) vidUrl = cache.videoIntro;
+      
+      if (vidUrl) {
         var inp = document.getElementById('intro-video-url');
-        if (inp) { inp.value = cache.introVideo.url; _previewIntroThumb(); }
+        if (inp) { inp.value = vidUrl; _previewIntroThumb(); }
       }
     }
 
@@ -1683,11 +1680,7 @@
 
       // POST full {url, label} objects to sheet backend
       var currentTrainerId = cache.trainerId || cache._id || cache.id || "T-1001";
-      fetch('/api/gsheet', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ trainerId: currentTrainerId, testimonials: arr })
-      }).catch(console.error);
+      if (typeof commitLocalProfileChanges === 'function') commitLocalProfileChanges();
 
       alert('✅ Testimonial videos saved (' + arr.length + ')!');
     }
@@ -1956,3 +1949,8 @@
 </body>
 
 </html>
+
+
+
+
+

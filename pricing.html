@@ -4,8 +4,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Simple, fair pricing for trainers on World Trainer Forum. Commission only when you earn. No monthly fees, no hidden costs.">
-  <title>Pricing — World Trainer Forum</title>
+  <meta name="description"
+    content="Choose flexible membership plans for trainers and speakers. Increase visibility, attract organizations, and grow your professional presence.">
+  <title>Trainer Membership Plans | World Trainer Forum</title>
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/trainer-modal.css">
   <link rel="stylesheet" href="css/auth-modal.css">
@@ -17,9 +18,11 @@
   <!-- ═══ NAVBAR ═══ -->
   <nav id="nav">
     <a class="logo" href="index.html">
-      <img src="img/logo.svg" alt="World Trainer Forum Logo" style="height:42px; margin-right:10px;">World Trainer <span class="g">Forum</span>
+      <img src="img/logo.svg" alt="World Trainer Forum Logo" style="height:42px; margin-right:10px;">World Trainer <span
+        class="g">Forum</span>
     </a>
     <ul class="nav-links">
+      <li><a id="nl-home" href="index.html">Home</a></li>
       <li><a id="nl-about" href="about.html">About</a></li>
       <li><a id="nl-browse" href="find-trainers.html">Find Trainers</a></li>
       <li><a id="nl-cats" href="categories.html">Categories</a></li>
@@ -32,7 +35,7 @@
       <button class="btn btn-ghost btn-sm" id="btn-signup" onclick="openModal('register')">Sign Up</button>
       <button class="btn btn-gold btn-sm" id="btn-login" onclick="openModal('login')">Log In</button>
       <button class="btn btn-dark btn-sm" id="btn-logout" onclick="handleLogout()" style="display:none;">Log Out</button>
-    <button class="ham-btn" id="ham-btn" onclick="toggleMobileMenu()" aria-label="Toggle Menu">
+      <button class="ham-btn" id="ham-btn" onclick="toggleMobileMenu()" aria-label="Toggle Menu">
         <span></span><span></span><span></span>
       </button>
     </div>
@@ -41,17 +44,21 @@
   <!-- Mobile Nav Drawer -->
   <div class="mobile-nav" id="mobile-nav">
     <div style="display:flex; justify-content:flex-end; margin-bottom: 20px;">
-      <button onclick="toggleMobileMenu()" style="background:none; border:none; color:#fff; font-size:2rem; cursor:pointer;" aria-label="Close Menu">&times;</button>
+      <button onclick="toggleMobileMenu()"
+        style="background:none; border:none; color:#fff; font-size:2rem; cursor:pointer;"
+        aria-label="Close Menu">&times;</button>
     </div>
+    <a href="index.html">Home</a>
     <a href="about.html">About</a>
     <a href="find-trainers.html">Find Trainers</a>
     <a href="categories.html">Categories</a>
     <a href="pricing.html">Pricing</a>
     <a href="under-construction.html">Blog</a>
     <a href="dashboard.html" id="mn-dash" style="display:none; color:var(--gold);">Dashboard</a>
-    
+
     <div class="mn-actions" style="margin-top:30px; display:flex; flex-direction:column; gap:12px;">
-      <button class="btn btn-ghost" id="mn-btn-signup" onclick="toggleMobileMenu(); openModal('register')">Sign Up</button>
+      <button class="btn btn-ghost" id="mn-btn-signup" onclick="toggleMobileMenu(); openModal('register')">Sign
+        Up</button>
       <button class="btn btn-gold" id="mn-btn-login" onclick="toggleMobileMenu(); openModal('login')">Log In</button>
       <button class="btn btn-dark" id="mn-btn-logout" onclick="handleLogout()" style="display:none;">Log Out</button>
     </div>
@@ -64,15 +71,21 @@
     </div>
     <div class="notif-item unread">
       <div class="notif-ico" style="background:rgba(201,168,76,.12)">📅</div>
-      <div class="notif-text"><p><strong>Rajesh Kumar</strong> accepted your booking for May 20.</p><span>2 hours ago</span></div>
+      <div class="notif-text">
+        <p><strong>Rajesh Kumar</strong> accepted your booking for May 20.</p><span>2 hours ago</span>
+      </div>
     </div>
     <div class="notif-item unread">
       <div class="notif-ico" style="background:rgba(39,103,73,.12)">⭐</div>
-      <div class="notif-text"><p>Your session with <strong>Priya Mehta</strong> is in 2 days.</p><span>5 hours ago</span></div>
+      <div class="notif-text">
+        <p>Your session with <strong>Priya Mehta</strong> is in 2 days.</p><span>5 hours ago</span>
+      </div>
     </div>
     <div class="notif-item">
       <div class="notif-ico" style="background:rgba(42,108,176,.12)">💬</div>
-      <div class="notif-text"><p>New message from <strong>Arun Kapoor</strong>.</p><span>Yesterday</span></div>
+      <div class="notif-text">
+        <p>New message from <strong>Arun Kapoor</strong>.</p><span>Yesterday</span>
+      </div>
     </div>
   </div>
 
@@ -94,72 +107,255 @@
        PRICING PAGE
   ═══════════════════════════════════════════════════════ -->
   <div id="p-pricing" class="page active">
-    <div class="page-hero" style="text-align:center"><span class="section-label">Transparent Pricing</span>
-      <h1 style="font-size:3rem">Simple, <span style="color:var(--gold)">Fair Pricing</span></h1>
-      <p>Commission only when you earn. No monthly fees, no hidden costs.</p>
+    <div class="page-hero" style="text-align:center"><span class="section-label">Trainer Membership Plans</span>
+      <h1 style="font-size:3rem">Choose the Right Membership <span style="color:var(--gold)">for Your Growth</span></h1>
+      <p>Increase visibility and connect with organizations worldwide.</p>
     </div>
     <section class="bg-cream">
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:22px;max-width:980px;margin:0 auto 60px">
-        <div class="price-card">
-          <div style="font-size:.74rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--tm);margin-bottom:12px">Starter</div>
-          <div style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:700;color:var(--tp)">Free</div>
-          <div style="font-size:.84rem;color:var(--tm);margin:6px 0 22px">Perfect for finding and connecting with trainers</div>
-          <div class="pf on">Create a free client account</div>
-          <div class="pf on">Browse and access all trainer profile cards</div>
-          <div class="pf on">Directly contact and message trainers</div>
-          <div style="margin-top:22px"><button class="btn btn-dark btn-full btn-lg" onclick="openModal('register-trainer')">Get Started Free</button></div>
+      <div
+        style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:30px;max-width:1100px;margin:0 auto 60px">
+
+        <!-- Starter Plan -->
+        <div class="price-card"
+          style="border-radius:24px;background:rgba(255,255,255,0.02);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.05);transition:transform 0.3s cubic-bezier(.34,1.56,.64,1),box-shadow 0.3s ease;box-shadow:0 8px 32px rgba(0,0,0,0.15);"
+          onmouseover="this.style.transform='translateY(-12px)';this.style.boxShadow='0 24px 56px rgba(0,0,0,0.3)';"
+          onmouseout="this.style.transform='';this.style.boxShadow='0 8px 32px rgba(0,0,0,0.15)';">
+          <div
+            style="font-size:.74rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--tm);margin-bottom:12px">
+            Starter Plan</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:700;color:var(--tp)">₹0 / Year
+            (Free)
+          </div>
+          <div style="font-size:.84rem;color:var(--tm);margin:6px 0 22px">Basic listing only</div>
+          <div class="pf on">Personal Profile Registration</div>
+          <div class="pf on">Member Directory Listing</div>
+          <div class="pf on">Event Notifications & Updates</div>
+          <div class="pf on">Training Program Updates</div>
+          <div class="pf on">Community News & Announcements</div>
+          <div class="pf on">Access to Free Resources</div>
+          <div class="pf on">Monthly Newsletter</div>
+          <div class="pf on">Networking Opportunities at Open Events</div>
+          <div style="margin-top:32px"><button class="btn btn-outline btn-full btn-lg" style="border-radius:12px"
+              onclick="openModal('register-trainer')">Start Free</button></div>
         </div>
-        <div class="price-card featured" style="position:relative">
-          <div style="position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--gold);color:#0D1117;font-size:.7rem;font-weight:700;padding:3px 14px;border-radius:999px;white-space:nowrap">Most Popular</div>
-          <div style="font-size:.74rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(226,201,126,.6);margin-bottom:12px">Professional</div>
-          <div style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:700;color:#0A2551">₹999<span style="font-size:1rem;font-weight:400;color:#666">/mo</span></div>
-          <div style="font-size:.84rem;color:#666;margin:6px 0 22px">Everything a personal trainer needs to scale</div>
-          <div class="pf on">Personalized Trainer Profile Page</div>
-          <div class="pf on">Display certifications &amp; professional background</div>
-          <div class="pf on">Showcase testimonials &amp; client success stories</div>
-          <div class="pf on">Upload introduction, workout, &amp; testimonial videos</div>
-          <div class="pf on">Create and add custom services &amp; packages</div>
-          <div class="pf on">Real-time chat &amp; calendar management</div>
-          <div class="pf on">Portfolio &amp; gallery uploads</div>
-          <div style="margin-top:22px"><button class="btn btn-gold btn-full btn-lg" onclick="openModal('register-trainer')">Start 14-Day Free Trial</button></div>
-          <p style="text-align:center;font-size:.75rem;margin-top:10px;color:#999">No credit card required</p>
+
+        <!-- Professional Plan -->
+        <div class="price-card featured"
+          style="position:relative;border-radius:24px;background:rgba(10,37,81,0.6);backdrop-filter:blur(10px);border:1px solid rgba(245,200,66,0.3);transition:transform 0.3s cubic-bezier(.34,1.56,.64,1),box-shadow 0.3s ease;box-shadow:0 8px 32px rgba(0,0,0,0.25);"
+          onmouseover="this.style.transform='translateY(-12px)';this.style.boxShadow='0 24px 56px rgba(245,200,66,0.15)';"
+          onmouseout="this.style.transform='';this.style.boxShadow='0 8px 32px rgba(0,0,0,0.25)';">
+          <div
+            style="position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--gold);color:#0D1117;font-size:.7rem;font-weight:700;padding:4px 16px;border-radius:999px;white-space:nowrap;box-shadow:0 4px 12px rgba(245,200,66,0.3);">
+            Popular</div>
+          <div
+            style="font-size:.74rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(226,201,126,.6);margin-bottom:12px">
+            Professional Membership</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:700;color:#fff">₹4,999<span
+              style="font-size:1rem;font-weight:400;color:rgba(255,255,255,0.6)">/year</span></div>
+          <div style="font-size:.84rem;color:rgba(255,255,255,0.7);margin:6px 0 22px">Everything in Starter, Plus:</div>
+          <div class="pf on" style="color:#fff"> Professional Dashboard Access</div>
+          <div class="pf on" style="color:#fff">Priority Event Updates</div>
+          <div class="pf on" style="color:#fff">20% Discount on All WTF Trainings & Workshops</div>
+          <div class="pf on" style="color:#fff"> Trainer Support & Guidance</div>
+          <div class="pf on" style="color:#fff">Corporate Training Opportunity Referrals</div>
+          <div class="pf on" style="color:#fff">Business Profile Promotion</div>
+          <div class="pf on" style="color:#fff">Access to Premium Networking Events</div>
+          <div class="pf on" style="color:#fff">Trainer Resource Library</div>
+          <div class="pf on" style="color:#fff">Member Verification Badge</div>
+          <div class="pf on" style="color:#fff">Dedicated Support Team</div>
+          <div class="pf on" style="color:#fff">Speaking Opportunities in Community Events</div>
+          <div class="pf on" style="color:#fff">Collaboration Opportunities with Other Trainers</div>
+          <div style="margin-top:32px"><button class="btn btn-gold btn-full btn-lg" style="border-radius:12px"
+              onclick="openModal('register-trainer')">Choose Plan</button></div>
         </div>
-        <div class="price-card">
-          <div style="font-size:.74rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--tm);margin-bottom:12px">Enterprise</div>
-          <div style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:700;color:var(--tp)">Custom</div>
-          <div style="font-size:.84rem;color:var(--tm);margin:6px 0 22px">For training organisations</div>
-          <div class="pf on">Multi-trainer management</div>
-          <div class="pf on">Custom commission rates</div>
-          <div class="pf on">Dedicated account manager</div>
-          <div class="pf on">White-label options</div>
-          <div class="pf on">API &amp; CRM integrations</div>
-          <div class="pf on">Custom analytics reports</div>
-          <div class="pf on">SLA &amp; priority support</div>
-          <div class="pf on">GST &amp; invoice management</div>
-          <div style="margin-top:22px"><button class="btn btn-outline btn-full btn-lg" onclick="window.location.href='index.html'">Contact Sales</button></div>
+
+        <!-- Elite Featured Plan -->
+        <div class="price-card"
+          style="position:relative;border-radius:24px;background:linear-gradient(145deg, rgba(20,20,20,0.8), rgba(30,30,30,0.8));backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.05);transition:transform 0.3s cubic-bezier(.34,1.56,.64,1),box-shadow 0.3s ease;box-shadow:0 8px 32px rgba(0,0,0,0.15);"
+          onmouseover="this.style.transform='translateY(-12px)';this.style.boxShadow='0 24px 56px rgba(0,0,0,0.4)';"
+          onmouseout="this.style.transform='';this.style.boxShadow='0 8px 32px rgba(0,0,0,0.15)';">
+          <div
+            style="position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:linear-gradient(90deg, #C5A059, #F5C842);color:#0D1117;font-size:.7rem;font-weight:700;padding:4px 16px;border-radius:999px;white-space:nowrap;box-shadow:0 4px 12px rgba(245,200,66,0.3);">
+            Best Seller</div>
+          <div
+            style="font-size:.74rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--tm);margin-bottom:12px">
+            ELITE Member</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:700;color:var(--tp)">
+            ₹14,999<span style="font-size:1rem;font-weight:400;color:var(--tm)">/Year</span></div>
+          <div style="font-size:.84rem;color:var(--tm);margin:6px 0 22px">Everything in Professional, Plus:</div>
+          <div class="pf on"> Premium Elite Badge & Recognition</div>
+          <div class="pf on">Priority Corporate Training Referrals</div>
+          <div class="pf on">Personal Branding Support</div>
+          <div class="pf on">Featured Listing on Website & Directory</div>
+          <div class="pf on">Exclusive Elite Mastermind Sessions</div>
+          <div class="pf on">Event Speaking Priority</div>
+          <div class="pf on">Trainer Portfolio Development Support</div>
+          <div class="pf on">Business Growth Consultation</div>
+          <div class="pf on">Lead Generation Support</div>
+          <div class="pf on">Strategic Partnership Opportunities</div>
+          <div class="pf on">Exclusive VIP Networking Events</div>
+          <div class="pf on">Special Recognition at Major Events</div>
+          <div class="pf on">Early Access to All Programs & Certifications</div>
+          <div class="pf on">Dedicated Relationship Manager</div>
+          <div class="pf on">Maximum Visibility Across WTF Platforms</div>
+          <div style="margin-top:32px"><button class="btn btn-dark btn-full btn-lg" style="border-radius:12px"
+              onclick="openModal('register-trainer')">Go Premium</button></div>
         </div>
+
+      </div>
+
+      <!-- Comparison Table -->
+      <div style="max-width:980px;margin:0 auto 60px;overflow-x:auto;">
+        <h2 class="section-title" style="text-align:center;margin-bottom:32px">Compare <span
+            class="a">Memberships</span></h2>
+        <table
+          style="width:100%;border-collapse:collapse;text-align:left;background:rgba(255,255,255,0.02);border-radius:16px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,0.1);">
+          <thead>
+            <tr style="background:rgba(0,0,0,0.2);">
+              <th style="padding:20px;font-weight:700;color:var(--tp);border-bottom:1px solid rgba(255,255,255,0.05);">
+                Features</th>
+              <th
+                style="padding:20px;font-weight:700;color:var(--tp);border-bottom:1px solid rgba(255,255,255,0.05);text-align:center;">
+                Starter</th>
+              <th
+                style="padding:20px;font-weight:700;color:var(--gold);border-bottom:1px solid rgba(255,255,255,0.05);text-align:center;">
+                Professional</th>
+              <th
+                style="padding:20px;font-weight:700;color:var(--tp);border-bottom:1px solid rgba(255,255,255,0.05);text-align:center;">
+                Elite Featured</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.05);color:var(--ts);">Profile Card
+              </td>
+              <td
+                style="padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.05);text-align:center;color:var(--tm);">
+                Basic List</td>
+              <td
+                style="padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.05);text-align:center;color:var(--ts);">
+                Full Card</td>
+              <td
+                style="padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.05);text-align:center;color:var(--ts);">
+                Highlighted Card</td>
+            </tr>
+            <tr style="background:rgba(255,255,255,0.01);">
+              <td style="padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.05);color:var(--ts);">Homepage
+                Feature</td>
+              <td
+                style="padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.05);text-align:center;color:var(--tm);">
+                —</td>
+              <td
+                style="padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.05);text-align:center;color:var(--tm);">
+                —</td>
+              <td
+                style="padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.05);text-align:center;color:var(--gold);">
+                Top Placement</td>
+            </tr>
+            <tr>
+              <td style="padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.05);color:var(--ts);">Priority
+                Ranking</td>
+              <td
+                style="padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.05);text-align:center;color:var(--tm);">
+                Low</td>
+              <td
+                style="padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.05);text-align:center;color:var(--ts);">
+                Standard</td>
+              <td
+                style="padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.05);text-align:center;color:var(--gold);">
+                Maximum</td>
+            </tr>
+            <tr style="background:rgba(255,255,255,0.01);">
+              <td style="padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.05);color:var(--ts);">Featured
+                Badge</td>
+              <td
+                style="padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.05);text-align:center;color:var(--tm);">
+                —</td>
+              <td
+                style="padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.05);text-align:center;color:var(--tm);">
+                —</td>
+              <td
+                style="padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.05);text-align:center;color:var(--gold);">
+                Yes</td>
+            </tr>
+            <tr>
+              <td style="padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.05);color:var(--ts);">Support</td>
+              <td
+                style="padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.05);text-align:center;color:var(--tm);">
+                Basic</td>
+              <td
+                style="padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.05);text-align:center;color:var(--ts);">
+                Standard</td>
+              <td
+                style="padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.05);text-align:center;color:var(--gold);">
+                Priority</td>
+            </tr>
+            <tr style="background:rgba(255,255,255,0.01);">
+              <td style="padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.05);color:var(--ts);">
+                Customization</td>
+              <td
+                style="padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.05);text-align:center;color:var(--tm);">
+                Limited</td>
+              <td
+                style="padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.05);text-align:center;color:var(--ts);">
+                Full</td>
+              <td
+                style="padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.05);text-align:center;color:var(--ts);">
+                Full</td>
+            </tr>
+            <tr>
+              <td style="padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.05);color:var(--ts);">Analytics
+              </td>
+              <td
+                style="padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.05);text-align:center;color:var(--tm);">
+                —</td>
+              <td
+                style="padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.05);text-align:center;color:var(--ts);">
+                Yes</td>
+              <td
+                style="padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.05);text-align:center;color:var(--ts);">
+                Advanced</td>
+            </tr>
+            <tr style="background:rgba(255,255,255,0.01);">
+              <td style="padding:16px 20px;color:var(--ts);">Visibility</td>
+              <td style="padding:16px 20px;text-align:center;color:var(--tm);">Basic</td>
+              <td style="padding:16px 20px;text-align:center;color:var(--ts);">High</td>
+              <td style="padding:16px 20px;text-align:center;color:var(--gold);">Maximum</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
       <div style="max-width:680px;margin:0 auto">
-        <h2 class="section-title" style="text-align:center;margin-bottom:32px">Frequently Asked <span class="a">Questions</span></h2>
+        <h2 class="section-title" style="text-align:center;margin-bottom:32px">Frequently Asked <span
+            class="a">Questions</span></h2>
         <div class="faq-item">
-          <div class="faq-q" onclick="toggleFaq(this)">Is there a free trial for the Professional plan? <span class="faq-arrow">▼</span></div>
-          <div class="faq-a">Yes! 14 days free on the Professional plan — no credit card required. After the trial, subscribe or downgrade to the free Starter plan.</div>
+          <div class="faq-q" onclick="toggleFaq(this)">Is there a free trial for the Professional plan? <span
+              class="faq-arrow">▼</span></div>
+          <div class="faq-a">Yes! 14 days free on the Professional plan — no credit card required. After the trial,
+            subscribe or downgrade to the free Starter plan.</div>
         </div>
         <div class="faq-item">
-          <div class="faq-q" onclick="toggleFaq(this)">How does the commission work? <span class="faq-arrow">▼</span></div>
-          <div class="faq-a">We charge a percentage of each completed booking — 20% on Starter and 12% on Professional. Enterprise clients negotiate custom rates. No hidden fees.</div>
+          <div class="faq-q" onclick="toggleFaq(this)">How does the commission work? <span class="faq-arrow">▼</span>
+          </div>
+          <div class="faq-a">We charge a percentage of each completed booking — 20% on Starter and 12% on Professional.
+            Enterprise clients negotiate custom rates. No hidden fees.</div>
         </div>
         <div class="faq-item">
-          <div class="faq-q" onclick="toggleFaq(this)">When do I receive my payout? <span class="faq-arrow">▼</span></div>
-          <div class="faq-a">Payouts are processed within 48 hours of session completion directly to your bank account via Razorpay. International payouts via Stripe take 7–10 business days.</div>
+          <div class="faq-q" onclick="toggleFaq(this)">When do I receive my payout? <span class="faq-arrow">▼</span>
+          </div>
+          <div class="faq-a">Payouts are processed within 48 hours of session completion directly to your bank account
+            via Razorpay. International payouts via Stripe take 7–10 business days.</div>
         </div>
         <div class="faq-item">
           <div class="faq-q" onclick="toggleFaq(this)">Can I cancel anytime? <span class="faq-arrow">▼</span></div>
-          <div class="faq-a">Yes. Cancel the Professional plan at any time. Your profile reverts to the free Starter plan and all data, reviews, and bookings are preserved.</div>
+          <div class="faq-a">Yes. Cancel the Professional plan at any time. Your profile reverts to the free Starter
+            plan and all data, reviews, and bookings are preserved.</div>
         </div>
         <div class="faq-item">
-          <div class="faq-q" onclick="toggleFaq(this)">Is World Trainer Forum available for corporate clients? <span class="faq-arrow">▼</span></div>
-          <div class="faq-a">Yes! Organisations can book multiple trainers, manage team-wide training, and get dedicated GST-compliant invoicing. Contact our sales team for enterprise pricing.</div>
+          <div class="faq-q" onclick="toggleFaq(this)">Is World Trainer Forum available for corporate clients? <span
+              class="faq-arrow">▼</span></div>
+          <div class="faq-a">Yes! Organisations can book multiple trainers, manage team-wide training, and get dedicated
+            GST-compliant invoicing. Contact our sales team for enterprise pricing.</div>
         </div>
       </div>
     </section>
@@ -175,37 +371,227 @@
     </div>
 
     <!-- Footer -->
-    <footer>
-      <div class="footer-grid">
-        <div class="footer-brand">
-          <div class="logo" style="color:#0A2551;margin-bottom:4px"><img src="img/logo.svg" alt="World Trainer Forum Logo" style="height:34px; margin-right:8px;">World Trainer <span class="g">Forum</span></div>
-          <p>The premium marketplace connecting organizations with world-class trainers, coaches, and mentors globally.</p>
+    <footer id="site-footer">
+
+      <!-- ── MAIN FOOTER BODY ── -->
+      <div class="footer-main">
+
+        <!-- ROW 1: Brand + 4 link columns + Newsletter -->
+        <div class="footer-top-grid">
+
+          <!-- SECTION 1: Brand + Trust -->
+          <div class="footer-brand-col">
+            <a class="footer-logo" href="index.html">
+              <img src="img/logo.svg" alt="World Trainer Forum Logo">
+              <span>World Trainer <span class="g">Forum</span></span>
+            </a>
+            <p class="footer-tagline">Connecting organizations with world-class trainers, coaches, mentors, and speakers
+              worldwide.</p>
+
+            <!-- Trust Indicators -->
+            <ul class="footer-trust-list">
+              <li><i class="fa-solid fa-circle-check"></i> Verified Trainers</li>
+              <li><i class="fa-solid fa-globe"></i> Global Community</li>
+              <li><i class="fa-solid fa-lock"></i> Secure Payments</li>
+              <li><i class="fa-solid fa-building"></i> Corporate Solutions</li>
+              <li><i class="fa-solid fa-headset"></i> 24/7 Support</li>
+            </ul>
+
+            <!-- Stats Row -->
+            <div class="footer-stats">
+              <div class="footer-stat-card">
+                <i class="fa-solid fa-users"></i>
+                <span class="fsc-num">50K+</span>
+                <span class="fsc-lbl">Trainers</span>
+              </div>
+              <div class="footer-stat-card">
+                <i class="fa-solid fa-earth-asia"></i>
+                <span class="fsc-num">120+</span>
+                <span class="fsc-lbl">Countries</span>
+              </div>
+              <div class="footer-stat-card">
+                <i class="fa-solid fa-graduation-cap"></i>
+                <span class="fsc-num">1M+</span>
+                <span class="fsc-lbl">Learners</span>
+              </div>
+              <div class="footer-stat-card">
+                <i class="fa-solid fa-calendar-check"></i>
+                <span class="fsc-num">10K+</span>
+                <span class="fsc-lbl">Sessions</span>
+              </div>
+            </div>
+
+            <!-- Social Icons -->
+            <div class="footer-social">
+              <a href="#" class="fsoc-btn" aria-label="LinkedIn" title="LinkedIn">
+                <i class="fa-brands fa-linkedin-in"></i>
+              </a>
+              <a href="#" class="fsoc-btn" aria-label="Facebook" title="Facebook">
+                <i class="fa-brands fa-facebook-f"></i>
+              </a>
+              <a href="#" class="fsoc-btn" aria-label="Instagram" title="Instagram">
+                <i class="fa-brands fa-instagram"></i>
+              </a>
+              <a href="#" class="fsoc-btn" aria-label="YouTube" title="YouTube">
+                <i class="fa-brands fa-youtube"></i>
+              </a>
+              <a href="#" class="fsoc-btn" aria-label="X / Twitter" title="X / Twitter">
+                <i class="fa-brands fa-x-twitter"></i>
+              </a>
+            </div>
+          </div>
+
+          <!-- SECTION 2: For Clients -->
+          <div class="footer-col">
+            <h4 class="footer-col-hd">For Clients</h4>
+            <ul class="footer-links">
+              <li><a href="find-trainers.html">Browse Trainers</a></li>
+              <li><a href="categories.html">All Categories</a></li>
+              <li><a href="corporate-training.html">Corporate Training</a></li>
+              <li><a href="gift-a-session.html">Gift a Session</a></li>
+              <li><a href="pricing.html">Pricing</a></li>
+              <li><a href="leadership-training.html">Leadership Training</a></li>
+              <li><a href="sales-training.html">Sales Training</a></li>
+              <li><a href="soft-skills-training.html">Soft Skills Training</a></li>
+              <li><a href="technology-training.html">Technology Training</a></li>
+              <li><a href="executive-coaching.html">Executive Coaching</a></li>
+              <li><a href="team-building.html">Team Building Programs</a></li>
+              <li><a href="request-custom-training.html">Request Custom Training</a></li>
+            </ul>
+          </div>
+
+          <!-- SECTION 3: For Trainers -->
+          <div class="footer-col">
+            <h4 class="footer-col-hd">For Trainers</h4>
+            <ul class="footer-links">
+              <li><a href="dashboard.html">List Your Profile</a></li>
+              <li><a href="trainer-resources.html">Trainer Resources</a></li>
+              <li><a href="community-forum.html">Community Forum</a></li>
+              <li><a href="success-stories.html">Success Stories</a></li>
+              <li><a href="verification-process.html">Verification Process</a></li>
+              <li><a href="dashboard.html">Trainer Dashboard</a></li>
+              <li><a href="become-verified.html">Become Verified</a></li>
+              <li><a href="trainer-academy.html">Trainer Academy</a></li>
+              <li><a href="learning-center.html">Learning Center</a></li>
+              <li><a href="certification-support.html">Certification Support</a></li>
+              <li><a href="events-workshops.html">Events &amp; Workshops</a></li>
+              <li><a href="earnings-program.html">Earnings Program</a></li>
+              <li><a href="partner-program.html">Partner Program</a></li>
+            </ul>
+          </div>
+
+          <!-- SECTION 5: Company -->
+          <div class="footer-col">
+            <h4 class="footer-col-hd">Company</h4>
+            <ul class="footer-links">
+              <li><a href="about.html">About Us</a></li>
+              <li><a href="blog.html">Blog</a></li>
+              <li><a href="press.html">Press</a></li>
+              <li><a href="careers.html">Careers</a></li>
+              <li><a href="privacy-policy.html">Privacy Policy</a></li>
+              <li><a href="contact.html">Contact Us</a></li>
+              <li><a href="terms-conditions.html">Terms &amp; Conditions</a></li>
+              <li><a href="faqs.html">FAQs</a></li>
+              <li><a href="help-center.html">Help Center</a></li>
+              <li><a href="affiliate-program.html">Affiliate Program</a></li>
+              <li><a href="partners.html">Partners</a></li>
+              <li><a href="media-kit.html">Media Kit</a></li>
+            </ul>
+          </div>
+
+
+          <!-- SECTION 6: Newsletter -->
+          <div class="footer-newsletter-col">
+            <div class="footer-newsletter-card">
+              <div class="fnl-icon"><i class="fa-solid fa-paper-plane"></i></div>
+              <h4 class="fnl-title">Stay Updated</h4>
+              <p class="fnl-sub">Get training insights, industry trends, and expert resources.</p>
+              <form class="fnl-form" onsubmit="return false;">
+                <div class="fnl-input-wrap">
+                  <i class="fa-regular fa-envelope fnl-input-ico"></i>
+                  <input type="email" class="fnl-input" placeholder="Your email address"
+                    aria-label="Email for newsletter">
+                  <button type="submit" class="fnl-btn">Subscribe</button>
+                </div>
+              </form>
+              <ul class="fnl-features">
+                <li><i class="fa-solid fa-circle-check"></i> Weekly insights</li>
+                <li><i class="fa-solid fa-circle-check"></i> Trainer resources</li>
+                <li><i class="fa-solid fa-circle-check"></i> Event updates</li>
+              </ul>
+            </div>
+          </div>
+
+        </div><!-- /footer-top-grid -->
+
+        <!-- SECTION 4: Popular Training Topics (Chips) -->
+        <div class="footer-topics">
+          <h4 class="footer-topics-hd">Popular Training Topics</h4>
+          <div class="footer-chips">
+            <a href="#" class="footer-chip">Leadership</a>
+            <a href="#" class="footer-chip">Communication Skills</a>
+            <a href="#" class="footer-chip">AI &amp; Technology</a>
+            <a href="#" class="footer-chip">Sales &amp; Marketing</a>
+            <a href="#" class="footer-chip">HR Training</a>
+            <a href="#" class="footer-chip">Public Speaking</a>
+            <a href="#" class="footer-chip">Personal Development</a>
+            <a href="#" class="footer-chip">Business Strategy</a>
+            <a href="#" class="footer-chip">Finance</a>
+            <a href="#" class="footer-chip">Health &amp; Wellness</a>
+            <a href="#" class="footer-chip">Executive Coaching</a>
+            <a href="#" class="footer-chip">Team Building</a>
+          </div>
         </div>
-        <div class="footer-col">
-          <h4>For Clients</h4>
-          <ul>
-            <li><a href="find-trainers.html">Browse Trainers</a></li>
-            <li><a href="categories.html">All Categories</a></li>
-            <li><a href="pricing.html">Pricing</a></li>
-          </ul>
+
+        <!-- SECTION 7: Trust & Security Strip -->
+        <div class="footer-trust-strip">
+          <div class="fts-item">
+            <i class="fa-solid fa-shield-halved"></i>
+            <span>SSL Secure</span>
+          </div>
+          <div class="fts-divider"></div>
+          <div class="fts-item">
+            <i class="fa-solid fa-scale-balanced"></i>
+            <span>GDPR Compliant</span>
+          </div>
+          <div class="fts-divider"></div>
+          <div class="fts-item">
+            <i class="fa-solid fa-user-check"></i>
+            <span>Verified Profiles</span>
+          </div>
+          <div class="fts-divider"></div>
+          <div class="fts-item">
+            <i class="fa-solid fa-credit-card"></i>
+            <span>Safe Payments</span>
+          </div>
+          <div class="fts-divider"></div>
+          <div class="fts-item">
+            <i class="fa-solid fa-earth-americas"></i>
+            <span>Trusted Worldwide</span>
+          </div>
         </div>
-        <div class="footer-col">
-          <h4>For Trainers</h4>
-          <ul>
-            <li><a href="#" onclick="openModal('register-trainer')">List Your Profile</a></li>
-            <li><a href="dashboard.html" target="_blank">Trainer Dashboard</a></li>
-          </ul>
-        </div>
-        <div class="footer-col">
-          <h4>Company</h4>
-          <ul>
-            <li><a href="about.html">About Us</a></li>
-            <li><a href="under-construction.html">Blog</a></li>
-            <li><a href="#">Privacy Policy</a></li>
-          </ul>
+
+      </div><!-- /footer-main -->
+
+      <!-- SECTION 8: Bottom Legal Bar -->
+      <div class="footer-legal">
+        <div class="footer-legal-inner">
+          <span class="fl-copy">© 2026 World Trainer Forum Technologies Pvt. Ltd. All rights reserved.</span>
+          <nav class="fl-links" aria-label="Legal links">
+            <a href="#">Privacy Policy</a>
+            <span class="fl-dot">·</span>
+            <a href="#">Terms</a>
+            <span class="fl-dot">·</span>
+            <a href="#">Cookies</a>
+            <span class="fl-dot">·</span>
+            <a href="#">Accessibility</a>
+            <span class="fl-dot">·</span>
+            <a href="#">Sitemap</a>
+          </nav>
+          <span class="fl-tagline">Made for Global Learning &amp; Growth 🌍</span>
         </div>
       </div>
-      <div class="footer-bottom"><span>© 2026 World Trainer Forum Technologies Pvt. Ltd. All rights reserved.</span><span>Privacy · Terms · Cookies · Sitemap</span></div>
+
     </footer>
   </div>
   <script src="js/data.js"></script>
@@ -213,7 +599,7 @@
   <script src="js/auth-modal.js"></script>
   <script src="js/page-nav.js"></script>
   <script>applyTheme();</script>
-<script src="js/mobile-nav.js"></script>
+  <script src="js/mobile-nav.js"></script>
 </body>
 
 </html>

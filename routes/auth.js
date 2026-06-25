@@ -10,7 +10,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secret_key_for_dev_only';
 // POST /api/auth/register
 router.post('/register', async (req, res) => {
   try {
-    const { email, password, firstName, lastName, role, professionalTitle, expertiseCategory, city, linkedinProfile, bio, hourlyRate, skills, phoneNumber, country, yearsOfExperience, website } = req.body;
+    const { email, password, firstName, lastName, role, professionalTitle, expertiseCategory, city, linkedinProfile, bio, hourlyRate, skills, phoneNumber, country, yearsOfExperience, website, membershipType } = req.body;
 
     // Check if user exists
     const existingUser = await User.findOne({ email: email.toLowerCase() });
@@ -21,6 +21,22 @@ router.post('/register', async (req, res) => {
     // Hash password
     const saltRounds = 10;
     const passwordHash = await bcrypt.hash(password, saltRounds);
+
+    let assignedMembershipType = membershipType || 'FREE';
+    let paymentStatus = 'FREE';
+    let isFeatured = false;
+    let displayPriority = 100;
+
+    if (assignedMembershipType === 'PREMIUM') {
+      paymentStatus = 'PAID';
+      isFeatured = true;
+      displayPriority = 1;
+    } else if (assignedMembershipType === 'STANDARD') {
+      paymentStatus = 'PAID';
+      displayPriority = 50;
+    } else {
+      assignedMembershipType = 'FREE'; // ensure fallback
+    }
 
     // Create new user
     const newUser = new User({
@@ -42,6 +58,15 @@ router.post('/register', async (req, res) => {
       sessions: '0',
       reviews: 0,
       rating: 5.0,
+      
+      // Membership Controls
+      membershipType: assignedMembershipType,
+      membershipStatus: 'ACTIVE',
+      paymentStatus,
+      isFeatured,
+      displayPriority,
+      profileVisibility: 'PUBLIC',
+      
       verified: true // Automatically verified for this demo
     });
 
