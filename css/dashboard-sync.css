@@ -1,0 +1,146 @@
+/* ═══════════════════════════════════════════════════
+   TRAINER DASHBOARD SYNC — STYLES
+   Uses existing theme tokens: --bd, --tm, --ts, --gold, --r
+═══════════════════════════════════════════════════ */
+
+/* ── Sticky live preview card ─────────────────────────────────────────── */
+.tdb-preview-wrap { position: sticky; top: calc(var(--nav, 70px) + 16px); align-self: flex-start; }
+
+.tdb-preview-card {
+  border: 1px solid var(--bd);
+  border-radius: var(--r);
+  overflow: hidden;
+  background: rgba(255,255,255,0.03);
+  box-shadow: var(--shadow-md, 0 8px 24px rgba(0,0,0,.18));
+}
+
+#tdb-preview-banner {
+  height: 110px;
+  background: linear-gradient(135deg, #0D3060, #064040);
+  background-size: cover;
+  background-position: center;
+}
+
+.tdb-preview-body { padding: 18px; text-align: center; margin-top: -42px; }
+
+#tdb-preview-avatar {
+  width: 84px; height: 84px; border-radius: 50%;
+  margin: 0 auto 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.6rem; font-weight: 700; color: #fff;
+  background: var(--gold); border: 3px solid var(--card-bg, #11203a);
+  overflow: hidden;
+}
+#tdb-preview-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+#tdb-preview-name { font-family: var(--font-serif, serif); font-size: 1.25rem; font-weight: 700; color: var(--ts); }
+#tdb-preview-tagline { font-size: .85rem; color: var(--tm); margin-top: 2px; }
+#tdb-preview-rate { font-size: .9rem; font-weight: 700; color: var(--gold); margin-top: 8px; }
+#tdb-preview-location { font-size: .78rem; color: var(--tm); margin-top: 2px; }
+
+#tdb-preview-tags { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-top: 12px; }
+.tdb-pill {
+  font-size: .72rem; font-weight: 600; padding: 4px 10px;
+  border-radius: var(--radius-full, 999px);
+  background: rgba(197,160,89,0.12); color: var(--gold);
+  border: 1px solid rgba(197,160,89,0.25);
+}
+
+#tdb-preview-bio {
+  font-size: .8rem; color: var(--tm); line-height: 1.5;
+  margin-top: 12px; text-align: left;
+  display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden;
+}
+
+.tdb-preview-label {
+  font-size: .68rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--tm); margin-bottom: 8px; text-align: center;
+}
+
+/* ── Cover banner / avatar upload zones (edit form) ────────────────────── */
+#tdb-banner-preview {
+  height: 110px; border-radius: var(--r);
+  background: linear-gradient(135deg, #D1E5F7, #E8F2FA);
+  background-size: cover; background-position: center;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: var(--trans-fast, all .2s ease);
+}
+#tdb-banner-preview:not(.has-image)::after {
+  content: "Click to upload cover banner"; font-size: .82rem; color: #0A2551; font-weight: 600;
+}
+#tdb-banner-preview.has-image::after { content: none; }
+
+#tdb-avatar-preview {
+  width: 88px; height: 88px; border-radius: 50%;
+  background: var(--gold); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.8rem; font-weight: 700; cursor: pointer; overflow: hidden;
+}
+#tdb-avatar-preview img { width: 100%; height: 100%; object-fit: cover; }
+
+/* ── Achievements / certifications cards ──────────────────────────────── */
+#tdb-achievements-list { display: flex; flex-direction: column; gap: 10px; }
+.tdb-cert-card {
+  display: flex; align-items: center; gap: 12px;
+  border: 1px solid var(--bd); border-radius: var(--r); padding: 10px 14px;
+}
+.tdb-cert-icon { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; flex: none; }
+.tdb-cert-icon img { width: 36px; height: 36px; object-fit: contain; border-radius: 4px; }
+.tdb-cert-emoji { font-size: 1.5rem; }
+.tdb-cert-info { flex: 1; min-width: 0; }
+.tdb-cert-name { font-weight: 600; color: var(--ts); font-size: .9rem; }
+.tdb-cert-org { font-size: .78rem; color: var(--tm); }
+
+/* ── Past events table ─────────────────────────────────────────────────── */
+#tdb-events-table { width: 100%; border-collapse: collapse; font-size: .84rem; }
+#tdb-events-table th {
+  text-align: left; padding: 10px 12px; font-size: .7rem; font-weight: 700;
+  letter-spacing: .06em; text-transform: uppercase; color: var(--tm);
+  border-bottom: 1px solid var(--bd);
+}
+#tdb-events-table td { padding: 10px 12px; border-bottom: 1px solid var(--bd); }
+#tdb-events-table img { width: 28px; height: 28px; object-fit: contain; border-radius: 4px; }
+
+.tdb-empty { color: var(--tm); font-size: .84rem; padding: 12px 0; }
+
+/* ── Remove button (shared) ────────────────────────────────────────────── */
+.tdb-remove-btn {
+  background: none; border: none; color: var(--tm); cursor: pointer;
+  font-size: .9rem; line-height: 1; padding: 4px; flex: none;
+  transition: var(--trans-fast, all .2s ease);
+}
+.tdb-remove-btn:hover { color: #e05c5c; }
+
+/* ── Add-item button ───────────────────────────────────────────────────── */
+.tdb-add-btn {
+  border: 1px dashed var(--bd); border-radius: var(--r); background: transparent;
+  color: var(--gold); font-weight: 600; font-size: .84rem; padding: 10px 16px;
+  cursor: pointer; width: 100%; transition: var(--trans-fast, all .2s ease);
+}
+.tdb-add-btn:hover { border-color: var(--gold); background: rgba(197,160,89,0.06); }
+
+/* ── Shared modal shell (mirrors auth-modal patterns) ──────────────────── */
+#tdb-modal { position: fixed; inset: 0; z-index: var(--z-modal, 1000); display: none; }
+#tdb-modal.active { display: block; }
+.tdb-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.6); }
+.tdb-modal-box {
+  position: relative; max-width: 440px; margin: 8vh auto 0;
+  background: var(--card-bg, #11203a); border: 1px solid var(--bd);
+  border-radius: var(--r); padding: 28px; max-height: 80vh; overflow-y: auto;
+}
+.tdb-modal-close {
+  position: absolute; top: 14px; right: 14px; background: none; border: none;
+  color: var(--tm); font-size: 1.1rem; cursor: pointer;
+}
+.tdb-modal-box h3 { font-family: var(--font-serif, serif); margin-bottom: 16px; color: var(--ts); }
+.tdb-form-group { margin-bottom: 14px; }
+.tdb-form-group label { display: block; font-size: .8rem; font-weight: 600; color: var(--tm); margin-bottom: 6px; }
+.tdb-form-group input {
+  width: 100%; padding: 10px 12px; border: 1px solid var(--bd); border-radius: var(--radius-md, 12px);
+  background: rgba(255,255,255,0.03); color: var(--ts); font-size: .9rem;
+}
+
+/* ── Responsive: stack preview below form on mobile ────────────────────── */
+@media (max-width: 900px) {
+  .tdb-preview-wrap { position: static; }
+}

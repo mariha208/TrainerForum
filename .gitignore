@@ -1,1 +1,15 @@
 credentials.json
+.env
+
+# Node dependencies — never commit these
+node_modules/
+css/node_modules/
+**/node_modules/
+
+# Logs
+npm-debug.log*
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
