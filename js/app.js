@@ -73,44 +73,119 @@ function subscribeToTrainers() {
             return str;
           };
 
+          // ── COMPUTED HELPERS (resolve MongoDB schema fields + legacy aliases) ──
+          const _name = (() => {
+            // MongoDB schema stores firstName + lastName separately
+            if (row.firstName) {
+              return ((row.firstName || '') + ' ' + (row.lastName || '')).trim();
+            }
+            // Legacy / sheet-based aliases
+            return row.fullName || row.FullName || row.name || row.Name || 'Unnamed Trainer';
+          })();
+
+          const _category = String(
+            row.expertiseCategory || row.ExpertiseCategory ||
+            row.category || row.Category ||
+            row.cat || row.Cat ||
+            'General'
+          );
+
+          // hourlyRate is a Number in DB schema; fall back to legacy string fields
+          const _rawRate = row.hourlyRate ?? row.HourlyRate ?? row.rate ?? row.Rate ?? row.price ?? row.Price ?? 0;
+          const _rateStr = String(_rawRate);
+
+          const _experience = String(
+            row.yearsOfExperience ?? row.YearsOfExperience ??
+            row.experience ?? row.Experience ??
+            '0'
+          );
+
+          const _tagline = String(
+            row.professionalTitle || row.ProfessionalTitle ||
+            row.tagline || row.Tagline ||
+            row.title || row.Title ||
+            ''
+          );
+
+          // Location: DB has separate city + country fields
+          const _location = (() => {
+            if (row.city || row.country) {
+              return [row.city, row.country].filter(Boolean).join(', ');
+            }
+            return String(row.location || row.Location || 'Remote');
+          })();
+
+          // Images: DB uses profilePictureUrl + coverBannerUrl (schema field names)
+          const _profilePic = getDriveDirectUrl(
+            row.profilePictureUrl || row.ProfilePictureUrl ||
+            row.profileImageUrl || row.ProfileImageUrl ||
+            row.photoUrl || row.PhotoUrl ||
+            ''
+          );
+          const _bannerPic = getDriveDirectUrl(
+            row.coverBannerUrl || row.CoverBannerUrl ||
+            row.bannerImageUrl || row.BannerImageUrl ||
+            row.bannerUrl || row.BannerUrl ||
+            ''
+          );
+
+          // Social: DB uses linkedinProfile + phoneNumber
+          const _phone = String(
+            row.phoneNumber || row.PhoneNumber ||
+            row.whatsapp || row.Whatsapp ||
+            row.phone || row.Phone ||
+            ''
+          );
+          const _linkedin = String(
+            row.linkedinProfile || row.LinkedinProfile ||
+            row.linkedin || row.Linkedin ||
+            (row.socialLinks && row.socialLinks.linkedin) ||
+            ''
+          );
+
           const normalizedTrainer = {
             // ── Core identity ──────────────────────────────────────────────
             id: String(row._id || row.id || row.trainerId || row.TrainerId || 'T-1001'),
             trainerId: String(row._id || row.id || row.trainerId || row.TrainerId || 'T-1001'),
-            name: String(row.fullName || row.FullName || 'Unnamed Trainer'),
-            fullName: String(row.fullName || row.FullName || 'Unnamed Trainer'),
-            tagline: String(row.tagline || row.Tagline || ''),
-            role: String(row.tagline || row.Tagline || row.category || 'Professional'), // modal alias
+            name: _name,
+            fullName: _name,
+            tagline: _tagline,
+            role: _tagline || _category || 'Professional', // modal alias
 
             // ── Category / specialisation ──────────────────────────────────
-            category: String(row.category || row.Category || 'General'),
-            cat: String(row.category || row.Category || 'General'), // modal alias
-            specialization: String(row.specialization || row.Specialization || row.category || ''),
+            category: _category,
+            cat: _category, // modal alias
+            specialization: String(
+              row.specialization || row.Specialization ||
+              row.expertiseCategory || row.ExpertiseCategory ||
+              row.category || ''
+            ),
 
             // ── Bio, location, mode ────────────────────────────────────────
             bio: String(row.bio || row.Bio || ''),
-            location: String(row.location || row.Location || 'Remote'),
-            city: String(row.location || row.Location || 'Remote'), // modal alias
+            location: _location,
+            city: _location, // modal alias
             deliveryMode: String(row.deliveryMode || row.DeliveryMode || row.mode || 'Online'),
             mode: String(row.deliveryMode || row.DeliveryMode || row.mode || 'Online'),
-            availability: String(row.availability || row.Availability || 'Mon–Fri | 9 AM–6 PM'),
+            availability: row.availability || row.Availability || 'Mon–Fri | 9 AM–6 PM',
 
             // ── Pricing ────────────────────────────────────────────────────
-            price: String(row.rate || row.Rate || row.price || row.Price || '0'),
-            pn: parseInt(String(row.rate || row.Rate || row.price || '0').replace(/[^\d.]/g, ''), 10) || 0,
-            rate: String(row.rate || row.Rate || '0'),
+            price: _rateStr,
+            pn: parseFloat(_rateStr.replace(/[^\d.]/g, '')) || 0,
+            rate: _rateStr,
 
             // ── Membership ─────────────────────────────────────────────────
             membershipType: String(row.membershipType || 'FREE').toUpperCase(),
+            isFeatured: row.isFeatured === true,
 
             // ── Experience ────────────────────────────────────────────────
-            experience: String(row.experience || row.Experience || '0'),
-            exp: String(row.experience || row.Experience || '0'), // modal alias
+            experience: _experience,
+            exp: _experience, // modal alias
 
             // ── Social contacts ───────────────────────────────────────────
-            phone: String(row.whatsapp || row.Whatsapp || row.phone || row.phoneNumber || ''),
-            whatsapp: String(row.whatsapp || row.Whatsapp || row.phone || row.phoneNumber || ''), // modal alias
-            linkedin: String(row.linkedin || row.Linkedin || row.linkedinProfile || (row.socialLinks && row.socialLinks.linkedin) || ''),
+            phone: _phone,
+            whatsapp: _phone, // modal alias
+            linkedin: _linkedin,
             website: String(row.website || row.Website || (row.socialLinks && row.socialLinks.website) || ''),
             instagram: String(row.instagram || row.Instagram || (row.socialLinks && row.socialLinks.instagram) || ''),
             youtube: String(row.youtube || row.Youtube || (row.socialLinks && row.socialLinks.youtube) || ''),
@@ -120,12 +195,12 @@ function subscribeToTrainers() {
             portfolioUrl: String(row.portfolioUrl || row.PortfolioUrl || row.portfolioLink || row.portfolio || row.Portfolio || ''),
 
             // ── Images (Parsed to bypass Drive CORS) ──────────────────────
-            profilePic: getDriveDirectUrl(row.profileImageUrl || row.ProfileImageUrl || ''),
-            profileImageUrl: getDriveDirectUrl(row.profileImageUrl || row.ProfileImageUrl || ''), // modal alias
-            profilePictureUrl: getDriveDirectUrl(row.profileImageUrl || row.ProfileImageUrl || ''), // modal alias
-            bannerPic: getDriveDirectUrl(row.bannerImageUrl || row.BannerImageUrl || ''),
-            bannerImageUrl: getDriveDirectUrl(row.bannerImageUrl || row.BannerImageUrl || ''), // modal alias
-            coverBannerUrl: getDriveDirectUrl(row.bannerImageUrl || row.BannerImageUrl || ''), // modal alias
+            profilePic: _profilePic,
+            profileImageUrl: _profilePic,      // modal alias
+            profilePictureUrl: _profilePic,    // modal alias
+            bannerPic: _bannerPic,
+            bannerImageUrl: _bannerPic,        // modal alias
+            coverBannerUrl: _bannerPic,        // modal alias
 
             // ── certificationsBy — native array from backend (or flat string fallback) ─
             certificationsBy: (() => {
@@ -192,9 +267,9 @@ function subscribeToTrainers() {
             })(), // trainer-modal reads t.allSkills first
 
             // ── Ratings / session counts ───────────────────────────────────
-            rating: parseFloat(String(row.rating || '5.0')) || 5.0,
-            reviews: String(row.reviews || '0'),
-            sessions: String(row.sessions || '0'),
+            rating: parseFloat(String(row.rating ?? '5.0')) || 5.0,
+            reviews: String(row.reviews ?? '0'),
+            sessions: String(row.sessions ?? '0'),
 
             // ── Video Intro Mapping ────────────────────────────────────────
             // introVideo saved by dashboard as JSON {url, type}; or as plain URL string
@@ -582,7 +657,7 @@ function subscribeToTrainers() {
             </div>`;
           
           if (isHomeGrid) {
-            if (normalizedTrainer.membershipType === 'PREMIUM' || normalizedTrainer.isFeatured === true) {
+            if (normalizedTrainer.membershipType === 'PREMIUM' || normalizedTrainer.membershipType === 'STANDARD' || normalizedTrainer.isFeatured === true) {
               grid.insertAdjacentHTML('beforeend', cardHtml);
             }
           } else {
