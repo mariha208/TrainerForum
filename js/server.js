@@ -62,32 +62,54 @@ const JWT_SECRET = process.env.JWT_SECRET || 'super_secret_session_token_key';
 // POST: Register User + Auto-Create MongoDB Trainer Profile
 app.post('/api/auth/register', async (req, res) => {
   try {
-    const { fullName, email, password } = req.body;
+    // Frontend sends firstName + lastName separately — combine them into fullName
+    const { firstName, lastName, email, password, role,
+            professionalTitle, expertiseCategory, city,
+            phoneNumber, linkedinProfile, website, bio,
+            yearsOfExperience } = req.body;
 
-    const existingUser = await User.findOne({ email });
+    if (!email || !password || !firstName) {
+      return res.status(400).json({ error: 'Email, password, and first name are required.' });
+    }
+
+    const existingUser = await User.findOne({ email: email.toLowerCase() });
     if (existingUser) return res.status(400).json({ error: "Email already registered" });
 
+    const fullName = [firstName, lastName].filter(Boolean).join(' ');
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const newUser = new User({ fullName, email, password: hashedPassword });
+    const newUser = new User({ fullName, email: email.toLowerCase(), password: hashedPassword, role: role || 'trainer' });
     await newUser.save();
 
-    // Directly inserts a blank tracking card for this trainer into your MongoDB Cluster
+    // Auto-create an empty Trainer profile linked to this user account
     const newProfile = new Trainer({
       trainerId: newUser._id.toString(),
       fullName: newUser.fullName,
-      category: 'General',
+      category: expertiseCategory || 'General',
+      tagline: professionalTitle || '',
+      bio: bio || '',
       rate: '0',
       membershipType: 'FREE'
     });
     await newProfile.save();
 
     const token = jwt.sign({ userId: newUser._id, role: newUser.role }, JWT_SECRET, { expiresIn: '24h' });
-    res.status(201).json({ token, user: { id: newUser._id, fullName: newUser.fullName, email: newUser.email } });
+    res.status(201).json({
+      token,
+      user: {
+        id: newUser._id,
+        fullName: newUser.fullName,
+        firstName,
+        lastName,
+        email: newUser.email,
+        role: newUser.role
+      }
+    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
+
 
 // POST: Login User
 app.post('/api/auth/login', async (req, res) => {
