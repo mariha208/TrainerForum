@@ -15,12 +15,23 @@ const PORT = process.env.PORT || 3000;
 connectDB();
 
 // ── Middleware ────────────────────────────────────────────────────────────────
+const allowedOrigins = [
+  'https://worldtrainerforum.com',
+  'https://www.worldtrainerforum.com',
+  'http://localhost:5000',
+  'http://127.0.0.1:5000'
+];
+
 app.use(cors({
-  origin: [
-    'https://www.worldtrainerforum.com',
-    'https://worldtrainerforum.com',
-    'http://localhost:3000' // Keep this so I can still test locally!
-  ],
+  origin: function (origin, callback) {
+    // allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) {
+      const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  },
   credentials: true
 }));
 app.use(express.json());
