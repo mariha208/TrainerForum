@@ -4,6 +4,9 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const multer = require('multer');
+const path = require('path');
+const { uploadFileToCloudinary } = require('../services/driveUpload');
 
 const app = express();
 
@@ -112,6 +115,55 @@ app.get('/api/trainers', async (req, res) => {
     res.json(trainers);
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch trainers" });
+  }
+});
+
+// GET: Fetch a specific trainer by ID
+app.get('/api/trainers/:id', async (req, res) => {
+    try {
+        const filter = req.params.id.length === 24 ? { _id: req.params.id } : { trainerId: req.params.id };
+        const trainer = await Trainer.findOne(filter);
+        if (!trainer) return res.status(404).json({ error: "Trainer not found" });
+        res.json(trainer);
+    } catch (error) {
+        res.status(500).json({ error: "Failed to fetch trainer" });
+    }
+});
+
+// PATCH: Update a trainer profile
+app.patch('/api/trainers/:id', async (req, res) => {
+  try {
+    const updated = await Trainer.findOneAndUpdate(
+      { trainerId: req.params.id }, 
+      { $set: req.body }, 
+      { new: true }
+    );
+    if (!updated) return res.status(404).json({ message: 'Trainer not found' });
+    res.json(updated);
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// ── IMAGE UPLOAD ──
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 10 * 1024 * 1024 },
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype.startsWith('image/')) cb(null, true);
+    else cb(new Error('Only image files are allowed'), false);
+  }
+});
+
+app.post('/api/upload-image', upload.single('image'), async (req, res) => {
+  try {
+    if (!req.file) return res.status(400).json({ error: 'No image file provided' });
+    const imageType = req.body.type || 'profile';
+    const ext = req.file.originalname.split('.').pop() || 'jpg';
+    const timestamp = Date.now();
+    const fileName = `trainer-${imageType}-${timestamp}.${ext}`;
+    const publicUrl = await uploadFileToCloudinary(req.file.buffer, req.file.mimetype, fileName, imageType);
+    res.json({ url: publicUrl, type: imageType });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 });
 
