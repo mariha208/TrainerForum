@@ -48,6 +48,18 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'World Trainer Forum API is running.' });
 });
 
+// ── Trainers Route — Returns all users with role 'trainer' ───────────────────
+app.get('/api/trainers', async (req, res) => {
+  try {
+    const User = require('./models/User');
+    const trainers = await User.find({ role: 'trainer' }).select('-passwordHash');
+    res.json(trainers);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch trainers: ' + err.message });
+  }
+});
+
+
 // ── Google Apps Script Proxy (bypasses CORS for browser fetches) ──────────────
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwHHlofzvb_rdgb6goyLhu8BPdeRX5g3eS-fCWgUrPKd4MipkzNsCaAZNz1SnhsSDVs/exec';
 
