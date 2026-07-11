@@ -191,9 +191,7 @@ app.post('/api/upload-image', upload.single('image'), async (req, res) => {
 
 app.use('/api/users', require('./routes/users'));
 app.use('/api/payments', require('./routes/payment.routes'));
-
 app.use('/api/images', require('./routes/images'));
-app.use('/api/auth', require('./routes/auth'));
 app.use('/api/reviews', require('./routes/reviews'));
 
 // ── Catch-all: serve index.html (Express 5 syntax) ───────────────────────────

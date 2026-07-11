@@ -30,7 +30,7 @@ const userSchema = new mongoose.Schema(
   {
     // ── Identity ──────────────────────────────────────────────
     firstName:     { type: String, required: true, trim: true },
-    lastName:      { type: String, required: true, trim: true },
+    lastName:      { type: String, default: '', trim: true },
     email:         { type: String, required: true, unique: true, lowercase: true, trim: true },
     passwordHash:  { type: String },
     role:          { type: String, enum: ['client', 'trainer', 'admin'], default: 'client' },
