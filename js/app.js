@@ -657,7 +657,7 @@ function subscribeToTrainers() {
             </div>`;
           
           if (isHomeGrid) {
-            if (normalizedTrainer.membershipType === 'PREMIUM' || normalizedTrainer.membershipType === 'STANDARD' || normalizedTrainer.isFeatured === true) {
+            if (normalizedTrainer.membershipType === 'PREMIUM' || normalizedTrainer.isFeatured === true) {
               grid.insertAdjacentHTML('beforeend', cardHtml);
             }
           } else {
