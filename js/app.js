@@ -657,10 +657,12 @@ function subscribeToTrainers() {
             </div>`;
           
           if (isHomeGrid) {
-            if (normalizedTrainer.membershipType === 'PREMIUM' || normalizedTrainer.isFeatured === true) {
+            // Front page: ONLY show PREMIUM (Featured) trainers
+            if (normalizedTrainer.membershipType === 'PREMIUM') {
               grid.insertAdjacentHTML('beforeend', cardHtml);
             }
           } else {
+            // find-trainers.html: show all trainers
             grid.insertAdjacentHTML('beforeend', cardHtml);
           }
         }); // end TRAINERS.forEach
