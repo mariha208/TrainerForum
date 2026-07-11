@@ -3,6 +3,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const multer = require('multer');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const path = require('path');
 const { uploadFileToCloudinary } = require('../services/driveUpload');
 const Trainer = require('./trainer-model'); // Imports your existing model
@@ -10,8 +12,7 @@ const Trainer = require('./trainer-model'); // Imports your existing model
 const app = express();
 app.use(express.json({ limit: '50mb' })); // Allows server to read JSON
 
-// Import auth routes
-const authRoutes = require('../routes/auth');
+// CORS Configuration
 const allowedOrigins = [
   'https://worldtrainerforum.com',
   'https://www.worldtrainerforum.com',
@@ -21,7 +22,6 @@ const allowedOrigins = [
 
 app.use(cors({
   origin: function (origin, callback) {
-    // allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
     if (allowedOrigins.indexOf(origin) === -1) {
       const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
@@ -32,24 +32,98 @@ app.use(cors({
   credentials: true
 }));
 
-// Multer: store uploaded files in memory (not on disk) before sending to Drive
+// Mongoose User Auth Schema
+const userSchema = new mongoose.Schema({
+  fullName: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
+  passwordHash: { type: String, required: true },
+  role: { type: String, default: 'trainer' }
+});
+const User = mongoose.model('User', userSchema);
+
+// JWT Secret Key
+const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secret_key_for_dev_only';
+
+// Multer: store uploaded files in memory
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: 10 * 1024 * 1024 }, // 10MB max
   fileFilter: (req, file, cb) => {
-    if (file.mimetype.startsWith('image/')) {
-      cb(null, true);
-    } else {
-      cb(new Error('Only image files are allowed'), false);
-    }
+    if (file.mimetype.startsWith('image/')) cb(null, true);
+    else cb(new Error('Only image files are allowed'), false);
   }
 });
 
-// Paste your verified working connection string below
-const uri = "mongodb+srv://themarscreative_db_user:r4iaDIrZGiYL23hS@cluster0.0gndovd.mongodb.net/?appName=Cluster0";
+// ── AUTHENTICATION ROUTES ───────────────────────────────────────────────────
 
-// Mount Auth Routes
-app.use('/api/auth', authRoutes);
+// POST /api/auth/register
+app.post('/api/auth/register', async (req, res) => {
+  try {
+    const { email, password, firstName, lastName, role } = req.body;
+    
+    // Check if user already exists
+    const existingUser = await User.findOne({ email: email.toLowerCase() });
+    if (existingUser) {
+      return res.status(400).json({ error: 'User with this email already exists' });
+    }
+
+    // Hash the password securely
+    const passwordHash = await bcrypt.hash(password, 10);
+    const fullName = [firstName, lastName].filter(Boolean).join(' ') || 'New Trainer';
+
+    // Create the User Authentication Record
+    const newUser = new User({
+      email: email.toLowerCase(),
+      passwordHash,
+      fullName,
+      role: role || 'trainer'
+    });
+    await newUser.save();
+
+    // Automatically create the empty 'Trainer' profile immediately
+    const newTrainer = new Trainer({
+      trainerId: newUser._id.toString(), // Bind Trainer to User Auth ID
+      fullName: newUser.fullName,
+      email: newUser.email,
+      category: 'Uncategorized',
+      bio: 'New trainer profile.',
+      certificationsBy: [],
+      testimonialVideos: []
+    });
+    await newTrainer.save();
+
+    // Generate JWT Auth Token
+    const token = jwt.sign({ id: newUser._id, role: newUser.role }, JWT_SECRET, { expiresIn: '7d' });
+
+    res.status(201).json({ message: 'Registration successful', token });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// POST /api/auth/login
+app.post('/api/auth/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    
+    // Find the user by email
+    const user = await User.findOne({ email: email.toLowerCase() });
+    if (!user) return res.status(401).json({ error: 'Invalid email or password' });
+
+    // Validate password using bcrypt
+    const isMatch = await bcrypt.compare(password, user.passwordHash);
+    if (!isMatch) return res.status(401).json({ error: 'Invalid email or password' });
+
+    // Generate JWT Auth Token
+    const token = jwt.sign({ id: user._id, role: user.role }, JWT_SECRET, { expiresIn: '7d' });
+    
+    res.json({ token, message: 'Login successful' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ── TRAINER ROUTES ──────────────────────────────────────────────────────────
 
 // API Route: GET all trainers
 app.get('/api/trainers', async (req, res) => {
@@ -87,10 +161,9 @@ app.patch('/api/trainers/:id', async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-// ── Image Upload Route ───────────────────────────────────────────────────────
+// ── IMAGE UPLOAD ────────────────────────────────────────────────────────────
+
 // POST /api/upload-image
-// Accepts: multipart/form-data with field "image" (the file) and "type" (profile|banner)
-// Returns: { url: "https://res.cloudinary.com/..." }
 app.post('/api/upload-image', upload.single('image'), async (req, res) => {
   try {
     if (!req.file) {
@@ -118,10 +191,16 @@ app.post('/api/upload-image', upload.single('image'), async (req, res) => {
   }
 });
 
-// Start the server
+// ── START SERVER ────────────────────────────────────────────────────────────
+
+// Paste your verified working connection string below
+const uri = "mongodb+srv://themarscreative_db_user:r4iaDIrZGiYL23hS@cluster0.0gndovd.mongodb.net/?appName=Cluster0";
+
 mongoose.connect(uri).then(() => {
     const PORT = process.env.PORT || 5000;
     app.listen(PORT, () => {
         console.log(`Server running on port ${PORT}`);
     });
+}).catch(err => {
+    console.error("MongoDB connection failed:", err);
 });
