@@ -1,6 +1,7 @@
 // server.js — Express server for World Trainer Forum backend
 require('dotenv').config();
 const express = require('express');
+const cors = require('cors');
 const path = require('path');
 const connectDB = require('./db');
 const fs = require('fs');
@@ -14,6 +15,14 @@ const PORT = process.env.PORT || 3000;
 connectDB();
 
 // ── Middleware ────────────────────────────────────────────────────────────────
+app.use(cors({
+  origin: [
+    'https://www.worldtrainerforum.com',
+    'https://worldtrainerforum.com',
+    'http://localhost:3000' // Keep this so I can still test locally!
+  ],
+  credentials: true
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
