@@ -4,7 +4,7 @@
 ═══════════════════════════════════════════════════ */
 'use strict';
 
-const API_BASE = '/api/users';
+const API_BASE = 'https://trainerforum.onrender.com/api/users';
 
 let allTrainers = [];      // All fetched trainers (raw)
 let filteredTrainers = []; // After filters applied

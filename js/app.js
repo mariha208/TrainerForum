@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // ── SYNC ENGINE: STREAM MONGODB LIVE DATA ROWS ──────────────────────────
 function subscribeToTrainers() {
-  const API_BASE_URL = '/api/users?role=trainer';
+  const API_BASE_URL = 'https://trainerforum.onrender.com/api/users?role=trainer';
 
   console.log("📡 Connecting live database arrays to original card matrix...");
 

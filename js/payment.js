@@ -10,7 +10,7 @@
 async function handlePayment(amount) {
     try {
         // 1. Call your backend API to create an order
-        const response = await fetch('/api/payments/create-order', {
+        const response = await fetch('https://trainerforum.onrender.com/api/payments/create-order', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -69,7 +69,7 @@ async function handlePayment(amount) {
  */
 async function verifyPaymentSignature(paymentResponse) {
     try {
-        const response = await fetch('/api/payments/verify', {
+        const response = await fetch('https://trainerforum.onrender.com/api/payments/verify', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

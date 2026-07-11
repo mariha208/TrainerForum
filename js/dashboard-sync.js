@@ -29,7 +29,7 @@ async function loadTrainerProfile() {
   if (!session || !session._id) return;
 
   try {
-    const res = await fetch(`/api/users/${session._id}`, {
+    const res = await fetch(`https://trainerforum.onrender.com/api/users/${session._id}`, {
       headers: token ? { Authorization: `Bearer ${token}` } : {}
     });
     if (res.ok) window.TDB_STATE = await res.json();
@@ -120,7 +120,7 @@ async function handleAvatarUpload(event) {
   fd.append('avatar', file);
 
   try {
-    const res = await fetch('/api/users/profile/upload-avatar', {
+    const res = await fetch('https://trainerforum.onrender.com/api/users/profile/upload-avatar', {
       method: 'POST',
       headers: token ? { Authorization: `Bearer ${token}` } : {},
       body: fd
@@ -404,7 +404,7 @@ async function saveTrainerProfile() {
     certificationsBy: certsByStr
   };
 
-  fetch('/api/gsheet', {
+  fetch('https://trainerforum.onrender.com/api/gsheet', {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -424,7 +424,7 @@ async function saveTrainerProfile() {
 
   // ── STEP 2: Attempt server save (best-effort, non-blocking for the card) ──
   try {
-    const res = await fetch(`/api/users/${session._id}`, {
+    const res = await fetch(`https://trainerforum.onrender.com/api/users/${session._id}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',

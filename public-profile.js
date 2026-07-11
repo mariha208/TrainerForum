@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Uses the existing /api/users/:email route (handles email lookup natively)
-    fetch(`/api/users/${encodeURIComponent(trainerEmail)}`)
+    fetch(`https://trainerforum.onrender.com/api/users/${encodeURIComponent(trainerEmail)}`)
         .then(res => {
             if (!res.ok) throw new Error('Trainer not found');
             return res.json();
