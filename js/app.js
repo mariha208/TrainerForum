@@ -565,93 +565,100 @@ function subscribeToTrainers() {
           const liHref = linkedinStr ? (linkedinStr.startsWith('http') ? linkedinStr : 'https://' + linkedinStr) : '#';
           const webHref = websiteStr ? (websiteStr.startsWith('http') ? websiteStr : 'https://' + websiteStr) : '#';
 
-          // ── PREMIUM GRADIENT-SPLIT CARD ────────────────────────────────────
+          // -- PREMIUM CARD redesigned -------------------------------------------
           const isPremium = normalizedTrainer.membershipType === 'PREMIUM';
           const isStandard = normalizedTrainer.membershipType === 'STANDARD';
+
+          // Tier badge
           const memberBadgeHtml = isPremium
-            ? `<div style="position:absolute;top:10px;left:10px;background:linear-gradient(90deg,#C5A059,#F5C842);color:#000;font-size:9px;font-weight:800;padding:3px 9px;border-radius:99px;letter-spacing:.05em;z-index:20;">⭐ FEATURED</div>`
+            ? `<div style="position:absolute;top:12px;left:12px;z-index:20;background:linear-gradient(90deg,#b8860b,#f5c842,#b8860b);color:#000;font-size:9.5px;font-weight:800;padding:4px 11px;border-radius:99px;letter-spacing:.08em;box-shadow:0 2px 12px rgba(245,200,66,0.45);">&#11088; FEATURED</div>`
             : isStandard
-            ? `<div style="position:absolute;top:10px;left:10px;background:rgba(10,37,81,0.85);color:rgba(245,200,66,0.85);font-size:9px;font-weight:700;padding:3px 9px;border-radius:99px;letter-spacing:.05em;border:1px solid rgba(245,200,66,0.3);z-index:20;">PRO</div>`
+            ? `<div style="position:absolute;top:12px;left:12px;z-index:20;background:rgba(7,24,58,0.9);color:#f5c842;font-size:9px;font-weight:700;padding:4px 11px;border-radius:99px;letter-spacing:.06em;border:1px solid rgba(245,200,66,0.4);backdrop-filter:blur(6px);">&#10022; PRO</div>`
             : '';
+
+          // Card border/glow per tier
           const cardBorderStyle = isPremium
-            ? 'border:1.5px solid rgba(245,200,66,0.5); box-shadow:0 8px 32px rgba(245,200,66,0.12), 0 0 0 1px rgba(245,200,66,0.08);'
-            : 'box-shadow:0 8px 32px rgba(0,0,0,0.35);';
+            ? 'border:1.5px solid rgba(245,200,66,0.45);box-shadow:0 4px 24px rgba(245,200,66,0.1),0 12px 40px rgba(0,0,0,0.5);'
+            : isStandard
+            ? 'border:1px solid rgba(99,102,241,0.3);box-shadow:0 4px 24px rgba(99,102,241,0.08),0 12px 40px rgba(0,0,0,0.45);'
+            : 'border:1px solid rgba(255,255,255,0.07);box-shadow:0 4px 24px rgba(0,0,0,0.4);';
+
+          // Avatar ring gradient per tier
+          const avatarRing = isPremium
+            ? 'linear-gradient(135deg,#b8860b,#f5c842,#b8860b)'
+            : isStandard
+            ? 'linear-gradient(135deg,#6366f1,#a78bfa)'
+            : 'linear-gradient(135deg,#334155,#64748b)';
+
+          // Rating stars
+          const ratingVal = parseFloat(normalizedTrainer.rating) || 5.0;
+          const starsHtml = '&#9733;'.repeat(Math.floor(ratingVal)) + '&#9734;'.repeat(5 - Math.floor(ratingVal));
+
+          // Location + mode pill
+          const _locText = normalizedTrainer.location && normalizedTrainer.location !== 'Remote' ? normalizedTrainer.location : '';
+          const _modeText = normalizedTrainer.deliveryMode || normalizedTrainer.mode || 'Online';
+          const locationPill = (_locText ? _locText + ' &middot; ' : '') + _modeText;
+
+          // Sessions
+          const sessionsNum = parseInt(normalizedTrainer.sessions || '0') || 0;
+
           const cardHtml = `
             <div class="trainer-card wtf-pcard"
                  data-category="${normalizedTrainer.category}"
                  data-id="${normalizedTrainer.id}"
                  data-membership="${normalizedTrainer.membershipType}"
                  onclick="openTrainerModal('${normalizedTrainer.id}')"
-                 style="background:#0A2551; border-radius:18px; overflow:visible; position:relative; cursor:pointer; display:flex; flex-direction:column; min-height:360px; ${cardBorderStyle} transition:transform 0.28s cubic-bezier(.34,1.56,.64,1), box-shadow 0.28s ease;"
-                 onmouseover="this.style.transform='translateY(-8px) scale(1.015)'; this.style.boxShadow='0 24px 56px rgba(0,0,0,0.5)';"
-                 onmouseout="this.style.transform=''; this.style.boxShadow='${isPremium ? '0 8px 32px rgba(245,200,66,0.12)' : '0 8px 32px rgba(0,0,0,0.35)'}';">
-
-              <!-- TOP GRADIENT BANNER (40%) -->
-              <div style="height:120px; border-radius:18px 18px 0 0; background:${bannerStyle}; position:relative; flex-shrink:0;">
-                <div style="position:absolute; inset:0; background:linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(10,37,81,0.8)); border-radius:18px 18px 0 0;"></div>
+                 style="background:linear-gradient(160deg,#0c1f4a 0%,#071232 100%);border-radius:20px;overflow:visible;position:relative;cursor:pointer;display:flex;flex-direction:column;min-height:400px;${cardBorderStyle}transition:transform 0.3s cubic-bezier(.34,1.56,.64,1),box-shadow 0.3s ease;"
+                 onmouseover="this.style.transform='translateY(-10px) scale(1.012)';this.style.boxShadow='0 32px 64px rgba(0,0,0,0.6)';"
+                 onmouseout="this.style.transform='';this.style.boxShadow='${isPremium ? '0 4px 24px rgba(245,200,66,0.1),0 12px 40px rgba(0,0,0,0.5)' : '0 4px 24px rgba(0,0,0,0.4)'}'"
+            >
+              <div style="height:140px;border-radius:20px 20px 0 0;background:${bannerStyle};position:relative;flex-shrink:0;overflow:hidden;">
+                <div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,0.05) 0%,rgba(7,18,50,0.85) 100%);border-radius:20px 20px 0 0;"></div>
                 ${memberBadgeHtml}
-                <!-- Heart button -->
-                <button onclick="event.stopPropagation();"
-                        style="position:absolute;top:10px;right:10px;width:34px;height:34px;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.4);backdrop-filter:blur(4px);color:rgba(255,255,255,0.7);font-size:14px;transition:color 0.2s;"
-                        onmouseover="this.style.color='#f87171';" onmouseout="this.style.color='rgba(255,255,255,0.7)';">♡</button>
+                <button onclick="event.stopPropagation();" style="position:absolute;top:12px;right:12px;width:32px;height:32px;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.35);backdrop-filter:blur(6px);color:rgba(255,255,255,0.6);font-size:15px;transition:all 0.2s;z-index:10;" onmouseover="this.style.color='#f87171';this.style.background='rgba(248,113,113,0.15)';" onmouseout="this.style.color='rgba(255,255,255,0.6)';this.style.background='rgba(0,0,0,0.35)';">&#9825;</button>
+                <div style="position:absolute;bottom:10px;right:12px;display:flex;align-items:center;gap:4px;background:rgba(0,0,0,0.45);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.1);border-radius:99px;padding:3px 10px;font-size:10px;color:rgba(255,255,255,0.75);">&#128205; ${locationPill}</div>
               </div>
-
-              <!-- OVERLAPPING CIRCULAR AVATAR (on the seam) -->
-              <div style="position:absolute;left:50%;transform:translateX(-50%);top:80px;z-index:10;width:78px;height:78px;border-radius:50%;border:4px solid #0A2551;overflow:hidden;background:#0d3535;box-shadow:0 0 0 3px rgba(245,200,66,0.35);">
-                ${hasPhoto
-              ? `<img src="${normalizedTrainer.profilePic}" alt="${normalizedTrainer.name}"
-                          style="width:100%;height:100%;object-fit:cover;"
-                          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                     <div style="display:none;width:100%;height:100%;align-items:center;justify-content:center;font-weight:700;font-size:18px;color:#fff;letter-spacing:1px;">${initials}</div>`
-              : `<div style="display:flex;width:100%;height:100%;align-items:center;justify-content:center;font-weight:700;font-size:18px;color:#fff;letter-spacing:1px;">${initials}</div>`
-            }
+              <div style="position:absolute;left:50%;transform:translateX(-50%);top:96px;z-index:15;width:88px;height:88px;border-radius:50%;padding:3px;background:${avatarRing};box-shadow:0 0 0 3px #071232,0 8px 24px rgba(0,0,0,0.5);">
+                <div style="width:100%;height:100%;border-radius:50%;overflow:hidden;background:#0f2044;">
+                  ${hasPhoto
+                    ? `<img src="${normalizedTrainer.profilePic}" alt="${normalizedTrainer.name}" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div style="display:none;width:100%;height:100%;align-items:center;justify-content:center;font-weight:800;font-size:22px;color:#fff;background:linear-gradient(135deg,#1e3a5f,#0e7490);">${initials}</div>`
+                    : `<div style="display:flex;width:100%;height:100%;align-items:center;justify-content:center;font-weight:800;font-size:22px;color:#fff;background:linear-gradient(135deg,#1e3a5f,#0e7490);">${initials}</div>`
+                  }
+                </div>
               </div>
-
-              <!-- CARD BODY (bottom 60%) -->
-              <div style="flex:1; padding:50px 18px 18px; display:flex; flex-direction:column; text-align:center;">
-
-                <!-- Name + Verified badge -->
-                <div style="display:flex; align-items:center; justify-content:center; gap:7px; flex-wrap:wrap; margin-bottom:4px;">
-                  <h3 class="trainer-card-name" style="margin:0;font-size:15px;font-weight:700;color:#fff;">${normalizedTrainer.name}</h3>
-                  <span style="display:inline-flex;align-items:center;gap:3px;background:rgba(34,197,94,0.18);color:#4ade80;font-size:10px;font-weight:700;padding:2px 8px;border-radius:99px;border:1px solid rgba(34,197,94,0.3);flex-shrink:0;">
-                    ✓ Verified
-                  </span>
+              <div style="flex:1;padding:56px 20px 20px;display:flex;flex-direction:column;text-align:center;">
+                <div style="display:flex;align-items:center;justify-content:center;gap:7px;flex-wrap:wrap;margin-bottom:5px;">
+                  <h3 class="trainer-card-name" style="margin:0;font-size:16px;font-weight:700;color:#f0f4ff;letter-spacing:-0.01em;line-height:1.2;">${normalizedTrainer.name}</h3>
+                  <span style="background:rgba(34,197,94,0.15);color:#4ade80;font-size:9.5px;font-weight:700;padding:2px 8px;border-radius:99px;border:1px solid rgba(34,197,94,0.3);">&#10003; Verified</span>
                 </div>
-
-                <!-- Subtitle / specialisation -->
-                <p class="trainer-card-tagline" style="margin:0 0 14px;font-size:12px;color:rgba(255,255,255,0.65);line-height:1.4;">${normalizedTrainer.specialization || normalizedTrainer.category}</p>
-
-                <!-- Social icons -->
-                <div onclick="event.stopPropagation();" style="display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:14px;">
-                  <a href="${waHref}" target="_blank" rel="noopener"
-                     style="width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(37,211,102,0.15);transition:transform 0.2s; ${phoneStr ? '' : 'opacity:0.3;pointer-events:none;'}"
-                     title="WhatsApp" onmouseover="this.style.transform='scale(1.2)';" onmouseout="this.style.transform='';"
-                     ${phoneStr ? '' : 'onclick="return false;"'}>
-                    <i class="fab fa-whatsapp" style="color:#25D366;font-size:14px;"></i>
-                  </a>
-                  <a href="${liHref}" target="_blank" rel="noopener"
-                     style="width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(10,102,194,0.15);transition:transform 0.2s; ${linkedinStr ? '' : 'opacity:0.3;pointer-events:none;'}"
-                     title="LinkedIn" onmouseover="this.style.transform='scale(1.2)';" onmouseout="this.style.transform='';"
-                     ${linkedinStr ? '' : 'onclick="return false;"'}>
-                    <i class="fab fa-linkedin" style="color:#0077B5;font-size:14px;"></i>
-                  </a>
-                  <a href="${webHref}" target="_blank" rel="noopener"
-                     style="width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(180,145,100,0.15);transition:transform 0.2s; ${websiteStr ? '' : 'opacity:0.3;pointer-events:none;'}"
-                     title="Website" onmouseover="this.style.transform='scale(1.2)';" onmouseout="this.style.transform='';"
-                     ${websiteStr ? '' : 'onclick="return false;"'}>
-                    <i class="fas fa-globe" style="color:#B49164;font-size:14px;"></i>
-                  </a>
+                <p class="trainer-card-tagline" style="margin:0 0 8px;font-size:12px;color:rgba(180,200,240,0.7);line-height:1.4;">${normalizedTrainer.specialization || normalizedTrainer.category || ''}</p>
+                <div style="display:flex;justify-content:center;margin-bottom:14px;">
+                  <span style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(220,230,255,0.75);font-size:10px;font-weight:600;padding:3px 12px;border-radius:99px;max-width:90%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${normalizedTrainer.category || 'General'}</span>
                 </div>
-
-                <!-- Divider -->
-                <hr style="border:none;border-top:1px solid rgba(255,255,255,0.08);margin:0 4px 14px;">
-
-                <!-- Footer metrics -->
-                <div style="display:flex;align-items:center;justify-content:space-between;padding:0 4px;margin-top:auto;">
-                  <div style="text-align:left;">
-                    <div style="color:rgba(255,255,255,0.45);font-size:10px;margin-top:2px;">${expLabel}</div>
+                <div style="display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:14px;">
+                  <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+                    <span style="color:#f5c842;font-size:11px;letter-spacing:1px;">${starsHtml}</span>
+                    <span style="color:rgba(255,255,255,0.4);font-size:9px;">${ratingVal.toFixed(1)}</span>
                   </div>
-                  <div style="text-align:right;color:#F5C842;font-weight:700;font-size:15px;line-height:1.2;">${rateDisplay}</div>
+                  <div style="width:1px;height:26px;background:rgba(255,255,255,0.1);"></div>
+                  <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+                    <span style="color:#e2e8f0;font-size:14px;font-weight:700;">${expNum > 0 ? expNum : '&#8212;'}</span>
+                    <span style="color:rgba(255,255,255,0.4);font-size:9px;">yrs exp</span>
+                  </div>
+                  ${sessionsNum > 0 ? `<div style="width:1px;height:26px;background:rgba(255,255,255,0.1);"></div><div style="display:flex;flex-direction:column;align-items:center;gap:2px;"><span style="color:#e2e8f0;font-size:14px;font-weight:700;">${sessionsNum.toLocaleString('en-IN')}</span><span style="color:rgba(255,255,255,0.4);font-size:9px;">sessions</span></div>` : ''}
+                </div>
+                <div onclick="event.stopPropagation();" style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:16px;">
+                  <a href="${waHref}" target="_blank" rel="noopener" style="width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(37,211,102,0.1);border:1px solid rgba(37,211,102,0.2);transition:all 0.2s;${phoneStr ? '' : 'opacity:0.25;pointer-events:none;'}" onmouseover="this.style.background='rgba(37,211,102,0.2)';this.style.transform='scale(1.15)';" onmouseout="this.style.background='rgba(37,211,102,0.1)';this.style.transform='';"><i class="fab fa-whatsapp" style="color:#25D366;font-size:14px;"></i></a>
+                  <a href="${liHref}" target="_blank" rel="noopener" style="width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(10,102,194,0.1);border:1px solid rgba(10,102,194,0.2);transition:all 0.2s;${linkedinStr ? '' : 'opacity:0.25;pointer-events:none;'}" onmouseover="this.style.background='rgba(10,102,194,0.2)';this.style.transform='scale(1.15)';" onmouseout="this.style.background='rgba(10,102,194,0.1)';this.style.transform='';"><i class="fab fa-linkedin" style="color:#0077B5;font-size:14px;"></i></a>
+                  <a href="${webHref}" target="_blank" rel="noopener" style="width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(180,145,100,0.1);border:1px solid rgba(180,145,100,0.2);transition:all 0.2s;${websiteStr ? '' : 'opacity:0.25;pointer-events:none;'}" onmouseover="this.style.background='rgba(180,145,100,0.2)';this.style.transform='scale(1.15)';" onmouseout="this.style.background='rgba(180,145,100,0.1)';this.style.transform='';"><i class="fas fa-globe" style="color:#B49164;font-size:14px;"></i></a>
+                </div>
+                <div style="height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.1),transparent);margin:0 8px 16px;"></div>
+                <div style="display:flex;align-items:center;justify-content:space-between;padding:0 4px;margin-top:auto;gap:8px;">
+                  <div style="text-align:left;">
+                    <div style="color:rgba(255,255,255,0.35);font-size:9px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px;">Rate</div>
+                    <div style="color:#F5C842;font-weight:700;font-size:16px;line-height:1.1;">${rateDisplay}</div>
+                  </div>
+                  <button onclick="event.stopPropagation();openTrainerModal('${normalizedTrainer.id}');" style="background:linear-gradient(135deg,rgba(245,200,66,0.15),rgba(245,200,66,0.08));border:1px solid rgba(245,200,66,0.3);color:#f5c842;font-size:11px;font-weight:700;padding:8px 16px;border-radius:10px;cursor:pointer;letter-spacing:.04em;transition:all 0.2s;white-space:nowrap;" onmouseover="this.style.background='rgba(245,200,66,0.22)';this.style.borderColor='rgba(245,200,66,0.6)';" onmouseout="this.style.background='linear-gradient(135deg,rgba(245,200,66,0.15),rgba(245,200,66,0.08))';this.style.borderColor='rgba(245,200,66,0.3)';">View Profile &#8594;</button>
                 </div>
               </div>
             </div>`;
