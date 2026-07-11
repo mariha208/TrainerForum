@@ -9,6 +9,9 @@ const Trainer = require('./trainer-model'); // Imports your existing model
 
 const app = express();
 app.use(express.json({ limit: '50mb' })); // Allows server to read JSON
+
+// Import auth routes
+const authRoutes = require('../routes/auth');
 const allowedOrigins = [
   'https://worldtrainerforum.com',
   'https://www.worldtrainerforum.com',
@@ -44,6 +47,9 @@ const upload = multer({
 
 // Paste your verified working connection string below
 const uri = "mongodb+srv://themarscreative_db_user:r4iaDIrZGiYL23hS@cluster0.0gndovd.mongodb.net/?appName=Cluster0";
+
+// Mount Auth Routes
+app.use('/api/auth', authRoutes);
 
 // API Route: GET all trainers
 app.get('/api/trainers', async (req, res) => {

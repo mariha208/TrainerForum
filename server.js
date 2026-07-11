@@ -41,6 +41,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname)));
 
 // ── API Routes ────────────────────────────────────────────────────────────────
+const authRoutes = require('./routes/auth');
+app.use('/api/auth', authRoutes);
+
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'World Trainer Forum API is running.' });
 });
