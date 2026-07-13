@@ -608,14 +608,14 @@ function subscribeToTrainers() {
                  data-id="${normalizedTrainer.id}"
                  data-membership="${normalizedTrainer.membershipType}"
                  onclick="openTrainerModal('${normalizedTrainer.id}')"
-                 style="background: linear-gradient(135deg, #f8fafc, #f1f5f9); border-radius: 20px; overflow: visible; position: relative; cursor: pointer; display: flex; flex-direction: column; min-height: 200px; font-family: 'Inter', sans-serif; box-shadow: 0 10px 30px rgba(0,0,0,0.08); margin-top: 30px; border: 1px solid #e2e8f0; text-align: left; transition: all 0.3s ease;"
+                 style="background: linear-gradient(135deg, #f8fafc, #f1f5f9); border-radius: 20px; overflow: visible; position: relative; cursor: pointer; display: flex; flex-direction: column; min-height: 180px; font-family: 'Inter', sans-serif; box-shadow: 0 10px 30px rgba(0,0,0,0.08); margin-top: 24px; border: 1px solid #e2e8f0; text-align: left; transition: all 0.3s ease;"
                  onmouseover="this.style.transform='translateY(-6px)'; this.style.boxShadow='0 20px 40px rgba(0,0,0,0.12)';"
                  onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 30px rgba(0,0,0,0.08)';">
                  
               <!-- BACKGROUND WRAPPER (for banner image and ribbon clipping) -->
               <div style="position: absolute; inset: 0; border-radius: 20px; overflow: hidden; pointer-events: none; z-index: 1;">
                 <!-- Banner Image Placeholder -->
-                <div style="position: absolute; top: 0; right: 0; width: 45%; height: 110px; background: url('https://images.unsplash.com/photo-1542744173-8e7e53415bb0?q=80&w=600&auto=format&fit=crop') center/cover; -webkit-mask-image: linear-gradient(to right, transparent, black 30%); mask-image: linear-gradient(to right, transparent, black 30%);"></div>
+                <div style="position: absolute; top: 0; right: 0; width: 45%; height: 110px; background: url('https://images.unsplash.com/photo-1542744173-8e7e53415bb0?q=80&w=600&auto=format&fit=crop') center / cover no-repeat; -webkit-mask-image: linear-gradient(to right, transparent, black 30%); mask-image: linear-gradient(to right, transparent, black 30%);"></div>
                 
                 <!-- Ribbon -->
                 ${isPremium
@@ -636,14 +636,14 @@ function subscribeToTrainers() {
               </div>
 
               <!-- CONTENT WRAPPER -->
-              <div style="position: relative; z-index: 5; padding: 24px; display: flex; flex-direction: column; flex: 1; justify-content: space-between; gap: 16px;">
+              <div style="position: relative; z-index: 5; padding: 16px 20px; display: flex; flex-direction: column; flex: 1; justify-content: space-between; gap: 12px;">
                 
                 <!-- TOP ROW: Name & Title -->
                 <div>
-                  <h3 style="margin: 0; font-size: 20px; font-weight: 700; color: #0f172a; display: flex; align-items: center; gap: 6px;">
-                    ${normalizedTrainer.name} <span style="color: #fbbf24; font-size: 18px;">${isPremium ? '&#9733;' : ''}</span>
+                  <h3 style="margin: 0; font-size: 18px; font-weight: 700; color: #0f172a; display: flex; align-items: center; gap: 6px;">
+                    ${normalizedTrainer.name} <span style="color: #fbbf24; font-size: 16px;">${isPremium ? '&#9733;' : ''}</span>
                   </h3>
-                  <p style="margin: 4px 0 0 0; font-size: 15px; color: #334155; font-weight: 500;">
+                  <p style="margin: 4px 0 0 0; font-size: 14px; color: #334155; font-weight: 500;">
                     | ${normalizedTrainer.specialization || normalizedTrainer.category || 'Professional Trainer'}
                   </p>
                 </div>
