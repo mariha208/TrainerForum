@@ -138,15 +138,15 @@ function buildRegisterView(role) {
 
     formFields = `
       <div class="am-grid-1">
-        <div class="am-form-group"><label>First Name</label><input type="text" id="trainerFirstName" placeholder="First Name"></div>
-        <div class="am-form-group"><label>Last Name</label><input type="text" id="trainerLastName" placeholder="Last Name"></div>
+        <div class="am-form-group"><label>First Name <span style="color:#e74c3c">*</span></label><input type="text" id="trainerFirstName" placeholder="First Name"></div>
+        <div class="am-form-group"><label>Last Name <span style="color:#e74c3c">*</span></label><input type="text" id="trainerLastName" placeholder="Last Name"></div>
       </div>
-      <div class="am-form-group"><label>Email Address</label><input type="email" id="trainerEmail" placeholder="you@example.com"></div>
+      <div class="am-form-group"><label>Email Address <span style="color:#e74c3c">*</span></label><input type="email" id="trainerEmail" placeholder="you@example.com"></div>
       <div class="am-grid-1">
-        <div class="am-form-group"><label>Password</label><input type="password" id="trainerPassword" placeholder="••••••••"></div>
-        <div class="am-form-group"><label>Phone Number</label><input type="tel" id="trainerPhone" placeholder="+91 XXXXX XXXXX"></div>
+        <div class="am-form-group"><label>Password <span style="color:#e74c3c">*</span></label><input type="password" id="trainerPassword" placeholder="••••••••"></div>
+        <div class="am-form-group"><label>Phone Number <span style="color:#e74c3c">*</span></label><input type="tel" id="trainerPhone" placeholder="+91 XXXXX XXXXX"></div>
       </div>
-      <div class="am-form-group"><label>Professional Title</label><input type="text" id="trainerTitle" placeholder="e.g. Senior Business Coach"></div>
+      <div class="am-form-group"><label>Professional Title <span style="color:#e74c3c">*</span></label><input type="text" id="trainerTitle" placeholder="e.g. Senior Business Coach"></div>
       
       <div class="am-grid-1">
         <div class="am-form-group">
@@ -186,9 +186,9 @@ function buildRegisterView(role) {
         </div>
       </div>
       <div class="am-grid-1">
-        <div class="am-form-group"><label>Years of Experience</label><input type="number" id="trainerYearsOfExperience" placeholder="5" min="1"></div>
-        <div class="am-form-group"><label>Country</label><input type="text" id="trainerCountry" placeholder="India"></div>
-        <div class="am-form-group"><label>City</label><input type="text" id="trainerCity" placeholder="Bangalore"></div>
+        <div class="am-form-group"><label>Years of Experience <span style="color:#e74c3c">*</span></label><input type="number" id="trainerYearsOfExperience" placeholder="5" min="1"></div>
+        <div class="am-form-group"><label>Country <span style="color:#e74c3c">*</span></label><input type="text" id="trainerCountry" placeholder="India"></div>
+        <div class="am-form-group"><label>City <span style="color:#e74c3c">*</span></label><input type="text" id="trainerCity" placeholder="Bangalore"></div>
       </div>
       <div class="am-grid-1">
         <div class="am-form-group"><label>LinkedIn Profile</label><input type="url" id="trainerLinkedIn" placeholder="https://linkedin.com/in/..."></div>
@@ -268,11 +268,11 @@ window.handleRegistration = function (role) {
     const password = document.getElementById("trainerPassword")?.value;
     const firstName = document.getElementById("trainerFirstName")?.value.trim() || "";
     const lastName = document.getElementById("trainerLastName")?.value.trim() || "";
-
-    if (!email || !password || !firstName) {
-      alert("Please fill out your Email, Password, and First Name fields.");
-      return;
-    }
+    const phone = document.getElementById("trainerPhone")?.value.trim() || "";
+    const title = document.getElementById("trainerTitle")?.value.trim() || "";
+    const exp = document.getElementById("trainerYearsOfExperience")?.value.trim() || "";
+    const country = document.getElementById("trainerCountry")?.value.trim() || "";
+    const city = document.getElementById("trainerCity")?.value.trim() || "";
 
     const getCat = (idx) => {
       const sel = document.getElementById(`trainerExpertiseCategory${idx}`);
@@ -282,9 +282,14 @@ window.handleRegistration = function (role) {
       return val === "None" ? "" : val;
     };
 
-    const cat1 = getCat(1) || "AI & Technology";
+    const cat1 = getCat(1);
     const cat2 = getCat(2);
     const cat3 = getCat(3);
+
+    if (!email || !password || !firstName || !lastName || !phone || !title || !cat1 || !exp || !country || !city) {
+      alert("Please fill out all compulsory fields (marked with *).");
+      return;
+    }
 
     window._registrationPayload = {
       email,
