@@ -615,7 +615,7 @@ function subscribeToTrainers() {
               <!-- BACKGROUND WRAPPER (for banner image and ribbon clipping) -->
               <div style="position: absolute; inset: 0; border-radius: 20px; overflow: hidden; pointer-events: none; z-index: 1;">
                 <!-- Banner Image Placeholder -->
-                <div style="position: absolute; top: 0; right: 0; width: 45%; height: 110px; background: url('https://images.unsplash.com/photo-1542744173-8e7e53415bb0?q=80&w=600&auto=format&fit=crop') center / cover no-repeat; -webkit-mask-image: linear-gradient(to right, transparent, black 30%); mask-image: linear-gradient(to right, transparent, black 30%);"></div>
+                <div style="position: absolute; top: 0; right: 0; width: 45%; height: 110px; background: url('${(normalizedTrainer.bannerPic && normalizedTrainer.bannerPic.startsWith('http')) ? normalizedTrainer.bannerPic : 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?q=80&w=600&auto=format&fit=crop'}') center / cover no-repeat; -webkit-mask-image: linear-gradient(to right, transparent, black 30%); mask-image: linear-gradient(to right, transparent, black 30%);"></div>
                 
                 <!-- Ribbon -->
                 ${isPremium
@@ -627,7 +627,7 @@ function subscribeToTrainers() {
               </div>
 
               <!-- PROTRUDING AVATAR -->
-              <div style="position: absolute; top: -24px; left: 60%; transform: translateX(-50%); width: 64px; height: 64px; border-radius: 50%; z-index: 10; border: 3px solid ${isPremium ? '#d4af37' : isStandard ? '#0d9488' : '#94a3b8'}; background: #fff; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+              <div style="position: absolute; top: -24px; left: 50%; transform: translateX(-50%); width: 64px; height: 64px; border-radius: 50%; z-index: 10; border: 3px solid ${isPremium ? '#d4af37' : isStandard ? '#0d9488' : '#94a3b8'}; background: #fff; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
                 ${hasPhoto
                   ? `<img src="${normalizedTrainer.profilePic}" alt="${normalizedTrainer.name}" style="width:100%; height:100%; object-fit:cover; display:block;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
                      <div style="display:none; width:100%; height:100%; align-items:center; justify-content:center; font-weight:bold; font-size:24px; color:#fff; background:linear-gradient(135deg, #3b82f6, #8b5cf6);">${initials}</div>`
