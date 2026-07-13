@@ -603,97 +603,56 @@ function subscribeToTrainers() {
           const sessionsNum = parseInt(normalizedTrainer.sessions || '0') || 0;
 
           const cardHtml = `
-            <div class="trainer-card wtf-pcard"
+            <div class="trainer-card"
                  data-category="${normalizedTrainer.category}"
                  data-id="${normalizedTrainer.id}"
                  data-membership="${normalizedTrainer.membershipType}"
                  onclick="openTrainerModal('${normalizedTrainer.id}')"
-                 style="background:#fff;border-radius:18px;overflow:hidden;position:relative;cursor:pointer;display:flex;flex-direction:row;min-height:190px;${cardBorderStyle}transition:transform 0.28s cubic-bezier(.34,1.56,.64,1),box-shadow 0.28s ease;font-family:'Inter',sans-serif;"
-                 onmouseover="this.style.transform='translateY(-5px)';this.style.boxShadow='0 20px 48px rgba(0,0,0,0.18)';"
-                 onmouseout="this.style.transform='';this.style.boxShadow='${isPremium?'0 4px 20px rgba(184,134,11,0.15),0 2px 8px rgba(0,0,0,0.08)':isStandard?'0 4px 20px rgba(99,102,241,0.1),0 2px 8px rgba(0,0,0,0.08)':'0 2px 12px rgba(0,0,0,0.08)'}'"
-            >
-              <!-- LEFT: all text content -->
-              <div style="flex:1;padding:20px 16px 16px 22px;display:flex;flex-direction:column;gap:0;min-width:0;background:#fff;position:relative;z-index:1;">
-
-                <!-- Name row -->
-                <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px;flex-wrap:wrap;">
-                  <h3 class="trainer-card-name" style="margin:0;font-size:18px;font-weight:800;color:#1a1a2e;letter-spacing:-0.02em;line-height:1.2;">${normalizedTrainer.name}</h3>
-                  ${isPremium ? '<span style="font-size:16px;">&#11088;</span>' : ''}
-                </div>
-
-                <!-- Role / specialization -->
-                <p class="trainer-card-tagline" style="margin:0 0 11px;font-size:13px;color:#555;font-weight:500;line-height:1.3;">| ${normalizedTrainer.specialization || normalizedTrainer.category || 'Trainer'}</p>
-
-                <!-- Pills row: location · mode · experience -->
-                <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:12px;">
-                  ${_locText ? `<span style="display:inline-flex;align-items:center;gap:4px;background:#f3f4f6;color:#444;font-size:11px;font-weight:600;padding:4px 11px;border-radius:99px;">&#128205; ${_locText}</span>` : ''}
-                  <span style="display:inline-flex;align-items:center;background:#f3f4f6;color:#444;font-size:11px;font-weight:600;padding:4px 11px;border-radius:99px;">${_modeText}</span>
-                  ${expNum > 0 ? `<span style="display:inline-flex;align-items:center;background:#f3f4f6;color:#444;font-size:11px;font-weight:600;padding:4px 11px;border-radius:99px;">${expNum >= 10 ? '10+' : expNum + '–' + (expNum + 2)} years</span>` : ''}
-                </div>
-
-                <!-- Rating + sessions + price -->
-                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:13px;">
-                  <span style="font-size:13px;color:#333;font-weight:600;">
-                    <span style="color:#f5a623;font-size:14px;">&#9733;</span>
-                    ${ratingVal.toFixed(1)}
-                    ${sessionsNum > 0 ? `<span style="color:#888;font-weight:400;"> (${sessionsNum.toLocaleString('en-IN')} sessions)</span>` : ''}
-                  </span>
-                  <span style="font-size:16px;font-weight:800;color:#1a1a2e;">${rateDisplay}</span>
-                </div>
-
-                <!-- Divider -->
-                <div style="height:1px;background:#e5e7eb;margin-bottom:12px;"></div>
-
-                <!-- Social icons + View Profile + Book Now -->
-                <div style="display:flex;align-items:center;gap:0;flex-wrap:wrap;gap:8px;">
-                  <!-- social icons -->
-                  <div onclick="event.stopPropagation();" style="display:flex;align-items:center;gap:8px;margin-right:4px;">
-                    <a href="${waHref}" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:#f3f4f6;color:#555;font-size:13px;transition:all 0.2s;${phoneStr?'':'opacity:0.3;pointer-events:none;'}" onmouseover="this.style.background='#dcfce7';this.style.color='#16a34a';" onmouseout="this.style.background='#f3f4f6';this.style.color='#555';">
-                      <i class="fab fa-whatsapp"></i>
-                    </a>
-                    <a href="${liHref}" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:#f3f4f6;color:#555;font-size:13px;transition:all 0.2s;${linkedinStr?'':'opacity:0.3;pointer-events:none;'}" onmouseover="this.style.background='#dbeafe';this.style.color='#1d4ed8';" onmouseout="this.style.background='#f3f4f6';this.style.color='#555';">
-                      <i class="fab fa-linkedin"></i>
-                    </a>
-                    ${websiteStr ? `<a href="${webHref}" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:#f3f4f6;color:#555;font-size:12px;transition:all 0.2s;" onmouseover="this.style.background='#fef9c3';this.style.color='#b45309';" onmouseout="this.style.background='#f3f4f6';this.style.color='#555';"><i class="fas fa-globe"></i></a>` : ''}
-                  </div>
-                  <!-- View Profile text link -->
-                  <span onclick="event.stopPropagation();openTrainerModal('${normalizedTrainer.id}');" style="font-size:12px;font-weight:700;color:#8b7355;text-decoration:underline;cursor:pointer;white-space:nowrap;transition:color 0.2s;" onmouseover="this.style.color='#5c4a2a';" onmouseout="this.style.color='#8b7355';">View Profile</span>
-                  <!-- Book Now button -->
-                  <button onclick="event.stopPropagation();openTrainerModal('${normalizedTrainer.id}');"
-                          style="margin-left:auto;background:linear-gradient(135deg,#c9a84c,#e8c96a,#b8860b);color:#fff;font-size:12px;font-weight:800;padding:9px 20px;border-radius:10px;border:none;cursor:pointer;letter-spacing:.04em;box-shadow:0 2px 10px rgba(184,134,11,0.35);white-space:nowrap;transition:all 0.2s;"
-                          onmouseover="this.style.transform='scale(1.04)';this.style.boxShadow='0 4px 18px rgba(184,134,11,0.5)';"
-                          onmouseout="this.style.transform='';this.style.boxShadow='0 2px 10px rgba(184,134,11,0.35)';">
-                    Book Now
-                  </button>
-                </div>
-
-                <!-- Website URL -->
-                ${websiteStr ? `<div style="margin-top:8px;font-size:10.5px;color:#aaa;">${websiteStr.replace(/^https?:\/\//,'')}</div>` : ''}
+                 style="background: #111116; border-radius: 20px; overflow: hidden; position: relative; cursor: pointer; display: flex; flex-direction: row; min-height: 160px; padding: 18px; gap: 20px; border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 4px 15px rgba(0,0,0,0.4); font-family: 'Inter', sans-serif; align-items: center; transition: all 0.3s ease;"
+                 onmouseover="this.style.transform='translateY(-6px)'; this.style.boxShadow='0 20px 40px rgba(0,0,0,0.5)'; this.style.borderColor='rgba(255,255,255,0.15)';"
+                 onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(0,0,0,0.4)'; this.style.borderColor='rgba(255,255,255,0.08)';">
+                 
+              <!-- IMAGE PLACEMENT (LEFT SIDE) -->
+              <div style="width: 140px; height: 140px; border-radius: 16px; flex-shrink: 0; overflow: hidden; background: #222; position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
+                ${hasPhoto
+                  ? `<img src="${normalizedTrainer.profilePic}" alt="${normalizedTrainer.name}" style="width:100%; height:100%; object-fit:cover; display:block;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                     <div style="display:none; width:100%; height:100%; align-items:center; justify-content:center; font-weight:bold; font-size:40px; color:#fff; background:linear-gradient(135deg, #3b82f6, #8b5cf6);">${initials}</div>`
+                  : `<div style="display:flex; width:100%; height:100%; align-items:center; justify-content:center; font-weight:bold; font-size:40px; color:#fff; background:linear-gradient(135deg, #3b82f6, #8b5cf6);">${initials}</div>`
+                }
               </div>
 
-              <!-- RIGHT: banner image + circular avatar + tier ribbon -->
-              <div style="position:relative;width:210px;flex-shrink:0;overflow:hidden;">
-                <!-- banner -->
-                <div style="position:absolute;inset:0;background:${bannerStyle};background-size:cover;background-position:center;"></div>
-                <!-- subtle left-fade so text area blends -->
-                <div style="position:absolute;inset:0;background:linear-gradient(to right,rgba(255,255,255,0.6) 0%,transparent 40%);"></div>
-
-                <!-- circular avatar, half-overlapping left edge -->
-                <div style="position:absolute;top:50%;left:-38px;transform:translateY(-50%);z-index:10;width:90px;height:90px;border-radius:50%;border:4px solid #fff;box-shadow:0 4px 16px rgba(0,0,0,0.2);overflow:hidden;background:#e5e7eb;">
-                  ${hasPhoto
-                    ? `<img src="${normalizedTrainer.profilePic}" alt="${normalizedTrainer.name}" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div style="display:none;width:100%;height:100%;align-items:center;justify-content:center;font-weight:800;font-size:24px;color:#fff;background:linear-gradient(135deg,#4f46e5,#0ea5e9);">${initials}</div>`
-                    : `<div style="display:flex;width:100%;height:100%;align-items:center;justify-content:center;font-weight:800;font-size:24px;color:#fff;background:linear-gradient(135deg,#4f46e5,#0ea5e9);">${initials}</div>`
+              <!-- CONTENT PLACEMENT (RIGHT SIDE) -->
+              <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; overflow: hidden; min-width: 0;">
+                
+                <!-- BADGES / TIERS -->
+                <div style="margin-bottom: 8px;">
+                  ${isPremium 
+                    ? `<span style="display: inline-block; background: linear-gradient(90deg, #d4af37, #ffdf00); color: #000; font-size: 11px; font-weight: 800; padding: 4px 12px; border-radius: 99px; letter-spacing: 0.05em; text-transform: uppercase; box-shadow: 0 2px 8px rgba(212,175,55,0.4);">Featured</span>`
+                    : isStandard
+                    ? `<span style="display: inline-block; background: rgba(99,102,241,0.15); border: 1px solid rgba(99,102,241,0.5); color: #818cf8; font-size: 11px; font-weight: 700; padding: 4px 12px; border-radius: 99px; letter-spacing: 0.05em; text-transform: uppercase;">Pro</span>`
+                    : `<span style="display: inline-block; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #9ca3af; font-size: 11px; font-weight: 600; padding: 4px 12px; border-radius: 99px; letter-spacing: 0.05em; text-transform: uppercase;">Free</span>`
                   }
                 </div>
 
-                <!-- diagonal ribbon badge top-right -->
-                ${isPremium ? `
-                <div style="position:absolute;top:18px;right:-26px;width:110px;background:linear-gradient(135deg,#c9a84c,#f5c842);color:#1a0a00;font-size:10px;font-weight:900;text-align:center;padding:5px 0;transform:rotate(35deg);letter-spacing:.08em;box-shadow:0 2px 8px rgba(0,0,0,0.2);z-index:20;">FEATURED</div>
-                ` : isStandard ? `
-                <div style="position:absolute;top:18px;right:-26px;width:110px;background:linear-gradient(135deg,#1e1b4b,#4338ca);color:#e0e7ff;font-size:10px;font-weight:900;text-align:center;padding:5px 0;transform:rotate(35deg);letter-spacing:.08em;box-shadow:0 2px 8px rgba(0,0,0,0.2);z-index:20;">PRO</div>
-                ` : `
-                <div style="position:absolute;top:18px;right:-26px;width:110px;background:linear-gradient(135deg,#374151,#6b7280);color:#f9fafb;font-size:10px;font-weight:900;text-align:center;padding:5px 0;transform:rotate(35deg);letter-spacing:.08em;box-shadow:0 2px 8px rgba(0,0,0,0.2);z-index:20;">FREE</div>
-                `}
+                <!-- TRAINER NAME & SPECIALIZATION -->
+                <h3 style="margin: 0 0 4px 0; font-size: 22px; font-weight: 700; color: #ffffff; letter-spacing: -0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.2;">
+                  ${normalizedTrainer.name}
+                </h3>
+                <p style="margin: 0 0 16px 0; font-size: 15px; color: #9ca3af; font-weight: 400; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.4;">
+                  ${normalizedTrainer.specialization || normalizedTrainer.category || 'Professional Trainer'}
+                </p>
+
+                <!-- HOURLY RATE -->
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-top: auto;">
+                  <span style="font-size: 20px; font-weight: 800; color: #fbbf24;">
+                    ${rateDisplay}
+                  </span>
+                  <button style="background: transparent; color: #fff; font-size: 13px; font-weight: 600; padding: 0; border: none; cursor: pointer; display: flex; align-items: center; gap: 6px; opacity: 0.8; transition: opacity 0.2s;"
+                          onmouseover="this.style.opacity='1';"
+                          onmouseout="this.style.opacity='0.8';">
+                    View Profile <span style="font-size:16px;">&rarr;</span>
+                  </button>
+                </div>
               </div>
             </div>`;
           
