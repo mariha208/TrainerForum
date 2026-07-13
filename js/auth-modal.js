@@ -133,31 +133,56 @@ function buildRegisterView(role) {
       </div>
     `;
   } else {
+    const cats = ['Business Coaching','Leadership Development','Strategy & Management','Entrepreneurship','Corporate Training','Sales & Marketing','Finance & Accounting','Change Management','AI & Machine Learning','Cybersecurity','Software Development','Data & Analytics','Cloud Computing','Digital Marketing','UI/UX Design','Blockchain & Web3','Public Speaking','Emotional Intelligence','Communication Skills','Problem Solving','Time Management','Conflict Resolution','Personality Development','Goal Setting','Fitness & Exercise','Yoga & Meditation','Nutrition & Diet','Sports Coaching','Mental Health & Mindfulness','Life Coaching','Sleep & Recovery','Functional Training','English Language','Hindi & Regional','European Languages','Academic Tutoring','Writing & Copywriting','Interview Preparation','Test & Exam Prep','Corporate L&D','Music','Dance','Acting & Theatre','Visual Arts & Design','Photography','Video & Filmmaking','Podcasting','Creative Writing','Career Mentoring','Resume & LinkedIn','Motivational Speaking','Work-Life Balance','Professional Certifications','Personal Finance','Networking Skills','Mindset & NLP'].sort();
+    const optionsHtml = cats.map(c => `<option>${c}</option>`).join('');
+
     formFields = `
       <div class="am-grid-1">
         <div class="am-form-group"><label>First Name</label><input type="text" id="trainerFirstName" placeholder="First Name"></div>
         <div class="am-form-group"><label>Last Name</label><input type="text" id="trainerLastName" placeholder="Last Name"></div>
       </div>
+      <div class="am-form-group"><label>Email Address</label><input type="email" id="trainerEmail" placeholder="you@example.com"></div>
       <div class="am-grid-1">
-        <div class="am-form-group"><label>Email Address</label><input type="email" id="trainerEmail" placeholder="you@example.com"></div>
         <div class="am-form-group"><label>Password</label><input type="password" id="trainerPassword" placeholder="••••••••"></div>
         <div class="am-form-group"><label>Phone Number</label><input type="tel" id="trainerPhone" placeholder="+91 XXXXX XXXXX"></div>
       </div>
+      <div class="am-form-group"><label>Professional Title</label><input type="text" id="trainerTitle" placeholder="e.g. Senior Business Coach"></div>
+      
       <div class="am-grid-1">
-        <div class="am-form-group"><label>Professional Title</label><input type="text" id="trainerTitle" placeholder="e.g. Senior Business Coach"></div>
         <div class="am-form-group">
-          <label>Expertise Category</label>
+          <label>Expertise Category 1 <span style="color:#e74c3c">*</span></label>
           <div class="am-select-wrap">
-            <select id="trainerExpertiseCategory">
-              <option value="" disabled selected>Select Category...</option>
-              <option>Business Coaching</option>
-              <option>AI & Technology</option>
-              <option>Fitness & Health</option>
-              <option>Cybersecurity</option>
-              <option>Soft Skills</option>
-              <option>Other</option>
+            <select id="trainerExpertiseCategory1" onchange="const t = document.getElementById('trainerExpertiseOther1'); if(this.value==='Other'){t.style.display='block';}else{t.style.display='none';}">
+              <option value="" disabled selected>Select Category 1...</option>
+              ${optionsHtml}
+              <option value="Other">Other</option>
             </select>
           </div>
+          <input type="text" id="trainerExpertiseOther1" placeholder="Specify your category" style="display:none; margin-top:8px;">
+        </div>
+      </div>
+      <div class="am-grid-1">
+        <div class="am-form-group">
+          <label>Expertise Category 2</label>
+          <div class="am-select-wrap">
+            <select id="trainerExpertiseCategory2" onchange="const t = document.getElementById('trainerExpertiseOther2'); if(this.value==='Other'){t.style.display='block';}else{t.style.display='none';}">
+              <option value="" selected>None</option>
+              ${optionsHtml}
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <input type="text" id="trainerExpertiseOther2" placeholder="Specify your category" style="display:none; margin-top:8px;">
+        </div>
+        <div class="am-form-group">
+          <label>Expertise Category 3</label>
+          <div class="am-select-wrap">
+            <select id="trainerExpertiseCategory3" onchange="const t = document.getElementById('trainerExpertiseOther3'); if(this.value==='Other'){t.style.display='block';}else{t.style.display='none';}">
+              <option value="" selected>None</option>
+              ${optionsHtml}
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <input type="text" id="trainerExpertiseOther3" placeholder="Specify your category" style="display:none; margin-top:8px;">
         </div>
       </div>
       <div class="am-grid-1">
@@ -249,6 +274,18 @@ window.handleRegistration = function (role) {
       return;
     }
 
+    const getCat = (idx) => {
+      const sel = document.getElementById(`trainerExpertiseCategory${idx}`);
+      if (!sel) return "";
+      const val = sel.value;
+      if (val === "Other") return document.getElementById(`trainerExpertiseOther${idx}`)?.value || "";
+      return val === "None" ? "" : val;
+    };
+
+    const cat1 = getCat(1) || "AI & Technology";
+    const cat2 = getCat(2);
+    const cat3 = getCat(3);
+
     window._registrationPayload = {
       email,
       password,
@@ -256,7 +293,10 @@ window.handleRegistration = function (role) {
       lastName,
       role: 'trainer',
       professionalTitle: document.getElementById("trainerTitle")?.value || "Expert Instructor",
-      expertiseCategory: document.getElementById("trainerExpertiseCategory")?.value || "AI & Technology",
+      expertiseCategory: cat1,
+      expertiseCategory1: cat1,
+      expertiseCategory2: cat2,
+      expertiseCategory3: cat3,
       yearsOfExperience: parseInt(document.getElementById("trainerYearsOfExperience")?.value) || 0,
       city: document.getElementById("trainerCity")?.value || "",
       phoneNumber: document.getElementById("trainerPhone")?.value || "",

@@ -10,7 +10,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secret_key_for_dev_only';
 // POST /api/auth/register
 router.post('/register', async (req, res) => {
   try {
-    const { email, password, firstName, lastName, role, professionalTitle, expertiseCategory, city, linkedinProfile, bio, hourlyRate, skills, phoneNumber, country, yearsOfExperience, website, membershipType } = req.body;
+    const { email, password, firstName, lastName, role, professionalTitle, expertiseCategory, expertiseCategory1, expertiseCategory2, expertiseCategory3, city, linkedinProfile, bio, hourlyRate, skills, phoneNumber, country, yearsOfExperience, website, membershipType } = req.body;
 
     // Check if user exists
     const existingUser = await User.findOne({ email: email.toLowerCase() });
@@ -47,6 +47,9 @@ router.post('/register', async (req, res) => {
       role: role || 'trainer',
       professionalTitle,
       expertiseCategory,
+      expertiseCategory1,
+      expertiseCategory2,
+      expertiseCategory3,
       city,
       linkedinProfile,
       bio,

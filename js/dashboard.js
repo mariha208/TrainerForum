@@ -71,7 +71,27 @@ function populateDashboardInputs(data) {
 
   setVal("p-name", data.fullName || data.name || "");
   setVal("p-tagline", data.tagline || "");
-  setVal("p-category", data.category || "AI & Technology");
+  // Helper: set category dropdown; if value not in options, fall back to "Other" + custom input
+  const setCat = (selectId, inputId, val) => {
+    if (!val) return;
+    const sel = document.getElementById(selectId);
+    const inp = document.getElementById(inputId);
+    if (!sel) return;
+    const opt = Array.from(sel.options).find(o => o.value === val || o.text === val);
+    if (opt) {
+      sel.value = opt.value;
+    } else {
+      sel.value = 'Other';
+      if (inp) { inp.value = val; inp.style.display = 'block'; }
+    }
+  };
+
+  const cat1 = data.category1 || data.expertiseCategory1 || data.expertiseCategory || data.category || '';
+  const cat2 = data.category2 || data.expertiseCategory2 || '';
+  const cat3 = data.category3 || data.expertiseCategory3 || '';
+  setCat('p-category1', 'p-categoryOther1', cat1 || 'AI & Machine Learning');
+  setCat('p-category2', 'p-categoryOther2', cat2);
+  setCat('p-category3', 'p-categoryOther3', cat3);
   setVal("p-spec", data.specialization || "");
   setVal("p-exp", data.experience || "");
   setVal("p-location", data.location || "");
@@ -219,11 +239,28 @@ window.commitLocalProfileChanges = function commitLocalProfileChanges() {
 
   let cached = JSON.parse(localStorage.getItem("currentTrainer")) || {};
 
+  // Collect category values — handling 'Other' custom text inputs
+  const getCategory = (selectId, inputId) => {
+    const sel = document.getElementById(selectId);
+    const inp = document.getElementById(inputId);
+    if (!sel) return '';
+    const val = sel.value.trim();
+    if (val === 'Other') return inp?.value?.trim() || '';
+    if (!val || val === 'None') return '';
+    return val;
+  };
+  const cat1 = getCategory('p-category1', 'p-categoryOther1');
+  const cat2 = getCategory('p-category2', 'p-categoryOther2');
+  const cat3 = getCategory('p-category3', 'p-categoryOther3');
+
   const payload = {
 
     fullName: document.getElementById("p-name")?.value?.trim() || "",
     tagline: document.getElementById("p-tagline")?.value?.trim() || "",
-    category: document.getElementById("p-category")?.value?.trim() || "",
+    category: cat1,
+    category1: cat1,
+    category2: cat2,
+    category3: cat3,
     specialization: document.getElementById("p-spec")?.value?.trim() || "",
     experience: document.getElementById("p-exp")?.value?.trim() || "0",
     location: document.getElementById("p-location")?.value?.trim() || "",

@@ -83,12 +83,16 @@ function subscribeToTrainers() {
             return row.fullName || row.FullName || row.name || row.Name || 'Unnamed Trainer';
           })();
 
-          const _category = String(
-            row.expertiseCategory || row.ExpertiseCategory ||
-            row.category || row.Category ||
-            row.cat || row.Cat ||
-            'General'
-          );
+          const _cat1 = row.expertiseCategory1 || row.ExpertiseCategory1 || row.category1 || row.Category1 || '';
+          const _cat2 = row.expertiseCategory2 || row.ExpertiseCategory2 || row.category2 || row.Category2 || '';
+          const _cat3 = row.expertiseCategory3 || row.ExpertiseCategory3 || row.category3 || row.Category3 || '';
+          const _fallbackCat = row.expertiseCategory || row.ExpertiseCategory || row.category || row.Category || row.cat || row.Cat || '';
+          
+          let _categoryArr = [_cat1 || _fallbackCat, _cat2, _cat3].filter(Boolean);
+          // deduplicate if any are same
+          _categoryArr = [...new Set(_categoryArr)];
+          
+          const _category = _categoryArr.length > 0 ? _categoryArr.join(' • ') : 'General';
 
           // hourlyRate is a Number in DB schema; fall back to legacy string fields
           const _rawRate = row.hourlyRate ?? row.HourlyRate ?? row.rate ?? row.Rate ?? row.price ?? row.Price ?? 0;

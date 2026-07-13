@@ -140,6 +140,9 @@ router.patch('/:id', async (req, res) => {
     }
     if (body.tagline      !== undefined) update.professionalTitle = body.tagline;
     if (body.category     !== undefined) update.expertiseCategory = body.category;
+    if (body.category1    !== undefined) update.expertiseCategory1 = body.category1;
+    if (body.category2    !== undefined) update.expertiseCategory2 = body.category2;
+    if (body.category3    !== undefined) update.expertiseCategory3 = body.category3;
     if (body.location     !== undefined) update.city              = body.location;
     if (body.deliveryMode !== undefined) update.mode              = body.deliveryMode;
     if (body.rate         !== undefined) update.hourlyRate        = parseFloat(body.rate) || 0;
