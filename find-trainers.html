@@ -119,7 +119,7 @@
           <option>Personal Dev.</option>
         </select>
         <div class="h-sep"></div>
-        <select onchange="document.getElementById('f-mode').value=this.value;applyFilters()">
+        <select id="f-mode" onchange="applyFilters()">
           <option value="">Anywhere</option>
           <option value="Online">Online</option>
           <option value="In-Person">In-Person</option>
@@ -129,74 +129,7 @@
       </div>
     </div>
     <div class="browse-layout">
-      <div class="filters-panel">
-        <h3>Filters</h3>
-        <div class="fg"><label>Category</label>
-          <select onchange="document.getElementById('f-cat').value=this.value;applyFilters()">
-            <option value="">All Categories</option>
-            <option>Business Coaching</option>
-            <option>AI &amp; Technology</option>
-            <option>Fitness &amp; Health</option>
-            <option>Cybersecurity</option>
-            <option>Soft Skills</option>
-            <option>Language Training</option>
-            <option>Music &amp; Dance</option>
-            <option>Career Mentoring</option>
-            <option>Sports Coaching</option>
-            <option>Finance</option>
-            <option>Motivational</option>
-            <option>Personal Dev.</option>
-          </select>
-        </div>
-        <div class="fg"><label>Price / hour</label>
-          <input type="range" id="f-price" min="500" max="100000" value="100000" oninput="updatePriceDisplay(this.value);applyFilters()">
-          <div style="font-size:.78rem;color:var(--tm);margin-top:4px">Up to <span id="price-out">₹1,00,000</span></div>
-        </div>
-        <div class="fg"><label>Minimum Rating</label>
-          <select id="f-rating" onchange="applyFilters()">
-            <option value="0">Any Rating</option>
-            <option value="4.5">4.5+ Stars</option>
-            <option value="4.0">4.0+ Stars</option>
-            <option value="3.5">3.5+ Stars</option>
-          </select>
-        </div>
-        <div class="fg"><label>Delivery Mode</label>
-          <select id="f-mode" onchange="applyFilters()">
-            <option value="">Any Mode</option>
-            <option value="Online">Online / Virtual</option>
-            <option value="In-Person">In-Person</option>
-            <option value="Hybrid">Hybrid</option>
-          </select>
-        </div>
-        <div class="fg"><label>Experience</label>
-          <select id="f-exp" onchange="applyFilters()">
-            <option value="">Any</option>
-            <option>1–3 years</option>
-            <option>3–5 years</option>
-            <option>5–10 years</option>
-            <option>10+ years</option>
-          </select>
-        </div>
-        <div class="fg"><label>Language</label>
-          <div class="check-group">
-            <label class="chk"><input type="checkbox" checked> English</label>
-            <label class="chk"><input type="checkbox"> Hindi</label>
-            <label class="chk"><input type="checkbox"> Gujarati</label>
-            <label class="chk"><input type="checkbox"> Tamil</label>
-            <label class="chk"><input type="checkbox"> Telugu</label>
-          </div>
-        </div>
-        <div class="fg"><label>Options</label>
-          <div class="check-group">
-            <label class="chk"><input type="checkbox" checked> Verified trainers only</label>
-            <label class="chk"><input type="checkbox"> Featured trainers</label>
-            <label class="chk"><input type="checkbox"> Available this week</label>
-          </div>
-        </div>
-        <button class="btn btn-gold btn-full" style="margin-top:4px" onclick="applyFilters()">Apply Filters</button>
-        <button class="btn btn-dark btn-full" style="margin-top:8px"
-          onclick="document.getElementById('f-cat').value='';document.getElementById('f-price').value=100000;updatePriceDisplay(100000);document.getElementById('f-rating').value=0;document.getElementById('f-mode').value='';applyFilters()">Reset All</button>
-      </div>
+
       <div class="browse-results">
         <div class="results-bar">
           <div class="results-count">Showing <strong id="results-count">0</strong> trainers</div>
@@ -469,6 +402,8 @@
         const inp = document.getElementById('browse-search');
         if (inp) inp.value = q;
       }
+      // Apply filters after setting the values from URL
+      if (window.applyFilters) window.applyFilters();
     });
   </script>
 <script src="js/mobile-nav.js"></script>
