@@ -1200,6 +1200,15 @@
       }
     }
 
+    // Sidebar logout button handler
+    function confirmLogout() {
+      if (confirm('Are you sure you want to log out?')) {
+        localStorage.removeItem('userSession');
+        localStorage.removeItem('currentTrainer');
+        window.location.href = 'index.html';
+      }
+    }
+
     function toggleNotif() {
       const drop = document.getElementById('notif-dropdown');
       drop.style.display = drop.style.display === 'block' ? 'none' : 'block';
@@ -1529,7 +1538,7 @@
         var isAvail = typeof info.available !== 'undefined' ? info.available : info.enabled;
         var tStart = info.start || info.from || '09:00';
         var tEnd = info.end || info.to || '17:00';
-        return '<div class="avail-row" data-day="' + d + '" style="display:flex;align-items:center;gap:12px;padding:8px;background:var(--bg2);border:1px solid var(--border);border-radius:8px"><div style="width:50px;font-weight:600;color:var(--ts);font-size:.9rem">' + d + '</div><input type="checkbox" class="avail-toggle" style="width:18px;height:18px;accent-color:var(--gold)" ' + (isAvail ? 'checked' : '') + '> <div style="flex:1"></div> <input type="time" class="form-control avail-from" style="width:110px" value="' + tStart + '" ' + (isAvail ? '' : 'disabled') + '> <span style="color:var(--tm)">to</span> <input type="time" class="form-control avail-to" style="width:110px" value="' + tEnd + '" ' + (isAvail ? '' : 'disabled') + '></div>';
+        return '<div class="avail-row" data-day="' + d + '" style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:8px"><div style="width:36px;font-weight:600;color:var(--ts);font-size:.82rem;flex-shrink:0">' + d + '</div><input type="checkbox" class="avail-toggle" style="width:16px;height:16px;flex-shrink:0;cursor:pointer;accent-color:var(--gold)" ' + (isAvail ? 'checked' : '') + '><input type="time" class="form-control avail-from" style="flex:1;min-width:0;font-size:.78rem;padding:5px 6px" value="' + tStart + '" ' + (isAvail ? '' : 'disabled') + '><span style="color:var(--tm);font-size:.75rem;flex-shrink:0">\u2013</span><input type="time" class="form-control avail-to" style="flex:1;min-width:0;font-size:.78rem;padding:5px 6px" value="' + tEnd + '" ' + (isAvail ? '' : 'disabled') + '></div>';
       }).join('');
       // Attach toggle listeners
       cont.querySelectorAll('.avail-toggle').forEach(function (chk) {
