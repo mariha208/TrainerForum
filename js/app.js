@@ -1006,31 +1006,32 @@ function verifyUserSessionToken() {
     if (btnLogin) btnLogin.style.display = 'none';
     if (btnLogout) btnLogout.style.display = 'inline-block';
 
-    // Robust check for trainer role, even if 'role' was stripped by a previous cache bug
+    // ── Update Dashboard Links (Desktop & Mobile) ──
     const isTrainer = (sessionUser.role && sessionUser.role.toLowerCase() === 'trainer') ||
       (!sessionUser.role && (sessionUser.trainerEmail || sessionUser.expertiseCategory || sessionUser.category));
-    if (navLinksUl && isTrainer) {
-      const dashLi = document.createElement('li');
-      dashLi.className = 'dynamic-auth-item';
+      
+    const nlDash = document.getElementById('nl-dash');
+    const mnDash = document.getElementById('mn-dash');
+    
+    if (isTrainer) {
       const displayName = sessionUser.fullName || sessionUser.name ||
         ((sessionUser.firstName || '') + ' ' + (sessionUser.lastName || '')).trim() || 'Trainer';
-      dashLi.innerHTML = `
-        <a href="dashboard.html" target="_blank"
-           style="color:var(--gold);font-weight:600;transition:color 0.3s ease;">
-          Dashboard (${displayName})
-        </a>`;
-      navLinksUl.appendChild(dashLi);
-    }
-
-    // ── Mobile nav: show Dashboard link for trainers ──
-    const mnDash = document.getElementById('mn-dash');
-    const nlDash = document.getElementById('nl-dash');
-    if (isTrainer) {
-      if (mnDash) mnDash.style.display = 'block';
-      if (nlDash) nlDash.style.display = 'list-item';
+        
+      if (nlDash) {
+        nlDash.style.display = 'inline-flex';
+        nlDash.innerHTML = `Dashboard (${displayName})`;
+        nlDash.style.color = 'var(--gold)';
+        nlDash.style.fontWeight = '600';
+      }
+      if (mnDash) {
+        mnDash.style.display = 'block';
+        mnDash.innerHTML = `Dashboard (${displayName})`;
+        mnDash.style.color = 'var(--gold)';
+        mnDash.style.fontWeight = '600';
+      }
     } else {
-      if (mnDash) mnDash.style.display = 'none';
       if (nlDash) nlDash.style.display = 'none';
+      if (mnDash) mnDash.style.display = 'none';
     }
 
     // Mobile auth button states

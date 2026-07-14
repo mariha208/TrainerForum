@@ -170,7 +170,7 @@ ul {
 .nav-links {
   display: flex;
   align-items: center;
-  gap: 4px; /* Minimum clean gap */
+  gap: 8px; /* Slightly wider gap but tighter padding for overall balance */
 }
 
 .nav-links li {
@@ -183,8 +183,8 @@ ul {
   align-items: center;
   justify-content: center;
   height: 38px;
-  padding: 0 12px; /* Premium minimum padding for equal text distance */
-  font-size: .875rem;
+  padding: 0 8px; /* Reduced from 12px to prevent squishing on dense navbars */
+  font-size: .85rem; /* Slightly smaller for density */
   font-weight: 500;
   color: var(--ts);
   transition: color .2s, background .2s;

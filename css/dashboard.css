@@ -1479,8 +1479,26 @@ select.form-control { cursor: pointer; }
 }
 @media (max-width: 900px) {
   :root { --sidebar-w: 0px; }
-  .db-sidebar { transform: translateX(-260px); width: 260px; }
+  .db-sidebar { transform: translateX(-260px); width: 260px; z-index: 10000; }
   .db-sidebar.mobile-open { transform: translateX(0); }
+  .sidebar-backdrop {
+    position: fixed;
+    top: var(--nav-h);
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 9999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+  .sidebar-backdrop.show {
+    opacity: 1;
+    pointer-events: all;
+  }
   .db-main { margin-left: 0; }
   .grid-3 { grid-template-columns: 1fr 1fr; }
   .grid-4 { grid-template-columns: 1fr 1fr; }
