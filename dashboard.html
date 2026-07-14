@@ -259,10 +259,14 @@
             <!-- Local File Upload For Banner Image Layout (No DB required) -->
             <input type="file" accept="image/*" id="upload-banner-file" style="display:none" onchange="autoSave()">
             <div class="banner-preview" id="profile-banner"
-              style="position:relative;height:140px;background:linear-gradient(135deg,#2d5fa8,#1a3d8a);border-radius:var(--r);overflow:hidden;margin-bottom:10px">
+              onclick="document.getElementById('upload-banner-file').click()"
+              style="position:relative;height:140px;background:linear-gradient(135deg,#2d5fa8,#1a3d8a);border-radius:var(--r);overflow:hidden;margin-bottom:10px;cursor:pointer;transition:opacity 0.2s"
+              onmouseover="this.querySelector('.ban-overlay').style.opacity='1'"
+              onmouseout="this.querySelector('.ban-overlay').style.opacity='0.6'">
               <div class="ban-overlay" id="banner-overlay"
-                style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.3);color:white;font-size:1rem">
-                📁 Click 'Change Banner' to choose local file
+                style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,.45);color:white;font-size:1rem;opacity:0.6;transition:opacity 0.2s;gap:6px">
+                <span style="font-size:1.8rem">🖼️</span>
+                <span style="font-size:0.82rem;font-weight:600;letter-spacing:0.04em">Click anywhere to change banner</span>
               </div>
             </div>
             <div style="display:flex;gap:8px;margin-bottom:16px">
@@ -1023,20 +1027,6 @@
             Testimonials</button>
         </div>
 
-      </div>
-
-      <!-- 3. COMPANIES WORKED WITH -->
-      <div class="db-card" style="margin-top:24px">
-        <div class="card-title">
-          <div class="ct-ico">🏢</div>Companies Worked With <span
-            style="font-size:0.7rem;color:var(--tm);font-weight:400;margin-left:4px">(Max 5 logos)</span>
-        </div>
-        <p class="text-sm text-muted mb-16">These logos display as a "Trusted By" strip on your public profile.</p>
-        <div id="company-logos-grid" style="display:flex;flex-wrap:wrap;gap:16px;margin-bottom:16px"></div>
-        <div style="display:flex;gap:8px;align-items:center">
-          <input type="file" id="company-logo-file" accept="image/*" style="display:none">
-          <span style="font-size:0.78rem;color:var(--tm)" id="company-logo-count">0 / 5 added</span>
-        </div>
       </div>
 
     </section>

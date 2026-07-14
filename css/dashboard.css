@@ -3,7 +3,7 @@
    Premium dark SaaS dashboard UI
 ═══════════════════════════════════════════════════ */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Cormorant+Garamond:wght@600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Cormorant+Garamond:wght@600;700&family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 /* ── CSS Variables — LIGHT MODE (default, matches Option 3) ── */
 :root {
@@ -204,7 +204,7 @@ html.dark-mode .social-link-row { border-color: var(--border); }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
 body {
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: 'Outfit', 'Inter', system-ui, sans-serif;
   background: var(--bg);
   color: var(--tp);
   min-height: 100vh;
@@ -231,6 +231,8 @@ input, select, textarea { font-family: inherit; }
   z-index: 1000;
   gap: 0;
   backdrop-filter: blur(12px);
+  /* Website-style teal accent line at bottom */
+  box-shadow: 0 1px 0 0 var(--border), 0 2px 0 0 rgba(0,139,139,0.15);
 }
 .db-topnav .logo-area {
   width: var(--sidebar-w);
@@ -250,10 +252,11 @@ input, select, textarea { font-family: inherit; }
   font-weight: 800; font-size: .9rem; color: #0D1117;
 }
 .db-topnav .logo-txt {
+  font-family: 'Outfit', 'Inter', sans-serif;
   font-weight: 700; font-size: .95rem;
   color: var(--tp);
 }
-.db-topnav .logo-txt span { color: var(--gold); }
+.db-topnav .logo-txt span { color: var(--teal); }
 .db-topnav .nav-center {
   flex: 1;
   display: flex;
@@ -435,19 +438,19 @@ input, select, textarea { font-family: inherit; }
   text-decoration: none;
 }
 .sidebar-nav-item:hover {
-  background: var(--bg3);
+  background: rgba(0,139,139,0.08);
   color: var(--tp);
 }
 .sidebar-nav-item.active {
-  background: var(--gold-bg);
-  color: var(--gold-lt);
+  background: rgba(0,139,139,0.12);
+  color: var(--teal);
   font-weight: 600;
 }
 .sidebar-nav-item.active::before {
   content: '';
   position: absolute; left: 0; top: 6px; bottom: 6px;
   width: 3px;
-  background: var(--gold);
+  background: var(--teal);
   border-radius: 0 3px 3px 0;
 }
 .sidebar-nav-item .nav-ico {
@@ -504,10 +507,14 @@ input, select, textarea { font-family: inherit; }
   gap: 16px; flex-wrap: wrap;
 }
 .db-page-header .phead-left h1 {
-  font-size: 1.5rem; font-weight: 700;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.9rem; font-weight: 700;
+  color: var(--tp);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
 }
 .db-page-header .phead-left p {
-  font-size: .84rem; color: var(--tm); margin-top: 2px;
+  font-size: .88rem; color: var(--tm); margin-top: 4px;
 }
 .db-page-header .phead-right {
   display: flex; gap: 10px; flex-wrap: wrap; align-items: center;
@@ -522,8 +529,12 @@ input, select, textarea { font-family: inherit; }
   border-radius: var(--r-lg);
   padding: 22px;
   transition: var(--trans);
+  box-shadow: 0 2px 8px rgba(10,37,81,0.05);
 }
-.db-card:hover { border-color: var(--border2); }
+.db-card:hover {
+  border-color: rgba(0,139,139,0.3);
+  box-shadow: 0 4px 20px rgba(0,139,139,0.08);
+}
 .db-card.glow:hover { box-shadow: var(--glow-gold); }
 
 .db-card .card-title {
@@ -567,7 +578,12 @@ input, select, textarea { font-family: inherit; }
   opacity: 0; transition: opacity .3s;
 }
 .kpi-card:hover::before { opacity: 1; }
-.kpi-card:hover { box-shadow: var(--shadow); transform: translateY(-2px); }
+.kpi-card:hover { box-shadow: 0 4px 24px rgba(0,139,139,0.12); transform: translateY(-2px); }
+
+/* Teal top bar on KPI cards — matches website card accent style */
+.kpi-card::before {
+  background: linear-gradient(90deg, var(--teal), var(--teal-lt));
+}
 
 .kpi-card.gold { border-color: rgba(201,168,76,.2); background: var(--gold-bg); }
 .kpi-card.green { border-color: rgba(39,174,96,.2); background: var(--green-bg); }
@@ -637,6 +653,13 @@ input, select, textarea { font-family: inherit; }
 .btn-danger:hover { background: rgba(231,76,60,.2); }
 .btn-success { background: var(--green-bg); color: var(--green); border: 1px solid rgba(39,174,96,.2); }
 .btn-success:hover { background: rgba(39,174,96,.2); }
+/* Teal primary button — matches website's .btn-primary */
+.btn-teal {
+  background: var(--teal);
+  color: #fff;
+  border: none;
+}
+.btn-teal:hover { filter: brightness(1.1); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0,139,139,0.3); }
 .btn-sm { padding: 6px 12px; font-size: .78rem; border-radius: 7px; }
 .btn-lg { padding: 11px 22px; font-size: .9rem; }
 .btn-xl { padding: 14px 28px; font-size: .95rem; border-radius: 10px; }
@@ -666,8 +689,8 @@ input, select, textarea { font-family: inherit; }
   transition: var(--trans);
 }
 .form-control:focus {
-  border-color: var(--gold);
-  box-shadow: 0 0 0 3px rgba(201,168,76,.1);
+  border-color: var(--teal);
+  box-shadow: 0 0 0 3px rgba(0,139,139,0.12);
 }
 .form-control::placeholder { color: var(--tm); }
 textarea.form-control { resize: vertical; min-height: 100px; }

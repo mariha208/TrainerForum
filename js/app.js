@@ -1022,12 +1022,45 @@ function verifyUserSessionToken() {
       navLinksUl.appendChild(dashLi);
     }
 
+    // ── Mobile nav: show Dashboard link for trainers ──
+    const mnDash = document.getElementById('mn-dash');
+    const nlDash = document.getElementById('nl-dash');
+    if (isTrainer) {
+      if (mnDash) mnDash.style.display = 'block';
+      if (nlDash) nlDash.style.display = 'list-item';
+    } else {
+      if (mnDash) mnDash.style.display = 'none';
+      if (nlDash) nlDash.style.display = 'none';
+    }
+
+    // Mobile auth button states
+    const mnSignup = document.getElementById('mn-btn-signup');
+    const mnLogin  = document.getElementById('mn-btn-login');
+    const mnLogout = document.getElementById('mn-btn-logout');
+    if (mnSignup) mnSignup.style.display = 'none';
+    if (mnLogin)  mnLogin.style.display  = 'none';
+    if (mnLogout) mnLogout.style.display = 'flex';
+
     window.loggedInTrainerId = sessionUser.email || sessionUser.trainerEmail || null;
 
   } else {
     if (btnSignup) btnSignup.style.display = 'inline-block';
     if (btnLogin) btnLogin.style.display = 'inline-block';
     if (btnLogout) btnLogout.style.display = 'none';
+
+    // Hide Dashboard in mobile nav when logged out
+    const mnDash = document.getElementById('mn-dash');
+    const nlDash = document.getElementById('nl-dash');
+    if (mnDash) mnDash.style.display = 'none';
+    if (nlDash) nlDash.style.display = 'none';
+
+    // Mobile auth button states
+    const mnSignup = document.getElementById('mn-btn-signup');
+    const mnLogin  = document.getElementById('mn-btn-login');
+    const mnLogout = document.getElementById('mn-btn-logout');
+    if (mnSignup) mnSignup.style.display = 'flex';
+    if (mnLogin)  mnLogin.style.display  = 'flex';
+    if (mnLogout) mnLogout.style.display = 'none';
   }
 }
 
