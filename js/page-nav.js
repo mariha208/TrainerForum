@@ -31,14 +31,4 @@
     window.location.href = 'find-trainers.html?cat=' + encodeURIComponent(cat);
   };
 
-  window.heroSearch = function () {
-    const q = document.getElementById('hs-input')?.value || '';
-    const cat = document.getElementById('hs-cat')?.value || '';
-    let url = 'find-trainers.html';
-    const params = [];
-    if (q) params.push('q=' + encodeURIComponent(q));
-    if (cat) params.push('cat=' + encodeURIComponent(cat));
-    if (params.length) url += '?' + params.join('&');
-    window.location.href = url;
-  };
 })();
