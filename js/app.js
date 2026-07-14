@@ -1072,6 +1072,13 @@ window.handleLogout = function () {
   window.loggedInTrainerId = null;
   verifyUserSessionToken();
   if (typeof updateNavbarAuthUI === 'function') updateNavbarAuthUI();
+  
+  if (window.location.pathname.includes('dashboard.html')) {
+    window.location.href = 'index.html';
+  } else {
+    // If we have a toast function, show it
+    if (window.toast) window.toast('Logged out successfully', 3000);
+  }
 }
 
 // ── BROWSE PAGE FILTER & SORT HANDLERS ──────────────────────────────────────
