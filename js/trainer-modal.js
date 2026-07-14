@@ -42,6 +42,18 @@ window.openTrainerModal = function (idOrObj) {
     if (!t) { console.warn('[WTF] openTrainerModal: trainer not found for id:', idOrObj); return; }
   }
 
+  // ── AUTH GUARD ──
+  const isLoggedOut = !localStorage.getItem('userSession');
+  if (isLoggedOut) {
+    if (window.openAuthModal) {
+      window.openAuthModal('login');
+    } else {
+      window.location.href = 'index.html#login';
+    }
+    return;
+  }
+
+
   window.currentTrainer = t;
 
   // Sync latest localStorage data for this specific trainer (only if strictly matching ID)
