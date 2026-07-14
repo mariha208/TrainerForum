@@ -179,13 +179,14 @@ p {
   top: 0;
   left: 0;
   right: 0;
-  height: 70px;
+  min-height: 70px;
   background: var(--white);
   border-bottom: 1px solid var(--border-light);
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  padding: 0 var(--spacing-2xl);
+  padding: var(--spacing-sm) clamp(var(--spacing-md), 3vw, var(--spacing-2xl));
   z-index: var(--z-fixed);
   box-shadow: var(--shadow-sm);
   backdrop-filter: blur(10px);
@@ -216,7 +217,8 @@ p {
 
 .navbar-links {
   display: flex;
-  gap: var(--spacing-2xl);
+  flex-wrap: wrap;
+  gap: clamp(var(--spacing-md), 2vw, var(--spacing-2xl));
   align-items: center;
 }
 
@@ -354,10 +356,10 @@ p {
 .hero::before {
   content: '';
   position: absolute;
-  top: -100px;
-  right: -200px;
-  width: 500px;
-  height: 500px;
+  top: -10%;
+  right: -10%;
+  width: clamp(200px, 35vw, 500px);
+  height: clamp(200px, 35vw, 500px);
   background: radial-gradient(circle, rgba(0, 139, 139, 0.08) 0%, transparent 70%);
   border-radius: 50%;
 }
@@ -365,10 +367,10 @@ p {
 .hero::after {
   content: '';
   position: absolute;
-  bottom: -200px;
-  left: -150px;
-  width: 400px;
-  height: 400px;
+  bottom: -10%;
+  left: -10%;
+  width: clamp(150px, 28vw, 400px);
+  height: clamp(150px, 28vw, 400px);
   background: radial-gradient(circle, rgba(197, 160, 89, 0.06) 0%, transparent 70%);
   border-radius: 50%;
 }
@@ -410,10 +412,12 @@ p {
   border-radius: var(--radius-lg);
   padding: var(--spacing-md);
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: var(--spacing-md);
   margin-bottom: var(--spacing-3xl);
   max-width: 700px;
+  width: 100%;
   margin-left: auto;
   margin-right: auto;
   box-shadow: var(--shadow-md);
@@ -426,7 +430,8 @@ p {
 }
 
 .hero-search input {
-  flex: 1;
+  flex: 1 1 180px;
+  min-width: 0;
   border: none;
   background: transparent;
   color: var(--text-dark);
@@ -439,6 +444,7 @@ p {
 }
 
 .hero-search select {
+  flex: 0 1 auto;
   background: transparent;
   border: none;
   color: var(--text-dark);
@@ -449,7 +455,7 @@ p {
 
 .hero-stats {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 140px), 1fr));
   gap: var(--spacing-lg);
   margin-top: var(--spacing-3xl);
 }
@@ -529,7 +535,7 @@ section {
 ═══════════════════════════════════════════════════════════════════════════ */
 .categories-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 140px), 1fr));
   gap: var(--spacing-md);
   margin-top: var(--spacing-2xl);
 }
@@ -567,7 +573,7 @@ section {
 ═══════════════════════════════════════════════════════════════════════════ */
 .trainers-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
   gap: var(--spacing-lg);
   margin-top: var(--spacing-2xl);
 }
@@ -682,12 +688,13 @@ section {
 
 .trainer-actions {
   display: flex;
+  flex-wrap: wrap;
   gap: var(--spacing-md);
   margin-top: auto;
 }
 
 .trainer-actions .btn {
-  flex: 1;
+  flex: 1 1 120px;
   padding: 10px 16px;
   font-size: 0.9rem;
 }
@@ -697,7 +704,7 @@ section {
 ═══════════════════════════════════════════════════════════════════════════ */
 .testimonials-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
   gap: var(--spacing-lg);
   margin-top: var(--spacing-2xl);
 }
@@ -764,7 +771,7 @@ section {
 ═══════════════════════════════════════════════════════════════════════════ */
 .pricing-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
   gap: var(--spacing-lg);
   margin-top: var(--spacing-2xl);
 }
@@ -873,8 +880,8 @@ section {
   position: absolute;
   top: -50%;
   right: -20%;
-  width: 400px;
-  height: 400px;
+  width: clamp(180px, 35vw, 400px);
+  height: clamp(180px, 35vw, 400px);
   background: radial-gradient(circle, rgba(0, 139, 139, 0.1) 0%, transparent 70%);
   border-radius: 50%;
 }
@@ -904,6 +911,11 @@ section {
   z-index: 2;
 }
 
+.cta-buttons .btn {
+  flex: 1 1 auto;
+  min-width: max-content;
+}
+
 /* ═══════════════════════════════════════════════════════════════════════════
    FOOTER
 ═══════════════════════════════════════════════════════════════════════════ */
@@ -917,7 +929,7 @@ footer {
   max-width: 1400px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
   gap: var(--spacing-2xl);
   margin-bottom: var(--spacing-2xl);
 }
@@ -962,80 +974,36 @@ footer {
    RESPONSIVE DESIGN
 ═══════════════════════════════════════════════════════════════════════════ */
 @media (max-width: 768px) {
-  .navbar {
-    padding: 0 var(--spacing-lg);
-  }
-
+  /* Navbar stacks vertically on smaller screens */
   .navbar-links {
-    display: none;
+    width: 100%;
+    order: 3;
+    justify-content: center;
+    border-top: 1px solid var(--border-light);
+    padding-top: var(--spacing-sm);
   }
 
   .hero {
-    padding-top: 100px;
+    padding-top: 110px;
   }
 
   section {
     padding: var(--spacing-2xl) var(--spacing-lg);
   }
 
+  /* Disable featured card scale so it doesn't clip on mobile */
   .pricing-card.featured {
     transform: scale(1);
-  }
-
-  .cta-buttons {
-    flex-direction: column;
-  }
-
-  .cta-buttons .btn {
-    width: 100%;
-  }
-
-  .trainers-grid {
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   }
 }
 
 @media (max-width: 480px) {
-  h1 {
-    font-size: 1.8rem;
-  }
-
-  h2 {
-    font-size: 1.4rem;
-  }
-
-  .navbar {
-    padding: 0 var(--spacing-md);
-  }
-
-  .navbar-links {
-    gap: var(--spacing-lg);
-  }
-
-  .hero-search {
-    flex-direction: column;
-  }
-
-  .hero-stats {
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--spacing-md);
-  }
-
   section {
     padding: var(--spacing-xl) var(--spacing-md);
   }
 
-  .trainers-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .testimonials-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .pricing-grid {
-    grid-template-columns: 1fr;
-  }
+  /* Fluid grids handle single-column automatically via minmax(min(100%,…))
+     No overrides needed for trainers/testimonials/pricing grids */
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════

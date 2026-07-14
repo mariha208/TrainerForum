@@ -23,10 +23,6 @@
       <div class="logo-txt">World Trainer <span>Form</span></div>
     </div>
     <div class="nav-center">
-      <div class="nav-search">
-        <span class="search-ico">🔍</span>
-        <input type="text" placeholder="Search bookings, clients, messages…" id="global-search">
-      </div>
       <div class="auto-save-pulse" id="autosave-indicator" style="opacity:0">Saved</div>
     </div>
     <div class="nav-r">
@@ -60,38 +56,11 @@
        SIDEBAR
   ═══════════════════════════════════════════════ -->
   <aside class="db-sidebar" id="db-sidebar">
-    <div class="sidebar-profile">
-      <div class="sidebar-profile-card">
-        <div class="sidebar-avatar" id="sidebar-avatar"></div>
-        <div class="sidebar-profile-info">
-          <div class="name" id="sidebar-name"></div>
-          <div class="handle" id="sidebar-handle"></div>
-          <div class="plan"><span class="dot"></span> Pro Plan · Active</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="completion-bar-wrap">
-      <div class="cb-label">
-        <span>Profile Completion</span>
-        <span class="cb-pct" id="cp-pct">72%</span>
-      </div>
-      <div class="completion-bar">
-        <div class="cb-fill" id="cp-fill" style="width:72%"></div>
-      </div>
-    </div>
-
     <div class="sidebar-section">
       <div class="sidebar-section-label">Management</div>
       <a class="sidebar-nav-item active" href="javascript:void(0)" data-section="profile"
         onclick="showSection('profile')">
         <span class="nav-ico">👤</span><span class="nav-label">Edit Profile</span>
-      </a>
-      <a class="sidebar-nav-item" href="javascript:void(0)" data-section="settings" onclick="showSection('settings')">
-        <span class="nav-ico">⚙️</span><span class="nav-label">Account Settings</span>
-      </a>
-      <a class="sidebar-nav-item" href="javascript:void(0)" onclick="openPublicProfile()">
-        <span class="nav-ico">🌐</span><span class="nav-label">View Public Profile</span>
       </a>
     </div>
 
@@ -271,15 +240,10 @@
       <div class="db-page-header">
         <div class="phead-left">
           <h1>Edit Profile</h1>
-          <p>Your changes auto-save and instantly update your public profile across the platform</p>
+          <p>Keep your profile up to date to attract more clients and improve your visibility.</p>
         </div>
-        <div class="phead-right" style="display:flex;gap:8px;align-items:center;">
-          <div class="auto-save-pulse" id="profile-save-status" style="opacity:0;margin-right:10px;">✓ All changes saved
-          </div>
-          <button class="btn btn-gold btn-sm" onclick="openModal('certificate')">+ Add Certificate</button>
-          <button class="btn btn-gold btn-sm" onclick="openModal('event')">+ Add Event</button>
-          <button class="btn btn-outline-gold btn-sm" onclick="previewProfile()">👁️ Preview</button>
-          <button class="btn btn-gold btn-sm" id="save-profile-btn" style="font-weight:700">💾 Save Profile</button>
+        <div class="phead-right">
+          <div class="auto-save-pulse" id="profile-save-status" style="opacity:0;">✓ All changes saved</div>
         </div>
       </div>
 
@@ -726,6 +690,12 @@
               </div>
             </div>
           </div>
+
+          <!-- Save Profile Button -->
+          <div style="margin-top:24px;padding-top:24px;border-top:1px solid var(--border)">
+            <button class="btn btn-gold w-100" id="save-profile-btn" onclick="saveProfileData()" style="padding:14px;font-size:1rem;font-weight:700;letter-spacing:0.03em">💾 Save Profile</button>
+            <p style="text-align:center;font-size:0.78rem;color:var(--tm);margin-top:10px">Your profile will be updated immediately after saving.</p>
+          </div>
         </div>
 
         <!-- Sticky Layout Right Preview Panel -->
@@ -1004,14 +974,10 @@
       <div class="db-page-header">
         <div class="phead-left">
           <h1>Portfolio Showcase</h1>
-          <p>Upload files, case studies, transformation logs, or past media assets</p>
-        </div>
-        <div class="phead-right">
-          <input type="file" id="portfolio-file-upload" accept="image/*" style="display:none">
-          <button class="btn btn-gold btn-sm" onclick="document.getElementById('portfolio-file-upload').click()">+
-            Upload Media</button>
+          <p>Showcase your work, case studies, and media to attract more clients</p>
         </div>
       </div>
+      <input type="file" id="portfolio-file-upload" accept="image/*" style="display:none">
       <div class="grid-4" id="portfolio-gallery" style="margin-bottom:32px"></div>
 
       <!-- ── Permanent Sub-Sections ── -->
@@ -1065,12 +1031,10 @@
           <div class="ct-ico">🏢</div>Companies Worked With <span
             style="font-size:0.7rem;color:var(--tm);font-weight:400;margin-left:4px">(Max 5 logos)</span>
         </div>
-        <p class="text-sm text-muted mb-16">Upload company logos. They display in a "Trusted By" strip on your public
-          profile.</p>
+        <p class="text-sm text-muted mb-16">These logos display as a "Trusted By" strip on your public profile.</p>
         <div id="company-logos-grid" style="display:flex;flex-wrap:wrap;gap:16px;margin-bottom:16px"></div>
         <div style="display:flex;gap:8px;align-items:center">
           <input type="file" id="company-logo-file" accept="image/*" style="display:none">
-          <button class="btn btn-dark btn-sm" onclick="_pickCompanyLogo()">+ Upload Logo</button>
           <span style="font-size:0.78rem;color:var(--tm)" id="company-logo-count">0 / 5 added</span>
         </div>
       </div>
