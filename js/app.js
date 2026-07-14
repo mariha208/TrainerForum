@@ -988,11 +988,9 @@ function setupModalDismissals() {
 
 // ── RECOVERY USER STATE INITIALIZER SESSION ENGINE ────────────────────────────
 function verifyUserSessionToken() {
-  const sessionUser = JSON.parse(
-    localStorage.getItem('currentTrainer') ||
-    localStorage.getItem('userSession') ||
-    'null'
-  );
+  // ONLY read userSession — the actual auth token.
+  // currentTrainer is just a profile cache and must NOT be used to detect login state.
+  const sessionUser = JSON.parse(localStorage.getItem('userSession') || 'null');
 
   const btnSignup = document.getElementById('btn-signup');
   const btnLogin = document.getElementById('btn-login');

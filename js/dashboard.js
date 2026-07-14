@@ -13,10 +13,92 @@ const API_BASE_URL = 'https://trainerforum.onrender.com/api/users';
 // Get the logged-in user's real MongoDB _id from localStorage
 function getLoggedInUserId() {
   try {
-    const session = JSON.parse(localStorage.getItem('currentTrainer') || 'null');
+    // ONLY read from userSession (the actual auth token), never from currentTrainer
+    const session = JSON.parse(localStorage.getItem('userSession') || 'null');
     return session && session._id ? session._id : null;
   } catch (e) { return null; }
 }
+
+// ── DASHBOARD LOGGED-OUT SCREEN ──
+function _showDashboardLoggedOutScreen() {
+  // Hide the entire dashboard layout
+  const layout = document.getElementById('db-layout');
+  const sidebar = document.querySelector('.db-sidebar');
+  const main = document.querySelector('.db-main');
+  const topnav = document.querySelector('.db-topnav');
+  if (layout)  layout.style.display  = 'none';
+  if (sidebar) sidebar.style.display = 'none';
+  if (main)    main.style.display    = 'none';
+  if (topnav)  topnav.style.display  = 'none';
+
+  // Build the locked-out overlay
+  const overlay = document.createElement('div');
+  overlay.id = 'db-loggedout-screen';
+  overlay.innerHTML = `
+    <div style="
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:var(--bg, #0f0f0f);
+      font-family:'Outfit','Inter',system-ui,sans-serif;
+    ">
+      <div style="
+        text-align:center;
+        padding:48px 36px;
+        max-width:460px;
+        background:var(--card-bg, #1a1a1a);
+        border:1px solid var(--border, #2a2a2a);
+        border-radius:20px;
+        box-shadow:0 20px 60px rgba(0,0,0,0.6);
+      ">
+        <div style="font-size:3.5rem;margin-bottom:16px">🔒</div>
+        <h2 style="color:#edf2f7;font-size:1.5rem;font-weight:700;margin-bottom:12px">
+          You have been logged out
+        </h2>
+        <p style="color:#a0aec0;font-size:0.95rem;line-height:1.6;margin-bottom:28px">
+          Your account has been logged out. Please log in again to access the Trainer Dashboard.
+        </p>
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+          <a href="index.html" style="
+            display:inline-block;
+            padding:12px 28px;
+            background:#C5A059;
+            color:#0f0f0f;
+            font-weight:700;
+            border-radius:10px;
+            text-decoration:none;
+            font-size:0.95rem;
+            transition:opacity .2s;
+          " onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">⬅ Go to Home</a>
+          <button onclick="(function(){var m=document.getElementById('auth-modal');if(m&&window.openAuthModal){window.openAuthModal('login');}else{window.location.href='index.html#login';}})()" style="
+            display:inline-block;
+            padding:12px 28px;
+            background:transparent;
+            color:#C5A059;
+            font-weight:700;
+            border:1.5px solid #C5A059;
+            border-radius:10px;
+            cursor:pointer;
+            font-size:0.95rem;
+            font-family:inherit;
+            transition:background .2s;
+          " onmouseover="this.style.background='rgba(197,160,89,.1)'" onmouseout="this.style.background='transparent'">Log In</button>
+        </div>
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+}
+
+// ── CROSS-TAB LOGOUT DETECTION ──
+// If the user logs out in another tab, immediately show the logout screen here
+window.addEventListener('storage', function(e) {
+  if (e.key === 'userSession' && !e.newValue) {
+    // userSession was removed in another tab => logged out
+    localStorage.removeItem('currentTrainer');
+    _showDashboardLoggedOutScreen();
+  }
+});
 
 
 // ── UTILITY 1: UI CARD SYNC COUPLING MATRIX ──────────────────────────────────
@@ -532,35 +614,30 @@ function _applyBannerPhotoToUI(url) {
 document.addEventListener('DOMContentLoaded', () => {
   console.log("Local-first asset trainer engine running...");
 
+  // ── AUTH GUARD: Must be logged in to use dashboard ──
+  const userId = getLoggedInUserId();
+  if (!userId) {
+    // Show full-page logout screen immediately
+    _showDashboardLoggedOutScreen();
+    return;
+  }
+
   let currentTrainerData = JSON.parse(localStorage.getItem("currentTrainer"));
 
+  // Only use cached data if it belongs to the current logged-in user
+  if (currentTrainerData && currentTrainerData.trainerId !== userId) {
+    localStorage.removeItem('currentTrainer');
+    currentTrainerData = null;
+  }
+
   if (!currentTrainerData) {
-    currentTrainerData = {
-      trainerId: getLoggedInUserId() || '',
-      fullName: "Ananya Sharma",
-      tagline: "Certified Senior Fitness & Tech Instructor",
-      category: "AI & Technology",
-      specialization: "Full Stack Web UI Design",
-      experience: "4",
-      location: "Mumbai, India",
-      deliveryMode: "Online & In-Person",
-      rate: "1200",
-      bio: "Welcome to my trainer dashboard!",
-      whatsapp: "9876543210",
-      linkedin: "linkedin.com/in/example",
-      website: "exampletrainer.com",
-      profileImageUrl: "",
-      bannerImageUrl: "",
-      tags: ["UI/UX", "Frontend"]
-    };
-    localStorage.setItem("currentTrainer", JSON.stringify(currentTrainerData));
+    currentTrainerData = { trainerId: userId };
   }
 
   // Populate form inputs immediately on layout load
   populateDashboardInputs(currentTrainerData);
 
   // Fetch fresh data from MongoDB Backend
-  const userId = getLoggedInUserId();
   if (!userId) {
     console.warn('[Dashboard] No logged-in user found. Showing local data only.');
     return;

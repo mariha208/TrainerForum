@@ -415,6 +415,7 @@ async function completeRegistration() {
       };
       
       localStorage.setItem("currentTrainer", JSON.stringify(sessionUser));
+      localStorage.setItem("userSession", JSON.stringify(sessionUser));  // auth token for navbar & auth guard
       localStorage.setItem("authToken", data.token);
 
       // ── Persist trainer data to fallback keys so card survives logout ──────
@@ -488,6 +489,7 @@ window.handleLogin = async function (role) {
       };
       
       localStorage.setItem("currentTrainer", JSON.stringify(sessionUser));
+      localStorage.setItem("userSession", JSON.stringify(sessionUser));  // auth token for navbar & auth guard
       localStorage.setItem("authToken", data.token);
 
       // ── Persist trainer data to fallback keys so card survives logout ──────
