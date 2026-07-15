@@ -7,25 +7,23 @@
 
 :root {
   /* ── Brand Colors ── */
-  --primary: #0B1B32;
-  --secondary: #2455C9;
-  --accent: #C5A059;
+  --navy: #0B1B32;
+  --navy-2: #122644;
+  --royal: #2455C9;
+  --royal-2: #3A6BE0;
+  --gold: #C9A24B;
+  --gold-light: #E7C878;
+  --ivory: #FAF6EC;
+  --ivory-dim: #F0EADA;
+  --ink: #101826;
+  
+  --line: rgba(255, 255, 255, 0.10);
+  --line-dark: rgba(11, 27, 50, 0.10);
+  
   --support: #E5E8EB;
 
-  /* ── Accent Shades ── */
-  --gold: #C5A059;
-  --gold-lt: #D4B87A;
-  --gold-dk: #A8863D;
-  --gold-pale: rgba(197, 160, 89, 0.12);
-
-  --teal: #2455C9;
-  --teal-lt: #3A6BE0;
-  --teal-dk: #122644;
-
   /* ── Backgrounds ── */
-  --bg-main: linear-gradient(158deg, #0B1B32 0%, #122644 60%, #2455C9 100%);
-  --bg-section: #0B1B32;
-  --bg-alt: #101826;
+  --bg-main: linear-gradient(158deg, var(--navy) 0%, var(--navy-2) 60%, var(--royal) 100%);
   --bg-card: rgba(255, 255, 255, 0.07);
   --bg-card-h: rgba(255, 255, 255, 0.12);
   --bg-glass: rgba(255, 255, 255, 0.08);
@@ -35,8 +33,8 @@
   --tp: rgba(237, 242, 247, 1);
   --ts: rgba(237, 242, 247, 0.75);
   --tm: rgba(237, 242, 247, 0.5);
-  --bd: rgba(255, 255, 255, 0.12);
-  --bd2: rgba(255, 255, 255, 0.06);
+  --bd: var(--line);
+  --bd2: var(--line-dark);
 
   /* ── Status ── */
   --ok: #4ADE80;
@@ -52,7 +50,7 @@
   --shm: 0 8px 40px rgba(0, 0, 0, 0.4);
   --shl: 0 20px 80px rgba(0, 0, 0, 0.5);
   --glow-gold: 0 0 30px rgba(197, 160, 89, 0.25);
-  --glow-teal: 0 0 30px rgba(0, 139, 139, 0.3);
+  --glow-royal: 0 0 30px rgba(36, 85, 201, 0.3);
   --nav: 70px;
 }
 
@@ -1833,7 +1831,7 @@ section {
   left: 0;
   width: 28px;
   height: 2px;
-  background: linear-gradient(90deg, var(--gold), var(--teal));
+  background: linear-gradient(90deg, var(--gold), var(--royal));
   border-radius: 2px;
   transition: width .35s ease;
 }
@@ -2761,7 +2759,7 @@ section {
 
 .cal-day.today {
   background: rgba(0, 139, 139, 0.2);
-  color: var(--teal-lt);
+  color: var(--royal-2);
   font-weight: 600
 }
 

@@ -8,9 +8,9 @@
 /* ── CSS Variables — LIGHT MODE (default, matches Option 3) ── */
 :root {
   /* Brand Palette */
-  --teal:        #2455C9;
-  --teal-dk:     #122644;
-  --teal-lt:     #3A6BE0;
+  --royal:        #2455C9;
+  --navy-2:     #122644;
+  --royal-2:     #3A6BE0;
   --gold:        #C5A059;
   --gold-lt:     #D4B87A;
   --gold-dk:     #A8863D;
@@ -113,7 +113,7 @@ html.dark-mode .theme-toggle {
 
 html.dark-mode .nav-icon-btn:hover,
 html.dark-mode .theme-toggle:hover {
-  border-color: var(--teal);
+  border-color: var(--royal);
 }
 
 html.dark-mode .nav-profile-btn {
@@ -121,7 +121,7 @@ html.dark-mode .nav-profile-btn {
   border-color: var(--border);
 }
 
-html.dark-mode .nav-profile-btn:hover { border-color: var(--teal); }
+html.dark-mode .nav-profile-btn:hover { border-color: var(--royal); }
 
 html.dark-mode .nav-search {
   background: var(--bg3);
@@ -151,7 +151,7 @@ html.dark-mode .form-control {
 }
 
 html.dark-mode .form-control:focus {
-  border-color: var(--teal);
+  border-color: var(--royal);
   box-shadow: 0 0 0 3px rgba(0, 139, 139, 0.15);
 }
 
@@ -165,7 +165,7 @@ html.dark-mode .btn-dark {
 
 html.dark-mode .btn-dark:hover {
   background: var(--bg4);
-  border-color: var(--teal);
+  border-color: var(--royal);
 }
 
 html.dark-mode .pill-gray {
@@ -179,7 +179,7 @@ html.dark-mode .pkg-dash-card {
   border-color: var(--border);
 }
 
-html.dark-mode .pkg-dash-card:hover { border-color: var(--teal); }
+html.dark-mode .pkg-dash-card:hover { border-color: var(--royal); }
 
 html.dark-mode .setting-row { border-color: var(--border); }
 
@@ -257,7 +257,7 @@ input, select, textarea { font-family: inherit; }
   font-weight: 700; font-size: .95rem;
   color: var(--tp);
 }
-.db-topnav .logo-txt span { color: var(--teal); }
+.db-topnav .logo-txt span { color: var(--royal); }
 .db-topnav .nav-center {
   flex: 1;
   display: flex;
@@ -444,14 +444,14 @@ input, select, textarea { font-family: inherit; }
 }
 .sidebar-nav-item.active {
   background: rgba(0,139,139,0.12);
-  color: var(--teal);
+  color: var(--royal);
   font-weight: 600;
 }
 .sidebar-nav-item.active::before {
   content: '';
   position: absolute; left: 0; top: 6px; bottom: 6px;
   width: 3px;
-  background: var(--teal);
+  background: var(--royal);
   border-radius: 0 3px 3px 0;
 }
 .sidebar-nav-item .nav-ico {
@@ -583,7 +583,7 @@ input, select, textarea { font-family: inherit; }
 
 /* Teal top bar on KPI cards — matches website card accent style */
 .kpi-card::before {
-  background: linear-gradient(90deg, var(--teal), var(--teal-lt));
+  background: linear-gradient(90deg, var(--royal), var(--royal-2));
 }
 
 .kpi-card.gold { border-color: rgba(201,168,76,.2); background: var(--gold-bg); }
@@ -656,7 +656,7 @@ input, select, textarea { font-family: inherit; }
 .btn-success:hover { background: rgba(39,174,96,.2); }
 /* Teal primary button — matches website's .btn-primary */
 .btn-teal {
-  background: var(--teal);
+  background: var(--royal);
   color: #fff;
   border: none;
 }
@@ -690,7 +690,7 @@ input, select, textarea { font-family: inherit; }
   transition: var(--trans);
 }
 .form-control:focus {
-  border-color: var(--teal);
+  border-color: var(--royal);
   box-shadow: 0 0 0 3px rgba(0,139,139,0.12);
 }
 .form-control::placeholder { color: var(--tm); }

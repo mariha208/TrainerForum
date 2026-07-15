@@ -10,10 +10,10 @@
 ═══════════════════════════════════════════════════════════════════════════ */
 :root {
   /* ── Core Brand Colors (Option 3 — Light Mode) ── */
-  --primary-navy:   #0B1B32;
-  --accent-teal:    #2455C9;
-  --teal-dk:        #122644;
-  --teal-lt:        #3A6BE0;
+  --navy:   #0B1B32;
+  --royal:    #2455C9;
+  --navy-2:        #122644;
+  --royal-2:        #3A6BE0;
   --premium-gold:   #C5A059;
   --gold-lt:        #D4B87A;
   --gold-dk:        #A8863D;
@@ -122,7 +122,7 @@ img {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--accent-teal);
+  background: var(--royal);
   border-radius: 4px;
 }
 
@@ -199,13 +199,13 @@ p {
   font-size: 1.4rem;
   font-weight: 700;
   font-family: var(--font-serif);
-  color: var(--primary-navy);
+  color: var(--navy);
 }
 
 .navbar-brand-icon {
   width: 40px;
   height: 40px;
-  background: linear-gradient(135deg, var(--accent-teal), var(--premium-gold));
+  background: linear-gradient(135deg, var(--royal), var(--premium-gold));
   border-radius: var(--radius-md);
   display: flex;
   align-items: center;
@@ -232,7 +232,7 @@ p {
 }
 
 .navbar-links a:hover {
-  color: var(--accent-teal);
+  color: var(--royal);
   background: rgba(0, 139, 139, 0.1);
 }
 
@@ -257,8 +257,8 @@ p {
 }
 
 .theme-toggle:hover {
-  border-color: var(--accent-teal);
-  color: var(--accent-teal);
+  border-color: var(--royal);
+  color: var(--royal);
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -281,12 +281,12 @@ p {
 }
 
 .btn-primary {
-  background: var(--accent-teal);
+  background: var(--royal);
   color: white;
 }
 
 .btn-primary:hover {
-  background: var(--accent-teal);
+  background: var(--royal);
   filter: brightness(1.1);
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
@@ -294,7 +294,7 @@ p {
 
 .btn-secondary {
   background: var(--premium-gold);
-  color: var(--primary-navy);
+  color: var(--navy);
   font-weight: 700;
 }
 
@@ -307,12 +307,12 @@ p {
 
 .btn-outline {
   background: transparent;
-  border: 2px solid var(--accent-teal);
-  color: var(--accent-teal);
+  border: 2px solid var(--royal);
+  color: var(--royal);
 }
 
 .btn-outline:hover {
-  background: var(--accent-teal);
+  background: var(--royal);
   color: white;
 }
 
@@ -324,8 +324,8 @@ p {
 
 .btn-ghost:hover {
   background: var(--light-bg);
-  color: var(--accent-teal);
-  border-color: var(--accent-teal);
+  color: var(--royal);
+  border-color: var(--royal);
 }
 
 .btn-sm {
@@ -385,13 +385,13 @@ p {
 }
 
 .hero h1 {
-  color: var(--primary-navy);
+  color: var(--navy);
   margin-bottom: var(--spacing-md);
 }
 
 .hero h1 .highlight {
-  color: var(--accent-teal);
-  background: linear-gradient(135deg, var(--accent-teal), var(--premium-gold));
+  color: var(--royal);
+  background: linear-gradient(135deg, var(--royal), var(--premium-gold));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -425,7 +425,7 @@ p {
 }
 
 .hero-search:focus-within {
-  border-color: var(--accent-teal);
+  border-color: var(--royal);
   box-shadow: var(--shadow-lg);
 }
 
@@ -467,7 +467,7 @@ p {
 .stat-number {
   font-size: 2.5rem;
   font-weight: 800;
-  color: var(--accent-teal);
+  color: var(--royal);
   font-family: var(--font-serif);
 }
 
@@ -496,12 +496,12 @@ section {
   font-weight: 700;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: var(--accent-teal);
+  color: var(--royal);
   margin-bottom: var(--spacing-md);
 }
 
 .section-title {
-  color: var(--primary-navy);
+  color: var(--navy);
   margin-bottom: var(--spacing-md);
 }
 
@@ -525,7 +525,7 @@ section {
 }
 
 .card:hover {
-  border-color: var(--accent-teal);
+  border-color: var(--royal);
   box-shadow: var(--shadow-md);
   transform: translateY(-4px);
 }
@@ -564,7 +564,7 @@ section {
 
 .category-name {
   font-weight: 600;
-  color: var(--primary-navy);
+  color: var(--navy);
   font-size: 0.95rem;
 }
 
@@ -590,7 +590,7 @@ section {
 }
 
 .trainer-card:hover {
-  border-color: var(--accent-teal);
+  border-color: var(--royal);
   box-shadow: var(--shadow-lg);
   transform: translateY(-8px);
 }
@@ -598,7 +598,7 @@ section {
 .trainer-banner {
   width: 100%;
   height: 140px;
-  background: linear-gradient(135deg, var(--accent-teal) 0%, var(--premium-gold) 100%);
+  background: linear-gradient(135deg, var(--royal) 0%, var(--premium-gold) 100%);
   position: relative;
 }
 
@@ -632,13 +632,13 @@ section {
 .trainer-name {
   font-size: 1.2rem;
   font-weight: 700;
-  color: var(--primary-navy);
+  color: var(--navy);
   margin-bottom: var(--spacing-xs);
 }
 
 .trainer-title {
   font-size: 0.9rem;
-  color: var(--accent-teal);
+  color: var(--royal);
   font-weight: 600;
   margin-bottom: var(--spacing-md);
 }
@@ -653,7 +653,7 @@ section {
 
 .trainer-tag {
   background: rgba(0, 139, 139, 0.1);
-  color: var(--accent-teal);
+  color: var(--royal);
   padding: 4px 12px;
   border-radius: var(--radius-full);
   font-size: 0.75rem;
@@ -676,7 +676,7 @@ section {
 .trainer-price {
   font-size: 1.3rem;
   font-weight: 700;
-  color: var(--primary-navy);
+  color: var(--navy);
   margin-bottom: var(--spacing-lg);
 }
 
@@ -745,7 +745,7 @@ section {
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--accent-teal), var(--premium-gold));
+  background: linear-gradient(135deg, var(--royal), var(--premium-gold));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -755,7 +755,7 @@ section {
 }
 
 .testimonial-info h4 {
-  color: var(--primary-navy);
+  color: var(--navy);
   font-size: 0.95rem;
   margin-bottom: var(--spacing-xs);
 }
@@ -798,7 +798,7 @@ section {
   top: -12px;
   left: 20px;
   background: var(--premium-gold);
-  color: var(--primary-navy);
+  color: var(--navy);
   padding: 4px 16px;
   border-radius: var(--radius-full);
   font-size: 0.75rem;
@@ -807,14 +807,14 @@ section {
 
 .pricing-name {
   font-size: 1.3rem;
-  color: var(--primary-navy);
+  color: var(--navy);
   margin-bottom: var(--spacing-md);
   font-weight: 700;
 }
 
 .pricing-price {
   font-size: 2.5rem;
-  color: var(--accent-teal);
+  color: var(--royal);
   font-weight: 800;
   margin-bottom: var(--spacing-xs);
   font-family: var(--font-serif);
@@ -852,7 +852,7 @@ section {
 }
 
 .pricing-feature-check {
-  color: var(--accent-teal);
+  color: var(--royal);
   font-weight: 700;
   font-size: 1.2rem;
 }
@@ -865,7 +865,7 @@ section {
    CTA SECTION
 ═══════════════════════════════════════════════════════════════════════════ */
 .cta-section {
-  background: linear-gradient(135deg, var(--primary-navy) 0%, rgba(10, 37, 81, 0.8) 100%);
+  background: linear-gradient(135deg, var(--navy) 0%, rgba(10, 37, 81, 0.8) 100%);
   color: white;
   text-align: center;
   padding: var(--spacing-3xl) var(--spacing-2xl);
@@ -935,7 +935,7 @@ footer {
 }
 
 .footer-section h3 {
-  color: var(--primary-navy);
+  color: var(--navy);
   margin-bottom: var(--spacing-md);
   font-size: 1.05rem;
 }
@@ -955,7 +955,7 @@ footer {
 }
 
 .footer-section a:hover {
-  color: var(--accent-teal);
+  color: var(--royal);
 }
 
 .footer-bottom {
@@ -1107,7 +1107,7 @@ footer {
 }
 
 [data-theme="dark"] .navbar-links a:hover {
-  color: var(--accent-teal);
+  color: var(--royal);
   background: rgba(0, 139, 139, 0.12);
 }
 
@@ -1118,8 +1118,8 @@ footer {
 }
 
 [data-theme="dark"] .theme-toggle:hover {
-  border-color: var(--accent-teal);
-  color: var(--accent-teal);
+  border-color: var(--royal);
+  color: var(--royal);
 }
 
 /* Dark Hero */
@@ -1183,7 +1183,7 @@ footer {
 
 [data-theme="dark"] .trainer-price,
 [data-theme="dark"] .pricing-price {
-  color: var(--accent-teal);
+  color: var(--royal);
 }
 
 /* Dark Stats / Badge */
@@ -1216,8 +1216,8 @@ footer {
 
 [data-theme="dark"] .btn-ghost:hover {
   background: rgba(0, 139, 139, 0.14);
-  border-color: var(--accent-teal);
-  color: var(--accent-teal);
+  border-color: var(--royal);
+  color: var(--royal);
 }
 
 /* Dark Pricing */
@@ -1253,7 +1253,7 @@ footer {
 }
 
 [data-theme="dark"] .footer-section a:hover {
-  color: var(--accent-teal);
+  color: var(--royal);
 }
 
 [data-theme="dark"] .footer-bottom {
@@ -1271,5 +1271,5 @@ footer {
 }
 
 [data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
-  background: var(--accent-teal);
+  background: var(--royal);
 }

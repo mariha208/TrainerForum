@@ -207,7 +207,7 @@ html.dark-mode body {
 }
 
 /* ── ABOUT PAGE BUTTONS ── */
-.btn--primary {
+.btn--navy {
   display: inline-flex;
   align-items: center;
   gap: .55rem;
@@ -226,7 +226,7 @@ html.dark-mode body {
   white-space: nowrap;
 }
 
-.btn--primary:hover {
+.btn--navy:hover {
   transform: translateY(-3px);
   box-shadow: 0 8px 30px rgba(0, 139, 139, .5);
 }
