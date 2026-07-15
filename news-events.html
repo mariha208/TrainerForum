@@ -1,507 +1,799 @@
 <!DOCTYPE html>
-<html lang="en" class="dark-mode">
+<html lang="en">
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-  <title>Under Construction | World Trainer Forum</title>
-  <meta name="description" content="This page is currently under construction. World Trainer Forum — Find & Book World-Class Trainers.">
-  <meta name="robots" content="noindex, nofollow">
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/auth-modal.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>News & Events | World Trainer Forum</title>
+  <meta name="description"
+    content="Upcoming workshops, webinars, and community meetups from World Trainer Forum, plus the latest platform news and announcements.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
   <style>
-    /* ── Under Construction Page ── */
-    .uc-wrap {
-      min-height: calc(100vh - 70px - 220px);
+    :root {
+      --navy: #0B1B32;
+      --navy-2: #122644;
+      --royal: #2455C9;
+      --royal-2: #3A6BE0;
+      --gold: #C9A24B;
+      --gold-light: #E7C878;
+      --ivory: #FAF6EC;
+      --ivory-dim: #F0EADA;
+      --ink: #101826;
+      --line: rgba(255, 255, 255, 0.10);
+      --line-dark: rgba(11, 27, 50, 0.10);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Manrope', sans-serif;
+      background: var(--ivory);
+      color: var(--ink);
+      overflow-x: hidden;
+    }
+
+    h1,
+    h2,
+    h3,
+    .serif {
+      font-family: 'Fraunces', serif;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(11, 27, 50, 0.92);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .nav-wrap {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 18px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      font-family: 'Fraunces', serif;
+      font-weight: 600;
+      font-size: 1.35rem;
+      color: var(--ivory);
+    }
+
+    .logo span {
+      color: var(--gold);
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 34px;
+    }
+
+    nav a {
+      color: rgba(250, 246, 236, 0.72);
+      font-size: 0.92rem;
+      font-weight: 600;
+      transition: color .25s ease;
+    }
+
+    nav a:hover {
+      color: var(--ivory);
+    }
+
+    nav a.active {
+      color: var(--gold-light);
+    }
+
+    .nav-cta {
+      background: var(--gold);
+      color: var(--navy);
+      padding: 10px 22px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 0.88rem;
+      transition: transform .25s ease, box-shadow .25s ease;
+    }
+
+    .nav-cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 24px rgba(201, 162, 75, 0.35);
+    }
+
+    .menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--ivory);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    .hero {
+      position: relative;
+      background: radial-gradient(ellipse at top left, var(--navy-2), var(--navy) 65%);
+      padding: 100px 32px 90px;
+      color: var(--ivory);
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: linear-gradient(rgba(201, 162, 75, 0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(201, 162, 75, 0.06) 1px, transparent 1px);
+      background-size: 64px 64px;
+      mask-image: radial-gradient(ellipse at center, black, transparent 75%);
+    }
+
+    .hero-inner {
+      max-width: 1240px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.78rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--gold-light);
+      font-weight: 700;
+      margin-bottom: 22px;
+      border: 1px solid rgba(201, 162, 75, 0.35);
+      padding: 8px 18px;
+      border-radius: 999px;
+      opacity: 0;
+      animation: riseIn .8s ease forwards;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--gold-light);
+    }
+
+    .hero h1 {
+      font-size: clamp(2.3rem, 5vw, 3.6rem);
+      font-weight: 600;
+      line-height: 1.1;
+      max-width: 760px;
+      margin: 0 0 20px;
+      opacity: 0;
+      animation: riseIn .8s ease .12s forwards;
+    }
+
+    .hero h1 em {
+      font-style: italic;
+      color: var(--gold-light);
+    }
+
+    .hero p {
+      max-width: 560px;
+      font-size: 1.08rem;
+      line-height: 1.7;
+      color: rgba(250, 246, 236, 0.75);
+      opacity: 0;
+      animation: riseIn .8s ease .22s forwards;
+    }
+
+    @keyframes riseIn {
+      from {
+        opacity: 0;
+        transform: translateY(18px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ---------- EVENTS STRIP (torn calendar) ---------- */
+    .events-section {
+      max-width: 1240px;
+      margin: -52px auto 0;
+      padding: 0 32px 100px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .events-scroll {
+      display: flex;
+      gap: 22px;
+      overflow-x: auto;
+      padding-bottom: 14px;
+      scroll-snap-type: x mandatory;
+    }
+
+    .events-scroll::-webkit-scrollbar {
+      height: 6px;
+    }
+
+    .events-scroll::-webkit-scrollbar-thumb {
+      background: var(--line-dark);
+      border-radius: 3px;
+    }
+
+    .event-card {
+      flex: 0 0 320px;
+      scroll-snap-align: start;
+      background: #fff;
+      border-radius: 18px;
+      box-shadow: 0 20px 50px rgba(11, 27, 50, 0.14);
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity .6s ease, transform .6s ease;
+    }
+
+    .event-card.in-view {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .event-top {
+      display: flex;
+    }
+
+    .date-block {
+      width: 88px;
+      flex: none;
+      background: var(--navy);
+      color: var(--ivory);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      text-align: center;
-      padding: calc(var(--nav) + 60px) 5% 60px;
       position: relative;
-      overflow: hidden;
     }
 
-    /* Background orbs */
-    .uc-wrap::before {
-      content: '';
-      position: absolute; inset: 0;
-      background:
-        radial-gradient(ellipse at 25% 30%, rgba(0,139,139,0.35) 0%, transparent 55%),
-        radial-gradient(ellipse at 80% 70%, rgba(197,160,89,0.15) 0%, transparent 50%);
-      pointer-events: none;
-    }
-    .uc-grid {
-      position: absolute; inset: 0;
-      background-image:
-        linear-gradient(rgba(197,160,89,0.05) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(197,160,89,0.05) 1px, transparent 1px);
-      background-size: 52px 52px;
-      pointer-events: none;
+    .date-block .day {
+      font-family: 'Fraunces', serif;
+      font-size: 2rem;
+      font-weight: 600;
+      line-height: 1;
     }
 
-    /* Floating orbs */
-    .uc-orb1 {
-      position: absolute; border-radius: 50%; filter: blur(80px); pointer-events: none;
-      width: 420px; height: 420px;
-      background: rgba(0,139,139,0.22);
-      top: -100px; right: -60px;
-      animation: orbFloat 9s ease-in-out infinite;
-    }
-    .uc-orb2 {
-      position: absolute; border-radius: 50%; filter: blur(80px); pointer-events: none;
-      width: 320px; height: 320px;
-      background: rgba(197,160,89,0.1);
-      bottom: -60px; left: -60px;
-      animation: orbFloat 12s ease-in-out infinite reverse;
-    }
-    @keyframes orbFloat {
-      0%,100% { transform: translateY(0) scale(1); }
-      50%      { transform: translateY(-30px) scale(1.05); }
+    .date-block .mon {
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--gold-light);
+      margin-top: 6px;
     }
 
-    /* Main content */
-    .uc-inner {
-      position: relative; z-index: 1;
-      display: flex; flex-direction: column;
-      align-items: center; gap: 2rem;
+    .date-block::after {
+      content: "";
+      position: absolute;
+      right: -10px;
+      top: 0;
+      bottom: 0;
+      width: 20px;
+      background-image: radial-gradient(circle 5px, var(--ivory) 5px, transparent 6px);
+      background-size: 20px 20px;
+      background-repeat: repeat-y;
+      background-position: center;
+    }
+
+    .event-body {
+      padding: 22px 22px 22px 30px;
+      flex: 1;
+    }
+
+    .event-tag {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--royal);
+      background: rgba(36, 85, 201, 0.08);
+      padding: 4px 10px;
+      border-radius: 6px;
+      margin-bottom: 10px;
+    }
+
+    .event-tag.live {
+      color: #B8442B;
+      background: rgba(184, 68, 43, 0.09);
+    }
+
+    .event-body h3 {
+      font-family: 'Fraunces', serif;
+      font-size: 1.15rem;
+      font-weight: 600;
+      line-height: 1.3;
+      color: var(--navy);
+      margin-bottom: 8px;
+    }
+
+    .event-meta {
+      font-size: 0.82rem;
+      color: #7A8296;
+      margin-bottom: 14px;
+    }
+
+    .event-body a {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--royal);
+    }
+
+    .event-body a::after {
+      content: " →";
+    }
+
+    /* ---------- NEWS GRID ---------- */
+    .news-section {
+      padding: 40px 32px 120px;
+      max-width: 1240px;
+      margin: 0 auto;
+    }
+
+    .section-head {
       max-width: 680px;
+      margin-bottom: 56px;
     }
 
-    /* Badge */
-    .uc-badge {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: rgba(197,160,89,0.12);
-      border: 1px solid rgba(197,160,89,0.35);
-      border-radius: 999px; padding: 8px 22px;
-      color: var(--gold); font-size: .8rem; font-weight: 600;
-      letter-spacing: .08em; text-transform: uppercase;
-      backdrop-filter: blur(10px);
-      animation: fadeUp .5s ease both;
-    }
-    .uc-badge-dot {
-      width: 8px; height: 8px;
-      background: var(--gold); border-radius: 50%;
-      animation: pulse 2s infinite;
-    }
-    @keyframes pulse {
-      0%,100% { opacity: 1; transform: scale(1); box-shadow: 0 0 0 0 rgba(197,160,89,.5); }
-      50%      { opacity: .7; transform: scale(1.25); box-shadow: 0 0 0 6px rgba(197,160,89,0); }
+    .section-head .kicker {
+      color: var(--royal);
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      font-size: 0.8rem;
+      margin-bottom: 14px;
+      display: block;
     }
 
-    /* GIF frame */
-    .uc-gif-frame {
-      position: relative;
-      border-radius: 20px;
-      overflow: hidden;
-      border: 2px solid rgba(197,160,89,0.25);
-      box-shadow: 0 24px 80px rgba(0,0,0,.45), 0 0 40px rgba(197,160,89,.12);
-      animation: fadeUp .6s .1s ease both;
-      background: rgba(10,37,81,0.5);
-      max-width: 480px; width: 100%;
-    }
-    .uc-gif-frame img {
-      display: block; width: 100%; height: auto;
-      border-radius: 18px;
+    .section-head h2 {
+      font-size: clamp(1.9rem, 3.4vw, 2.5rem);
+      font-weight: 600;
+      line-height: 1.2;
+      color: var(--navy);
     }
 
-    /* Heading */
-    .uc-inner h1 {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(2.2rem, 5vw, 3.8rem);
-      font-weight: 700; color: var(--tp);
-      line-height: 1.1; letter-spacing: -.02em;
-      animation: fadeUp .6s .15s ease both;
-    }
-    .uc-inner h1 .gld { color: var(--gold); }
-
-    .uc-inner p {
-      font-size: clamp(.9rem, 1.5vw, 1.05rem);
-      color: var(--ts); font-weight: 300;
-      line-height: 1.85; max-width: 520px;
-      animation: fadeUp .6s .22s ease both;
+    .filter-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 44px;
     }
 
-    /* Progress bar */
-    .uc-progress-wrap {
-      width: 100%; max-width: 400px;
-      animation: fadeUp .6s .28s ease both;
-    }
-    .uc-progress-label {
-      display: flex; justify-content: space-between;
-      font-size: .72rem; color: var(--tm); margin-bottom: 8px;
-      text-transform: uppercase; letter-spacing: .1em;
-    }
-    .uc-progress-bar {
-      height: 6px; border-radius: 999px;
-      background: rgba(255,255,255,.1);
-      overflow: hidden;
-    }
-    .uc-progress-fill {
-      height: 100%; width: 68%;
-      background: linear-gradient(90deg, var(--teal, #008B8B), var(--gold, #C5A059));
+    .filter-btn {
+      border: 1px solid var(--line-dark);
+      background: #fff;
+      color: #4A5468;
+      padding: 9px 20px;
       border-radius: 999px;
-      animation: loadBar 2.5s ease both;
-      box-shadow: 0 0 12px rgba(197,160,89,.4);
-    }
-    @keyframes loadBar {
-      from { width: 0%; }
-      to   { width: 68%; }
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all .25s ease;
     }
 
-    /* Buttons */
-    .uc-btns {
-      display: flex; gap: 12px; flex-wrap: wrap;
-      justify-content: center;
-      animation: fadeUp .6s .35s ease both;
+    .filter-btn.active,
+    .filter-btn:hover {
+      background: var(--navy);
+      color: var(--ivory);
+      border-color: var(--navy);
     }
 
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to   { opacity: 1; transform: translateY(0); }
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 30px;
     }
 
-    /* Footer overrides */
-    footer { margin-top: auto; }
+    .news-card {
+      background: #fff;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1px solid var(--line-dark);
+      transition: transform .3s ease, box-shadow .3s ease;
+      opacity: 0;
+      transform: translateY(24px);
+    }
+
+    .news-card.in-view {
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity .6s ease, transform .6s ease;
+    }
+
+    .news-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 24px 50px rgba(11, 27, 50, 0.12);
+    }
+
+    .news-thumb {
+      height: 170px;
+      background: linear-gradient(135deg, var(--royal), var(--navy));
+      position: relative;
+      overflow: hidden;
+    }
+
+    .news-thumb svg {
+      position: absolute;
+      opacity: 0.5;
+    }
+
+    .news-content {
+      padding: 24px;
+    }
+
+    .news-cat {
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .news-content h3 {
+      font-family: 'Fraunces', serif;
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--navy);
+      line-height: 1.35;
+      margin-bottom: 10px;
+    }
+
+    .news-content p {
+      font-size: 0.9rem;
+      color: #4A5468;
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+
+    .news-foot {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.78rem;
+      color: #8A93A8;
+      border-top: 1px solid var(--line-dark);
+      padding-top: 14px;
+    }
+
+    /* ---------- NEWSLETTER ---------- */
+    .newsletter {
+      background: var(--navy);
+      color: var(--ivory);
+      padding: 100px 32px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .newsletter::before {
+      content: "";
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(201, 162, 75, 0.15), transparent 70%);
+      top: -320px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .newsletter h2 {
+      position: relative;
+      font-size: clamp(1.8rem, 3.4vw, 2.4rem);
+      font-weight: 600;
+      margin-bottom: 14px;
+    }
+
+    .newsletter p {
+      position: relative;
+      color: rgba(250, 246, 236, 0.7);
+      margin-bottom: 32px;
+    }
+
+    .sub-form {
+      position: relative;
+      display: flex;
+      max-width: 440px;
+      margin: 0 auto;
+      gap: 10px;
+    }
+
+    .sub-form input {
+      flex: 1;
+      padding: 14px 18px;
+      border-radius: 999px;
+      border: 1px solid rgba(250, 246, 236, 0.25);
+      background: rgba(250, 246, 236, 0.06);
+      color: var(--ivory);
+      font-family: 'Manrope', sans-serif;
+    }
+
+    .sub-form input::placeholder {
+      color: rgba(250, 246, 236, 0.5);
+    }
+
+    .sub-form button {
+      background: var(--gold);
+      color: var(--navy);
+      border: none;
+      padding: 14px 26px;
+      border-radius: 999px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform .25s ease;
+    }
+
+    .sub-form button:hover {
+      transform: translateY(-2px);
+    }
+
+    footer {
+      background: var(--navy-2);
+      color: rgba(250, 246, 236, 0.5);
+      text-align: center;
+      padding: 34px;
+      font-size: 0.85rem;
+      border-top: 1px solid var(--line);
+    }
+
+    @media(max-width:900px) {
+      nav ul {
+        display: none;
+      }
+
+      .menu-btn {
+        display: block;
+      }
+
+      .news-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .sub-form {
+        flex-direction: column;
+      }
+
+      .events-section {
+        margin-top: 20px;
+      }
+    }
   </style>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body>
 
-  <!-- ═══ NAVBAR (identical to all pages) ═══ -->
-  <nav id="nav">
-    <a class="logo" href="index.html">
-      <img src="img/logo.svg" alt="World Trainer Forum Logo" style="height:42px; margin-right:10px;">
-      World Trainer <span class="g">Forum</span>
-    </a>
-    <ul class="nav-links">
-      <li><a id="nl-home" href="index.html">Home</a></li>
-      <li><a id="nl-about" href="about.html">About</a></li>
-      <li><a id="nl-browse" href="find-trainers.html">Find Trainers</a></li>
-      <li><a id="nl-cats" href="certificates.html">Certificates</a></li>
-      <li><a id="nl-pricing" href="news-events.html">News & Events</a></li>
-      <li><a id="nl-blog" href="under-construction.html" class="active">Blog</a></li>
-      <li><a id="nl-dash" href="dashboard.html" target="_blank" style="display:none;">Dashboard</a></li>
-    </ul>
-    <div class="nav-r">
-      <button class="notif-btn" id="notif-btn" onclick="toggleNotif()">🔔<span class="notif-dot"></span></button>
-      <button class="btn btn-ghost btn-sm" id="btn-signup" onclick="openModal('register')">Sign Up</button>
-      <button class="btn btn-gold btn-sm" id="btn-login" onclick="openModal('login')">Log In</button>
-      <button class="btn btn-dark btn-sm" id="btn-logout" onclick="handleLogout()" style="display:none;">Log Out</button>
-      <button class="ham-btn" id="ham-btn" onclick="toggleMobileMenu()" aria-label="Toggle Menu">
-        <span></span><span></span><span></span>
-      </button>
+  <header>
+    <div class="nav-wrap">
+      <a href="index.html" class="logo">World<span>Trainer</span>Forum</a>
+      <nav>
+        <ul>
+          <li><a href="about.html">About</a></li>
+          <li><a href="find-trainers.html">Find Trainers</a></li>
+          <li><a href="categories.html">Categories</a></li>
+          <li><a href="certificates.html">Certificates</a></li>
+          <li><a href="news-events.html" class="active">News &amp; Events</a></li>
+          <li><a href="blog.html">Blog</a></li>
+        </ul>
+      </nav>
+      <a href="contact.html" class="nav-cta">Join Free</a>
+      <button class="menu-btn">☰</button>
     </div>
-  </nav>
+  </header>
 
-  <!-- Mobile Nav Drawer -->
-  <div class="mobile-nav" id="mobile-nav">
-    <div style="display:flex; justify-content:flex-end; margin-bottom: 20px;">
-      <button onclick="toggleMobileMenu()" style="background:none; border:none; color:#fff; font-size:2rem; cursor:pointer;" aria-label="Close Menu">&times;</button>
+  <section class="hero">
+    <div class="hero-inner">
+      <span class="eyebrow">Community Calendar</span>
+      <h1>What's happening across <em>140+ disciplines</em>, this month.</h1>
+      <p>Live workshops, trainer meetups, and platform announcements — all in one place, updated weekly.</p>
     </div>
-    <a href="index.html">Home</a>
-    <a href="about.html">About</a>
-    <a href="find-trainers.html">Find Trainers</a>
-    <a href="certificates.html">Certificates</a>
-    <a href="news-events.html">News & Events</a>
-    <a href="under-construction.html">Blog</a>
-    <a href="dashboard.html" id="mn-dash" style="display:none; color:var(--gold);">Dashboard</a>
-    
-    <div class="mn-actions" style="margin-top:30px; display:flex; flex-direction:column; gap:12px;">
-      <button class="btn btn-ghost" id="mn-btn-signup" onclick="toggleMobileMenu(); openModal('register')">Sign Up</button>
-      <button class="btn btn-gold" id="mn-btn-login" onclick="toggleMobileMenu(); openModal('login')">Log In</button>
-      <button class="btn btn-dark" id="mn-btn-logout" onclick="handleLogout()" style="display:none;">Log Out</button>
+  </section>
+
+  <section class="events-section">
+    <div class="events-scroll">
+
+      <div class="event-card">
+        <div class="event-top">
+          <div class="date-block"><span class="day">22</span><span class="mon">Jul</span></div>
+          <div class="event-body">
+            <span class="event-tag live">Live Webinar</span>
+            <h3>Building a 6-Figure Coaching Roster</h3>
+            <div class="event-meta">6:00 PM EST · Online</div>
+            <a href="#">Reserve a seat</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="event-card">
+        <div class="event-top">
+          <div class="date-block"><span class="day">29</span><span class="mon">Jul</span></div>
+          <div class="event-body">
+            <span class="event-tag">Workshop</span>
+            <h3>Nutrition Coaching Certification Prep</h3>
+            <div class="event-meta">10:00 AM EST · Online</div>
+            <a href="#">Reserve a seat</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="event-card">
+        <div class="event-top">
+          <div class="date-block"><span class="day">03</span><span class="mon">Aug</span></div>
+          <div class="event-body">
+            <span class="event-tag">Meetup</span>
+            <h3>NYC Trainer Community Mixer</h3>
+            <div class="event-meta">7:00 PM EST · Brooklyn, NY</div>
+            <a href="#">RSVP</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="event-card">
+        <div class="event-top">
+          <div class="date-block"><span class="day">14</span><span class="mon">Aug</span></div>
+          <div class="event-body">
+            <span class="event-tag live">Live Panel</span>
+            <h3>Executive Coaching: Pricing Your Sessions</h3>
+            <div class="event-meta">1:00 PM EST · Online</div>
+            <a href="#">Reserve a seat</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="event-card">
+        <div class="event-top">
+          <div class="date-block"><span class="day">21</span><span class="mon">Aug</span></div>
+          <div class="event-body">
+            <span class="event-tag">Workshop</span>
+            <h3>Marketing Yourself as a Mentor</h3>
+            <div class="event-meta">11:00 AM EST · Online</div>
+            <a href="#">Reserve a seat</a>
+          </div>
+        </div>
+      </div>
+
     </div>
-  </div>
+  </section>
 
-  <!-- ═══ UNDER CONSTRUCTION CONTENT ═══ -->
-  <div class="uc-wrap">
-    <div class="uc-grid"></div>
-    <div class="uc-orb1"></div>
-    <div class="uc-orb2"></div>
-
-    <div class="uc-inner">
-      <!-- Badge -->
-      <div class="uc-badge">
-        <span class="uc-badge-dot"></span>
-        Work in Progress
-      </div>
-
-      <!-- GIF -->
-      <div class="uc-gif-frame">
-        <img
-          src="https://sismo.app/wp-content/uploads/2019/02/under-construction-gif-11.gif"
-          alt="Under Construction Animation"
-          loading="eager"
-          onerror="this.style.padding='40px';this.alt='🚧';this.style.fontSize='4rem';this.style.display='block';this.style.textAlign='center';"
-        >
-      </div>
-
-      <!-- Heading -->
-      <h1>This Page is <span class="gld">Under Construction</span></h1>
-
-      <!-- Description -->
-      <p>
-        We're working hard to build something amazing here. Our team is crafting this
-        page to deliver the best experience possible. Check back soon!
-      </p>
-
-      <!-- Progress bar -->
-      <div class="uc-progress-wrap">
-        <div class="uc-progress-label">
-          <span>Progress</span>
-          <span>68% Complete</span>
-        </div>
-        <div class="uc-progress-bar">
-          <div class="uc-progress-fill"></div>
-        </div>
-      </div>
-
-      <!-- Buttons -->
-      <div class="uc-btns">
-        <a href="index.html" class="btn btn-gold btn-lg">← Back to Home</a>
-        <a href="find-trainers.html" class="btn btn-ghost btn-lg">Find Trainers</a>
-      </div>
+  <section class="news-section">
+    <div class="section-head">
+      <span class="kicker">Platform News</span>
+      <h2>Announcements &amp; updates</h2>
     </div>
-  </div>
 
-  <!-- ═══ FOOTER (identical to all pages) ═══ -->
-  <footer id="site-footer">
+    <div class="filter-row">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="platform">Platform</button>
+      <button class="filter-btn" data-filter="community">Community</button>
+      <button class="filter-btn" data-filter="press">Press</button>
+    </div>
 
-      <!-- ── MAIN FOOTER BODY ── -->
-      <div class="footer-main">
+    <div class="news-grid">
 
-        <!-- ROW 1: Brand + 4 link columns + Newsletter -->
-        <div class="footer-top-grid">
-
-          <!-- SECTION 1: Brand + Trust -->
-          <div class="footer-brand-col">
-            <a class="footer-logo" href="index.html">
-              <img src="img/logo.svg" alt="World Trainer Forum Logo">
-              <span>World Trainer <span class="g">Forum</span></span>
-            </a>
-            <p class="footer-tagline">Connecting organizations with world-class trainers, coaches, mentors, and speakers worldwide.</p>
-
-            <!-- Trust Indicators -->
-            <ul class="footer-trust-list">
-              <li><i class="fa-solid fa-circle-check"></i> Verified Trainers</li>
-              <li><i class="fa-solid fa-globe"></i> Global Community</li>
-              <li><i class="fa-solid fa-lock"></i> Secure Payments</li>
-              <li><i class="fa-solid fa-building"></i> Corporate Solutions</li>
-              <li><i class="fa-solid fa-headset"></i> 24/7 Support</li>
-            </ul>
-
-            <!-- Stats Row -->
-            <div class="footer-stats">
-              <div class="footer-stat-card">
-                <i class="fa-solid fa-users"></i>
-                <span class="fsc-num">50K+</span>
-                <span class="fsc-lbl">Trainers</span>
-              </div>
-              <div class="footer-stat-card">
-                <i class="fa-solid fa-earth-asia"></i>
-                <span class="fsc-num">120+</span>
-                <span class="fsc-lbl">Countries</span>
-              </div>
-              <div class="footer-stat-card">
-                <i class="fa-solid fa-graduation-cap"></i>
-                <span class="fsc-num">1M+</span>
-                <span class="fsc-lbl">Learners</span>
-              </div>
-              <div class="footer-stat-card">
-                <i class="fa-solid fa-calendar-check"></i>
-                <span class="fsc-num">10K+</span>
-                <span class="fsc-lbl">Sessions</span>
-              </div>
-            </div>
-
-            <!-- Social Icons -->
-            <div class="footer-social">
-              <a href="#" class="fsoc-btn" aria-label="LinkedIn" title="LinkedIn">
-                <i class="fa-brands fa-linkedin-in"></i>
-              </a>
-              <a href="#" class="fsoc-btn" aria-label="Facebook" title="Facebook">
-                <i class="fa-brands fa-facebook-f"></i>
-              </a>
-              <a href="#" class="fsoc-btn" aria-label="Instagram" title="Instagram">
-                <i class="fa-brands fa-instagram"></i>
-              </a>
-              <a href="#" class="fsoc-btn" aria-label="YouTube" title="YouTube">
-                <i class="fa-brands fa-youtube"></i>
-              </a>
-              <a href="#" class="fsoc-btn" aria-label="X / Twitter" title="X / Twitter">
-                <i class="fa-brands fa-x-twitter"></i>
-              </a>
-            </div>
-          </div>
-
-                    <!-- SECTION 2: For Clients -->
-          <div class="footer-col">
-            <h4 class="footer-col-hd">For Clients</h4>
-            <ul class="footer-links">
-              <li><a href="find-trainers.html">Browse Trainers</a></li>
-              <li><a href="categories.html">All Categories</a></li>
-              <li><a href="corporate-training.html">Corporate Training</a></li>
-              <li><a href="gift-a-session.html">Gift a Session</a></li>
-              <li><a href="news-events.html">News & Events</a></li>
-              <li><a href="leadership-training.html">Leadership Training</a></li>
-              <li><a href="sales-training.html">Sales Training</a></li>
-              <li><a href="soft-skills-training.html">Soft Skills Training</a></li>
-              <li><a href="technology-training.html">Technology Training</a></li>
-              <li><a href="executive-coaching.html">Executive Coaching</a></li>
-              <li><a href="team-building.html">Team Building Programs</a></li>
-              <li><a href="request-custom-training.html">Request Custom Training</a></li>
-            </ul>
-          </div>
-
-          <!-- SECTION 3: For Trainers -->
-          <div class="footer-col">
-            <h4 class="footer-col-hd">For Trainers</h4>
-            <ul class="footer-links">
-              <li><a href="dashboard.html">List Your Profile</a></li>
-              <li><a href="trainer-resources.html">Trainer Resources</a></li>
-              <li><a href="community-forum.html">Community Forum</a></li>
-              <li><a href="success-stories.html">Success Stories</a></li>
-              <li><a href="verification-process.html">Verification Process</a></li>
-              <li><a href="dashboard.html">Trainer Dashboard</a></li>
-              <li><a href="become-verified.html">Become Verified</a></li>
-              <li><a href="trainer-academy.html">Trainer Academy</a></li>
-              <li><a href="learning-center.html">Learning Center</a></li>
-              <li><a href="certification-support.html">Certification Support</a></li>
-              <li><a href="events-workshops.html">Events &amp; Workshops</a></li>
-              <li><a href="earnings-program.html">Earnings Program</a></li>
-              <li><a href="partner-program.html">Partner Program</a></li>
-            </ul>
-          </div>
-
-          <!-- SECTION 5: Company -->
-          <div class="footer-col">
-            <h4 class="footer-col-hd">Company</h4>
-            <ul class="footer-links">
-              <li><a href="about.html">About Us</a></li>
-              <li><a href="blog.html">Blog</a></li>
-              <li><a href="press.html">Press</a></li>
-              <li><a href="careers.html">Careers</a></li>
-              <li><a href="privacy-policy.html">Privacy Policy</a></li>
-              <li><a href="contact.html">Contact Us</a></li>
-              <li><a href="terms-conditions.html">Terms &amp; Conditions</a></li>
-              <li><a href="faqs.html">FAQs</a></li>
-              <li><a href="help-center.html">Help Center</a></li>
-              <li><a href="affiliate-program.html">Affiliate Program</a></li>
-              <li><a href="partners.html">Partners</a></li>
-              <li><a href="media-kit.html">Media Kit</a></li>
-            </ul>
-          </div>
-
-
-          <!-- SECTION 6: Newsletter -->
-          <div class="footer-newsletter-col">
-            <div class="footer-newsletter-card">
-              <div class="fnl-icon"><i class="fa-solid fa-paper-plane"></i></div>
-              <h4 class="fnl-title">Stay Updated</h4>
-              <p class="fnl-sub">Get training insights, industry trends, and expert resources.</p>
-              <form class="fnl-form" onsubmit="return false;">
-                <div class="fnl-input-wrap">
-                  <i class="fa-regular fa-envelope fnl-input-ico"></i>
-                  <input type="email" class="fnl-input" placeholder="Your email address" aria-label="Email for newsletter">
-                  <button type="submit" class="fnl-btn">Subscribe</button>
-                </div>
-              </form>
-              <ul class="fnl-features">
-                <li><i class="fa-solid fa-circle-check"></i> Weekly insights</li>
-                <li><i class="fa-solid fa-circle-check"></i> Trainer resources</li>
-                <li><i class="fa-solid fa-circle-check"></i> Event updates</li>
-              </ul>
-            </div>
-          </div>
-
-        </div><!-- /footer-top-grid -->
-
-        <!-- SECTION 4: Popular Training Topics (Chips) -->
-        <div class="footer-topics">
-          <h4 class="footer-topics-hd">Popular Training Topics</h4>
-          <div class="footer-chips">
-            <a href="#" class="footer-chip">Leadership</a>
-            <a href="#" class="footer-chip">Communication Skills</a>
-            <a href="#" class="footer-chip">AI &amp; Technology</a>
-            <a href="#" class="footer-chip">Sales &amp; Marketing</a>
-            <a href="#" class="footer-chip">HR Training</a>
-            <a href="#" class="footer-chip">Public Speaking</a>
-            <a href="#" class="footer-chip">Personal Development</a>
-            <a href="#" class="footer-chip">Business Strategy</a>
-            <a href="#" class="footer-chip">Finance</a>
-            <a href="#" class="footer-chip">Health &amp; Wellness</a>
-            <a href="#" class="footer-chip">Executive Coaching</a>
-            <a href="#" class="footer-chip">Team Building</a>
-          </div>
+      <article class="news-card" data-cat="platform">
+        <div class="news-thumb"></div>
+        <div class="news-content">
+          <span class="news-cat">Platform Update</span>
+          <h3>Elite tier now includes verified client outcomes</h3>
+          <p>Ratings alone no longer tell the full story — outcome reviews are rolling out to every Elite-tier trainer
+            profile.</p>
+          <div class="news-foot"><span>Jul 10, 2026</span><span>4 min read</span></div>
         </div>
+      </article>
 
-        <!-- SECTION 7: Trust & Security Strip -->
-        <div class="footer-trust-strip">
-          <div class="fts-item">
-            <i class="fa-solid fa-shield-halved"></i>
-            <span>SSL Secure</span>
-          </div>
-          <div class="fts-divider"></div>
-          <div class="fts-item">
-            <i class="fa-solid fa-scale-balanced"></i>
-            <span>GDPR Compliant</span>
-          </div>
-          <div class="fts-divider"></div>
-          <div class="fts-item">
-            <i class="fa-solid fa-user-check"></i>
-            <span>Verified Profiles</span>
-          </div>
-          <div class="fts-divider"></div>
-          <div class="fts-item">
-            <i class="fa-solid fa-credit-card"></i>
-            <span>Safe Payments</span>
-          </div>
-          <div class="fts-divider"></div>
-          <div class="fts-item">
-            <i class="fa-solid fa-earth-americas"></i>
-            <span>Trusted Worldwide</span>
-          </div>
+      <article class="news-card" data-cat="community">
+        <div class="news-thumb"></div>
+        <div class="news-content">
+          <span class="news-cat">Community</span>
+          <h3>Meet the first cohort of Master-tier trainers</h3>
+          <p>Twelve coaches across seven disciplines cleared panel review this quarter — here's who they are.</p>
+          <div class="news-foot"><span>Jul 3, 2026</span><span>3 min read</span></div>
         </div>
+      </article>
 
-      </div><!-- /footer-main -->
-
-      <!-- SECTION 8: Bottom Legal Bar -->
-      <div class="footer-legal">
-        <div class="footer-legal-inner">
-          <span class="fl-copy">© 2026 World Trainer Forum Technologies Pvt. Ltd. All rights reserved.</span>
-          <nav class="fl-links" aria-label="Legal links">
-            <a href="#">Privacy Policy</a>
-            <span class="fl-dot">·</span>
-            <a href="#">Terms</a>
-            <span class="fl-dot">·</span>
-            <a href="#">Cookies</a>
-            <span class="fl-dot">·</span>
-            <a href="#">Accessibility</a>
-            <span class="fl-dot">·</span>
-            <a href="#">Sitemap</a>
-          </nav>
-          <span class="fl-tagline">Made for Global Learning &amp; Growth 🌍</span>
+      <article class="news-card" data-cat="press">
+        <div class="news-thumb"></div>
+        <div class="news-content">
+          <span class="news-cat">Press</span>
+          <h3>World Trainer Forum passes 140 discipline categories</h3>
+          <p>From executive coaching to aerial silks, the marketplace now spans more ground than any competitor.</p>
+          <div class="news-foot"><span>Jun 24, 2026</span><span>2 min read</span></div>
         </div>
-      </div>
+      </article>
 
-    </footer>
+      <article class="news-card" data-cat="platform">
+        <div class="news-thumb"></div>
+        <div class="news-content">
+          <span class="news-cat">Platform Update</span>
+          <h3>New dashboard analytics for trainers</h3>
+          <p>Booking trends, repeat-client rate, and earnings breakdowns are now live in every trainer dashboard.</p>
+          <div class="news-foot"><span>Jun 18, 2026</span><span>3 min read</span></div>
+        </div>
+      </article>
+
+      <article class="news-card" data-cat="community">
+        <div class="news-thumb"></div>
+        <div class="news-content">
+          <span class="news-cat">Community</span>
+          <h3>Trainer spotlight: from side hustle to full-time coaching</h3>
+          <p>How one strength coach used the Elite badge to triple bookings within two months.</p>
+          <div class="news-foot"><span>Jun 9, 2026</span><span>5 min read</span></div>
+        </div>
+      </article>
+
+      <article class="news-card" data-cat="press">
+        <div class="news-thumb"></div>
+        <div class="news-content">
+          <span class="news-cat">Press</span>
+          <h3>World Trainer Forum named a rising marketplace to watch</h3>
+          <p>Coverage highlights the platform's verification-first approach in a crowded coaching-directory space.</p>
+          <div class="news-foot"><span>May 29, 2026</span><span>2 min read</span></div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <section class="newsletter">
+    <h2>Never miss an event.</h2>
+    <p>One email a week — new workshops, meetups, and platform updates.</p>
+    <form class="sub-form" onsubmit="return false;">
+      <input type="email" placeholder="you@email.com" required>
+      <button type="submit">Subscribe</button>
+    </form>
+  </section>
+
+  <footer>© 2026 World Trainer Forum. All rights reserved.</footer>
 
   <script>
-    document.getElementById('yr').textContent = new Date().getFullYear();
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in-view'); });
+    }, { threshold: 0.15 });
+    document.querySelectorAll('.event-card, .news-card').forEach(el => io.observe(el));
+
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const f = btn.dataset.filter;
+        document.querySelectorAll('.news-card').forEach(card => {
+          card.style.display = (f === 'all' || card.dataset.cat === f) ? '' : 'none';
+        });
+      });
+    });
   </script>
 
-  <!-- Modals -->
-  <div id="trainer-modal"></div>
-  <div id="auth-modal"></div>
-
-  <script src="js/app.js?v=4"></script>
-  <script src="js/trainer-modal.js?v=4"></script>
-  <script src="js/auth-modal.js"></script>
-  <script src="js/theme.js"></script>
-  <script>applyTheme();</script>
-  <script src="js/mobile-nav.js"></script>
 </body>
+
 </html>

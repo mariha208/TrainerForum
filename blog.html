@@ -4,2791 +4,796 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Blog | World Trainer Forum — Insights for Trainers, Coaches &amp; L&amp;D Professionals</title>
+  <title>Blog | World Trainer Forum</title>
   <meta name="description"
-    content="Explore expert insights, practical strategies, and industry trends from trainers, coaches, mentors, and L&D professionals around the world.">
-  <meta name="keywords"
-    content="Learning and Development Community, Training Community, Knowledge Sharing, Skill Development, Leadership Development, Coach Network, HR Professional Community, Personal Branding, Digital Learning, Business Growth for Trainers">
-  <meta name="robots" content="index, follow">
-  <meta name="author" content="World Trainer Forum">
-  <link rel="canonical" href="https://www.worldtrainerforum.com/blog">
-
-  <!-- Open Graph -->
-  <meta property="og:type" content="website">
-  <meta property="og:title" content="Insights That Inspire Growth | World Trainer Forum Blog">
-  <meta property="og:description"
-    content="Expert perspectives, practical strategies, and industry trends from learning and development professionals worldwide.">
-  <meta property="og:url" content="https://www.worldtrainerforum.com/blog">
-  <meta property="og:site_name" content="World Trainer Forum">
-  <meta property="og:image" content="https://www.worldtrainerforum.com/assets/og-blog.jpg">
-
-  <!-- Twitter Card -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Insights That Inspire Growth | World Trainer Forum Blog">
-  <meta name="twitter:description"
-    content="Expert perspectives, practical strategies, and industry trends from L&D professionals worldwide.">
-  <meta name="twitter:image" content="https://www.worldtrainerforum.com/assets/og-blog.jpg">
-
+    content="Insights on coaching, training, and mentorship from the World Trainer Forum team and community â€” for trainers and clients across 140+ disciplines.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..900&family=Outfit:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap"
     rel="stylesheet">
-
-  <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "Blog",
-      "@id": "https://www.worldtrainerforum.com/blog#blog",
-      "name": "World Trainer Forum Blog",
-      "url": "https://www.worldtrainerforum.com/blog",
-      "description": "Insights, strategies, and stories for trainers, coaches, mentors, consultants, HR and L&D professionals.",
-      "publisher": { "@type": "Organization", "name": "World Trainer Forum", "logo": "https://www.worldtrainerforum.com/assets/logo.png" }
-    },
-    {
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.worldtrainerforum.com/" },
-        { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://www.worldtrainerforum.com/blog" }
-      ]
-    }
-  ]
-}
-</script>
-
   <style>
-    /* ============================================================
-   WORLD TRAINER FORUM — DESIGN TOKENS & RESET (shared system)
-   ============================================================ */
     :root {
-      --navy: #0A2551;
-      --navy-deep: #071A3A;
-      --navy-soft: #123569;
-      --royal: #008B8B;
-      --royal-light: #00ABAB;
-      --gold: #C5A059;
-      --gold-soft: #E6D3AA;
-      --white: #FFFFFF;
-      --bg-light: #E5E8EB;
-      --text: #1F2937;
-      --text-muted: #5C6B7E;
-      --border: #D4D9DE;
-
-      --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
-      --font-heading: 'Outfit', 'Segoe UI', sans-serif;
-      --font-body: 'Plus Jakarta Sans', 'Helvetica Neue', Arial, sans-serif;
-      --font-accent: 'Space Grotesk', 'Courier New', monospace;
-
-      --space-xs: .5rem;
-      --space-sm: 1rem;
-      --space-md: 1.5rem;
-      --space-lg: 2.5rem;
-      --space-xl: 4rem;
-      --space-2xl: 6.5rem;
-
-      --radius-sm: 10px;
-      --radius-md: 18px;
-      --radius-lg: 28px;
-
-      --shadow-sm: 0 2px 10px rgba(10, 37, 64, .06);
-      --shadow-md: 0 12px 32px rgba(10, 37, 64, .09);
-      --shadow-lg: 0 24px 60px rgba(10, 37, 64, .14);
-
-      --ease: cubic-bezier(.4, 0, .2, 1);
-      --t-fast: .3s;
-      --t-med: .5s;
-      --t-slow: .8s;
+      --navy: #0B1B32;
+      --navy-2: #122644;
+      --royal: #2455C9;
+      --royal-2: #3A6BE0;
+      --gold: #C9A24B;
+      --gold-light: #E7C878;
+      --ivory: #FAF6EC;
+      --ivory-dim: #F0EADA;
+      --ink: #101826;
+      --line: rgba(255, 255, 255, 0.10);
+      --line-dark: rgba(11, 27, 50, 0.10);
     }
 
-    *,
-    *::before,
-    *::after {
-      box-sizing: border-box;
+    * {
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
     }
 
     html {
       scroll-behavior: smooth;
-      -webkit-text-size-adjust: 100%;
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      html {
-        scroll-behavior: auto;
-      }
-
-      *,
-      *::before,
-      *::after {
-        animation-duration: .01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: .01ms !important;
-        scroll-behavior: auto !important;
-      }
     }
 
     body {
-      font-family: var(--font-body);
-      font-size: 18px;
-      line-height: 1.7;
-      color: var(--text);
-      background: var(--white);
-      -webkit-font-smoothing: antialiased;
+      font-family: 'Manrope', sans-serif;
+      background: var(--ivory);
+      color: var(--ink);
       overflow-x: hidden;
-    }
-
-    img,
-    svg {
-      display: block;
-      max-width: 100%;
-    }
-
-    ul {
-      list-style: none;
-    }
-
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    button {
-      font-family: inherit;
-      cursor: pointer;
-      border: none;
-      background: none;
-    }
-
-    a:focus-visible,
-    button:focus-visible,
-    input:focus-visible,
-    textarea:focus-visible {
-      outline: 3px solid var(--gold);
-      outline-offset: 3px;
-      border-radius: 4px;
-    }
-
-    .skip-link {
-      position: absolute;
-      left: -999px;
-      top: 0;
-      background: var(--navy);
-      color: var(--white);
-      padding: .75rem 1.25rem;
-      z-index: 1000;
-      border-radius: 0 0 var(--radius-sm) 0;
-      font-family: var(--font-heading);
-      font-weight: 600;
-    }
-
-    .skip-link:focus {
-      left: 0;
     }
 
     h1,
     h2,
     h3,
-    h4 {
-      font-family: var(--font-display);
+    .serif {
+      font-family: 'Fraunces', serif;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(11, 27, 50, 0.92);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .nav-wrap {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 18px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      font-family: 'Fraunces', serif;
       font-weight: 600;
-      line-height: 1.15;
+      font-size: 1.35rem;
+      color: var(--ivory);
+    }
+
+    .logo span {
+      color: var(--gold);
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 34px;
+    }
+
+    nav a {
+      color: rgba(250, 246, 236, 0.72);
+      font-size: 0.92rem;
+      font-weight: 600;
+      transition: color .25s ease;
+    }
+
+    nav a:hover {
+      color: var(--ivory);
+    }
+
+    nav a.active {
+      color: var(--gold-light);
+    }
+
+    .nav-cta {
+      background: var(--gold);
       color: var(--navy);
-      letter-spacing: -0.01em;
+      padding: 10px 22px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 0.88rem;
+      transition: transform .25s ease, box-shadow .25s ease;
     }
 
-    h1 {
-      font-size: clamp(2.5rem, 5.6vw, 4.5rem);
+    .nav-cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 24px rgba(201, 162, 75, 0.35);
     }
 
-    h2 {
-      font-size: clamp(1.9rem, 4vw, 3rem);
+    .menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--ivory);
+      font-size: 1.5rem;
+      cursor: pointer;
     }
 
-    h3 {
-      font-size: clamp(1.2rem, 2.2vw, 1.5rem);
-      font-family: var(--font-heading);
-      font-weight: 600;
+    .hero {
+      position: relative;
+      background: radial-gradient(ellipse at top left, var(--navy-2), var(--navy) 65%);
+      padding: 100px 32px 60px;
+      color: var(--ivory);
+      overflow: hidden;
     }
 
-    h4 {
-      font-size: 1.125rem;
-      font-family: var(--font-heading);
-      font-weight: 600;
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: linear-gradient(rgba(201, 162, 75, 0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(201, 162, 75, 0.06) 1px, transparent 1px);
+      background-size: 64px 64px;
+      mask-image: radial-gradient(ellipse at center, black, transparent 75%);
     }
 
-    p {
-      color: var(--text-muted);
-    }
-
-    .lead {
-      font-size: clamp(1.0625rem, 1.6vw, 1.3rem);
-      color: var(--text-muted);
-      font-weight: 400;
+    .hero-inner {
+      max-width: 1240px;
+      margin: 0 auto;
+      position: relative;
     }
 
     .eyebrow {
       display: inline-flex;
       align-items: center;
-      gap: .5rem;
-      font-family: var(--font-accent);
+      gap: 10px;
+      font-size: 0.78rem;
+      letter-spacing: 0.16em;
       text-transform: uppercase;
-      letter-spacing: .22em;
-      font-size: .75rem;
-      font-weight: 600;
-      color: var(--royal);
+      color: var(--gold-light);
+      font-weight: 700;
+      margin-bottom: 22px;
+      border: 1px solid rgba(201, 162, 75, 0.35);
+      padding: 8px 18px;
+      border-radius: 999px;
+      opacity: 0;
+      animation: riseIn .8s ease forwards;
     }
 
     .eyebrow::before {
-      content: '';
-      display: block;
-      width: 28px;
-      height: 2px;
-      background: var(--gold);
-      border-radius: 2px;
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--gold-light);
     }
 
-    .eyebrow.on-dark {
-      color: var(--gold-soft);
-    }
-
-    .section-head {
+    .hero h1 {
+      font-size: clamp(2.3rem, 5vw, 3.6rem);
+      font-weight: 600;
+      line-height: 1.1;
       max-width: 760px;
-      margin-bottom: var(--space-xl);
-    }
-
-    .section-head h2 {
-      margin-top: var(--space-sm);
-    }
-
-    .section-head p {
-      margin-top: var(--space-sm);
-    }
-
-    .section-head.center {
-      margin-inline: auto;
-      text-align: center;
-    }
-
-    .container {
-      width: 100%;
-      max-width: 1240px;
-      margin-inline: auto;
-      padding-inline: clamp(1.25rem, 4vw, 2.5rem);
-    }
-
-    .section {
-      padding-block: var(--space-2xl);
-    }
-
-    .section--tight {
-      padding-block: var(--space-xl);
-    }
-
-    .section--light {
-      background: var(--bg-light);
-    }
-
-    .section--navy {
-      background: var(--navy);
-      color: var(--white);
-    }
-
-    .section--navy h2,
-    .section--navy h3,
-    .section--navy h4 {
-      color: var(--white);
-    }
-
-    .section--navy p {
-      color: rgba(255, 255, 255, .72);
-    }
-
-    .grid {
-      display: grid;
-      gap: var(--space-lg);
-    }
-
-    .grid-2 {
-      grid-template-columns: repeat(2, 1fr);
-    }
-
-    .grid-3 {
-      grid-template-columns: repeat(3, 1fr);
-    }
-
-    .grid-4 {
-      grid-template-columns: repeat(4, 1fr);
-    }
-
-    @media (max-width:980px) {
-      .grid-4 {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .grid-3 {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-
-    @media (max-width:640px) {
-
-      .grid-2,
-      .grid-3,
-      .grid-4 {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: .6rem;
-      font-family: var(--font-heading);
-      font-weight: 600;
-      font-size: 1rem;
-      padding: .95rem 2rem;
-      border-radius: 999px;
-      transition: transform var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease), background var(--t-fast) var(--ease), color var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease);
-      white-space: nowrap;
-    }
-
-    .btn svg {
-      width: 18px;
-      height: 18px;
-      flex-shrink: 0;
-      transition: transform var(--t-fast) var(--ease);
-    }
-
-    .btn--primary {
-      background: linear-gradient(135deg, var(--royal), var(--navy) 120%);
-      color: var(--white);
-      box-shadow: var(--shadow-md);
-    }
-
-    .btn--primary:hover {
-      transform: translateY(-3px);
-      box-shadow: var(--shadow-lg);
-    }
-
-    .btn--primary:hover svg {
-      transform: translateX(3px);
-    }
-
-    .btn--gold {
-      background: linear-gradient(135deg, var(--gold), #DCC07F);
-      color: var(--navy);
-      box-shadow: var(--shadow-md);
-    }
-
-    .btn--gold:hover {
-      transform: translateY(-3px);
-      box-shadow: var(--shadow-lg);
-    }
-
-    .btn--ghost {
-      background: transparent;
-      color: var(--navy);
-      border: 1.5px solid var(--border);
-    }
-
-    .btn--ghost:hover {
-      border-color: var(--royal);
-      color: var(--royal);
-      transform: translateY(-3px);
-    }
-
-    .btn--ghost-light {
-      background: rgba(255, 255, 255, .06);
-      color: var(--white);
-      border: 1.5px solid rgba(255, 255, 255, .28);
-      backdrop-filter: blur(6px);
-    }
-
-    .btn--ghost-light:hover {
-      border-color: var(--gold);
-      color: var(--gold-soft);
-      transform: translateY(-3px);
-    }
-
-    .btn-row {
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-
-    /* ============================================================
-   HEADER / NAVIGATION
-   ============================================================ */
-    .site-header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 200;
-      padding-block: 1.1rem;
-      transition: background var(--t-med) var(--ease), padding var(--t-med) var(--ease), box-shadow var(--t-med) var(--ease), backdrop-filter var(--t-med) var(--ease);
-    }
-
-    .site-header.is-scrolled {
-      background: rgba(248, 250, 252, .78);
-      backdrop-filter: blur(14px) saturate(160%);
-      box-shadow: 0 1px 0 rgba(10, 37, 64, .06);
-      padding-block: .7rem;
-    }
-
-    .nav {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 2rem;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: .65rem;
-      font-family: var(--font-heading);
-      font-weight: 700;
-      font-size: 1.15rem;
-      color: var(--navy);
-      letter-spacing: -0.01em;
-    }
-
-    .brand-mark {
-      width: 40px;
-      height: 40px;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: linear-gradient(135deg, var(--navy), var(--royal));
-      box-shadow: var(--shadow-sm);
-      flex-shrink: 0;
-    }
-
-    .brand-mark svg {
-      width: 22px;
-      height: 22px;
-    }
-
-    .brand small {
-      display: block;
-      font-family: var(--font-accent);
-      font-size: .62rem;
-      letter-spacing: .22em;
-      font-weight: 600;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      margin-top: 2px;
-    }
-
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 2.2rem;
-    }
-
-    .nav-links a {
-      font-family: var(--font-heading);
-      font-weight: 500;
-      font-size: .97rem;
-      color: var(--navy);
-      position: relative;
-      padding-block: .35rem;
-      transition: color var(--t-fast) var(--ease);
-    }
-
-    .nav-links a::after {
-      content: '';
-      position: absolute;
-      left: 0;
-      bottom: -2px;
-      width: 0;
-      height: 2px;
-      background: var(--gold);
-      transition: width var(--t-fast) var(--ease);
-      border-radius: 2px;
-    }
-
-    .nav-links a:hover {
-      color: var(--royal);
-    }
-
-    .nav-links a:hover::after,
-    .nav-links a[aria-current="page"]::after {
-      width: 100%;
-    }
-
-    .nav-links a[aria-current="page"] {
-      color: var(--royal);
-    }
-
-    .nav-cta {
-      display: flex;
-      align-items: center;
-      gap: .85rem;
-    }
-
-    .nav-cta .btn {
-      padding: .7rem 1.5rem;
-      font-size: .92rem;
-    }
-
-    .nav-toggle {
-      display: none;
-      flex-direction: column;
-      gap: 5px;
-      width: 38px;
-      height: 38px;
-      align-items: center;
-      justify-content: center;
-      border-radius: 10px;
-      background: rgba(10, 37, 64, .05);
-    }
-
-    .nav-toggle span {
-      display: block;
-      width: 20px;
-      height: 2px;
-      background: var(--navy);
-      border-radius: 2px;
-      transition: transform var(--t-fast) var(--ease), opacity var(--t-fast) var(--ease);
-    }
-
-    .nav-toggle[aria-expanded="true"] span:nth-child(1) {
-      transform: translateY(7px) rotate(45deg);
-    }
-
-    .nav-toggle[aria-expanded="true"] span:nth-child(2) {
+      margin: 0 0 20px;
       opacity: 0;
+      animation: riseIn .8s ease .12s forwards;
     }
 
-    .nav-toggle[aria-expanded="true"] span:nth-child(3) {
-      transform: translateY(-7px) rotate(-45deg);
+    .hero h1 em {
+      font-style: italic;
+      color: var(--gold-light);
     }
 
-    @media (max-width:900px) {
-      .nav-links {
-        position: fixed;
-        inset: 0 0 0 30%;
-        flex-direction: column;
-        justify-content: center;
-        align-items: flex-start;
-        gap: 1.75rem;
-        background: var(--navy);
-        padding: 6rem 2.5rem 2.5rem;
-        transform: translateX(100%);
-        transition: transform var(--t-med) var(--ease);
-      }
-
-      .nav-links.is-open {
-        transform: translateX(0);
-      }
-
-      .nav-links a {
-        color: var(--white);
-        font-size: 1.15rem;
-      }
-
-      .nav-links a[aria-current="page"] {
-        color: var(--gold-soft);
-      }
-
-      .nav-cta {
-        display: none;
-      }
-
-      .nav-links .nav-cta-mobile {
-        display: flex;
-        gap: .85rem;
-        margin-top: 1rem;
-      }
-
-      .nav-toggle {
-        display: flex;
-      }
-    }
-
-    /* ============================================================
-   SCROLL REVEAL & SHARED KEYFRAMES
-   ============================================================ */
-    .reveal {
+    .hero p {
+      max-width: 560px;
+      font-size: 1.08rem;
+      line-height: 1.7;
+      color: rgba(250, 246, 236, 0.75);
       opacity: 0;
-      transform: translateY(28px);
-      transition: opacity var(--t-slow) var(--ease), transform var(--t-slow) var(--ease);
+      animation: riseIn .8s ease .22s forwards;
     }
 
-    .reveal.is-visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .reveal-delay-1 {
-      transition-delay: .08s;
-    }
-
-    .reveal-delay-2 {
-      transition-delay: .16s;
-    }
-
-    .reveal-delay-3 {
-      transition-delay: .24s;
-    }
-
-    .reveal-delay-4 {
-      transition-delay: .32s;
-    }
-
-    @keyframes float {
-
-      0%,
-      100% {
-        transform: translateY(0px) rotate(0deg);
-      }
-
-      50% {
-        transform: translateY(-14px) rotate(1deg);
-      }
-    }
-
-    @keyframes floatSlow {
-
-      0%,
-      100% {
-        transform: translateY(0px);
-      }
-
-      50% {
-        transform: translateY(12px);
-      }
-    }
-
-    @keyframes pulseDot {
-
-      0%,
-      100% {
-        opacity: .5;
-        transform: scale(1);
-      }
-
-      50% {
-        opacity: 1;
-        transform: scale(1.35);
-      }
-    }
-
-    @keyframes dashMove {
-      to {
-        stroke-dashoffset: -200;
-      }
-    }
-
-    @keyframes gradientShift {
-      0% {
-        background-position: 0% 50%;
-      }
-
-      50% {
-        background-position: 100% 50%;
-      }
-
-      100% {
-        background-position: 0% 50%;
-      }
-    }
-
-    @keyframes spinSlow {
-      to {
-        transform: rotate(360deg);
-      }
-    }
-
-    @keyframes slideFade {
+    @keyframes riseIn {
       from {
         opacity: 0;
-        transform: translateX(16px);
+        transform: translateY(18px);
       }
 
       to {
         opacity: 1;
-        transform: translateX(0);
+        transform: translateY(0);
       }
     }
 
-    /* ============================================================
-   BLOG HERO
-   ============================================================ */
-    .blog-hero {
-      padding-top: clamp(8.5rem, 18vw, 11rem);
-      padding-bottom: var(--space-xl);
-      background:
-        radial-gradient(1000px 560px at 90% -10%, rgba(29, 78, 216, .10), transparent 60%),
-        radial-gradient(800px 480px at -8% 100%, rgba(212, 175, 55, .10), transparent 60%),
-        var(--bg-light);
-    }
-
-    .blog-hero-top {
-      max-width: 680px;
-      text-align: left;
-    }
-
-    .blog-hero-top h1 {
-      margin-top: var(--space-sm);
-    }
-
-    .blog-hero-top .lead {
-      margin-top: var(--space-md);
-    }
-
-    .blog-hero-top-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      gap: var(--space-lg);
-    }
-
-    .add-blog-btn {
-      flex-shrink: 0;
-    }
-
-    @media (max-width:760px) {
-      .blog-hero-top-row {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .add-blog-btn {
-        width: 100%;
-        justify-content: center;
-      }
-    }
-
-    /* Search bar */
-    .search-bar {
-      display: flex;
-      align-items: center;
-      gap: .75rem;
-      background: var(--white);
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      padding: .5rem .5rem .5rem 1.5rem;
-      margin-top: var(--space-xl);
-      max-width: 680px;
-      box-shadow: var(--shadow-sm);
-      transition: box-shadow var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease);
-    }
-
-    .search-bar:focus-within {
-      box-shadow: var(--shadow-md);
-      border-color: var(--royal);
-    }
-
-    .search-bar svg {
-      width: 20px;
-      height: 20px;
-      color: var(--text-muted);
-      flex-shrink: 0;
-    }
-
-    .search-bar input {
-      flex: 1;
-      border: none;
-      outline: none;
-      font-family: var(--font-body);
-      font-size: 1rem;
-      color: var(--text);
-      background: transparent;
-      min-width: 0;
-    }
-
-    .search-bar input::placeholder {
-      color: var(--text-muted);
-    }
-
-    .search-bar .btn {
-      padding: .8rem 1.75rem;
-      flex-shrink: 0;
-    }
-
-    @media (max-width:560px) {
-      .search-bar {
-        flex-wrap: wrap;
-        padding: 1rem 1.25rem;
-        border-radius: var(--radius-md);
-      }
-
-      .search-bar input {
-        width: 100%;
-        order: 1;
-      }
-
-      .search-bar .btn {
-        width: 100%;
-        order: 2;
-      }
-    }
-
-    /* Category chips */
-    .chip-row {
-      display: flex;
-      gap: .65rem;
-      flex-wrap: wrap;
-      margin-top: var(--space-lg);
-    }
-
-    .chip {
-      font-family: var(--font-heading);
-      font-weight: 500;
-      font-size: .9rem;
-      padding: .55rem 1.25rem;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      background: var(--white);
-      color: var(--text-muted);
-      transition: all var(--t-fast) var(--ease);
-    }
-
-    .chip:hover {
-      border-color: var(--royal);
-      color: var(--royal);
-      transform: translateY(-2px);
-    }
-
-    .chip.is-active {
-      background: var(--navy);
-      border-color: var(--navy);
-      color: var(--white);
-    }
-
-    /* Featured slider */
-    .slider {
-      margin-top: var(--space-2xl);
+    /* ---------- FEATURED POST ---------- */
+    .featured-wrap {
+      max-width: 1240px;
+      margin: -56px auto 0;
+      padding: 0 32px 100px;
       position: relative;
+      z-index: 2;
     }
 
-    .slider-track {
-      display: flex;
+    .featured {
+      background: #fff;
+      border-radius: 24px;
       overflow: hidden;
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-md);
-    }
-
-    .slide {
-      flex: 0 0 100%;
       display: grid;
-      grid-template-columns: .4fr .6fr;
-      background: var(--white);
-      display: none;
+      grid-template-columns: 1.1fr 1fr;
+      box-shadow: 0 30px 70px rgba(11, 27, 50, 0.16);
     }
 
-    .slide.is-active {
-      display: grid;
-      animation: slideFade .5s var(--ease);
+    .featured-media {
+      background: linear-gradient(135deg, var(--royal), var(--navy));
+      position: relative;
+      min-height: 340px;
     }
 
-    .slide-visual {
-      background: var(--navy);
-      min-height: 220px;
+    .featured-media::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(circle at 30% 30%, rgba(231, 200, 120, 0.25), transparent 55%);
     }
 
-    .slide-visual svg {
-      width: 100%;
-      height: 100%;
-    }
-
-    .slide-copy {
-      padding: var(--space-lg);
+    .featured-body {
+      padding: 48px;
       display: flex;
       flex-direction: column;
       justify-content: center;
     }
 
-    .slide-copy h3 {
-      margin: .85rem 0 .6rem;
-    }
-
-    @media (max-width:760px) {
-      .slide {
-        grid-template-columns: 1fr;
-      }
-
-      .slide-visual {
-        min-height: 140px;
-      }
-    }
-
-    .slider-controls {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 1.5rem;
-      margin-top: var(--space-md);
-    }
-
-    .slider-arrow {
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      border: 1px solid var(--border);
-      background: var(--white);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--navy);
-      transition: all var(--t-fast) var(--ease);
-    }
-
-    .slider-arrow svg {
-      width: 18px;
-      height: 18px;
-    }
-
-    .slider-arrow:hover {
-      background: var(--navy);
-      color: var(--white);
-      transform: translateY(-2px);
-    }
-
-    .slider-dots {
-      display: flex;
-      gap: .5rem;
-    }
-
-    .dot {
-      width: 9px;
-      height: 9px;
-      border-radius: 50%;
-      background: var(--border);
-      transition: all var(--t-fast) var(--ease);
-    }
-
-    .dot.is-active {
-      background: var(--royal);
-      width: 24px;
-      border-radius: 5px;
-    }
-
-    /* Tags */
-    .tag {
+    .post-cat {
       display: inline-block;
-      font-family: var(--font-accent);
-      font-size: .72rem;
-      font-weight: 600;
-      letter-spacing: .06em;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
-      padding: .35rem .85rem;
-      border-radius: 999px;
-      background: rgba(29, 78, 216, .1);
-      color: var(--royal);
+      color: var(--gold);
+      background: rgba(201, 162, 75, 0.12);
+      padding: 5px 12px;
+      border-radius: 6px;
+      margin-bottom: 16px;
+      width: fit-content;
     }
 
-    .tag--gold {
-      background: rgba(212, 175, 55, .16);
-      color: #7A6232;
-    }
-
-    .text-link {
-      display: inline-block;
-      margin-top: 1rem;
-      font-family: var(--font-heading);
+    .featured-body h2 {
+      font-size: clamp(1.5rem, 2.6vw, 2rem);
       font-weight: 600;
-      font-size: .95rem;
-      color: var(--royal);
-      transition: transform var(--t-fast) var(--ease), color var(--t-fast) var(--ease);
-    }
-
-    .text-link:hover {
-      transform: translateX(3px);
+      line-height: 1.28;
       color: var(--navy);
+      margin-bottom: 16px;
     }
 
-    .article-meta {
-      display: flex;
-      gap: 1.25rem;
-      flex-wrap: wrap;
-      margin-top: 1rem;
+    .featured-body p {
+      color: #4A5468;
+      line-height: 1.75;
+      margin-bottom: 24px;
+      font-size: 1rem;
     }
 
-    .meta-item {
-      display: inline-flex;
-      align-items: center;
-      gap: .4rem;
-      font-size: .85rem;
-      color: var(--text-muted);
-      font-family: var(--font-heading);
-    }
-
-    .meta-item svg {
-      width: 15px;
-      height: 15px;
-    }
-
-    /* ============================================================
-   FEATURED ARTICLE EDITORIAL
-   ============================================================ */
-    .featured-grid {
-      display: grid;
-      grid-template-columns: .85fr 1.15fr;
-      gap: var(--space-2xl);
-      align-items: center;
-    }
-
-    .featured-visual {
-      max-width: 420px;
-    }
-
-    @media (max-width:980px) {
-      .featured-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .featured-visual {
-        max-width: 320px;
-        margin-inline: auto;
-      }
-    }
-
-    /* ============================================================
-   ARTICLE GRID CARDS
-   ============================================================ */
-    .article-grid {
-      margin-top: 0;
-    }
-
-    .article-card {
-      background: var(--white);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      overflow: hidden;
-      transition: transform var(--t-med) var(--ease), box-shadow var(--t-med) var(--ease);
-    }
-
-    .article-card:hover {
-      transform: translateY(-8px);
-      box-shadow: var(--shadow-md);
-    }
-
-    .article-thumb {
-      aspect-ratio: 16/9;
+    .post-meta {
       display: flex;
       align-items: center;
-      justify-content: center;
-    }
-
-    .article-thumb svg {
-      width: 60%;
-      height: 60%;
-    }
-
-    .article-body {
-      padding: var(--space-md);
-    }
-
-    .article-body h3 {
-      margin-top: .85rem;
-      font-size: 1.15rem;
-    }
-
-    .article-body p {
-      margin-top: .5rem;
-      font-size: .95rem;
-    }
-
-    /* ============================================================
-   CONTRIBUTE / EXPERT VOICES
-   ============================================================ */
-    .contribute-grid {
-      display: grid;
-      grid-template-columns: 1.1fr .9fr;
-      gap: var(--space-2xl);
-      align-items: center;
-    }
-
-    .contribute-visual {
-      max-width: 380px;
-      margin-inline: auto;
-    }
-
-    @media (max-width:980px) {
-      .contribute-grid {
-        grid-template-columns: 1fr;
-        text-align: left;
-      }
-
-      .contribute-visual {
-        order: -1;
-        max-width: 300px;
-      }
-    }
-
-    /* ============================================================
-   TESTIMONIALS / SUCCESS STORIES
-   ============================================================ */
-    .testimonial-grid {
-      margin-top: 0;
-    }
-
-    .testimonial-card {
-      background: var(--bg-light);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      padding: var(--space-lg);
-      transition: transform var(--t-med) var(--ease), box-shadow var(--t-med) var(--ease);
-    }
-
-    .testimonial-card:hover {
-      transform: translateY(-6px);
-      box-shadow: var(--shadow-md);
-    }
-
-    .testimonial-card blockquote {
-      font-family: var(--font-display);
-      font-size: 1.15rem;
-      color: var(--navy);
-      line-height: 1.5;
-      font-weight: 500;
-    }
-
-    .testimonial-card figcaption {
-      display: flex;
-      align-items: center;
-      gap: .85rem;
-      margin-top: var(--space-md);
+      gap: 14px;
+      font-size: 0.85rem;
+      color: #7A8296;
     }
 
     .avatar {
-      width: 44px;
-      height: 44px;
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
-      background: linear-gradient(135deg, var(--royal), var(--navy));
-      color: var(--white);
+      background: linear-gradient(135deg, var(--gold-light), var(--gold));
+      flex: none;
+    }
+
+    /* ---------- FILTER + GRID ---------- */
+    .blog-main {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 0 32px 60px;
+    }
+
+    .filter-row {
       display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: var(--font-heading);
-      font-weight: 600;
-      font-size: .85rem;
-      flex-shrink: 0;
-    }
-
-    .testimonial-card figcaption strong {
-      display: block;
-      font-family: var(--font-heading);
-      font-size: .95rem;
-      color: var(--navy);
-    }
-
-    .testimonial-card figcaption span {
-      font-size: .85rem;
-      color: var(--text-muted);
-    }
-
-    /* ============================================================
-   UPCOMING EVENTS
-   ============================================================ */
-    .upcoming-grid {
-      margin-top: 0;
-    }
-
-    .upcoming-card {
-      display: flex;
-      gap: 1.25rem;
-      align-items: center;
-      background: var(--white);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      padding: var(--space-md);
-      transition: transform var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease);
-    }
-
-    .upcoming-card:hover {
-      transform: translateY(-5px);
-      box-shadow: var(--shadow-md);
-    }
-
-    .upcoming-date {
-      width: 62px;
-      height: 62px;
-      border-radius: 14px;
-      background: var(--navy);
-      color: var(--white);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-
-    .upcoming-date strong {
-      font-family: var(--font-display);
-      font-size: 1.4rem;
-      line-height: 1;
-    }
-
-    .upcoming-date span {
-      font-family: var(--font-accent);
-      font-size: .65rem;
-      text-transform: uppercase;
-      letter-spacing: .08em;
-      color: var(--gold-soft);
-      margin-top: 2px;
-    }
-
-    .upcoming-card h4 {
-      font-size: 1rem;
-    }
-
-    .upcoming-card p {
-      font-size: .9rem;
-      margin-top: .2rem;
-    }
-
-    /* ============================================================
-   NEWSLETTER
-   ============================================================ */
-    .newsletter-section {
-      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-deep) 55%, #0d2f4f 100%);
-      background-size: 160% 160%;
-      animation: gradientShift 14s ease infinite;
-      color: var(--white);
-      text-align: center;
-    }
-
-    .newsletter-section h2 {
-      color: var(--white);
-    }
-
-    .newsletter-inner {
-      max-width: 640px;
-    }
-
-    .newsletter-form {
-      display: flex;
-      gap: .75rem;
-      margin-top: var(--space-lg);
+      gap: 12px;
       flex-wrap: wrap;
-      justify-content: center;
+      margin-bottom: 48px;
     }
 
-    .newsletter-form input {
-      flex: 1;
-      min-width: 240px;
-      padding: .95rem 1.5rem;
+    .filter-btn {
+      border: 1px solid var(--line-dark);
+      background: #fff;
+      color: #4A5468;
+      padding: 9px 20px;
       border-radius: 999px;
-      border: 1px solid rgba(255, 255, 255, .25);
-      background: rgba(255, 255, 255, .07);
-      color: var(--white);
-      font-family: var(--font-body);
-      font-size: 1rem;
-      outline: none;
-      transition: border-color var(--t-fast) var(--ease), background var(--t-fast) var(--ease);
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all .25s ease;
     }
 
-    .newsletter-form input::placeholder {
-      color: rgba(255, 255, 255, .5);
+    .filter-btn.active,
+    .filter-btn:hover {
+      background: var(--navy);
+      color: var(--ivory);
+      border-color: var(--navy);
     }
 
-    .newsletter-form input:focus {
-      border-color: var(--gold);
-      background: rgba(255, 255, 255, .1);
-    }
-
-    .trust-msg {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: .5rem;
-      margin-top: var(--space-md);
-      font-size: .875rem;
-      color: rgba(255, 255, 255, .6);
-    }
-
-    .trust-msg svg {
-      width: 16px;
-      height: 16px;
-    }
-
-    .sr-only {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      white-space: nowrap;
-    }
-
-    /* ============================================================
-   FOOTER (shared)
-   ============================================================ */
-    .site-footer {
-      background: var(--navy-deep);
-      color: rgba(255, 255, 255, .65);
-      padding-top: var(--space-2xl);
-    }
-
-    .footer-top {
+    .blog-grid {
       display: grid;
-      grid-template-columns: 1.6fr .8fr .8fr .8fr;
-      gap: var(--space-xl);
-      padding-bottom: var(--space-xl);
-      border-bottom: 1px solid rgba(255, 255, 255, .1);
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+      padding-bottom: 100px;
     }
 
-    .footer-brand p {
-      color: rgba(255, 255, 255, .55);
-      margin-top: 1rem;
-      max-width: 320px;
-      font-size: .95rem;
+    .post-card {
+      background: #fff;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1px solid var(--line-dark);
+      transition: transform .3s ease, box-shadow .3s ease;
+      opacity: 0;
+      transform: translateY(24px);
     }
 
-    .social-row {
-      display: flex;
-      gap: .75rem;
-      margin-top: 1.5rem;
+    .post-card.in-view {
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity .6s ease, transform .6s ease;
     }
 
-    .social-row a {
-      width: 38px;
-      height: 38px;
-      border-radius: 10px;
-      background: rgba(255, 255, 255, .06);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: rgba(255, 255, 255, .75);
-      transition: background var(--t-fast) var(--ease), color var(--t-fast) var(--ease), transform var(--t-fast) var(--ease);
+    .post-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 24px 50px rgba(11, 27, 50, 0.12);
     }
 
-    .social-row a svg {
-      width: 17px;
-      height: 17px;
+    .post-thumb {
+      height: 180px;
+      position: relative;
+      overflow: hidden;
     }
 
-    .social-row a:hover {
-      background: var(--gold);
+    .post-thumb.t1 {
+      background: linear-gradient(135deg, #3A6BE0, #0B1B32);
+    }
+
+    .post-thumb.t2 {
+      background: linear-gradient(135deg, #E7C878, #C9A24B);
+    }
+
+    .post-thumb.t3 {
+      background: linear-gradient(135deg, #0B1B32, #2455C9);
+    }
+
+    .post-thumb.t4 {
+      background: linear-gradient(135deg, #C9A24B, #0B1B32);
+    }
+
+    .post-thumb.t5 {
+      background: linear-gradient(135deg, #2455C9, #3A6BE0);
+    }
+
+    .post-thumb.t6 {
+      background: linear-gradient(135deg, #0B1B32, #E7C878);
+    }
+
+    .post-content {
+      padding: 24px;
+    }
+
+    .post-content h3 {
+      font-family: 'Fraunces', serif;
+      font-size: 1.15rem;
+      font-weight: 600;
       color: var(--navy);
-      transform: translateY(-3px);
+      line-height: 1.35;
+      margin-bottom: 10px;
     }
 
-    .footer-col h4 {
-      color: #FFFFFF;
-      margin-bottom: 1.25rem;
-      font-size: 1rem;
+    .post-content p {
+      font-size: 0.9rem;
+      color: #4A5468;
+      line-height: 1.6;
+      margin-bottom: 16px;
     }
 
-    .footer-col a {
-      display: block;
-      color: rgba(255, 255, 255, .6);
-      padding-block: .45rem;
-      font-size: .95rem;
-      transition: color var(--t-fast) var(--ease), transform var(--t-fast) var(--ease);
-    }
-
-    .footer-col a:hover {
-      color: var(--gold-soft);
-      transform: translateX(3px);
-    }
-
-    .footer-bottom {
+    .post-foot {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      flex-wrap: wrap;
-      gap: 1rem;
-      padding-block: var(--space-md);
-      font-size: .875rem;
+      font-size: 0.78rem;
+      color: #8A93A8;
+      border-top: 1px solid var(--line-dark);
+      padding-top: 14px;
     }
 
-    .footer-legal {
+    .load-more {
       display: flex;
-      gap: 1.5rem;
+      justify-content: center;
+      margin-top: -56px;
+      padding-bottom: 110px;
     }
 
-    .footer-legal a {
-      color: rgba(255, 255, 255, .55);
-      transition: color var(--t-fast) var(--ease);
+    .load-btn {
+      border: 1.5px solid var(--navy);
+      color: var(--navy);
+      background: transparent;
+      padding: 14px 32px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 0.92rem;
+      cursor: pointer;
+      transition: all .25s ease;
     }
 
-    .footer-legal a:hover {
-      color: var(--gold-soft);
+    .load-btn:hover {
+      background: var(--navy);
+      color: var(--ivory);
     }
 
-    @media (max-width:900px) {
-      .footer-top {
+    /* ---------- SIDEBAR-STYLE CATEGORY STRIP ---------- */
+    .topics {
+      background: var(--ivory-dim);
+      padding: 90px 32px;
+    }
+
+    .topics-inner {
+      max-width: 1240px;
+      margin: 0 auto;
+    }
+
+    .section-head {
+      max-width: 680px;
+      margin-bottom: 44px;
+    }
+
+    .section-head .kicker {
+      color: var(--royal);
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      font-size: 0.8rem;
+      margin-bottom: 14px;
+      display: block;
+    }
+
+    .section-head h2 {
+      font-size: clamp(1.7rem, 3vw, 2.2rem);
+      font-weight: 600;
+      line-height: 1.2;
+      color: var(--navy);
+    }
+
+    .topic-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+
+    .topic-chip {
+      background: #fff;
+      border: 1px solid var(--line-dark);
+      border-radius: 14px;
+      padding: 24px;
+      transition: transform .25s ease, box-shadow .25s ease;
+    }
+
+    .topic-chip:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 34px rgba(11, 27, 50, 0.1);
+    }
+
+    .topic-chip h4 {
+      font-family: 'Fraunces', serif;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 6px;
+    }
+
+    .topic-chip span {
+      font-size: 0.82rem;
+      color: #8A93A8;
+    }
+
+    /* ---------- NEWSLETTER ---------- */
+    .newsletter {
+      background: var(--navy);
+      color: var(--ivory);
+      padding: 100px 32px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .newsletter::before {
+      content: "";
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(201, 162, 75, 0.15), transparent 70%);
+      top: -320px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .newsletter h2 {
+      position: relative;
+      font-size: clamp(1.8rem, 3.4vw, 2.4rem);
+      font-weight: 600;
+      margin-bottom: 14px;
+    }
+
+    .newsletter p {
+      position: relative;
+      color: rgba(250, 246, 236, 0.7);
+      margin-bottom: 32px;
+    }
+
+    .sub-form {
+      position: relative;
+      display: flex;
+      max-width: 440px;
+      margin: 0 auto;
+      gap: 10px;
+    }
+
+    .sub-form input {
+      flex: 1;
+      padding: 14px 18px;
+      border-radius: 999px;
+      border: 1px solid rgba(250, 246, 236, 0.25);
+      background: rgba(250, 246, 236, 0.06);
+      color: var(--ivory);
+      font-family: 'Manrope', sans-serif;
+    }
+
+    .sub-form input::placeholder {
+      color: rgba(250, 246, 236, 0.5);
+    }
+
+    .sub-form button {
+      background: var(--gold);
+      color: var(--navy);
+      border: none;
+      padding: 14px 26px;
+      border-radius: 999px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform .25s ease;
+    }
+
+    .sub-form button:hover {
+      transform: translateY(-2px);
+    }
+
+    footer {
+      background: var(--navy-2);
+      color: rgba(250, 246, 236, 0.5);
+      text-align: center;
+      padding: 34px;
+      font-size: 0.85rem;
+      border-top: 1px solid var(--line);
+    }
+
+    @media(max-width:900px) {
+      nav ul {
+        display: none;
+      }
+
+      .menu-btn {
+        display: block;
+      }
+
+      .featured {
+        grid-template-columns: 1fr;
+      }
+
+      .featured-media {
+        min-height: 220px;
+      }
+
+      .featured-body {
+        padding: 32px;
+      }
+
+      .blog-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .topic-row {
         grid-template-columns: 1fr 1fr;
       }
-    }
 
-    @media (max-width:560px) {
-      .footer-top {
-        grid-template-columns: 1fr;
-      }
-
-      .footer-bottom {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-    }
-
-    /* ============================================================
-   ADD BLOG MODAL
-   ============================================================ */
-    .modal-overlay {
-      position: fixed;
-      inset: 0;
-      z-index: 500;
-      background: rgba(10, 37, 81, .55);
-      backdrop-filter: blur(4px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 1.5rem;
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity var(--t-med) var(--ease), visibility var(--t-med) var(--ease);
-    }
-
-    .modal-overlay.is-open {
-      opacity: 1;
-      visibility: visible;
-    }
-
-    .modal-overlay[hidden] {
-      display: flex;
-    }
-
-    /* allow transition before JS removes hidden */
-
-    .modal-panel {
-      background: var(--white);
-      border-radius: var(--radius-lg);
-      width: 100%;
-      max-width: 680px;
-      max-height: 88vh;
-      overflow-y: auto;
-      padding: var(--space-lg);
-      position: relative;
-      box-shadow: var(--shadow-lg);
-      transform: translateY(24px) scale(.98);
-      transition: transform var(--t-med) var(--ease);
-    }
-
-    .modal-overlay.is-open .modal-panel {
-      transform: translateY(0) scale(1);
-    }
-
-    .modal-close {
-      position: absolute;
-      top: var(--space-md);
-      right: var(--space-md);
-      width: 38px;
-      height: 38px;
-      border-radius: 50%;
-      background: var(--bg-light);
-      color: var(--navy);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background var(--t-fast) var(--ease), transform var(--t-fast) var(--ease);
-    }
-
-    .modal-close svg {
-      width: 18px;
-      height: 18px;
-    }
-
-    .modal-close:hover {
-      background: var(--border);
-      transform: rotate(90deg);
-    }
-
-    .modal-head {
-      padding-right: 2.5rem;
-    }
-
-    .form-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: var(--space-md);
-      margin-top: var(--space-lg);
-    }
-
-    .form-field {
-      display: flex;
-      flex-direction: column;
-      gap: .5rem;
-    }
-
-    .form-field--full {
-      grid-column: 1/-1;
-    }
-
-    .form-field label {
-      font-family: var(--font-heading);
-      font-weight: 600;
-      font-size: .9rem;
-      color: var(--navy);
-    }
-
-    .form-field label span {
-      color: var(--royal);
-    }
-
-    .form-field input,
-    .form-field select,
-    .form-field textarea {
-      font-family: var(--font-body);
-      font-size: .95rem;
-      color: var(--text);
-      padding: .8rem 1rem;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      background: var(--bg-light);
-      outline: none;
-      transition: border-color var(--t-fast) var(--ease), background var(--t-fast) var(--ease);
-      resize: vertical;
-      width: 100%;
-    }
-
-    .form-field input:focus,
-    .form-field select:focus,
-    .form-field textarea:focus {
-      border-color: var(--royal);
-      background: var(--white);
-    }
-
-    .form-field select {
-      appearance: none;
-      cursor: pointer;
-    }
-
-    .file-drop {
-      position: relative;
-      border: 1.5px dashed var(--border);
-      border-radius: var(--radius-sm);
-      padding: var(--space-md);
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: .6rem;
-      color: var(--text-muted);
-      font-size: .9rem;
-      transition: border-color var(--t-fast) var(--ease), background var(--t-fast) var(--ease);
-      cursor: pointer;
-    }
-
-    .file-drop svg {
-      width: 26px;
-      height: 26px;
-      color: var(--royal);
-    }
-
-    .file-drop:hover,
-    .file-drop.is-dragover {
-      border-color: var(--royal);
-      background: var(--bg-light);
-    }
-
-    .file-drop input[type="file"] {
-      position: absolute;
-      inset: 0;
-      opacity: 0;
-      cursor: pointer;
-    }
-
-    .form-note {
-      font-size: .85rem;
-      color: var(--text-muted);
-      margin-top: var(--space-md);
-    }
-
-    .modal-actions {
-      display: flex;
-      justify-content: flex-end;
-      gap: 1rem;
-      margin-top: var(--space-lg);
-    }
-
-    .modal-success {
-      text-align: center;
-      padding: var(--space-lg) 0;
-    }
-
-    .success-icon {
-      width: 64px;
-      height: 64px;
-      border-radius: 50%;
-      background: rgba(0, 139, 139, .12);
-      color: var(--royal);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-inline: auto;
-      margin-bottom: var(--space-md);
-    }
-
-    .success-icon svg {
-      width: 30px;
-      height: 30px;
-    }
-
-    .modal-success h3 {
-      margin-bottom: .6rem;
-    }
-
-    .modal-success p {
-      max-width: 420px;
-      margin-inline: auto;
-    }
-
-    .modal-success .btn {
-      margin-top: var(--space-lg);
-    }
-
-    @media (max-width:600px) {
-      .form-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .modal-panel {
-        padding: var(--space-md);
+      .load-more {
+        margin-top: 0;
       }
     }
   </style>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body>
-  <a href="#main" class="skip-link">Skip to main content</a>
 
-  <header class="site-header" id="siteHeader">
-    <div class="container nav">
-      <a href="index.html" class="brand" aria-label="World Trainer Forum — Home">
-        <span class="brand-mark" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round"
-            stroke-linejoin="round">
-            <circle cx="12" cy="12" r="9"></circle>
-            <path d="M3 12h18"></path>
-            <path d="M12 3c2.6 2.6 4 5.7 4 9s-1.4 6.4-4 9c-2.6-2.6-4-5.7-4-9s1.4-6.4 4-9z"></path>
-          </svg>
-        </span>
-        <span>World Trainer Forum<small>Global L&amp;D Community</small></span>
-      </a>
-
-      <nav class="nav-links" id="navLinks" aria-label="Primary">
-        <a href="index.html">Home</a>
-        <a href="about.html">About</a>
-        <a href="under-construction.html">Blog</a>
-        <a href="events.html">Events</a>
-        <a href="membership.html">Membership</a>
-        <a href="contact.html">Contact</a>
-        <div class="nav-cta-mobile">
-          <a href="membership.html" class="btn btn--gold">Become a Member</a>
-        </div>
+  <header>
+    <div class="nav-wrap">
+      <a href="index.html" class="logo">World<span>Trainer</span>Forum</a>
+      <nav>
+        <ul>
+          <li><a href="about.html">About</a></li>
+          <li><a href="find-trainers.html">Find Trainers</a></li>
+          <li><a href="categories.html">Categories</a></li>
+          <li><a href="certificates.html">Certificates</a></li>
+          <li><a href="news-events.html">News &amp; Events</a></li>
+          <li><a href="blog.html" class="active">Blog</a></li>
+        </ul>
       </nav>
-
-      <div class="nav-cta">
-        <a href="events.html" class="btn btn--ghost">Explore Events</a>
-        <a href="membership.html" class="btn btn--primary">Become a Member</a>
-      </div>
-
-      <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation menu" aria-expanded="false"
-        aria-controls="navLinks">
-        <span></span><span></span><span></span>
-      </button>
+      <a href="contact.html" class="nav-cta">Join Free</a>
+      <button class="menu-btn">â˜°</button>
     </div>
   </header>
 
-  <main id="main">
-
-    <!-- ============================================================
-     BLOG HERO
-     ============================================================ -->
-    <section class="blog-hero">
-      <div class="container">
-        <div class="blog-hero-top-row reveal is-visible">
-          <div class="blog-hero-top">
-            <p class="eyebrow">World Trainer Forum Blog</p>
-            <h1>Insights That Inspire Growth.</h1>
-            <p class="lead">Explore expert perspectives, practical strategies, and industry trends from learning and
-              development professionals worldwide.</p>
-          </div>
-          <button type="button" class="btn btn--gold add-blog-btn" id="addBlogBtn" aria-haspopup="dialog"
-            aria-controls="addBlogModal">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-              stroke-linejoin="round" aria-hidden="true">
-              <path d="M12 5v14M5 12h14"></path>
-            </svg>
-            Add Blog
-          </button>
-        </div>
-
-        <form class="search-bar reveal is-visible reveal-delay-1" role="search" aria-label="Search articles"
-          onsubmit="return false;">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
-            stroke-linejoin="round" aria-hidden="true">
-            <circle cx="11" cy="11" r="7"></circle>
-            <path d="M21 21l-4.3-4.3"></path>
-          </svg>
-          <input type="search" placeholder="Search articles, topics, or authors…"
-            aria-label="Search articles, topics, or authors">
-          <button type="submit" class="btn btn--primary">Search</button>
-        </form>
-
-        <div class="chip-row reveal is-visible reveal-delay-2" role="list" aria-label="Filter articles by category">
-          <button class="chip is-active" role="listitem">All</button>
-          <button class="chip" role="listitem">Leadership Development</button>
-          <button class="chip" role="listitem">Training Skills</button>
-          <button class="chip" role="listitem">Coaching</button>
-          <button class="chip" role="listitem">Mentoring</button>
-          <button class="chip" role="listitem">HR Excellence</button>
-          <button class="chip" role="listitem">L&amp;D</button>
-          <button class="chip" role="listitem">Public Speaking</button>
-          <button class="chip" role="listitem">Business Growth</button>
-          <button class="chip" role="listitem">Personal Branding</button>
-          <button class="chip" role="listitem">Digital Learning &amp; AI</button>
-          <button class="chip" role="listitem">Success Stories</button>
-          <button class="chip" role="listitem">Event Highlights</button>
-        </div>
-
-        <!-- Featured article slider -->
-        <div class="slider reveal is-visible reveal-delay-3" aria-roledescription="carousel"
-          aria-label="Featured articles">
-          <div class="slider-track" id="sliderTrack">
-            <article class="slide is-active" aria-label="Slide 1 of 3">
-              <div class="slide-visual" aria-hidden="true">
-                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                  <defs>
-                    <linearGradient id="sg1" x1="0" y1="0" x2="1" y2="1">
-                      <stop offset="0%" stop-color="#008B8B" />
-                      <stop offset="100%" stop-color="#0A2551" />
-                    </linearGradient>
-                  </defs>
-                  <rect width="200" height="200" fill="url(#sg1)" />
-                  <circle cx="150" cy="40" r="40" fill="#FFFFFF" opacity=".06" />
-                  <path d="M30 150c20-40 60-60 140-60" stroke="#C5A059" stroke-width="2" fill="none"
-                    stroke-dasharray="4 8" style="animation:dashMove 7s linear infinite;" />
-                  <circle cx="30" cy="150" r="8" fill="#C5A059" />
-                  <circle cx="170" cy="90" r="8" fill="#FFFFFF" />
-                </svg>
-              </div>
-              <div class="slide-copy">
-                <span class="tag tag--gold">Digital Learning &amp; AI</span>
-                <h3>The Future of Training: Staying Relevant in a Changing World</h3>
-                <p>How AI, hybrid delivery, and shifting learner expectations are reshaping what it means to train
-                  effectively.</p>
-                <a href="#featured-article" class="text-link">Read the full story ?</a>
-              </div>
-            </article>
-
-            <article class="slide" aria-label="Slide 2 of 3">
-              <div class="slide-visual" aria-hidden="true">
-                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                  <defs>
-                    <linearGradient id="sg2" x1="0" y1="0" x2="1" y2="1">
-                      <stop offset="0%" stop-color="#C5A059" />
-                      <stop offset="100%" stop-color="#0A2551" />
-                    </linearGradient>
-                  </defs>
-                  <rect width="200" height="200" fill="url(#sg2)" />
-                  <circle cx="60" cy="60" r="34" fill="#FFFFFF" opacity=".08" />
-                  <path d="M40 160 L100 100 L140 140 L170 60" stroke="#FFFFFF" stroke-width="2" fill="none"
-                    stroke-linecap="round" stroke-linejoin="round" />
-                  <circle cx="170" cy="60" r="7" fill="#FFFFFF" />
-                </svg>
-              </div>
-              <div class="slide-copy">
-                <span class="tag">Leadership Development</span>
-                <h3>Five Coaching Habits That Separate Good Leaders From Great Ones</h3>
-                <p>Practical, research-backed habits the most effective leadership coaches build into every engagement.
-                </p>
-                <a href="#" class="text-link">Read the full story ?</a>
-              </div>
-            </article>
-
-            <article class="slide" aria-label="Slide 3 of 3">
-              <div class="slide-visual" aria-hidden="true">
-                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                  <defs>
-                    <linearGradient id="sg3" x1="0" y1="0" x2="1" y2="1">
-                      <stop offset="0%" stop-color="#008B8B" />
-                      <stop offset="100%" stop-color="#C5A059" />
-                    </linearGradient>
-                  </defs>
-                  <rect width="200" height="200" fill="url(#sg3)" />
-                  <circle cx="100" cy="100" r="46" fill="none" stroke="#FFFFFF" stroke-width="2" opacity=".5" />
-                  <circle cx="100" cy="100" r="10" fill="#FFFFFF" />
-                </svg>
-              </div>
-              <div class="slide-copy">
-                <span class="tag">Business Growth</span>
-                <h3>Turning Your Training Practice Into a Referral Engine</h3>
-                <p>A practical framework for consultants and facilitators who want consistent, qualified client
-                  referrals.</p>
-                <a href="#" class="text-link">Read the full story ?</a>
-              </div>
-            </article>
-          </div>
-
-          <div class="slider-controls">
-            <button class="slider-arrow" id="sliderPrev" aria-label="Previous featured article">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                stroke-linejoin="round">
-                <path d="M15 18l-6-6 6-6"></path>
-              </svg>
-            </button>
-            <div class="slider-dots" id="sliderDots" role="tablist" aria-label="Slide selector">
-              <button class="dot is-active" role="tab" aria-selected="true" aria-label="Go to slide 1"></button>
-              <button class="dot" role="tab" aria-selected="false" aria-label="Go to slide 2"></button>
-              <button class="dot" role="tab" aria-selected="false" aria-label="Go to slide 3"></button>
-            </div>
-            <button class="slider-arrow" id="sliderNext" aria-label="Next featured article">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                stroke-linejoin="round">
-                <path d="M9 18l6-6-6-6"></path>
-              </svg>
-            </button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ============================================================
-     FEATURED ARTICLE — EDITORIAL LAYOUT
-     ============================================================ -->
-    <section class="section featured-article" id="featured-article" aria-labelledby="featured-heading">
-      <div class="container featured-grid">
-        <div class="featured-visual reveal" aria-hidden="true">
-          <svg viewBox="0 0 480 520" xmlns="http://www.w3.org/2000/svg" role="img"
-            aria-label="Editorial illustration representing the future of training and AI-assisted learning">
-            <defs>
-              <linearGradient id="featGrad" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stop-color="#0A2551" />
-                <stop offset="100%" stop-color="#123569" />
-              </linearGradient>
-            </defs>
-            <rect x="0" y="0" width="480" height="520" rx="28" fill="url(#featGrad)" />
-            <g style="animation:spinSlow 70s linear infinite; transform-origin:240px 220px;">
-              <circle cx="240" cy="220" r="150" fill="none" stroke="#FFFFFF" stroke-opacity=".08" stroke-width="1.5" />
-              <circle cx="240" cy="220" r="110" fill="none" stroke="#C5A059" stroke-opacity=".18" stroke-width="1.25"
-                stroke-dasharray="3 9" />
-            </g>
-            <circle cx="240" cy="220" r="46" fill="#008B8B" />
-            <path d="M222 220l12 12 24-28" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"
-              stroke-linejoin="round" fill="none" />
-            <g style="animation:float 6s ease-in-out infinite;">
-              <rect x="60" y="80" width="150" height="58" rx="14" fill="#FFFFFF" opacity=".07" />
-              <rect x="80" y="100" width="80" height="6" rx="3" fill="#FFFFFF" opacity=".5" />
-              <rect x="80" y="112" width="56" height="6" rx="3" fill="#FFFFFF" opacity=".25" />
-            </g>
-            <g style="animation:floatSlow 7s ease-in-out infinite;">
-              <rect x="270" y="350" width="150" height="58" rx="14" fill="#C5A059" opacity=".14" />
-              <rect x="290" y="370" width="80" height="6" rx="3" fill="#C5A059" />
-              <rect x="290" y="382" width="56" height="6" rx="3" fill="#C5A059" opacity=".5" />
-            </g>
-          </svg>
-        </div>
-
-        <div class="featured-copy reveal reveal-delay-1">
-          <span class="tag tag--gold">Digital Learning &amp; AI</span>
-          <h2 id="featured-heading">The Future of Training: Staying Relevant in a Changing World</h2>
-          <p class="lead" style="margin-top:1rem;">As AI tools, hybrid formats, and rising learner expectations reshape
-            the profession, the trainers who thrive will be the ones who treat change as raw material, not a threat.</p>
-          <p style="margin-top:1rem;">This piece breaks down three shifts already underway across the L&amp;D field, and
-            what experienced facilitators are doing differently to stay indispensable.</p>
-          <div class="article-meta">
-            <span class="meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
-                stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="9"></circle>
-                <path d="M12 7v5l3 3"></path>
-              </svg> 9 min read</span>
-            <span class="meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
-                stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="8" r="4"></circle>
-                <path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"></path>
-              </svg> By Priya Nair</span>
-          </div>
-          <a href="#" class="btn btn--primary" style="margin-top:1.75rem;">
-            Read Full Article
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-              stroke-linejoin="round">
-              <path d="M5 12h14"></path>
-              <path d="M13 5l7 7-7 7"></path>
-            </svg>
-          </a>
-        </div>
-      </div>
-    </section>
-
-    <!-- ============================================================
-     CATEGORIES ANCHOR (chips live in hero; this is the in-page target)
-     ============================================================ -->
-    <span id="categories" style="display:block; position:relative; top:-90px;" aria-hidden="true"></span>
-
-    <!-- ============================================================
-     LATEST ARTICLES GRID
-     ============================================================ -->
-    <section class="section section--light" aria-labelledby="latest-heading">
-      <div class="container">
-        <div class="section-head reveal">
-          <p class="eyebrow">Latest Articles</p>
-          <h2 id="latest-heading">Fresh thinking from across the community</h2>
-        </div>
-
-        <div class="grid grid-3 article-grid">
-          <article class="article-card reveal reveal-delay-1">
-            <div class="article-thumb" aria-hidden="true" style="background:linear-gradient(135deg,#008B8B,#0A2551);">
-              <svg viewBox="0 0 100 100">
-                <circle cx="70" cy="25" r="22" fill="#FFFFFF" opacity=".08" />
-                <path d="M15 75c12-22 35-32 70-30" stroke="#C5A059" stroke-width="1.5" fill="none"
-                  stroke-dasharray="3 6" />
-              </svg>
-            </div>
-            <div class="article-body">
-              <span class="tag">Leadership Development</span>
-              <h3>Building Psychological Safety Into Every Training Room</h3>
-              <p>Why the best facilitators design for trust before they design for content.</p>
-              <div class="article-meta">
-                <span class="meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="9"></circle>
-                    <path d="M12 7v5l3 3"></path>
-                  </svg> 6 min</span>
-                <span class="meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="8" r="4"></circle>
-                    <path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"></path>
-                  </svg> Daniel Kgosi</span>
-              </div>
-              <a href="#" class="text-link">Read More ?</a>
-            </div>
-          </article>
-
-          <article class="article-card reveal reveal-delay-2">
-            <div class="article-thumb" aria-hidden="true" style="background:linear-gradient(135deg,#C5A059,#0A2551);">
-              <svg viewBox="0 0 100 100">
-                <circle cx="30" cy="30" r="18" fill="#FFFFFF" opacity=".1" />
-                <path d="M20 80 L50 50 L65 65 L85 35" stroke="#FFFFFF" stroke-width="1.5" fill="none"
-                  stroke-linecap="round" />
-              </svg>
-            </div>
-            <div class="article-body">
-              <span class="tag tag--gold">Coaching</span>
-              <h3>The Question That Unlocks Every Stuck Coaching Conversation</h3>
-              <p>A simple reframing technique used by senior executive coaches worldwide.</p>
-              <div class="article-meta">
-                <span class="meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="9"></circle>
-                    <path d="M12 7v5l3 3"></path>
-                  </svg> 5 min</span>
-                <span class="meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="8" r="4"></circle>
-                    <path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"></path>
-                  </svg> Sofia Marchetti</span>
-              </div>
-              <a href="#" class="text-link">Read More ?</a>
-            </div>
-          </article>
-
-          <article class="article-card reveal reveal-delay-3">
-            <div class="article-thumb" aria-hidden="true" style="background:linear-gradient(135deg,#008B8B,#C5A059);">
-              <svg viewBox="0 0 100 100">
-                <circle cx="50" cy="50" r="24" fill="none" stroke="#FFFFFF" stroke-width="1.5" opacity=".6" />
-                <circle cx="50" cy="50" r="5" fill="#FFFFFF" />
-              </svg>
-            </div>
-            <div class="article-body">
-              <span class="tag">HR Excellence</span>
-              <h3>Designing Onboarding Programs People Actually Remember</h3>
-              <p>What separates forgettable orientation from onboarding that sticks.</p>
-              <div class="article-meta">
-                <span class="meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="9"></circle>
-                    <path d="M12 7v5l3 3"></path>
-                  </svg> 7 min</span>
-                <span class="meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="8" r="4"></circle>
-                    <path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"></path>
-                  </svg> Marcus Webb</span>
-              </div>
-              <a href="#" class="text-link">Read More ?</a>
-            </div>
-          </article>
-
-          <article class="article-card reveal reveal-delay-1">
-            <div class="article-thumb" aria-hidden="true" style="background:linear-gradient(135deg,#0A2551,#123569);">
-              <svg viewBox="0 0 100 100">
-                <rect x="20" y="30" width="60" height="40" rx="8" fill="#FFFFFF" opacity=".08" />
-                <path d="M30 50h40M30 60h25" stroke="#C5A059" stroke-width="2" stroke-linecap="round" />
-              </svg>
-            </div>
-            <div class="article-body">
-              <span class="tag">Public Speaking</span>
-              <h3>Reading a Room: Micro-Cues Every Speaker Should Notice</h3>
-              <p>Practical signals that tell you when to pivot, pause, or push forward.</p>
-              <div class="article-meta">
-                <span class="meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="9"></circle>
-                    <path d="M12 7v5l3 3"></path>
-                  </svg> 6 min</span>
-                <span class="meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="8" r="4"></circle>
-                    <path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"></path>
-                  </svg> Amara Boateng</span>
-              </div>
-              <a href="#" class="text-link">Read More ?</a>
-            </div>
-          </article>
-
-          <article class="article-card reveal reveal-delay-2">
-            <div class="article-thumb" aria-hidden="true" style="background:linear-gradient(135deg,#C5A059,#008B8B);">
-              <svg viewBox="0 0 100 100">
-                <circle cx="35" cy="35" r="14" fill="#FFFFFF" opacity=".15" />
-                <circle cx="65" cy="60" r="14" fill="#FFFFFF" opacity=".15" />
-                <path d="M40 42l20 12" stroke="#FFFFFF" stroke-width="1.5" />
-              </svg>
-            </div>
-            <div class="article-body">
-              <span class="tag">Personal Branding</span>
-              <h3>Turning Your Expertise Into a Recognizable Professional Brand</h3>
-              <p>How working trainers build visibility without feeling like marketers.</p>
-              <div class="article-meta">
-                <span class="meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="9"></circle>
-                    <path d="M12 7v5l3 3"></path>
-                  </svg> 8 min</span>
-                <span class="meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="8" r="4"></circle>
-                    <path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"></path>
-                  </svg> Elena Castillo</span>
-              </div>
-              <a href="#" class="text-link">Read More ?</a>
-            </div>
-          </article>
-
-          <article class="article-card reveal reveal-delay-3">
-            <div class="article-thumb" aria-hidden="true" style="background:linear-gradient(135deg,#008B8B,#0A2551);">
-              <svg viewBox="0 0 100 100">
-                <path d="M20 70 L40 40 L60 55 L80 25" stroke="#FFFFFF" stroke-width="2" fill="none"
-                  stroke-linecap="round" stroke-linejoin="round" />
-                <circle cx="80" cy="25" r="4" fill="#C5A059" />
-              </svg>
-            </div>
-            <div class="article-body">
-              <span class="tag">Business Growth</span>
-              <h3>Pricing Your Workshops With Confidence, Not Guesswork</h3>
-              <p>A framework independent trainers use to set rates that reflect real value.</p>
-              <div class="article-meta">
-                <span class="meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="9"></circle>
-                    <path d="M12 7v5l3 3"></path>
-                  </svg> 7 min</span>
-                <span class="meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="8" r="4"></circle>
-                    <path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"></path>
-                  </svg> Jonas Reiter</span>
-              </div>
-              <a href="#" class="text-link">Read More ?</a>
-            </div>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <!-- ============================================================
-     EXPERT VOICES — BECOME A CONTRIBUTOR
-     ============================================================ -->
-    <section class="section section--navy contribute-section" id="contribute" aria-labelledby="contribute-heading">
-      <div class="container contribute-grid">
-        <div class="contribute-copy reveal">
-          <p class="eyebrow on-dark">Expert Voices</p>
-          <h2 id="contribute-heading">Your experience could be next week's most-read article</h2>
-          <p style="margin-top:1rem; max-width:480px;">Every contributor on this blog started as a member with a lesson
-            worth sharing. Write for a global audience of trainers, coaches, and L&amp;D leaders actively looking for
-            what you know.</p>
-          <a href="contact.html" class="btn btn--gold" style="margin-top:1.75rem;">
-            Become a Contributor
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-              stroke-linejoin="round">
-              <path d="M5 12h14"></path>
-              <path d="M13 5l7 7-7 7"></path>
-            </svg>
-          </a>
-        </div>
-        <div class="contribute-visual reveal reveal-delay-1" aria-hidden="true">
-          <svg viewBox="0 0 380 340" xmlns="http://www.w3.org/2000/svg">
-            <rect x="40" y="20" width="220" height="140" rx="16" fill="rgba(255,255,255,.06)" />
-            <rect x="64" y="48" width="120" height="8" rx="4" fill="#C5A059" />
-            <rect x="64" y="68" width="160" height="6" rx="3" fill="#FFFFFF" opacity=".4" />
-            <rect x="64" y="82" width="140" height="6" rx="3" fill="#FFFFFF" opacity=".25" />
-            <rect x="64" y="96" width="150" height="6" rx="3" fill="#FFFFFF" opacity=".25" />
-            <circle cx="290" cy="200" r="60" fill="rgba(212,175,55,.12)" />
-            <circle cx="290" cy="200" r="34" fill="#C5A059" />
-            <path d="M278 200l8 8 16-18" stroke="#0A2551" stroke-width="3" stroke-linecap="round"
-              stroke-linejoin="round" fill="none" />
-            <rect x="40" y="200" width="160" height="100" rx="16" fill="rgba(255,255,255,.05)" />
-            <circle cx="70" cy="230" r="12" fill="#008B8B" />
-            <rect x="92" y="223" width="90" height="6" rx="3" fill="#FFFFFF" opacity=".5" />
-            <rect x="92" y="235" width="60" height="6" rx="3" fill="#FFFFFF" opacity=".25" />
-            <rect x="56" y="256" width="128" height="28" rx="14" fill="#008B8B" opacity=".2" />
-          </svg>
-        </div>
-      </div>
-    </section>
-
-    <!-- ============================================================
-     SUCCESS STORIES
-     ============================================================ -->
-    <section class="section" id="success-stories" aria-labelledby="success-heading">
-      <div class="container">
-        <div class="section-head center reveal">
-          <p class="eyebrow" style="justify-content:center;">Success Stories</p>
-          <h2 id="success-heading">Real growth, told by our members</h2>
-        </div>
-
-        <div class="grid grid-3 testimonial-grid">
-          <figure class="testimonial-card reveal reveal-delay-1">
-            <blockquote>Joining World Trainer Forum connected me with three new corporate clients within my first six
-              months as a member.</blockquote>
-            <figcaption>
-              <div class="avatar" aria-hidden="true">RP</div>
-              <div>
-                <strong>Rina Patel</strong>
-                <span>Leadership Trainer, Singapore</span>
-              </div>
-            </figcaption>
-          </figure>
-
-          <figure class="testimonial-card reveal reveal-delay-2">
-            <blockquote>The mentorship circle here pushed my facilitation skills further in a year than the previous
-              five years combined.</blockquote>
-            <figcaption>
-              <div class="avatar" aria-hidden="true">TO</div>
-              <div>
-                <strong>Tunde Okafor</strong>
-                <span>Workplace Facilitator, Lagos</span>
-              </div>
-            </figcaption>
-          </figure>
-
-          <figure class="testimonial-card reveal reveal-delay-3">
-            <blockquote>I went from speaking at local meetups to opening the Global Trainers Leadership Summit — this
-              community made that possible.</blockquote>
-            <figcaption>
-              <div class="avatar" aria-hidden="true">LM</div>
-              <div>
-                <strong>Laura Mendez</strong>
-                <span>Motivational Speaker, Madrid</span>
-              </div>
-            </figcaption>
-          </figure>
-        </div>
-      </div>
-    </section>
-
-    <!-- ============================================================
-     UPCOMING EVENTS
-     ============================================================ -->
-    <section class="section section--light" aria-labelledby="upcoming-heading">
-      <div class="container">
-        <div class="section-head reveal">
-          <p class="eyebrow">Upcoming Events</p>
-          <h2 id="upcoming-heading">Mark your calendar</h2>
-        </div>
-
-        <div class="grid grid-3 upcoming-grid">
-          <article class="upcoming-card reveal reveal-delay-1">
-            <div class="upcoming-date"><strong>14</strong><span>Sep</span></div>
-            <div>
-              <h4>Global Trainers Leadership Summit</h4>
-              <p>Singapore &amp; Online</p>
-            </div>
-          </article>
-          <article class="upcoming-card reveal reveal-delay-2">
-            <div class="upcoming-date"><strong>22</strong><span>Oct</span></div>
-            <div>
-              <h4>L&amp;D Excellence Conference</h4>
-              <p>Lisbon, Portugal</p>
-            </div>
-          </article>
-          <article class="upcoming-card reveal reveal-delay-3">
-            <div class="upcoming-date"><strong>03</strong><span>Dec</span></div>
-            <div>
-              <h4>World Trainer Awards Gala</h4>
-              <p>Dubai, UAE</p>
-            </div>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <!-- ============================================================
-     NEWSLETTER
-     ============================================================ -->
-    <section class="section newsletter-section" aria-labelledby="newsletter-heading">
-      <div class="container newsletter-inner reveal">
-        <p class="eyebrow on-dark" style="justify-content:center;">Stay Connected</p>
-        <h2 id="newsletter-heading">Never Miss an Insight</h2>
-        <p style="margin-top:.75rem; color:rgba(255,255,255,.72);">Get fresh articles, event invitations, and member
-          opportunities delivered to your inbox monthly.</p>
-        <form class="newsletter-form" onsubmit="return false;">
-          <label for="newsletterEmail" class="sr-only">Email address</label>
-          <input type="email" id="newsletterEmail" placeholder="you@example.com" required aria-required="true">
-          <button type="submit" class="btn btn--gold">Subscribe</button>
-        </form>
-        <p class="trust-msg">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
-            stroke-linejoin="round" aria-hidden="true">
-            <path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6z"></path>
-          </svg>
-          No spam, ever. Unsubscribe anytime.
-        </p>
-      </div>
-    </section>
-
-  </main>
-
-  <!-- ============================================================
-     FOOTER
-     ============================================================ -->
-  <footer id="site-footer">
-
-      <!-- -- MAIN FOOTER BODY -- -->
-      <div class="footer-main">
-
-        <!-- ROW 1: Brand + 4 link columns + Newsletter -->
-        <div class="footer-top-grid">
-
-          <!-- SECTION 1: Brand + Trust -->
-          <div class="footer-brand-col">
-            <a class="footer-logo" href="index.html">
-              <img src="img/logo.svg" alt="World Trainer Forum Logo">
-              <span>World Trainer <span class="g">Forum</span></span>
-            </a>
-            <p class="footer-tagline">Connecting organizations with world-class trainers, coaches, mentors, and speakers worldwide.</p>
-
-            <!-- Trust Indicators -->
-            <ul class="footer-trust-list">
-              <li><i class="fa-solid fa-circle-check"></i> Verified Trainers</li>
-              <li><i class="fa-solid fa-globe"></i> Global Community</li>
-              <li><i class="fa-solid fa-lock"></i> Secure Payments</li>
-              <li><i class="fa-solid fa-building"></i> Corporate Solutions</li>
-              <li><i class="fa-solid fa-headset"></i> 24/7 Support</li>
-            </ul>
-
-            <!-- Stats Row -->
-            <div class="footer-stats">
-              <div class="footer-stat-card">
-                <i class="fa-solid fa-users"></i>
-                <span class="fsc-num">50K+</span>
-                <span class="fsc-lbl">Trainers</span>
-              </div>
-              <div class="footer-stat-card">
-                <i class="fa-solid fa-earth-asia"></i>
-                <span class="fsc-num">120+</span>
-                <span class="fsc-lbl">Countries</span>
-              </div>
-              <div class="footer-stat-card">
-                <i class="fa-solid fa-graduation-cap"></i>
-                <span class="fsc-num">1M+</span>
-                <span class="fsc-lbl">Learners</span>
-              </div>
-              <div class="footer-stat-card">
-                <i class="fa-solid fa-calendar-check"></i>
-                <span class="fsc-num">10K+</span>
-                <span class="fsc-lbl">Sessions</span>
-              </div>
-            </div>
-
-            <!-- Social Icons -->
-            <div class="footer-social">
-              <a href="#" class="fsoc-btn" aria-label="LinkedIn" title="LinkedIn">
-                <i class="fa-brands fa-linkedin-in"></i>
-              </a>
-              <a href="#" class="fsoc-btn" aria-label="Facebook" title="Facebook">
-                <i class="fa-brands fa-facebook-f"></i>
-              </a>
-              <a href="#" class="fsoc-btn" aria-label="Instagram" title="Instagram">
-                <i class="fa-brands fa-instagram"></i>
-              </a>
-              <a href="#" class="fsoc-btn" aria-label="YouTube" title="YouTube">
-                <i class="fa-brands fa-youtube"></i>
-              </a>
-              <a href="#" class="fsoc-btn" aria-label="X / Twitter" title="X / Twitter">
-                <i class="fa-brands fa-x-twitter"></i>
-              </a>
-            </div>
-          </div>
-
-                    <!-- SECTION 2: For Clients -->
-          <div class="footer-col">
-            <h4 class="footer-col-hd">For Clients</h4>
-            <ul class="footer-links">
-              <li><a href="find-trainers.html">Browse Trainers</a></li>
-              <li><a href="categories.html">All Categories</a></li>
-              <li><a href="corporate-training.html">Corporate Training</a></li>
-              <li><a href="gift-a-session.html">Gift a Session</a></li>
-              <li><a href="news-events.html">News & Events</a></li>
-              <li><a href="leadership-training.html">Leadership Training</a></li>
-              <li><a href="sales-training.html">Sales Training</a></li>
-              <li><a href="soft-skills-training.html">Soft Skills Training</a></li>
-              <li><a href="technology-training.html">Technology Training</a></li>
-              <li><a href="executive-coaching.html">Executive Coaching</a></li>
-              <li><a href="team-building.html">Team Building Programs</a></li>
-              <li><a href="request-custom-training.html">Request Custom Training</a></li>
-            </ul>
-          </div>
-
-          <!-- SECTION 3: For Trainers -->
-          <div class="footer-col">
-            <h4 class="footer-col-hd">For Trainers</h4>
-            <ul class="footer-links">
-              <li><a href="dashboard.html">List Your Profile</a></li>
-              <li><a href="trainer-resources.html">Trainer Resources</a></li>
-              <li><a href="community-forum.html">Community Forum</a></li>
-              <li><a href="success-stories.html">Success Stories</a></li>
-              <li><a href="verification-process.html">Verification Process</a></li>
-              <li><a href="dashboard.html">Trainer Dashboard</a></li>
-              <li><a href="become-verified.html">Become Verified</a></li>
-              <li><a href="trainer-academy.html">Trainer Academy</a></li>
-              <li><a href="learning-center.html">Learning Center</a></li>
-              <li><a href="certification-support.html">Certification Support</a></li>
-              <li><a href="events-workshops.html">Events &amp; Workshops</a></li>
-              <li><a href="earnings-program.html">Earnings Program</a></li>
-              <li><a href="partner-program.html">Partner Program</a></li>
-            </ul>
-          </div>
-
-          <!-- SECTION 5: Company -->
-          <div class="footer-col">
-            <h4 class="footer-col-hd">Company</h4>
-            <ul class="footer-links">
-              <li><a href="about.html">About Us</a></li>
-              <li><a href="blog.html">Blog</a></li>
-              <li><a href="press.html">Press</a></li>
-              <li><a href="careers.html">Careers</a></li>
-              <li><a href="privacy-policy.html">Privacy Policy</a></li>
-              <li><a href="contact.html">Contact Us</a></li>
-              <li><a href="terms-conditions.html">Terms &amp; Conditions</a></li>
-              <li><a href="faqs.html">FAQs</a></li>
-              <li><a href="help-center.html">Help Center</a></li>
-              <li><a href="affiliate-program.html">Affiliate Program</a></li>
-              <li><a href="partners.html">Partners</a></li>
-              <li><a href="media-kit.html">Media Kit</a></li>
-            </ul>
-          </div>
-
-
-          <!-- SECTION 6: Newsletter -->
-          <div class="footer-newsletter-col">
-            <div class="footer-newsletter-card">
-              <div class="fnl-icon"><i class="fa-solid fa-paper-plane"></i></div>
-              <h4 class="fnl-title">Stay Updated</h4>
-              <p class="fnl-sub">Get training insights, industry trends, and expert resources.</p>
-              <form class="fnl-form" onsubmit="return false;">
-                <div class="fnl-input-wrap">
-                  <i class="fa-regular fa-envelope fnl-input-ico"></i>
-                  <input type="email" class="fnl-input" placeholder="Your email address" aria-label="Email for newsletter">
-                  <button type="submit" class="fnl-btn">Subscribe</button>
-                </div>
-              </form>
-              <ul class="fnl-features">
-                <li><i class="fa-solid fa-circle-check"></i> Weekly insights</li>
-                <li><i class="fa-solid fa-circle-check"></i> Trainer resources</li>
-                <li><i class="fa-solid fa-circle-check"></i> Event updates</li>
-              </ul>
-            </div>
-          </div>
-
-        </div><!-- /footer-top-grid -->
-
-        <!-- SECTION 4: Popular Training Topics (Chips) -->
-        <div class="footer-topics">
-          <h4 class="footer-topics-hd">Popular Training Topics</h4>
-          <div class="footer-chips">
-            <a href="#" class="footer-chip">Leadership</a>
-            <a href="#" class="footer-chip">Communication Skills</a>
-            <a href="#" class="footer-chip">AI &amp; Technology</a>
-            <a href="#" class="footer-chip">Sales &amp; Marketing</a>
-            <a href="#" class="footer-chip">HR Training</a>
-            <a href="#" class="footer-chip">Public Speaking</a>
-            <a href="#" class="footer-chip">Personal Development</a>
-            <a href="#" class="footer-chip">Business Strategy</a>
-            <a href="#" class="footer-chip">Finance</a>
-            <a href="#" class="footer-chip">Health &amp; Wellness</a>
-            <a href="#" class="footer-chip">Executive Coaching</a>
-            <a href="#" class="footer-chip">Team Building</a>
-          </div>
-        </div>
-
-        <!-- SECTION 7: Trust & Security Strip -->
-        <div class="footer-trust-strip">
-          <div class="fts-item">
-            <i class="fa-solid fa-shield-halved"></i>
-            <span>SSL Secure</span>
-          </div>
-          <div class="fts-divider"></div>
-          <div class="fts-item">
-            <i class="fa-solid fa-scale-balanced"></i>
-            <span>GDPR Compliant</span>
-          </div>
-          <div class="fts-divider"></div>
-          <div class="fts-item">
-            <i class="fa-solid fa-user-check"></i>
-            <span>Verified Profiles</span>
-          </div>
-          <div class="fts-divider"></div>
-          <div class="fts-item">
-            <i class="fa-solid fa-credit-card"></i>
-            <span>Safe Payments</span>
-          </div>
-          <div class="fts-divider"></div>
-          <div class="fts-item">
-            <i class="fa-solid fa-earth-americas"></i>
-            <span>Trusted Worldwide</span>
-          </div>
-        </div>
-
-      </div><!-- /footer-main -->
-
-      <!-- SECTION 8: Bottom Legal Bar -->
-      <div class="footer-legal">
-        <div class="footer-legal-inner">
-          <span class="fl-copy">© 2026 World Trainer Forum Technologies Pvt. Ltd. All rights reserved.</span>
-          <nav class="fl-links" aria-label="Legal links">
-            <a href="#">Privacy Policy</a>
-            <span class="fl-dot">·</span>
-            <a href="#">Terms</a>
-            <span class="fl-dot">·</span>
-            <a href="#">Cookies</a>
-            <span class="fl-dot">·</span>
-            <a href="#">Accessibility</a>
-            <span class="fl-dot">·</span>
-            <a href="#">Sitemap</a>
-          </nav>
-          <span class="fl-tagline">Made for Global Learning &amp; Growth ??</span>
-        </div>
-      </div>
-
-    </footer>
-
-  <!-- ============================================================
-     ADD BLOG MODAL
-     ============================================================ -->
-  <div class="modal-overlay" id="addBlogModal" role="dialog" aria-modal="true" aria-labelledby="addBlogTitle" hidden>
-    <div class="modal-panel">
-      <button type="button" class="modal-close" id="modalCloseBtn" aria-label="Close add blog form">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-          stroke-linejoin="round">
-          <path d="M6 6l12 12M18 6L6 18"></path>
-        </svg>
-      </button>
-
-      <div class="modal-head">
-        <p class="eyebrow">Expert Voices</p>
-        <h2 id="addBlogTitle">Submit Your Blog</h2>
-        <p class="lead" style="margin-top:.5rem; font-size:1rem;">Share your expertise with a global community of
-          trainers, coaches, and L&amp;D professionals. Submissions are reviewed before publishing.</p>
-      </div>
-
-      <form id="addBlogForm" novalidate>
-        <div class="form-grid">
-          <div class="form-field">
-            <label for="blogTitleInput">Blog Title <span aria-hidden="true">*</span></label>
-            <input type="text" id="blogTitleInput" name="title"
-              placeholder="e.g. 5 Habits of Highly Effective Facilitators" required>
-          </div>
-
-          <div class="form-field">
-            <label for="blogAuthorInput">Your Name <span aria-hidden="true">*</span></label>
-            <input type="text" id="blogAuthorInput" name="author" placeholder="Full name" required>
-          </div>
-
-          <div class="form-field">
-            <label for="blogEmailInput">Email Address <span aria-hidden="true">*</span></label>
-            <input type="email" id="blogEmailInput" name="email" placeholder="you@example.com" required>
-          </div>
-
-          <div class="form-field">
-            <label for="blogCategoryInput">Category <span aria-hidden="true">*</span></label>
-            <select id="blogCategoryInput" name="category" required>
-              <option value="" disabled selected>Select a category</option>
-              <option>Leadership Development</option>
-              <option>Training Skills</option>
-              <option>Coaching</option>
-              <option>Mentoring</option>
-              <option>HR Excellence</option>
-              <option>L&amp;D</option>
-              <option>Public Speaking</option>
-              <option>Business Growth</option>
-              <option>Personal Branding</option>
-              <option>Digital Learning &amp; AI</option>
-              <option>Success Stories</option>
-              <option>Event Highlights</option>
-            </select>
-          </div>
-
-          <div class="form-field form-field--full">
-            <label for="blogExcerptInput">Short Excerpt <span aria-hidden="true">*</span></label>
-            <textarea id="blogExcerptInput" name="excerpt" rows="2"
-              placeholder="A one or two sentence summary of your article" required></textarea>
-          </div>
-
-          <div class="form-field form-field--full">
-            <label for="blogContentInput">Blog Content <span aria-hidden="true">*</span></label>
-            <textarea id="blogContentInput" name="content" rows="7" placeholder="Write or paste your full article here…"
-              required></textarea>
-          </div>
-
-          <div class="form-field form-field--full">
-            <label for="blogImageInput">Cover Image</label>
-            <div class="file-drop" id="fileDropZone">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
-                stroke-linejoin="round" aria-hidden="true">
-                <path d="M12 16V4M7 9l5-5 5 5"></path>
-                <path d="M4 16v3a2 2 0 002 2h12a2 2 0 002-2v-3"></path>
-              </svg>
-              <span id="fileDropLabel">Drag &amp; drop an image, or click to browse</span>
-              <input type="file" id="blogImageInput" name="image" accept="image/*">
-            </div>
-          </div>
-        </div>
-
-        <p class="form-note">By submitting, you confirm this content is your own original work and agree to our
-          editorial guidelines.</p>
-
-        <div class="modal-actions">
-          <button type="button" class="btn btn--ghost" id="modalCancelBtn">Cancel</button>
-          <button type="submit" class="btn btn--primary">
-            Submit Blog
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-              stroke-linejoin="round">
-              <path d="M5 12h14"></path>
-              <path d="M13 5l7 7-7 7"></path>
-            </svg>
-          </button>
-        </div>
-      </form>
-
-      <div class="modal-success" id="modalSuccess" hidden>
-        <div class="success-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-            stroke-linejoin="round">
-            <path d="M20 6L9 17l-5-5"></path>
-          </svg>
-        </div>
-        <h3>Thanks for your submission!</h3>
-        <p>Our editorial team will review your blog and get back to you by email within 3–5 business days.</p>
-        <button type="button" class="btn btn--ghost" id="modalDoneBtn">Close</button>
-      </div>
+  <section class="hero">
+    <div class="hero-inner">
+      <span class="eyebrow">The Forum Journal</span>
+      <h1>Ideas on coaching, worth <em>showing up</em> for.</h1>
+      <p>Practical guidance for trainers building a practice, and clients choosing who to trust with their goals.</p>
     </div>
+  </section>
+
+  <div class="featured-wrap">
+    <article class="featured">
+      <div class="featured-media"></div>
+      <div class="featured-body">
+        <span class="post-cat">Featured Â· Business of Coaching</span>
+        <h2>Why the best trainers charge more â€” and get away with it</h2>
+        <p>Pricing isn't about confidence, it's about positioning. Here's how Elite-tier coaches on the platform
+          structure their offers to justify premium rates without losing clients.</p>
+        <div class="post-meta">
+          <div class="avatar"></div>
+          <span>By the WTF Editorial Team Â· Jul 12, 2026 Â· 6 min read</span>
+        </div>
+      </div>
+    </article>
   </div>
 
+  <main class="blog-main">
+    <div class="filter-row">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="business">Business of Coaching</button>
+      <button class="filter-btn" data-filter="training">Training &amp; Method</button>
+      <button class="filter-btn" data-filter="clients">For Clients</button>
+      <button class="filter-btn" data-filter="platform">Platform</button>
+    </div>
+
+    <div class="blog-grid">
+
+      <article class="post-card" data-cat="clients">
+        <div class="post-thumb t1"></div>
+        <div class="post-content">
+          <h3>How to choose a coach you'll actually stick with</h3>
+          <p>Credentials matter, but fit matters more. A five-question framework before you book a first session.</p>
+          <div class="post-foot"><span>For Clients</span><span>4 min read</span></div>
+        </div>
+      </article>
+
+      <article class="post-card" data-cat="training">
+        <div class="post-thumb t2"></div>
+        <div class="post-content">
+          <h3>Periodization isn't just for strength coaches</h3>
+          <p>Executive coaches, language tutors, and music mentors are borrowing training-cycle thinking â€” here's how.
+          </p>
+          <div class="post-foot"><span>Training &amp; Method</span><span>7 min read</span></div>
+        </div>
+      </article>
+
+      <article class="post-card" data-cat="business">
+        <div class="post-thumb t3"></div>
+        <div class="post-content">
+          <h3>The no-show problem, and how top trainers solve it</h3>
+          <p>Cancellation policy design that protects your calendar without scaring off new clients.</p>
+          <div class="post-foot"><span>Business of Coaching</span><span>5 min read</span></div>
+        </div>
+      </article>
+
+      <article class="post-card" data-cat="platform">
+        <div class="post-thumb t4"></div>
+        <div class="post-content">
+          <h3>Inside the Master-tier review panel</h3>
+          <p>What our reviewers actually look for when a trainer applies for the highest verification tier.</p>
+          <div class="post-foot"><span>Platform</span><span>6 min read</span></div>
+        </div>
+      </article>
+
+      <article class="post-card" data-cat="clients">
+        <div class="post-thumb t5"></div>
+        <div class="post-content">
+          <h3>Group sessions vs. 1:1 coaching: what's right for you</h3>
+          <p>Cost, accountability, and pace â€” a breakdown to help you pick the right format for your goals.</p>
+          <div class="post-foot"><span>For Clients</span><span>4 min read</span></div>
+        </div>
+      </article>
+
+      <article class="post-card" data-cat="business">
+        <div class="post-thumb t6"></div>
+        <div class="post-content">
+          <h3>Turning repeat clients into referrals</h3>
+          <p>A simple follow-up system three Elite trainers use to keep their calendars full without ad spend.</p>
+          <div class="post-foot"><span>Business of Coaching</span><span>5 min read</span></div>
+        </div>
+      </article>
+
+    </div>
+  </main>
+
+  <div class="load-more"><button class="load-btn">Load More Articles</button></div>
+
+  <section class="topics">
+    <div class="topics-inner">
+      <div class="section-head">
+        <span class="kicker">Browse by Topic</span>
+        <h2>Find what's relevant to you</h2>
+      </div>
+      <div class="topic-row">
+        <a href="#" class="topic-chip">
+          <h4>Fitness &amp; Strength</h4><span>38 articles</span>
+        </a>
+        <a href="#" class="topic-chip">
+          <h4>Business Coaching</h4><span>24 articles</span>
+        </a>
+        <a href="#" class="topic-chip">
+          <h4>Music &amp; Arts</h4><span>17 articles</span>
+        </a>
+        <a href="#" class="topic-chip">
+          <h4>Language Learning</h4><span>12 articles</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="newsletter">
+    <h2>Get the Forum Journal in your inbox.</h2>
+    <p>One thoughtful email a week. No noise, unsubscribe anytime.</p>
+    <form class="sub-form" onsubmit="return false;">
+      <input type="email" placeholder="you@email.com" required>
+      <button type="submit">Subscribe</button>
+    </form>
+  </section>
+
+  <footer>Â© 2026 World Trainer Forum. All rights reserved.</footer>
+
   <script>
-    (function () {
-      "use strict";
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in-view'); });
+    }, { threshold: 0.15 });
+    document.querySelectorAll('.post-card').forEach(el => io.observe(el));
 
-      /* Sticky header background on scroll */
-      var header = document.getElementById('siteHeader');
-      function onScroll() {
-        if (window.scrollY > 40) { header.classList.add('is-scrolled'); }
-        else { header.classList.remove('is-scrolled'); }
-      }
-      window.addEventListener('scroll', onScroll, { passive: true });
-      onScroll();
-
-      /* Mobile nav toggle */
-      var navToggle = document.getElementById('navToggle');
-      var navLinks = document.getElementById('navLinks');
-      navToggle.addEventListener('click', function () {
-        var open = navLinks.classList.toggle('is-open');
-        navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-      });
-      navLinks.querySelectorAll('a').forEach(function (link) {
-        link.addEventListener('click', function () {
-          navLinks.classList.remove('is-open');
-          navToggle.setAttribute('aria-expanded', 'false');
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const f = btn.dataset.filter;
+        document.querySelectorAll('.post-card').forEach(card => {
+          card.style.display = (f === 'all' || card.dataset.cat === f) ? '' : 'none';
         });
       });
-
-      /* Scroll-triggered reveal animations */
-      var revealEls = document.querySelectorAll('.reveal');
-      if ('IntersectionObserver' in window) {
-        var io = new IntersectionObserver(function (entries) {
-          entries.forEach(function (entry) {
-            if (entry.isIntersecting) {
-              entry.target.classList.add('is-visible');
-              io.unobserve(entry.target);
-            }
-          });
-        }, { threshold: .15, rootMargin: '0px 0px -60px 0px' });
-        revealEls.forEach(function (el) { io.observe(el); });
-      } else {
-        revealEls.forEach(function (el) { el.classList.add('is-visible'); });
-      }
-
-      /* Category chip filter (visual toggle) */
-      var chips = document.querySelectorAll('.chip');
-      chips.forEach(function (chip) {
-        chip.addEventListener('click', function () {
-          chips.forEach(function (c) { c.classList.remove('is-active'); });
-          chip.classList.add('is-active');
-        });
-      });
-
-      /* Featured article slider */
-      var slides = document.querySelectorAll('.slide');
-      var dots = document.querySelectorAll('.dot');
-      var current = 0;
-      var autoplayTimer;
-
-      function goToSlide(index) {
-        slides[current].classList.remove('is-active');
-        dots[current].classList.remove('is-active');
-        dots[current].setAttribute('aria-selected', 'false');
-        current = (index + slides.length) % slides.length;
-        slides[current].classList.add('is-active');
-        dots[current].classList.add('is-active');
-        dots[current].setAttribute('aria-selected', 'true');
-      }
-
-      function startAutoplay() {
-        autoplayTimer = setInterval(function () { goToSlide(current + 1); }, 6000);
-      }
-      function resetAutoplay() {
-        clearInterval(autoplayTimer);
-        startAutoplay();
-      }
-
-      var prevBtn = document.getElementById('sliderPrev');
-      var nextBtn = document.getElementById('sliderNext');
-      if (prevBtn && nextBtn && slides.length) {
-        prevBtn.addEventListener('click', function () { goToSlide(current - 1); resetAutoplay(); });
-        nextBtn.addEventListener('click', function () { goToSlide(current + 1); resetAutoplay(); });
-        dots.forEach(function (dot, i) {
-          dot.addEventListener('click', function () { goToSlide(i); resetAutoplay(); });
-        });
-        startAutoplay();
-      }
-
-      /* Footer year */
-      var yearEl = document.getElementById('footerYear');
-      if (yearEl) { yearEl.textContent = new Date().getFullYear(); }
-
-      /* Add Blog modal */
-      var addBlogBtn = document.getElementById('addBlogBtn');
-      var modal = document.getElementById('addBlogModal');
-      var modalPanel = modal ? modal.querySelector('.modal-panel') : null;
-      var modalCloseBtn = document.getElementById('modalCloseBtn');
-      var modalCancelBtn = document.getElementById('modalCancelBtn');
-      var modalDoneBtn = document.getElementById('modalDoneBtn');
-      var addBlogForm = document.getElementById('addBlogForm');
-      var modalSuccess = document.getElementById('modalSuccess');
-      var lastFocusedEl = null;
-
-      function openModal() {
-        if (!modal) return;
-        lastFocusedEl = document.activeElement;
-        modal.hidden = false;
-        requestAnimationFrame(function () { modal.classList.add('is-open'); });
-        document.body.style.overflow = 'hidden';
-        var firstField = document.getElementById('blogTitleInput');
-        if (firstField) { firstField.focus(); }
-      }
-
-      function closeModal() {
-        if (!modal) return;
-        modal.classList.remove('is-open');
-        document.body.style.overflow = '';
-        setTimeout(function () {
-          modal.hidden = true;
-          if (addBlogForm) { addBlogForm.hidden = false; }
-          if (modalSuccess) { modalSuccess.hidden = true; }
-          if (addBlogForm) { addBlogForm.reset(); }
-          if (fileDropLabel) { fileDropLabel.textContent = 'Drag & drop an image, or click to browse'; }
-        }, 400);
-        if (lastFocusedEl) { lastFocusedEl.focus(); }
-      }
-
-      if (addBlogBtn) { addBlogBtn.addEventListener('click', openModal); }
-      if (modalCloseBtn) { modalCloseBtn.addEventListener('click', closeModal); }
-      if (modalCancelBtn) { modalCancelBtn.addEventListener('click', closeModal); }
-      if (modalDoneBtn) { modalDoneBtn.addEventListener('click', closeModal); }
-
-      if (modal) {
-        modal.addEventListener('click', function (e) {
-          if (e.target === modal) { closeModal(); }
-        });
-      }
-
-      document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape' && modal && !modal.hidden) { closeModal(); }
-      });
-
-      /* File drop zone */
-      var fileDropZone = document.getElementById('fileDropZone');
-      var fileInput = document.getElementById('blogImageInput');
-      var fileDropLabel = document.getElementById('fileDropLabel');
-
-      if (fileDropZone && fileInput && fileDropLabel) {
-        fileInput.addEventListener('change', function () {
-          if (fileInput.files && fileInput.files[0]) {
-            fileDropLabel.textContent = fileInput.files[0].name;
-          }
-        });
-        ['dragenter', 'dragover'].forEach(function (evt) {
-          fileDropZone.addEventListener(evt, function (e) {
-            e.preventDefault();
-            fileDropZone.classList.add('is-dragover');
-          });
-        });
-        ['dragleave', 'drop'].forEach(function (evt) {
-          fileDropZone.addEventListener(evt, function (e) {
-            e.preventDefault();
-            fileDropZone.classList.remove('is-dragover');
-          });
-        });
-        fileDropZone.addEventListener('drop', function (e) {
-          var files = e.dataTransfer.files;
-          if (files && files[0]) {
-            fileInput.files = files;
-            fileDropLabel.textContent = files[0].name;
-          }
-        });
-      }
-
-      /* Form submission (front-end only: shows confirmation state) */
-      if (addBlogForm) {
-        addBlogForm.addEventListener('submit', function (e) {
-          e.preventDefault();
-          if (!addBlogForm.checkValidity()) {
-            addBlogForm.reportValidity();
-            return;
-          }
-          addBlogForm.hidden = true;
-          if (modalSuccess) { modalSuccess.hidden = false; }
-          if (modalPanel) { modalPanel.scrollTop = 0; }
-        });
-      }
-
-    })();
+    });
   </script>
-<script src="js/mobile-nav.js"></script>
+
 </body>
 
 </html>
