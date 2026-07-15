@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en" class="dark-mode">
 
 <head>
@@ -1553,7 +1553,14 @@
     }
     function saveAvailability() {
       var cont = document.getElementById('weekly-hours-container');
+      var cache = JSON.parse(localStorage.getItem('currentTrainer')) || {};
+      var oldAvs = cache.availability;
+      if (typeof oldAvs === 'string') { try { oldAvs = JSON.parse(oldAvs); } catch(e){} }
+      oldAvs = oldAvs || {};
+
       var avs = {};
+      avs.specificDates = oldAvs.specificDates || {};
+      
       cont.querySelectorAll('.avail-row').forEach(function (row) {
         var d = row.dataset.day;
         avs[d] = {
@@ -1562,7 +1569,6 @@
           end: row.querySelector('.avail-to').value
         };
       });
-      var cache = JSON.parse(localStorage.getItem('currentTrainer')) || {};
       cache.availability = avs;
       localStorage.setItem('currentTrainer', JSON.stringify(cache));
       renderDashboardCalendar();
@@ -1617,17 +1623,30 @@
       var headerHtml = dayNames.map(function (n) {
         return '<div style="text-align:center;font-size:.68rem;font-weight:700;color:rgba(255,255,255,0.3);padding:5px 0">' + n + '</div>';
       }).join('');
+      
       var cells = '';
       for (var i = 0; i < firstDay; i++) cells += '<div></div>';
+      
+      var cache = JSON.parse(localStorage.getItem('currentTrainer')) || {};
+      var rawAvs = cache.availability;
+      if (typeof rawAvs === 'string') { try { rawAvs = JSON.parse(rawAvs); } catch (e) { rawAvs = {}; } }
+      var specificDates = (rawAvs && rawAvs.specificDates) ? rawAvs.specificDates : {};
+
       for (var day = 1; day <= daysInMonth; day++) {
         var d = new Date(_dbCalYear, _dbCalMonth, day);
         var dayKey = _DB_DAY_MAP[d.getDay()];
+        var dateStr = _dbCalYear + '-' + _dbCalMonth + '-' + day;
+        
         var enabled = avs[dayKey] !== false;
+        if (typeof specificDates[dateStr] !== 'undefined') {
+          enabled = specificDates[dateStr];
+        }
+
         var isToday = (day === today.getDate() && _dbCalMonth === today.getMonth() && _dbCalYear === today.getFullYear());
         var bg = enabled ? (isToday ? 'rgba(197,160,89,0.25)' : 'rgba(255,255,255,0.03)') : 'rgba(239,68,68,0.15)';
         var bdr = enabled ? (isToday ? '1.5px solid #C5A059' : '1px solid rgba(255,255,255,0.06)') : '1px solid rgba(239,68,68,0.3)';
         var clr = enabled ? (isToday ? '#C5A059' : 'rgba(237,242,247,0.8)') : 'rgba(239,68,68,0.85)';
-        cells += '<div style="text-align:center;padding:7px 3px;border-radius:7px;background:' + bg + ';border:' + bdr + ';font-size:.76rem;font-weight:600;color:' + clr + '">' + day + '</div>';
+        cells += '<div onclick="toggleSpecificDate(' + _dbCalYear + ',' + _dbCalMonth + ',' + day + ')" style="cursor:pointer;text-align:center;padding:7px 3px;border-radius:7px;background:' + bg + ';border:' + bdr + ';font-size:.76rem;font-weight:600;color:' + clr + '" title="Click to block/unblock this specific day">' + day + '</div>';
       }
       widget.innerHTML =
         '<div style="padding:10px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);background:var(--bg2)">'
@@ -1643,6 +1662,41 @@
     }
     function _dbCalPrev() { if (--_dbCalMonth < 0) { _dbCalMonth = 11; _dbCalYear--; } renderDashboardCalendar(); }
     function _dbCalNext() { if (++_dbCalMonth > 11) { _dbCalMonth = 0; _dbCalYear++; } renderDashboardCalendar(); }
+
+    window.toggleSpecificDate = function(y, m, d) {
+      var cache = JSON.parse(localStorage.getItem('currentTrainer')) || {};
+      var avs = cache.availability;
+      if (typeof avs === 'string') {
+        try { avs = JSON.parse(avs); } catch(e) { avs = _parseAvailabilityString(cache.availability) || {}; }
+      }
+      avs = avs || {};
+      if (!avs.specificDates) avs.specificDates = {};
+
+      var dateStr = y + '-' + m + '-' + d;
+      var dObj = new Date(y, m, d);
+      var dayKey = _DB_DAY_MAP[dObj.getDay()];
+
+      var currentState = true;
+      if (typeof avs.specificDates[dateStr] !== 'undefined') {
+        currentState = avs.specificDates[dateStr];
+      } else {
+        var weeklyCont = document.getElementById('weekly-hours-container');
+        if (weeklyCont) {
+          var row = weeklyCont.querySelector('.avail-row[data-day="'+dayKey+'"]');
+          if (row) currentState = row.querySelector('.avail-toggle').checked;
+        } else {
+          var w = avs[dayKey];
+          if (w) currentState = typeof w.available !== 'undefined' ? w.available : w.enabled;
+          if (currentState === undefined) currentState = true;
+        }
+      }
+
+      avs.specificDates[dateStr] = !currentState;
+      cache.availability = avs;
+      localStorage.setItem('currentTrainer', JSON.stringify(cache));
+      renderDashboardCalendar();
+      if (typeof commitLocalProfileChanges === 'function') commitLocalProfileChanges();
+    };
 
     /* ── Portfolio Logic ── */
     window.tempPortfolioImgUrl = '';
@@ -2079,11 +2133,27 @@
         notifDrop.style.display = 'none';
       }
     });
+  
+    // Global Save Button Popup
+    document.addEventListener('click', function(e) {
+      var btn = e.target.closest('button');
+      if (btn) {
+        var text = (btn.textContent || btn.innerText).toLowerCase();
+        var onclickAttr = btn.getAttribute('onclick') || '';
+        if (text.includes('save') || onclickAttr.toLowerCase().includes('save')) {
+          setTimeout(function() {
+            alert('your profile is updated');
+          }, 300);
+        }
+      }
+    });
   </script>
 <script src="js/mobile-nav.js"></script>
 </body>
 
 </html>
+
+
 
 
 
