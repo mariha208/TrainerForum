@@ -1171,3 +1171,120 @@ window.heroSearch = function () {
   if (params.length) url += '?' + params.join('&');
   window.location.href = url;
 };
+
+// ── LIVE NOTIFICATIONS SYSTEM ────────────────────────────────────────────────
+const FEED_DATA = [
+    { id: 1, type: "Blog", title: "Top 5 Equestrian Training Routines", timestamp: 1770000000000 },
+    { id: 2, type: "Event", title: "Annual Spring Trainer Symposium Announced!", timestamp: 1775000000000 }
+];
+const STORAGE_KEY = 'latest_notification_read_time';
+
+function formatNotifTime(timestamp) {
+    const date = new Date(timestamp);
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+function renderNotifications(panel) {
+    const ALLOWED_TYPES = ['Blog', 'Event', 'News & Event'];
+    const feed = FEED_DATA.filter(item => ALLOWED_TYPES.includes(item.type)).sort((a,b) => b.timestamp - a.timestamp);
+    
+    // Preserve header structure
+    const headerHtml = `
+      <div class="notif-header">
+        <h4>Notifications</h4><a href="#" style="font-size:.78rem;color:var(--gold-dk)">Mark all read</a>
+      </div>
+    `;
+    
+    if (feed.length === 0) {
+        panel.innerHTML = headerHtml + '<div style="padding: 24px; text-align: center; color: var(--ts); font-size: 0.9rem;">You are all caught up!</div>';
+        return;
+    }
+    
+    let html = headerHtml;
+    feed.forEach(item => {
+        const isBlog = item.type.toLowerCase() === 'blog';
+        const bg = isBlog ? 'rgba(3, 218, 198, 0.15)' : 'rgba(255, 183, 77, 0.15)';
+        const color = isBlog ? '#03dac6' : '#ffb74d';
+        const icon = isBlog ? '📝' : '📅';
+        
+        html += `
+          <div class="notif-item unread">
+            <div class="notif-ico" style="background:${bg}; color:${color}">${icon}</div>
+            <div class="notif-text" style="flex:1;">
+              <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+                <span style="font-size:0.7rem; font-weight:700; color:${color}; text-transform:uppercase; letter-spacing:0.5px; padding: 2px 6px; border-radius: 4px; background: ${bg};">${item.type}</span>
+                <span style="font-size:0.75rem; color:var(--ts); font-weight: 500;">${formatNotifTime(item.timestamp)}</span>
+              </div>
+              <p style="margin:0; font-size:0.9rem; color:var(--tp); line-height: 1.4;">${item.title}</p>
+            </div>
+          </div>
+        `;
+    });
+    
+    panel.innerHTML = html;
+}
+
+function evaluateUnreadState() {
+    const lastChecked = parseInt(localStorage.getItem(STORAGE_KEY) || '0', 10);
+    const ALLOWED_TYPES = ['Blog', 'Event', 'News & Event'];
+    const hasUnread = FEED_DATA.some(item => ALLOWED_TYPES.includes(item.type) && item.timestamp > lastChecked);
+    
+    document.querySelectorAll('.notif-dot').forEach(dot => {
+        dot.style.display = hasUnread ? 'block' : 'none';
+    });
+}
+
+window.toggleNotif = function(e) {
+    if (e) e.stopPropagation();
+    
+    // Support both index.html (notif-panel) and dashboard.html (notif-dropdown) element IDs
+    const panel = document.getElementById('notif-panel') || document.getElementById('notif-dropdown');
+    if (!panel) return;
+    
+    const isPanelOpen = panel.classList.contains('open') || panel.style.display === 'block';
+    
+    if (!isPanelOpen) {
+        // Open panel
+        if (panel.id === 'notif-panel') {
+            panel.classList.add('open');
+        } else {
+            panel.style.display = 'block';
+        }
+        
+        // Mark items as read instantly
+        const ALLOWED_TYPES = ['Blog', 'Event', 'News & Event'];
+        const feed = FEED_DATA.filter(item => ALLOWED_TYPES.includes(item.type));
+        if (feed.length > 0) {
+            const maxTime = Math.max(...feed.map(i => i.timestamp), Date.now());
+            localStorage.setItem(STORAGE_KEY, maxTime.toString());
+        }
+        
+        evaluateUnreadState();
+        renderNotifications(panel);
+    } else {
+        // Close panel
+        if (panel.id === 'notif-panel') {
+            panel.classList.remove('open');
+        } else {
+            panel.style.display = 'none';
+        }
+    }
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    evaluateUnreadState();
+});
+
+// Close when clicking outside
+document.addEventListener('click', (e) => {
+    const panel = document.getElementById('notif-panel') || document.getElementById('notif-dropdown');
+    const btn = document.getElementById('notif-btn') || document.getElementById('notif-trigger');
+    
+    if (panel && btn && !panel.contains(e.target) && !btn.contains(e.target)) {
+        if (panel.id === 'notif-panel') {
+            panel.classList.remove('open');
+        } else {
+            panel.style.display = 'none';
+        }
+    }
+});
