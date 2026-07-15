@@ -1594,18 +1594,18 @@
       });
       cache.availability = avs;
       localStorage.setItem('currentTrainer', JSON.stringify(cache));
-      renderDashboardCalendar();
 
-      // Push to Google Sheets API
-      var currentTrainerId = cache.trainerId || cache._id || cache.id || "T-1001";
-      var payload = {
-        trainerId: currentTrainerId,
-        availability: JSON.stringify(avs)
-      };
+      // ── Write to per-trainer key so trainer-modal & booking modal can read correct data ──
+      var _tid = cache.trainerId || cache._id || cache.id || '1';
+      var _avsJson = JSON.stringify(avs);
+      localStorage.setItem('tv-trainer-' + _tid + '-availability', _avsJson);
+      localStorage.setItem('tv-trainer-1-availability', _avsJson); // universal fallback
+
+      renderDashboardCalendar();
 
       window.toast && window.toast('Saving availability to database...', 3000);
 
-      if (typeof commitLocalProfileChanges === 'function') { commitLocalProfileChanges(); window.toast ? window.toast('? Availability slots synchronized!') : alert('Availability saved successfully!'); }
+      if (typeof commitLocalProfileChanges === 'function') { commitLocalProfileChanges(); window.toast ? window.toast('✅ Availability slots synchronized!') : alert('Availability saved successfully!'); }
     }
 
     /* ── Dashboard Calendar ── */
@@ -1698,6 +1698,8 @@
       var dateStr = y + '-' + m + '-' + d;
       var dObj = new Date(y, m, d);
       var dayKey = _DB_DAY_MAP[dObj.getDay()];
+      var _monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      var _friendlyDate = dObj.toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
 
       var currentState = true;
       if (typeof avs.specificDates[dateStr] !== 'undefined') {
@@ -1714,9 +1716,26 @@
         }
       }
 
+      // ── Confirm before blocking/unblocking ──
+      var _action = currentState ? 'block (mark unavailable)' : 'unblock (mark available)';
+      var _confirmed = window.confirm(
+        'Are you sure you want to ' + _action + ':\n\n' + _friendlyDate + '?\n\n' +
+        (currentState
+          ? 'This will mark the day as unavailable for new bookings.'
+          : 'This will restore the day as available for bookings.')
+      );
+      if (!_confirmed) return;
+
       avs.specificDates[dateStr] = !currentState;
       cache.availability = avs;
       localStorage.setItem('currentTrainer', JSON.stringify(cache));
+
+      // ── Keep per-trainer key in sync ──
+      var _tid = cache.trainerId || cache._id || cache.id || '1';
+      var _avsJson = JSON.stringify(avs);
+      localStorage.setItem('tv-trainer-' + _tid + '-availability', _avsJson);
+      localStorage.setItem('tv-trainer-1-availability', _avsJson);
+
       renderDashboardCalendar();
       if (typeof commitLocalProfileChanges === 'function') commitLocalProfileChanges();
     };

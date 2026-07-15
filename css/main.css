@@ -3,17 +3,17 @@
    Light Mode & Dark Mode Theme System
 ═══════════════════════════════════════════════════════════════════════════ */
 
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Poppins:wght@300;400;500;600;700;800&display=swap');
 
 /* ═══════════════════════════════════════════════════════════════════════════
    CSS VARIABLES - LIGHT MODE (DEFAULT)
 ═══════════════════════════════════════════════════════════════════════════ */
 :root {
   /* ── Core Brand Colors (Option 3 — Light Mode) ── */
-  --primary-navy:   #0A2551;
-  --accent-teal:    #008B8B;
-  --teal-dk:        #006b6b;
-  --teal-lt:        #33a3a3;
+  --primary-navy:   #0B1B32;
+  --accent-teal:    #2455C9;
+  --teal-dk:        #122644;
+  --teal-lt:        #3A6BE0;
   --premium-gold:   #C5A059;
   --gold-lt:        #D4B87A;
   --gold-dk:        #A8863D;
@@ -55,7 +55,7 @@
   
   /* Typography */
   --font-serif: 'Cormorant Garamond', serif;
-  --font-sans: 'Outfit', sans-serif;
+  --font-sans: 'Poppins', sans-serif;
   
   /* Transitions */
   --trans-fast: all 0.2s ease;

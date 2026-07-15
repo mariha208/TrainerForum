@@ -260,7 +260,7 @@
   border: none;
   cursor: pointer;
   transition: all 0.22s;
-  font-family: 'Outfit', sans-serif;
+  font-family: 'Poppins', sans-serif;
   letter-spacing: 0.01em;
   white-space: nowrap;
 }
@@ -334,7 +334,7 @@
   border-bottom: 2.5px solid transparent;
   transition: all 0.25s;
   white-space: nowrap;
-  font-family: 'Outfit', sans-serif;
+  font-family: 'Poppins', sans-serif;
   letter-spacing: 0.01em;
   display: flex;
   align-items: center;
@@ -517,7 +517,7 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  font-family: 'Outfit', sans-serif;
+  font-family: 'Poppins', sans-serif;
   transition: color 0.2s;
 }
 .tpm-expand-btn:hover { color: #D4B87A; }
@@ -1144,7 +1144,7 @@
   font-size: 0.72rem;
   font-weight: 600;
   transition: all 0.25s;
-  font-family: 'Outfit', sans-serif;
+  font-family: 'Poppins', sans-serif;
 }
 .tpm-social-btn:hover {
   transform: translateY(-4px);
@@ -1382,7 +1382,7 @@
   background: transparent;
   color: #C5A059;
   cursor: pointer;
-  font-family: 'Outfit', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-weight: 600;
   transition: all 0.2s;
   letter-spacing: 0.01em;

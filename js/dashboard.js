@@ -41,7 +41,7 @@ function _showDashboardLoggedOutScreen() {
       align-items:center;
       justify-content:center;
       background:var(--bg, #0f0f0f);
-      font-family:'Outfit','Inter',system-ui,sans-serif;
+      font-family:'Poppins','Inter',system-ui,sans-serif;
     ">
       <div style="
         text-align:center;

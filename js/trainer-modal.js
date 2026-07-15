@@ -1013,6 +1013,20 @@ window.openBookingModal = function (tid) {
   window.bookingState.selectedPkg = t.pn;
   window.bookingState.selectedPkgName = 'Introductory Session';
 
+  // ── Resolve the booked trainer's availability ──
+  let _trainerAvailability = null;
+  try {
+    const _lavail = JSON.parse(localStorage.getItem(`tv-trainer-${tid}-availability`) || 'null');
+    if (_lavail) {
+      _trainerAvailability = _lavail;
+    } else {
+      let _tAvail = t.availability;
+      if (typeof _tAvail === 'string') _tAvail = JSON.parse(_tAvail);
+      _trainerAvailability = _tAvail;
+    }
+  } catch(e) {}
+  window.bookingState.trainerAvailability = _trainerAvailability;
+
   const basePkgs = t.packages && t.packages.length > 0 ? t.packages : [
     { name: 'Introductory Session', desc: '60-min 1-on-1', price: t.pn },
     { name: 'Deep Dive Programme', desc: '4 weeks · 8 sessions', price: t.pn * 12 },
@@ -1084,7 +1098,7 @@ window.openBookingModal = function (tid) {
           <div>
             <label class="tpm-form-label" for="bpm-type">Session Type</label>
             <select id="bpm-type" onchange="updateBPMSummary()"
-              style="width:100%;padding:11px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;color:rgba(237,242,247,0.9);font-family:'Outfit',sans-serif;font-size:0.86rem;outline:none">
+              style="width:100%;padding:11px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;color:rgba(237,242,247,0.9);font-family:'Poppins',sans-serif;font-size:0.86rem;outline:none">
               <option style="background:#0F1A2C;color:#fff">1-on-1 Session</option>
               <option style="background:#0F1A2C;color:#fff">Group Session (2–5)</option>
               <option style="background:#0F1A2C;color:#fff">Corporate Training</option>
@@ -1094,7 +1108,7 @@ window.openBookingModal = function (tid) {
           <div>
             <label class="tpm-form-label" for="bpm-mode">Meeting Mode</label>
             <select id="bpm-mode" onchange="updateBPMSummary()"
-              style="width:100%;padding:11px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;color:rgba(237,242,247,0.9);font-family:'Outfit',sans-serif;font-size:0.86rem;outline:none">
+              style="width:100%;padding:11px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;color:rgba(237,242,247,0.9);font-family:'Poppins',sans-serif;font-size:0.86rem;outline:none">
               <option style="background:#0F1A2C;color:#fff">Online (Zoom/Meet)</option>
               <option style="background:#0F1A2C;color:#fff">In-Person</option>
               <option style="background:#0F1A2C;color:#fff">Hybrid</option>
@@ -1106,7 +1120,7 @@ window.openBookingModal = function (tid) {
         <div>
           <label class="tpm-form-label" for="bpm-notes">Notes for Trainer</label>
           <textarea id="bpm-notes" rows="3"
-            style="width:100%;padding:11px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;color:rgba(237,242,247,0.9);font-family:'Outfit',sans-serif;font-size:0.86rem;outline:none;resize:vertical;min-height:80px"
+            style="width:100%;padding:11px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;color:rgba(237,242,247,0.9);font-family:'Poppins',sans-serif;font-size:0.86rem;outline:none;resize:vertical;min-height:80px"
             placeholder="Share your goals, current skill level, or specific topics you want to cover…"></textarea>
         </div>
 
@@ -1194,14 +1208,17 @@ window.renderBPMCalendar = function () {
 
   const booked = new Set([randomBetween(3, 8), randomBetween(12, 16), randomBetween(20, 25)]);
 
-  // Read blocked specific dates from the logged-in trainer's availability
+  // Read blocked specific dates from the booked trainer's availability
   let _bpmSpecificDates = {};
   let _bpmWeeklyAvs = {};
   const _daysMap = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   try {
-    const _bpmRaw = JSON.parse(localStorage.getItem('currentTrainer') || '{}');
-    let _bpmAvs = _bpmRaw.availability;
-    if (typeof _bpmAvs === 'string') _bpmAvs = JSON.parse(_bpmAvs);
+    let _bpmAvs = window.bookingState.trainerAvailability;
+    if (!_bpmAvs) {
+      const _bpmRaw = JSON.parse(localStorage.getItem('currentTrainer') || '{}');
+      _bpmAvs = _bpmRaw.availability;
+      if (typeof _bpmAvs === 'string') _bpmAvs = JSON.parse(_bpmAvs);
+    }
     if (_bpmAvs && _bpmAvs.specificDates) _bpmSpecificDates = _bpmAvs.specificDates;
     if (_bpmAvs) {
       ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].forEach(function(dk) {
@@ -1338,11 +1355,11 @@ function _showPaymentGateway() {
       <div style="display:flex;align-items:center;gap:12px">
         <button onclick="closeBookingModal()" style="background:rgba(255,255,255,0.07);border:none;border-radius:50%;width:34px;height:34px;cursor:pointer;color:rgba(237,242,247,0.7);font-size:1rem;display:flex;align-items:center;justify-content:center">✕</button>
         <div>
-          <div style="font-size:0.78rem;color:rgba(237,242,247,0.4);font-family:'Outfit',sans-serif">Step 2 of 2</div>
+          <div style="font-size:0.78rem;color:rgba(237,242,247,0.4);font-family:'Poppins',sans-serif">Step 2 of 2</div>
           <h2 style="font-size:1.05rem;margin:0">🔒 Secure Payment</h2>
         </div>
       </div>
-      <div style="display:flex;align-items:center;gap:8px;font-size:0.72rem;color:#4ADE80;font-family:'Outfit',sans-serif">
+      <div style="display:flex;align-items:center;gap:8px;font-size:0.72rem;color:#4ADE80;font-family:'Poppins',sans-serif">
         <span style="width:7px;height:7px;background:#4ADE80;border-radius:50%;display:inline-block"></span>
         256-bit SSL
       </div>
@@ -1359,7 +1376,7 @@ function _showPaymentGateway() {
           <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:rgba(237,242,247,0.4);margin-bottom:12px">Payment Method</div>
           <div style="display:flex;gap:8px" id="pay-tabs">
             ${[['card', '💳 Card'], ['upi', '📱 UPI'], ['netbanking', '🏦 Net Banking'], ['wallet', '👜 Wallet']].map(([id, label], i) => `
-              <button id="ptab-${id}" onclick="_switchPayTab('${id}')" style="flex:1;padding:10px 6px;border:1.5px solid ${i === 0 ? '#C5A059' : 'rgba(255,255,255,0.1)'};border-radius:10px;background:${i === 0 ? 'rgba(197,160,89,0.12)' : 'rgba(255,255,255,0.04)'};color:${i === 0 ? '#C5A059' : 'rgba(237,242,247,0.55)'};font-family:'Outfit',sans-serif;font-size:0.72rem;font-weight:600;cursor:pointer;transition:all .2s">${label}</button>
+              <button id="ptab-${id}" onclick="_switchPayTab('${id}')" style="flex:1;padding:10px 6px;border:1.5px solid ${i === 0 ? '#C5A059' : 'rgba(255,255,255,0.1)'};border-radius:10px;background:${i === 0 ? 'rgba(197,160,89,0.12)' : 'rgba(255,255,255,0.04)'};color:${i === 0 ? '#C5A059' : 'rgba(237,242,247,0.55)'};font-family:'Poppins',sans-serif;font-size:0.72rem;font-weight:600;cursor:pointer;transition:all .2s">${label}</button>
             `).join('')}
           </div>
         </div>
@@ -1367,29 +1384,29 @@ function _showPaymentGateway() {
         <!-- Card Form (default) -->
         <div id="pform-card">
           <div style="margin-bottom:16px">
-            <label style="font-size:0.76rem;font-weight:600;color:rgba(237,242,247,0.5);display:block;margin-bottom:6px;font-family:'Outfit',sans-serif">Card Number</label>
+            <label style="font-size:0.76rem;font-weight:600;color:rgba(237,242,247,0.5);display:block;margin-bottom:6px;font-family:'Poppins',sans-serif">Card Number</label>
             <div style="position:relative">
               <input type="text" placeholder="1234  5678  9012  3456" maxlength="19"
                 oninput="this.value=this.value.replace(/[^\d]/g,'').replace(/(\d{4})/g,'$1 ').trim()"
-                style="width:100%;padding:12px 44px 12px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;color:rgba(237,242,247,0.9);font-family:'Outfit',sans-serif;font-size:0.9rem;outline:none;letter-spacing:.08em">
+                style="width:100%;padding:12px 44px 12px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;color:rgba(237,242,247,0.9);font-family:'Poppins',sans-serif;font-size:0.9rem;outline:none;letter-spacing:.08em">
               <span style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:1.1rem">💳</span>
             </div>
           </div>
           <div style="margin-bottom:16px">
-            <label style="font-size:0.76rem;font-weight:600;color:rgba(237,242,247,0.5);display:block;margin-bottom:6px;font-family:'Outfit',sans-serif">Name on Card</label>
+            <label style="font-size:0.76rem;font-weight:600;color:rgba(237,242,247,0.5);display:block;margin-bottom:6px;font-family:'Poppins',sans-serif">Name on Card</label>
             <input type="text" placeholder="Full name as on card"
-              style="width:100%;padding:12px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;color:rgba(237,242,247,0.9);font-family:'Outfit',sans-serif;font-size:0.9rem;outline:none">
+              style="width:100%;padding:12px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;color:rgba(237,242,247,0.9);font-family:'Poppins',sans-serif;font-size:0.9rem;outline:none">
           </div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
             <div>
-              <label style="font-size:0.76rem;font-weight:600;color:rgba(237,242,247,0.5);display:block;margin-bottom:6px;font-family:'Outfit',sans-serif">Expiry</label>
+              <label style="font-size:0.76rem;font-weight:600;color:rgba(237,242,247,0.5);display:block;margin-bottom:6px;font-family:'Poppins',sans-serif">Expiry</label>
               <input type="text" placeholder="MM / YY" maxlength="7"
-                style="width:100%;padding:12px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;color:rgba(237,242,247,0.9);font-family:'Outfit',sans-serif;font-size:0.9rem;outline:none">
+                style="width:100%;padding:12px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;color:rgba(237,242,247,0.9);font-family:'Poppins',sans-serif;font-size:0.9rem;outline:none">
             </div>
             <div>
-              <label style="font-size:0.76rem;font-weight:600;color:rgba(237,242,247,0.5);display:block;margin-bottom:6px;font-family:'Outfit',sans-serif">CVV</label>
+              <label style="font-size:0.76rem;font-weight:600;color:rgba(237,242,247,0.5);display:block;margin-bottom:6px;font-family:'Poppins',sans-serif">CVV</label>
               <input type="password" placeholder="•••" maxlength="4"
-                style="width:100%;padding:12px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;color:rgba(237,242,247,0.9);font-family:'Outfit',sans-serif;font-size:0.9rem;outline:none">
+                style="width:100%;padding:12px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;color:rgba(237,242,247,0.9);font-family:'Poppins',sans-serif;font-size:0.9rem;outline:none">
             </div>
           </div>
         </div>
@@ -1397,18 +1414,18 @@ function _showPaymentGateway() {
         <!-- UPI Form -->
         <div id="pform-upi" style="display:none">
           <div style="margin-bottom:16px">
-            <label style="font-size:0.76rem;font-weight:600;color:rgba(237,242,247,0.5);display:block;margin-bottom:6px;font-family:'Outfit',sans-serif">UPI ID</label>
+            <label style="font-size:0.76rem;font-weight:600;color:rgba(237,242,247,0.5);display:block;margin-bottom:6px;font-family:'Poppins',sans-serif">UPI ID</label>
             <input type="text" placeholder="yourname@upi"
-              style="width:100%;padding:12px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;color:rgba(237,242,247,0.9);font-family:'Outfit',sans-serif;font-size:0.9rem;outline:none">
+              style="width:100%;padding:12px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;color:rgba(237,242,247,0.9);font-family:'Poppins',sans-serif;font-size:0.9rem;outline:none">
           </div>
           <div style="display:flex;gap:10px;flex-wrap:wrap">
-            ${['GPay', 'PhonePe', 'Paytm', 'BHIM'].map(app => `<button style="padding:8px 18px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:20px;color:rgba(237,242,247,0.7);font-family:'Outfit',sans-serif;font-size:0.8rem;cursor:pointer">${app}</button>`).join('')}
+            ${['GPay', 'PhonePe', 'Paytm', 'BHIM'].map(app => `<button style="padding:8px 18px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:20px;color:rgba(237,242,247,0.7);font-family:'Poppins',sans-serif;font-size:0.8rem;cursor:pointer">${app}</button>`).join('')}
           </div>
         </div>
 
         <!-- Net Banking Form -->
         <div id="pform-netbanking" style="display:none">
-          <select style="width:100%;padding:12px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;color:rgba(237,242,247,0.7);font-family:'Outfit',sans-serif;font-size:0.9rem;outline:none">
+          <select style="width:100%;padding:12px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;color:rgba(237,242,247,0.7);font-family:'Poppins',sans-serif;font-size:0.9rem;outline:none">
             <option style="background:#0F1A2C;color:#fff">Select your bank</option>
             ${['SBI', 'HDFC Bank', 'ICICI Bank', 'Axis Bank', 'Kotak Mahindra', 'Yes Bank', 'Punjab National Bank'].map(b => `<option style="background:#0F1A2C;color:#fff">${b}</option>`).join('')}
           </select>
@@ -1417,16 +1434,16 @@ function _showPaymentGateway() {
         <!-- Wallet Form -->
         <div id="pform-wallet" style="display:none">
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-            ${['Paytm Wallet', 'Amazon Pay', 'Mobikwik', 'Freecharge'].map(w => `<button style="padding:12px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:rgba(237,242,247,0.7);font-family:'Outfit',sans-serif;font-size:0.82rem;cursor:pointer;transition:all .2s" onmouseover="this.style.borderColor='#C5A059'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)'">${w}</button>`).join('')}
+            ${['Paytm Wallet', 'Amazon Pay', 'Mobikwik', 'Freecharge'].map(w => `<button style="padding:12px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:rgba(237,242,247,0.7);font-family:'Poppins',sans-serif;font-size:0.82rem;cursor:pointer;transition:all .2s" onmouseover="this.style.borderColor='#C5A059'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)'">${w}</button>`).join('')}
           </div>
         </div>
 
         <!-- Pay Button -->
-        <button onclick="_processBPMPayment()" style="width:100%;padding:15px;background:linear-gradient(135deg,#C5A059,#E6C97A);border:none;border-radius:12px;color:#071A3A;font-family:'Outfit',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;margin-top:20px;letter-spacing:.01em;transition:transform .2s,box-shadow .2s;box-shadow:0 6px 20px rgba(197,160,89,0.35)" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 10px 28px rgba(197,160,89,0.45)'" onmouseout="this.style.transform='';this.style.boxShadow='0 6px 20px rgba(197,160,89,0.35)'">
+        <button onclick="_processBPMPayment()" style="width:100%;padding:15px;background:linear-gradient(135deg,#C5A059,#E6C97A);border:none;border-radius:12px;color:#071A3A;font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;margin-top:20px;letter-spacing:.01em;transition:transform .2s,box-shadow .2s;box-shadow:0 6px 20px rgba(197,160,89,0.35)" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 10px 28px rgba(197,160,89,0.45)'" onmouseout="this.style.transform='';this.style.boxShadow='0 6px 20px rgba(197,160,89,0.35)'">
           Pay ${fmtINR ? fmtINR(amt) : '₹' + amt} Securely 🔒
         </button>
 
-        <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:14px;font-size:0.7rem;color:rgba(237,242,247,0.3);font-family:'Outfit',sans-serif">
+        <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:14px;font-size:0.7rem;color:rgba(237,242,247,0.3);font-family:'Poppins',sans-serif">
           <span>🔒</span> Powered by Razorpay · PCI DSS Compliant · End-to-end Encrypted
         </div>
       </div>
@@ -1436,26 +1453,26 @@ function _showPaymentGateway() {
         <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:rgba(237,242,247,0.4);margin-bottom:16px">Order Summary</div>
 
         <div style="background:rgba(197,160,89,0.08);border:1px solid rgba(197,160,89,0.2);border-radius:12px;padding:16px;margin-bottom:20px">
-          <div style="font-size:0.78rem;color:rgba(237,242,247,0.45);margin-bottom:4px;font-family:'Outfit',sans-serif">Package</div>
+          <div style="font-size:0.78rem;color:rgba(237,242,247,0.45);margin-bottom:4px;font-family:'Poppins',sans-serif">Package</div>
           <div style="font-size:0.95rem;font-weight:700;color:rgba(237,242,247,0.95)">${pkg}</div>
-          <div style="font-size:0.78rem;color:rgba(237,242,247,0.45);margin-top:2px;font-family:'Outfit',sans-serif">${t.name || 'Trainer'}</div>
+          <div style="font-size:0.78rem;color:rgba(237,242,247,0.45);margin-top:2px;font-family:'Poppins',sans-serif">${t.name || 'Trainer'}</div>
         </div>
 
         ${[['📅 Date & Time', `${dateStr} · ${state.selectedTime}`], ['👤 Trainer', t.name || '—'], ['📍 Mode', 'Online (Zoom/Meet)'], ['⏱ Duration', '60 minutes']].map(([label, val]) => `
-          <div style="display:flex;justify-content:space-between;align-items:flex-start;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.06);font-family:'Outfit',sans-serif">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.06);font-family:'Poppins',sans-serif">
             <span style="font-size:0.78rem;color:rgba(237,242,247,0.4)">${label}</span>
             <span style="font-size:0.8rem;font-weight:600;color:rgba(237,242,247,0.85);text-align:right;max-width:160px">${val}</span>
           </div>
         `).join('')}
 
         <div style="display:flex;justify-content:space-between;align-items:center;margin-top:18px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.12)">
-          <span style="font-size:0.8rem;color:rgba(237,242,247,0.5);font-family:'Outfit',sans-serif">Total (incl. GST)</span>
+          <span style="font-size:0.8rem;color:rgba(237,242,247,0.5);font-family:'Poppins',sans-serif">Total (incl. GST)</span>
           <span style="font-size:1.3rem;font-weight:700;color:#C5A059">${fmtINR ? fmtINR(amt) : '₹' + amt}</span>
         </div>
 
         <div style="margin-top:20px;padding:14px;background:rgba(74,222,128,0.06);border:1px solid rgba(74,222,128,0.15);border-radius:10px">
-          <div style="font-size:0.7rem;color:#4ADE80;font-weight:700;margin-bottom:4px;font-family:'Outfit',sans-serif">✅ Safe & Secure</div>
-          <div style="font-size:0.72rem;color:rgba(237,242,247,0.45);line-height:1.6;font-family:'Outfit',sans-serif">Payment held in escrow until session is confirmed. Free cancellation up to 24h before.</div>
+          <div style="font-size:0.7rem;color:#4ADE80;font-weight:700;margin-bottom:4px;font-family:'Poppins',sans-serif">✅ Safe & Secure</div>
+          <div style="font-size:0.72rem;color:rgba(237,242,247,0.45);line-height:1.6;font-family:'Poppins',sans-serif">Payment held in escrow until session is confirmed. Free cancellation up to 24h before.</div>
         </div>
       </div>
 
@@ -1483,12 +1500,12 @@ window._processBPMPayment = function () {
   <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;text-align:center;padding:48px 32px">
     <div style="width:80px;height:80px;border-radius:50%;background:rgba(74,222,128,0.12);border:2px solid rgba(74,222,128,0.4);display:flex;align-items:center;justify-content:center;font-size:2.2rem;margin-bottom:24px;animation:pulse 1.5s ease infinite">✅</div>
     <h2 style="color:rgba(237,242,247,0.95);margin-bottom:8px">Booking Confirmed!</h2>
-    <p style="color:rgba(237,242,247,0.5);font-family:'Outfit',sans-serif;font-size:0.9rem;max-width:360px;line-height:1.7">Your session has been booked successfully. A confirmation has been sent to your email. The trainer will contact you within 2 hours.</p>
-    <div style="margin-top:28px;padding:18px 28px;background:rgba(197,160,89,0.08);border:1px solid rgba(197,160,89,0.2);border-radius:14px;font-family:'Outfit',sans-serif">
+    <p style="color:rgba(237,242,247,0.5);font-family:'Poppins',sans-serif;font-size:0.9rem;max-width:360px;line-height:1.7">Your session has been booked successfully. A confirmation has been sent to your email. The trainer will contact you within 2 hours.</p>
+    <div style="margin-top:28px;padding:18px 28px;background:rgba(197,160,89,0.08);border:1px solid rgba(197,160,89,0.2);border-radius:14px;font-family:'Poppins',sans-serif">
       <div style="font-size:0.7rem;color:rgba(237,242,247,0.35);margin-bottom:4px">Booking Reference</div>
       <div style="font-size:1rem;font-weight:700;color:#C5A059;letter-spacing:.1em">#WTF-${Math.random().toString(36).substring(2, 8).toUpperCase()}</div>
     </div>
-    <button onclick="closeBookingModal()" style="margin-top:28px;padding:13px 36px;background:linear-gradient(135deg,#C5A059,#E6C97A);border:none;border-radius:999px;color:#071A3A;font-family:'Outfit',sans-serif;font-size:0.95rem;font-weight:700;cursor:pointer">Done</button>
+    <button onclick="closeBookingModal()" style="margin-top:28px;padding:13px 36px;background:linear-gradient(135deg,#C5A059,#E6C97A);border:none;border-radius:999px;color:#071A3A;font-family:'Poppins',sans-serif;font-size:0.95rem;font-weight:700;cursor:pointer">Done</button>
   </div>`;
   window.toast && window.toast('🎉 Booking confirmed! Check your email for details.');
 };
@@ -1529,7 +1546,7 @@ window.openReviewModal = function (tid) {
   modal.innerHTML = `
   <div class="bpm-box" style="max-width:500px; padding: 32px;">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 24px;">
-      <h2 style="margin:0; font-size: 1.4rem; color: rgba(237,242,247,0.95); font-family: 'Outfit', sans-serif;">Write a Review</h2>
+      <h2 style="margin:0; font-size: 1.4rem; color: rgba(237,242,247,0.95); font-family: 'Poppins', sans-serif;">Write a Review</h2>
       <button onclick="closeReviewModal()" class="tpm-btn-icon" style="background:transparent; border:none; color:rgba(255,255,255,0.5); font-size: 1.2rem; cursor: pointer;">✕</button>
     </div>
     
@@ -1538,8 +1555,8 @@ window.openReviewModal = function (tid) {
         ${avatarHtml}
       </div>
       <div>
-        <div style="font-weight: 700; color: rgba(237,242,247,0.95); font-family: 'Outfit', sans-serif;">${t.name}</div>
-        <div style="font-size: 0.8rem; color: rgba(237,242,247,0.5); font-family: 'Outfit', sans-serif;">${t.category || 'Professional Trainer'}</div>
+        <div style="font-weight: 700; color: rgba(237,242,247,0.95); font-family: 'Poppins', sans-serif;">${t.name}</div>
+        <div style="font-size: 0.8rem; color: rgba(237,242,247,0.5); font-family: 'Poppins', sans-serif;">${t.category || 'Professional Trainer'}</div>
       </div>
     </div>
 
@@ -1557,15 +1574,15 @@ window.openReviewModal = function (tid) {
 
     <div style="margin-bottom: 20px;">
       <label class="tpm-form-label" style="display:block; margin-bottom:8px; font-size:0.8rem; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:rgba(237,242,247,0.4)">Review Title</label>
-      <input type="text" id="review-title" style="width:100%;padding:11px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;color:rgba(237,242,247,0.9);font-family:'Outfit',sans-serif;font-size:0.9rem;outline:none" placeholder="E.g., Exceptional training experience">
+      <input type="text" id="review-title" style="width:100%;padding:11px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;color:rgba(237,242,247,0.9);font-family:'Poppins',sans-serif;font-size:0.9rem;outline:none" placeholder="E.g., Exceptional training experience">
     </div>
 
     <div style="margin-bottom: 24px;">
       <label class="tpm-form-label" style="display:block; margin-bottom:8px; font-size:0.8rem; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:rgba(237,242,247,0.4)">Your Review</label>
-      <textarea id="review-body" rows="4" style="width:100%;padding:11px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;color:rgba(237,242,247,0.9);font-family:'Outfit',sans-serif;font-size:0.9rem;outline:none;resize:vertical" placeholder="What did you like about the session? Did it meet your expectations?"></textarea>
+      <textarea id="review-body" rows="4" style="width:100%;padding:11px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;color:rgba(237,242,247,0.9);font-family:'Poppins',sans-serif;font-size:0.9rem;outline:none;resize:vertical" placeholder="What did you like about the session? Did it meet your expectations?"></textarea>
     </div>
 
-    <button onclick="submitReview('${t.id}')" style="width:100%;padding:14px;background:linear-gradient(135deg,#C5A059,#E6C97A);border:none;border-radius:10px;color:#071A3A;font-family:'Outfit',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;box-shadow:0 6px 20px rgba(197,160,89,0.35);transition:transform .2s">Submit Review</button>
+    <button onclick="submitReview('${t.id}')" style="width:100%;padding:14px;background:linear-gradient(135deg,#C5A059,#E6C97A);border:none;border-radius:10px;color:#071A3A;font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;box-shadow:0 6px 20px rgba(197,160,89,0.35);transition:transform .2s">Submit Review</button>
   </div>`;
 
   modal.style.display = 'flex';

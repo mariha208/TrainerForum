@@ -3,14 +3,14 @@
    Premium dark SaaS dashboard UI
 ═══════════════════════════════════════════════════ */
 
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Cormorant+Garamond:wght@600;700&family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Cormorant+Garamond:wght@600;700&family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 /* ── CSS Variables — LIGHT MODE (default, matches Option 3) ── */
 :root {
   /* Brand Palette */
-  --teal:        #008B8B;
-  --teal-dk:     #006b6b;
-  --teal-lt:     #33a3a3;
+  --teal:        #2455C9;
+  --teal-dk:     #122644;
+  --teal-lt:     #3A6BE0;
   --gold:        #C5A059;
   --gold-lt:     #D4B87A;
   --gold-dk:     #A8863D;
@@ -204,7 +204,7 @@ html.dark-mode .social-link-row { border-color: var(--border); }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; overflow-x: hidden; max-width: 100vw; }
 body {
-  font-family: 'Outfit', 'Inter', system-ui, sans-serif;
+  font-family: 'Poppins', 'Inter', system-ui, sans-serif;
   background: var(--bg);
   color: var(--tp);
   min-height: 100vh;
@@ -253,7 +253,7 @@ input, select, textarea { font-family: inherit; }
   font-weight: 800; font-size: .9rem; color: #0D1117;
 }
 .db-topnav .logo-txt {
-  font-family: 'Outfit', 'Inter', sans-serif;
+  font-family: 'Poppins', 'Inter', sans-serif;
   font-weight: 700; font-size: .95rem;
   color: var(--tp);
 }
