@@ -1172,50 +1172,88 @@ window.heroSearch = function () {
   window.location.href = url;
 };
 
-// ── LIVE NOTIFICATIONS SYSTEM ────────────────────────────────────────────────
-const FEED_DATA = [
-    { id: 1, type: "Blog", title: "Top 5 Equestrian Training Routines", timestamp: 1770000000000 },
-    { id: 2, type: "Event", title: "Annual Spring Trainer Symposium Announced!", timestamp: 1775000000000 }
-];
-const STORAGE_KEY = 'latest_notification_read_time';
+// ── LIVE SERVERLESS NOTIFICATIONS SYSTEM ────────────────────────────────────
+const STORAGE_KEY = 'read_notification_ids';
 
-function formatNotifTime(timestamp) {
-    const date = new Date(timestamp);
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+async function fetchNotifications() {
+    try {
+        const response = await fetch('/feed.json');
+        if (!response.ok) return [];
+        return await response.json();
+    } catch (e) {
+        console.error('Failed to fetch notifications:', e);
+        return [];
+    }
 }
 
-function renderNotifications(panel) {
-    const ALLOWED_TYPES = ['Blog', 'Event', 'News & Event'];
-    const feed = FEED_DATA.filter(item => ALLOWED_TYPES.includes(item.type)).sort((a,b) => b.timestamp - a.timestamp);
+function getReadIds() {
+    try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+    } catch (e) {
+        return [];
+    }
+}
+
+window.markAllNotificationsRead = async function(e) {
+    if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+    const feed = await fetchNotifications();
+    const readIds = getReadIds();
+    const newReadIds = [...new Set([...readIds, ...feed.map(item => item.id)])];
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(newReadIds));
     
-    // Preserve header structure
+    // Update UI instantly
+    document.querySelectorAll('.notif-dot').forEach(dot => dot.style.display = 'none');
+    
+    const panel = document.getElementById('notif-panel') || document.getElementById('notif-dropdown');
+    if (panel) {
+        const headerHtml = `
+          <div class="notif-header" style="display:flex; justify-content:space-between; align-items:center; padding:16px 18px; border-bottom:1px solid rgba(255,255,255,0.1);">
+            <h4 style="margin:0; font-size:1rem; color:#fff;">Notifications</h4>
+            <a href="javascript:void(0)" onclick="window.markAllNotificationsRead(event)" style="font-size:.78rem; color:#B49164; text-decoration:none; font-weight:600;">Mark all read</a>
+          </div>
+        `;
+        panel.innerHTML = headerHtml + '<div style="padding: 24px; text-align: center; color: var(--ts); font-size: 0.9rem;">You\'re all caught up!</div>';
+    }
+};
+
+async function renderNotifications(panel) {
+    const feed = await fetchNotifications();
+    const readIds = getReadIds();
+    
+    // Filter out read notifications
+    const unreadFeed = feed.filter(item => !readIds.includes(item.id));
+    
     const headerHtml = `
-      <div class="notif-header">
-        <h4>Notifications</h4><a href="#" style="font-size:.78rem;color:var(--gold-dk)">Mark all read</a>
+      <div class="notif-header" style="display:flex; justify-content:space-between; align-items:center; padding:16px 18px; border-bottom:1px solid rgba(255,255,255,0.1);">
+        <h4 style="margin:0; font-size:1rem; color:#ffffff; font-weight:600;">Notifications</h4>
+        <a href="javascript:void(0)" onclick="window.markAllNotificationsRead(event)" style="font-size:.85rem; color:#B49164; text-decoration:none; font-weight:600;">Mark all read</a>
       </div>
     `;
     
-    if (feed.length === 0) {
-        panel.innerHTML = headerHtml + '<div style="padding: 24px; text-align: center; color: var(--ts); font-size: 0.9rem;">You are all caught up!</div>';
+    if (unreadFeed.length === 0) {
+        panel.innerHTML = headerHtml + '<div style="padding: 24px; text-align: center; color: var(--ts); font-size: 0.9rem;">You\'re all caught up!</div>';
         return;
     }
     
     let html = headerHtml;
-    feed.forEach(item => {
-        const isBlog = item.type.toLowerCase() === 'blog';
+    unreadFeed.forEach(item => {
+        const isBlog = item.type && item.type.toUpperCase() === 'BLOG';
         const bg = isBlog ? 'rgba(3, 218, 198, 0.15)' : 'rgba(255, 183, 77, 0.15)';
         const color = isBlog ? '#03dac6' : '#ffb74d';
         const icon = isBlog ? '📝' : '📅';
         
         html += `
-          <div class="notif-item unread">
-            <div class="notif-ico" style="background:${bg}; color:${color}">${icon}</div>
+          <div class="notif-item unread" style="display:flex; gap:12px; padding:16px 18px; border-bottom:1px solid rgba(255,255,255,0.05);">
+            <div class="notif-ico" style="width:36px; height:36px; border-radius:50%; background:${bg}; color:${color}; display:flex; align-items:center; justify-content:center; flex-shrink:0;">${icon}</div>
             <div class="notif-text" style="flex:1;">
-              <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+              <div style="display:flex; justify-content:space-between; margin-bottom:6px; align-items:center;">
                 <span style="font-size:0.7rem; font-weight:700; color:${color}; text-transform:uppercase; letter-spacing:0.5px; padding: 2px 6px; border-radius: 4px; background: ${bg};">${item.type}</span>
-                <span style="font-size:0.75rem; color:var(--ts); font-weight: 500;">${formatNotifTime(item.timestamp)}</span>
+                <span style="font-size:0.75rem; color:#888888; font-weight: 500;">${item.date || ''}</span>
               </div>
-              <p style="margin:0; font-size:0.9rem; color:var(--tp); line-height: 1.4;">${item.title}</p>
+              <p style="margin:0; font-size:0.9rem; color:#ffffff; line-height: 1.4;">${item.text || item.title}</p>
             </div>
           </div>
         `;
@@ -1224,22 +1262,25 @@ function renderNotifications(panel) {
     panel.innerHTML = html;
 }
 
-function evaluateUnreadState() {
-    const lastChecked = parseInt(localStorage.getItem(STORAGE_KEY) || '0', 10);
-    const ALLOWED_TYPES = ['Blog', 'Event', 'News & Event'];
-    const hasUnread = FEED_DATA.some(item => ALLOWED_TYPES.includes(item.type) && item.timestamp > lastChecked);
+async function evaluateUnreadState() {
+    const feed = await fetchNotifications();
+    const readIds = getReadIds();
+    const hasUnread = feed.some(item => !readIds.includes(item.id));
     
     document.querySelectorAll('.notif-dot').forEach(dot => {
         dot.style.display = hasUnread ? 'block' : 'none';
     });
 }
 
-window.toggleNotif = function(e) {
+window.toggleNotif = async function(e) {
     if (e) e.stopPropagation();
     
-    // Support both index.html (notif-panel) and dashboard.html (notif-dropdown) element IDs
     const panel = document.getElementById('notif-panel') || document.getElementById('notif-dropdown');
     if (!panel) return;
+    
+    // Exact background styles matching UI mockup
+    panel.style.background = '#0D1B3E';
+    panel.style.border = '1px solid rgba(255,255,255,0.1)';
     
     const isPanelOpen = panel.classList.contains('open') || panel.style.display === 'block';
     
@@ -1251,16 +1292,7 @@ window.toggleNotif = function(e) {
             panel.style.display = 'block';
         }
         
-        // Mark items as read instantly
-        const ALLOWED_TYPES = ['Blog', 'Event', 'News & Event'];
-        const feed = FEED_DATA.filter(item => ALLOWED_TYPES.includes(item.type));
-        if (feed.length > 0) {
-            const maxTime = Math.max(...feed.map(i => i.timestamp), Date.now());
-            localStorage.setItem(STORAGE_KEY, maxTime.toString());
-        }
-        
-        evaluateUnreadState();
-        renderNotifications(panel);
+        await renderNotifications(panel);
     } else {
         // Close panel
         if (panel.id === 'notif-panel') {

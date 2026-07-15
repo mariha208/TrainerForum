@@ -1,0 +1,4 @@
+[
+  { "id": "event-1", "type": "EVENT", "date": "Apr 1, 2026", "text": "Annual Spring Trainer Symposium Announced!" },
+  { "id": "blog-1", "type": "BLOG", "date": "Apr 2, 2026", "text": "Top 5 Equestrian Training Routines" }
+]
