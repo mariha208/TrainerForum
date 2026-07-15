@@ -20,21 +20,21 @@
   --line: rgba(255, 255, 255, 0.10);
   --line-dark: rgba(11, 27, 50, 0.10);
   
-  --support: #E5E8EB;
+  --support: var(--ivory-dim);
 
   /* ── Backgrounds ── */
-  --bg-main: linear-gradient(158deg, var(--navy) 0%, var(--navy-2) 60%, var(--royal) 100%);
-  --bg-card: rgba(255, 255, 255, 0.07);
-  --bg-card-h: rgba(255, 255, 255, 0.12);
-  --bg-glass: rgba(255, 255, 255, 0.08);
-  --bg-glass-h: rgba(255, 255, 255, 0.14);
+  --bg-main: var(--ivory);
+  --bg-card: #FFFFFF;
+  --bg-card-h: #F9F9F9;
+  --bg-glass: rgba(255, 255, 255, 0.6);
+  --bg-glass-h: rgba(255, 255, 255, 0.9);
 
   /* ── Text ── */
-  --tp: rgba(237, 242, 247, 1);
-  --ts: rgba(237, 242, 247, 0.75);
-  --tm: rgba(237, 242, 247, 0.5);
-  --bd: var(--line);
-  --bd2: var(--line-dark);
+  --tp: var(--ink);
+  --ts: rgba(16, 24, 38, 0.75);
+  --tm: rgba(16, 24, 38, 0.5);
+  --bd: var(--line-dark);
+  --bd2: rgba(11, 27, 50, 0.05);
 
   /* ── Status ── */
   --ok: #4ADE80;
@@ -69,7 +69,7 @@ html {
 
 body {
   font-family: 'Poppins', sans-serif;
-  background: var(--bg-main);
+  background: var(--ivory);
   background-attachment: fixed;
   color: var(--tp);
   line-height: 1.6;
@@ -138,7 +138,7 @@ ul {
   right: 0;
   z-index: 900;
   height: var(--nav);
-  background: rgba(10, 37, 81, 0.88);
+  background: rgba(11, 27, 50, 0.88);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid rgba(197, 160, 89, 0.2);
@@ -248,7 +248,7 @@ ul {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(10, 37, 81, 0.97);
+  background: rgba(11, 27, 50, 0.97);
   backdrop-filter: blur(20px);
   z-index: 899;
   flex-direction: column;
@@ -320,13 +320,12 @@ ul {
 }
 
 .btn-gold {
-  background: linear-gradient(135deg, var(--gold), var(--gold-dk));
-  color: #0D1117;
-  box-shadow: 0 4px 15px rgba(197, 160, 89, 0.35);
+  background: var(--gold);
+  color: var(--ink);
 }
 
 .btn-gold:hover {
-  background: linear-gradient(135deg, var(--gold-lt), var(--gold));
+  background: var(--gold-light);
   transform: translateY(-2px);
   box-shadow: 0 8px 25px rgba(197, 160, 89, 0.5);
 }
@@ -344,14 +343,13 @@ ul {
 }
 
 .btn-ghost {
-  background: var(--bg-glass);
+  background: transparent;
   border: 1px solid var(--bd);
   color: var(--tp);
-  backdrop-filter: blur(10px);
 }
 
 .btn-ghost:hover {
-  background: var(--bg-glass-h);
+  background: rgba(16, 24, 38, 0.05);
   border-color: rgba(197, 160, 89, 0.4)
 }
 
@@ -450,6 +448,17 @@ ul {
 }
 
 /* ══ HERO ══ */
+.hero, .page-hero, .prof-header, .dark-context, #nav {
+  --tp: var(--ivory);
+  --ts: rgba(250, 246, 236, 0.75);
+  --tm: rgba(250, 246, 236, 0.5);
+  --bg-glass: rgba(255, 255, 255, 0.08);
+  --bg-glass-h: rgba(255, 255, 255, 0.14);
+  --bd: var(--line);
+  --bd2: rgba(255, 255, 255, 0.06);
+  color: var(--tp);
+}
+
 .hero {
   min-height: calc(100vh - var(--nav));
   display: flex;
@@ -459,13 +468,14 @@ ul {
   padding: 80px 5% 60px;
   position: relative;
   overflow: hidden;
+  background: var(--navy-2);
 }
 
 .hero::before {
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at 30% 20%, rgba(0, 139, 139, 0.4) 0%, transparent 60%),
+  background: radial-gradient(ellipse at 30% 20%, rgba(36, 85, 201, 0.4) 0%, transparent 60%),
     radial-gradient(ellipse at 80% 80%, rgba(197, 160, 89, 0.15) 0%, transparent 50%);
   pointer-events: none;
 }
@@ -480,7 +490,7 @@ ul {
 .h-orb1 {
   width: 500px;
   height: 500px;
-  background: rgba(0, 139, 139, 0.25);
+  background: rgba(36, 85, 201, 0.25);
   top: -100px;
   right: -80px;
   animation: orbFloat 8s ease-in-out infinite
@@ -707,9 +717,9 @@ ul {
   aspect-ratio: 16 / 9;
   max-height: 380px;
   background: linear-gradient(135deg,
-      rgba(10, 37, 81, 0.75) 0%,
+      rgba(11, 27, 50, 0.75) 0%,
       rgba(0, 91, 91, 0.55) 50%,
-      rgba(0, 139, 139, 0.4) 100%);
+      rgba(36, 85, 201, 0.4) 100%);
   border: 1.5px dashed rgba(197, 160, 89, 0.45);
   border-radius: var(--rl);
   display: flex;
@@ -731,7 +741,7 @@ ul {
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at 50% 40%, rgba(0, 139, 139, 0.25) 0%, transparent 70%);
+  background: radial-gradient(ellipse at 50% 40%, rgba(36, 85, 201, 0.25) 0%, transparent 70%);
   pointer-events: none;
 }
 
@@ -822,7 +832,7 @@ section {
 }
 
 .bg-dark {
-  background: rgba(10, 37, 81, 0.7)
+  background: rgba(11, 27, 50, 0.7)
 }
 
 .bg-ink {
@@ -890,7 +900,7 @@ section {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: rgba(10, 37, 81, 0.7);
+  background: rgba(11, 27, 50, 0.7);
   backdrop-filter: blur(8px);
   border: 1px solid var(--bd);
   display: flex;
@@ -905,7 +915,7 @@ section {
 
 .tc-fav:hover {
   transform: scale(1.2);
-  background: rgba(10, 37, 81, 0.9)
+  background: rgba(11, 27, 50, 0.9)
 }
 
 .tc-fav.on {
@@ -936,7 +946,7 @@ section {
   width: 70px;
   height: 70px;
   border-radius: 50%;
-  border: 4px solid rgba(10, 37, 81, 0.8);
+  border: 4px solid rgba(11, 27, 50, 0.8);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
   display: flex;
   align-items: center;
@@ -1371,7 +1381,7 @@ section {
 /* ══ AI MATCHING SECTION ══ */
 .ai-section {
   padding: 80px 5%;
-  background: linear-gradient(135deg, rgba(0, 91, 91, 0.6) 0%, rgba(10, 37, 81, 0.8) 100%);
+  background: linear-gradient(135deg, rgba(0, 91, 91, 0.6) 0%, rgba(11, 27, 50, 0.8) 100%);
   position: relative;
   overflow: hidden;
 }
@@ -1445,7 +1455,7 @@ section {
 }
 
 .ai-result {
-  background: rgba(10, 37, 81, 0.6);
+  background: rgba(11, 27, 50, 0.6);
   border: 1px solid var(--bd);
   border-radius: var(--rl);
   padding: 24px;
@@ -1528,7 +1538,7 @@ section {
 
 /* ══ CTA BAND ══ */
 .cta-band {
-  background: linear-gradient(135deg, rgba(10, 37, 81, 0.95) 0%, rgba(0, 91, 91, 0.95) 100%);
+  background: linear-gradient(135deg, rgba(11, 27, 50, 0.95) 0%, rgba(0, 91, 91, 0.95) 100%);
   text-align: center;
   padding: 90px 5%;
   position: relative;
@@ -1604,7 +1614,7 @@ section {
 /* ── Animated divider ── */
 .footer-divider {
   height: 1px;
-  background: linear-gradient(90deg, transparent 0%, rgba(197, 160, 89, 0.25) 30%, rgba(0, 139, 139, 0.25) 70%, transparent 100%);
+  background: linear-gradient(90deg, transparent 0%, rgba(197, 160, 89, 0.25) 30%, rgba(36, 85, 201, 0.25) 70%, transparent 100%);
   margin: 0;
   position: relative;
   overflow: hidden;
@@ -2497,7 +2507,7 @@ section {
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: rgba(10, 37, 81, 0.7);
+  background: rgba(11, 27, 50, 0.7);
   backdrop-filter: blur(10px);
   border: 1px solid var(--bd);
   color: var(--ts);
@@ -2540,7 +2550,7 @@ section {
   width: 96px;
   height: 96px;
   border-radius: 50%;
-  border: 4px solid rgba(10, 37, 81, 0.9);
+  border: 4px solid rgba(11, 27, 50, 0.9);
   box-shadow: var(--shm);
   display: flex;
   align-items: center;
@@ -2685,7 +2695,7 @@ section {
 .bmodal-right {
   padding: 24px;
   border-left: 1px solid var(--bd);
-  background: rgba(10, 37, 81, 0.4);
+  background: rgba(11, 27, 50, 0.4);
   overflow-y: auto;
 }
 
@@ -2758,7 +2768,7 @@ section {
 }
 
 .cal-day.today {
-  background: rgba(0, 139, 139, 0.2);
+  background: rgba(36, 85, 201, 0.2);
   color: var(--royal-2);
   font-weight: 600
 }
@@ -2944,7 +2954,7 @@ section {
   height: 8px;
   background: #FC8181;
   border-radius: 50%;
-  border: 2px solid rgba(10, 37, 81, 0.8);
+  border: 2px solid rgba(11, 27, 50, 0.8);
 }
 
 .notif-panel {
@@ -3501,8 +3511,7 @@ section {
 /* ══ PAGE HEROS ══ */
 .page-hero {
   padding: 90px 5% 60px;
-  background: rgba(8, 32, 80, 0.8);
-  backdrop-filter: blur(10px);
+  background: var(--navy);
   border-bottom: 1px solid var(--bd);
 }
 
@@ -3537,7 +3546,7 @@ section {
 }
 
 .price-card.featured {
-  background: linear-gradient(145deg, rgba(10, 37, 81, 0.95), rgba(0, 91, 91, 0.95));
+  background: linear-gradient(145deg, rgba(11, 27, 50, 0.95), rgba(0, 91, 91, 0.95));
   border-color: rgba(197, 160, 89, 0.4);
   box-shadow: var(--glow-gold);
 }
@@ -4087,7 +4096,7 @@ section {
   left: 0;
   right: 0;
   z-index: 800;
-  background: rgba(10, 37, 81, 0.95);
+  background: rgba(11, 27, 50, 0.95);
   backdrop-filter: blur(16px);
   border-top: 1px solid rgba(197, 160, 89, 0.2);
   padding: 12px 20px;

@@ -45,7 +45,7 @@ html.dark-mode body {
 }
 
 .site-header.is-scrolled {
-  background: rgba(10, 37, 81, 0.92);
+  background: rgba(11, 27, 50, 0.92);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   box-shadow: 0 1px 0 rgba(197, 160, 89, .18);
@@ -221,14 +221,14 @@ html.dark-mode body {
   border: none;
   cursor: pointer;
   text-decoration: none;
-  box-shadow: 0 4px 20px rgba(0, 139, 139, .35);
+  box-shadow: 0 4px 20px rgba(36, 85, 201, .35);
   transition: transform .25s, box-shadow .25s;
   white-space: nowrap;
 }
 
 .btn--navy:hover {
   transform: translateY(-3px);
-  box-shadow: 0 8px 30px rgba(0, 139, 139, .5);
+  box-shadow: 0 8px 30px rgba(36, 85, 201, .5);
 }
 
 .btn--gold {
@@ -329,7 +329,7 @@ html.dark-mode body {
 }
 
 .section--navy {
-  background: rgba(10, 37, 81, .75);
+  background: rgba(11, 27, 50, .75);
 }
 
 .section--navy h2,
@@ -487,7 +487,7 @@ p {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(1100px 600px at 82% -10%, rgba(0, 139, 139, .22), transparent 60%),
+    radial-gradient(1100px 600px at 82% -10%, rgba(36, 85, 201, .22), transparent 60%),
     radial-gradient(900px 500px at -6% 95%, rgba(197, 160, 89, .12), transparent 60%);
   pointer-events: none;
 }
@@ -553,7 +553,7 @@ p {
 .hero-visual svg {
   width: 100%;
   height: 100%;
-  filter: drop-shadow(0 30px 60px rgba(10, 37, 81, .4));
+  filter: drop-shadow(0 30px 60px rgba(11, 27, 50, .4));
 }
 
 /* ── ABOUT US SECTION ── */
@@ -648,7 +648,7 @@ p {
 .mv-card:hover {
   transform: translateY(-8px);
   box-shadow: 0 20px 60px rgba(0, 0, 0, .35);
-  border-color: rgba(0, 139, 139, .4);
+  border-color: rgba(36, 85, 201, .4);
 }
 
 .mv-card--gold {
@@ -669,7 +669,7 @@ p {
   align-items: center;
   justify-content: center;
   margin-bottom: 1.25rem;
-  box-shadow: 0 4px 16px rgba(0, 139, 139, .3);
+  box-shadow: 0 4px 16px rgba(36, 85, 201, .3);
 }
 
 .mv-card--gold .mv-icon {
@@ -710,7 +710,7 @@ p {
 
 .feature-card:hover {
   transform: translateY(-7px);
-  border-color: rgba(0, 139, 139, .45);
+  border-color: rgba(36, 85, 201, .45);
   box-shadow: 0 16px 48px rgba(0, 0, 0, .3);
 }
 
@@ -718,8 +718,8 @@ p {
   width: 48px;
   height: 48px;
   border-radius: 14px;
-  background: rgba(0, 139, 139, .15);
-  border: 1px solid rgba(0, 139, 139, .25);
+  background: rgba(36, 85, 201, .15);
+  border: 1px solid rgba(36, 85, 201, .25);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -728,7 +728,7 @@ p {
 }
 
 .feature-card:hover .feature-icon {
-  background: rgba(0, 139, 139, .25);
+  background: rgba(36, 85, 201, .25);
 }
 
 .feature-icon svg {
@@ -801,8 +801,8 @@ p {
 
 .audience-card:hover {
   transform: translateY(-6px);
-  border-color: rgba(0, 139, 139, .5);
-  background: rgba(0, 139, 139, .1);
+  border-color: rgba(36, 85, 201, .5);
+  background: rgba(36, 85, 201, .1);
 }
 
 .audience-card svg {
@@ -846,7 +846,7 @@ p {
 .event-grid {}
 
 .event-card {
-  background: rgba(10, 37, 81, .6);
+  background: rgba(11, 27, 50, .6);
   border: 1px solid rgba(255, 255, 255, .1);
   border-radius: 20px;
   overflow: hidden;
@@ -857,7 +857,7 @@ p {
 .event-card:hover {
   transform: translateY(-8px);
   box-shadow: 0 20px 60px rgba(0, 0, 0, .4);
-  border-color: rgba(0, 139, 139, .45);
+  border-color: rgba(36, 85, 201, .45);
 }
 
 .event-card--gold {
@@ -904,7 +904,7 @@ p {
 
 /* ── PROMISE / CTA SECTION ── */
 .promise-section {
-  background: linear-gradient(135deg, rgba(10, 37, 81, .9) 0%, rgba(0, 91, 91, .85) 100%);
+  background: linear-gradient(135deg, rgba(11, 27, 50, .9) 0%, rgba(0, 91, 91, .85) 100%);
   position: relative;
   overflow: hidden;
   border-top: 1px solid rgba(197, 160, 89, .15);
@@ -1118,7 +1118,7 @@ p {
     justify-content: center;
     align-items: flex-start;
     gap: 1.5rem;
-    background: rgba(10, 37, 81, .97);
+    background: rgba(11, 27, 50, .97);
     backdrop-filter: blur(20px);
     padding: 5rem 2.5rem 2.5rem;
     transform: translateX(100%);

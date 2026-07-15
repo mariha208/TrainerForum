@@ -153,7 +153,7 @@
 .am-form-group select {
   width: 100%;
   padding: 14px 18px;
-  background: rgba(10, 37, 81, 0.4);
+  background: rgba(11, 27, 50, 0.4);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 10px;
   color: #fff;
@@ -170,7 +170,7 @@
 .am-form-group select:focus {
   outline: none;
   border-color: #C5A059;
-  background: rgba(10, 37, 81, 0.6);
+  background: rgba(11, 27, 50, 0.6);
   box-shadow: 0 0 0 3px rgba(197, 160, 89, 0.2);
 }
 

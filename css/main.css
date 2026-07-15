@@ -9,6 +9,15 @@
    CSS VARIABLES - LIGHT MODE (DEFAULT)
 ═══════════════════════════════════════════════════════════════════════════ */
 :root {
+  --navy: #0B1B32;
+  --navy-2: #122644;
+  --royal: #2455C9;
+  --royal-2: #3A6BE0;
+  --gold: #C9A24B;
+  --gold-light: #E7C878;
+  --ivory: #FAF6EC;
+  --ivory-dim: #F0EADA;
+  --ink: #101826;
   /* ── Core Brand Colors (Option 3 — Light Mode) ── */
   --navy:   #0B1B32;
   --royal:    #2455C9;
@@ -19,7 +28,7 @@
   --gold-dk:        #A8863D;
 
   /* Backgrounds */
-  --light-bg:       #E5E8EB;
+  --light-bg:       var(--ivory-dim);
   --white:          #FFFFFF;
   --cream:          #F8F9FA;
 
@@ -29,13 +38,13 @@
   --text-lighter:   #718096;
 
   /* Borders */
-  --border-light:   rgba(10, 37, 81, 0.14);
-  --border-medium:  rgba(10, 37, 81, 0.22);
+  --border-light:   rgba(11, 27, 50, 0.14);
+  --border-medium:  rgba(11, 27, 50, 0.22);
 
   /* Shadows */
-  --shadow-sm: 0 2px 8px rgba(10, 37, 81, 0.06);
-  --shadow-md: 0 8px 24px rgba(10, 37, 81, 0.12);
-  --shadow-lg: 0 16px 48px rgba(10, 37, 81, 0.16);
+  --shadow-sm: 0 2px 8px rgba(11, 27, 50, 0.06);
+  --shadow-md: 0 8px 24px rgba(11, 27, 50, 0.12);
+  --shadow-lg: 0 16px 48px rgba(11, 27, 50, 0.16);
   
   /* Spacing */
   --spacing-xs: 4px;
@@ -85,7 +94,7 @@ html {
 
 body {
   font-family: var(--font-sans);
-  background-color: var(--light-bg);
+  background-color: var(--ivory);
   color: var(--text-dark);
   line-height: 1.6;
   transition: background-color 0.3s ease, color 0.3s ease;
@@ -233,7 +242,7 @@ p {
 
 .navbar-links a:hover {
   color: var(--royal);
-  background: rgba(0, 139, 139, 0.1);
+  background: rgba(36, 85, 201, 0.1);
 }
 
 .navbar-right {
@@ -360,7 +369,7 @@ p {
   right: -10%;
   width: clamp(200px, 35vw, 500px);
   height: clamp(200px, 35vw, 500px);
-  background: radial-gradient(circle, rgba(0, 139, 139, 0.08) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(36, 85, 201, 0.08) 0%, transparent 70%);
   border-radius: 50%;
 }
 
@@ -652,7 +661,7 @@ section {
 }
 
 .trainer-tag {
-  background: rgba(0, 139, 139, 0.1);
+  background: rgba(36, 85, 201, 0.1);
   color: var(--royal);
   padding: 4px 12px;
   border-radius: var(--radius-full);
@@ -865,7 +874,7 @@ section {
    CTA SECTION
 ═══════════════════════════════════════════════════════════════════════════ */
 .cta-section {
-  background: linear-gradient(135deg, var(--navy) 0%, rgba(10, 37, 81, 0.8) 100%);
+  background: linear-gradient(135deg, var(--navy) 0%, rgba(11, 27, 50, 0.8) 100%);
   color: white;
   text-align: center;
   padding: var(--spacing-3xl) var(--spacing-2xl);
@@ -882,7 +891,7 @@ section {
   right: -20%;
   width: clamp(180px, 35vw, 400px);
   height: clamp(180px, 35vw, 400px);
-  background: radial-gradient(circle, rgba(0, 139, 139, 0.1) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(36, 85, 201, 0.1) 0%, transparent 70%);
   border-radius: 50%;
 }
 
@@ -1087,7 +1096,7 @@ footer {
 }
 
 [data-theme="dark"] body {
-  background-color: var(--light-bg);
+  background-color: var(--ivory);
   color: var(--text-dark);
 }
 
@@ -1108,11 +1117,11 @@ footer {
 
 [data-theme="dark"] .navbar-links a:hover {
   color: var(--royal);
-  background: rgba(0, 139, 139, 0.12);
+  background: rgba(36, 85, 201, 0.12);
 }
 
 [data-theme="dark"] .theme-toggle {
-  background: rgba(0, 139, 139, 0.10);
+  background: rgba(36, 85, 201, 0.10);
   border-color: rgba(255, 255, 255, 0.10);
   color: rgba(255, 255, 255, 0.70);
 }
@@ -1164,7 +1173,7 @@ footer {
 [data-theme="dark"] .trainer-card:hover,
 [data-theme="dark"] .category-card:hover,
 [data-theme="dark"] .feature-card:hover {
-  border-color: rgba(0, 139, 139, 0.40);
+  border-color: rgba(36, 85, 201, 0.40);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.40);
 }
 
@@ -1215,7 +1224,7 @@ footer {
 }
 
 [data-theme="dark"] .btn-ghost:hover {
-  background: rgba(0, 139, 139, 0.14);
+  background: rgba(36, 85, 201, 0.14);
   border-color: var(--royal);
   color: var(--royal);
 }
@@ -1267,7 +1276,7 @@ footer {
 }
 
 [data-theme="dark"] ::-webkit-scrollbar-thumb {
-  background: rgba(0, 139, 139, 0.50);
+  background: rgba(36, 85, 201, 0.50);
 }
 
 [data-theme="dark"] ::-webkit-scrollbar-thumb:hover {

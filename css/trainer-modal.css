@@ -56,7 +56,7 @@
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: rgba(10, 37, 81, 0.85);
+  background: rgba(11, 27, 50, 0.85);
   backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.15);
   color: rgba(237, 242, 247, 0.8);
@@ -289,11 +289,11 @@
 .tpm-btn-teal {
   background: linear-gradient(135deg, #2455C9, #122644);
   color: #fff;
-  box-shadow: 0 4px 16px rgba(0, 139, 139, 0.35);
+  box-shadow: 0 4px 16px rgba(36, 85, 201, 0.35);
 }
 .tpm-btn-teal:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 28px rgba(0, 139, 139, 0.5);
+  box-shadow: 0 8px 28px rgba(36, 85, 201, 0.5);
 }
 .tpm-btn-save {
   background: rgba(255, 255, 255, 0.08);
@@ -537,15 +537,15 @@
   border-radius: 999px;
   font-size: 0.78rem;
   font-weight: 500;
-  background: rgba(0, 139, 139, 0.12);
+  background: rgba(36, 85, 201, 0.12);
   color: #3A6BE0;
-  border: 1px solid rgba(0, 139, 139, 0.25);
+  border: 1px solid rgba(36, 85, 201, 0.25);
   transition: all 0.2s;
   cursor: default;
 }
 .tpm-skill-tag:hover {
-  background: rgba(0, 139, 139, 0.22);
-  border-color: rgba(0, 139, 139, 0.5);
+  background: rgba(36, 85, 201, 0.22);
+  border-color: rgba(36, 85, 201, 0.5);
   transform: translateY(-2px);
 }
 .tpm-skill-tag.gold {
@@ -657,8 +657,8 @@
   width: 56px;
   height: 56px;
   border-radius: 14px;
-  background: linear-gradient(135deg, rgba(0, 139, 139, 0.2), rgba(0, 139, 139, 0.05));
-  border: 1px solid rgba(0, 139, 139, 0.3);
+  background: linear-gradient(135deg, rgba(36, 85, 201, 0.2), rgba(36, 85, 201, 0.05));
+  border: 1px solid rgba(36, 85, 201, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -836,7 +836,7 @@
 .tpm-gallery-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(10, 37, 81, 0.8);
+  background: rgba(11, 27, 50, 0.8);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1172,8 +1172,8 @@
 
 /* ── AI RECOMMENDATION ── */
 .tpm-ai-section {
-  background: linear-gradient(135deg, rgba(0, 91, 91, 0.25), rgba(10, 37, 81, 0.4));
-  border: 1px solid rgba(0, 139, 139, 0.3);
+  background: linear-gradient(135deg, rgba(0, 91, 91, 0.25), rgba(11, 27, 50, 0.4));
+  border: 1px solid rgba(36, 85, 201, 0.3);
   border-radius: 18px;
   padding: 26px;
   margin-bottom: 20px;
@@ -1188,7 +1188,7 @@
   width: 300px;
   height: 300px;
   border-radius: 50%;
-  background: rgba(0, 139, 139, 0.08);
+  background: rgba(36, 85, 201, 0.08);
   filter: blur(40px);
   pointer-events: none;
 }
@@ -1204,8 +1204,8 @@
   gap: 6px;
   padding: 4px 12px;
   border-radius: 999px;
-  background: rgba(0, 139, 139, 0.2);
-  border: 1px solid rgba(0, 139, 139, 0.4);
+  background: rgba(36, 85, 201, 0.2);
+  border: 1px solid rgba(36, 85, 201, 0.4);
   color: #3A6BE0;
   font-size: 0.72rem;
   font-weight: 700;
@@ -1235,15 +1235,15 @@
   transition: all 0.2s;
 }
 .tpm-ai-reason:hover {
-  background: rgba(0, 139, 139, 0.1);
-  border-color: rgba(0, 139, 139, 0.2);
+  background: rgba(36, 85, 201, 0.1);
+  border-color: rgba(36, 85, 201, 0.2);
   color: rgba(237, 242, 247, 0.9);
 }
 .tpm-ai-reason-icon {
   width: 32px;
   height: 32px;
   border-radius: 8px;
-  background: rgba(0, 139, 139, 0.2);
+  background: rgba(36, 85, 201, 0.2);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1624,7 +1624,7 @@
   border: 1px solid transparent;
 }
 .bpm-cal-day:hover { background: rgba(197, 160, 89, 0.15); color: rgba(237, 242, 247, 0.9); }
-.bpm-cal-day.today { background: rgba(0, 139, 139, 0.2); color: #3A6BE0; font-weight: 600; border-color: rgba(0, 139, 139, 0.3); }
+.bpm-cal-day.today { background: rgba(36, 85, 201, 0.2); color: #3A6BE0; font-weight: 600; border-color: rgba(36, 85, 201, 0.3); }
 .bpm-cal-day.selected { background: linear-gradient(135deg, #C5A059, #A8863D); color: #0D1117; font-weight: 700; border-color: transparent; box-shadow: 0 4px 12px rgba(197, 160, 89, 0.4); }
 .bpm-cal-day.other-month { opacity: 0.25; cursor: default; }
 .bpm-cal-day.other-month:hover { background: transparent; }

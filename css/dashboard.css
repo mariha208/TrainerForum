@@ -7,6 +7,15 @@
 
 /* ── CSS Variables — LIGHT MODE (default, matches Option 3) ── */
 :root {
+  --navy: #0B1B32;
+  --navy-2: #122644;
+  --royal: #2455C9;
+  --royal-2: #3A6BE0;
+  --gold: #C9A24B;
+  --gold-light: #E7C878;
+  --ivory: #FAF6EC;
+  --ivory-dim: #F0EADA;
+  --ink: #101826;
   /* Brand Palette */
   --royal:        #2455C9;
   --navy-2:     #122644;
@@ -17,26 +26,26 @@
   --navy:        #0B1B32;
 
   /* Legacy aliases kept for compatibility */
-  --gold-bg:     rgba(0, 139, 139, 0.12);
-  --gold-bg2:    rgba(0, 139, 139, 0.22);
+  --gold-bg:     rgba(36, 85, 201, 0.12);
+  --gold-bg2:    rgba(36, 85, 201, 0.22);
 
   /* Backgrounds */
-  --bg:          #E5E8EB;
+  --bg:          var(--ivory-dim);
   --bg2:         #FFFFFF;
-  --bg3:         rgba(0, 139, 139, 0.08);
-  --bg4:         rgba(0, 139, 139, 0.16);
+  --bg3:         rgba(36, 85, 201, 0.08);
+  --bg4:         rgba(36, 85, 201, 0.16);
   --card:        #FFFFFF;
   --card2:       #F8F9FA;
 
   /* Borders */
-  --border:      rgba(10, 37, 81, 0.12);
-  --border2:     rgba(10, 37, 81, 0.22);
+  --border:      rgba(11, 27, 50, 0.12);
+  --border2:     rgba(11, 27, 50, 0.22);
 
   /* Text */
   --tp:          #0B1B32;
-  --ts:          rgba(10, 37, 81, 0.75);
-  --tm:          rgba(10, 37, 81, 0.5);
-  --td:          rgba(10, 37, 81, 0.25);
+  --ts:          rgba(11, 27, 50, 0.75);
+  --tm:          rgba(11, 27, 50, 0.5);
+  --td:          rgba(11, 27, 50, 0.25);
 
   /* Status */
   --green:       #27AE60;
@@ -44,7 +53,7 @@
   --red:         #E74C3C;
   --red-bg:      rgba(231,76,60,.1);
   --blue:        #0B1B32;
-  --blue-bg:     rgba(10, 37, 81, 0.12);
+  --blue-bg:     rgba(11, 27, 50, 0.12);
   --purple:      #C5A059;
   --orange:      #E67E22;
 
@@ -56,9 +65,9 @@
   --r-xl:        22px;
 
   /* Shadows */
-  --shadow:      0 4px 24px rgba(10, 37, 81, 0.12);
-  --shadow-lg:   0 8px 40px rgba(10, 37, 81, 0.18);
-  --glow-gold:   0 0 30px rgba(0, 139, 139, 0.18);
+  --shadow:      0 4px 24px rgba(11, 27, 50, 0.12);
+  --shadow-lg:   0 8px 40px rgba(11, 27, 50, 0.18);
+  --glow-gold:   0 0 30px rgba(36, 85, 201, 0.18);
 
   /* Transitions */
   --trans:       all .2s ease;
@@ -70,8 +79,8 @@ html.dark-mode {
   /* Backgrounds */
   --bg:          #0B1320;
   --bg2:         #0F1A2E;
-  --bg3:         rgba(0, 139, 139, 0.10);
-  --bg4:         rgba(0, 139, 139, 0.18);
+  --bg3:         rgba(36, 85, 201, 0.10);
+  --bg4:         rgba(36, 85, 201, 0.18);
   --card:        #0F1A2E;
   --card2:       #162035;
 
@@ -88,7 +97,7 @@ html.dark-mode {
   /* Shadows deeper in dark mode */
   --shadow:      0 4px 24px rgba(0, 0, 0, 0.40);
   --shadow-lg:   0 8px 40px rgba(0, 0, 0, 0.60);
-  --glow-gold:   0 0 30px rgba(0, 139, 139, 0.22);
+  --glow-gold:   0 0 30px rgba(36, 85, 201, 0.22);
 }
 
 html.dark-mode body {
@@ -133,7 +142,7 @@ html.dark-mode .nav-search input::placeholder { color: var(--tm); }
 
 html.dark-mode .sidebar-profile-card {
   background: var(--bg3);
-  border-color: rgba(0, 139, 139, 0.20);
+  border-color: rgba(36, 85, 201, 0.20);
 }
 
 html.dark-mode .card,
@@ -152,7 +161,7 @@ html.dark-mode .form-control {
 
 html.dark-mode .form-control:focus {
   border-color: var(--royal);
-  box-shadow: 0 0 0 3px rgba(0, 139, 139, 0.15);
+  box-shadow: 0 0 0 3px rgba(36, 85, 201, 0.15);
 }
 
 html.dark-mode .db-section-title { color: var(--tp); }
@@ -233,7 +242,7 @@ input, select, textarea { font-family: inherit; }
   gap: 0;
   backdrop-filter: blur(12px);
   /* Website-style teal accent line at bottom */
-  box-shadow: 0 1px 0 0 var(--border), 0 2px 0 0 rgba(0,139,139,0.15);
+  box-shadow: 0 1px 0 0 var(--border), 0 2px 0 0 rgba(36, 85, 201,0.15);
 }
 .db-topnav .logo-area {
   width: var(--sidebar-w);
@@ -439,11 +448,11 @@ input, select, textarea { font-family: inherit; }
   text-decoration: none;
 }
 .sidebar-nav-item:hover {
-  background: rgba(0,139,139,0.08);
+  background: rgba(36, 85, 201,0.08);
   color: var(--tp);
 }
 .sidebar-nav-item.active {
-  background: rgba(0,139,139,0.12);
+  background: rgba(36, 85, 201,0.12);
   color: var(--royal);
   font-weight: 600;
 }
@@ -530,11 +539,11 @@ input, select, textarea { font-family: inherit; }
   border-radius: var(--r-lg);
   padding: 22px;
   transition: var(--trans);
-  box-shadow: 0 2px 8px rgba(10,37,81,0.05);
+  box-shadow: 0 2px 8px rgba(11, 27, 50,0.05);
 }
 .db-card:hover {
-  border-color: rgba(0,139,139,0.3);
-  box-shadow: 0 4px 20px rgba(0,139,139,0.08);
+  border-color: rgba(36, 85, 201,0.3);
+  box-shadow: 0 4px 20px rgba(36, 85, 201,0.08);
 }
 .db-card.glow:hover { box-shadow: var(--glow-gold); }
 
@@ -579,7 +588,7 @@ input, select, textarea { font-family: inherit; }
   opacity: 0; transition: opacity .3s;
 }
 .kpi-card:hover::before { opacity: 1; }
-.kpi-card:hover { box-shadow: 0 4px 24px rgba(0,139,139,0.12); transform: translateY(-2px); }
+.kpi-card:hover { box-shadow: 0 4px 24px rgba(36, 85, 201,0.12); transform: translateY(-2px); }
 
 /* Teal top bar on KPI cards — matches website card accent style */
 .kpi-card::before {
@@ -630,11 +639,8 @@ input, select, textarea { font-family: inherit; }
   transition: var(--trans);
   white-space: nowrap;
 }
-.btn-gold {
-  background: linear-gradient(135deg, var(--gold-dk), var(--gold));
-  color: #0D1117;
-}
-.btn-gold:hover { filter: brightness(1.1); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(201,168,76,.3); }
+.btn-gold { background: var(--gold); color: var(--ink); border: none; }
+.btn-gold:hover { background: var(--gold-light); transform: translateY(-1px); }
 .btn-dark {
   background: var(--bg3); color: var(--ts);
   border: 1px solid var(--border);
@@ -660,7 +666,7 @@ input, select, textarea { font-family: inherit; }
   color: #fff;
   border: none;
 }
-.btn-teal:hover { filter: brightness(1.1); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0,139,139,0.3); }
+.btn-teal:hover { filter: brightness(1.1); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(36, 85, 201,0.3); }
 .btn-sm { padding: 6px 12px; font-size: .78rem; border-radius: 7px; }
 .btn-lg { padding: 11px 22px; font-size: .9rem; }
 .btn-xl { padding: 14px 28px; font-size: .95rem; border-radius: 10px; }
@@ -691,7 +697,7 @@ input, select, textarea { font-family: inherit; }
 }
 .form-control:focus {
   border-color: var(--royal);
-  box-shadow: 0 0 0 3px rgba(0,139,139,0.12);
+  box-shadow: 0 0 0 3px rgba(36, 85, 201,0.12);
 }
 .form-control::placeholder { color: var(--tm); }
 textarea.form-control { resize: vertical; min-height: 100px; }
@@ -1479,7 +1485,16 @@ select.form-control { cursor: pointer; }
   .grid-4 { grid-template-columns: repeat(2,1fr); }
 }
 @media (max-width: 900px) {
-  :root { --sidebar-w: 0px; }
+  :root {
+  --navy: #0B1B32;
+  --navy-2: #122644;
+  --royal: #2455C9;
+  --royal-2: #3A6BE0;
+  --gold: #C9A24B;
+  --gold-light: #E7C878;
+  --ivory: #FAF6EC;
+  --ivory-dim: #F0EADA;
+  --ink: #101826; --sidebar-w: 0px; }
   .db-sidebar { transform: translateX(-260px); width: 260px; z-index: 10000; }
   .db-sidebar.mobile-open { transform: translateX(0); }
   .sidebar-backdrop {
