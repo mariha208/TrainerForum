@@ -138,10 +138,10 @@ ul {
   right: 0;
   z-index: 900;
   height: var(--nav);
-  background: rgba(11, 27, 50, 0.88);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(197, 160, 89, 0.2);
+  background: rgba(11, 27, 50, 0.92);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -182,10 +182,10 @@ ul {
   align-items: center;
   justify-content: center;
   height: 38px;
-  padding: 0 8px; /* Reduced from 12px to prevent squishing on dense navbars */
-  font-size: .85rem; /* Slightly smaller for density */
+  padding: 0 8px;
+  font-size: .85rem;
   font-weight: 500;
-  color: var(--ts);
+  color: rgba(250, 246, 236, 0.72);
   transition: color .2s, background .2s;
   position: relative;
   border-radius: var(--r);
@@ -198,12 +198,12 @@ ul {
   left: 0;
   width: 0;
   height: 2px;
-  background: var(--gold);
+  background: var(--gold-light);
   transition: width .25s;
 }
 
 .nav-links a:hover {
-  color: var(--tp);
+  color: var(--ivory);
 }
 
 .nav-links a:hover::after,
@@ -212,7 +212,7 @@ ul {
 }
 
 .nav-links a.active {
-  color: var(--gold);
+  color: var(--gold-light);
 }
 
 .nav-r {
@@ -353,15 +353,27 @@ ul {
   border-color: rgba(197, 160, 89, 0.4)
 }
 
+/* Inside dark navbar, ghost & dark buttons should read ivory */
+#nav .btn-ghost {
+  border-color: rgba(250, 246, 236, 0.3);
+  color: rgba(250, 246, 236, 0.8);
+}
+
+#nav .btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--gold-light);
+  color: var(--ivory);
+}
+
 .btn-dark {
   background: rgba(255, 255, 255, 0.08);
-  color: var(--ts);
-  border: 1px solid var(--bd);
+  color: rgba(250, 246, 236, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .btn-dark:hover {
   background: rgba(255, 255, 255, 0.14);
-  color: var(--tp)
+  color: var(--ivory)
 }
 
 .btn-ok {
@@ -468,15 +480,15 @@ ul {
   padding: 80px 5% 60px;
   position: relative;
   overflow: hidden;
-  background: var(--navy-2);
+  background: radial-gradient(ellipse at top left, var(--navy-2), var(--navy) 65%);
 }
 
 .hero::before {
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at 30% 20%, rgba(36, 85, 201, 0.4) 0%, transparent 60%),
-    radial-gradient(ellipse at 80% 80%, rgba(197, 160, 89, 0.15) 0%, transparent 50%);
+  background: radial-gradient(ellipse at 25% 20%, rgba(58, 107, 224, 0.35) 0%, transparent 55%),
+    radial-gradient(ellipse at 80% 80%, rgba(201, 162, 75, 0.12) 0%, transparent 50%);
   pointer-events: none;
 }
 
@@ -654,7 +666,7 @@ ul {
   font-family: 'Cormorant Garamond', serif;
   font-size: 2.1rem;
   font-weight: 700;
-  color: var(--tp);
+  color: var(--gold-light);
   display: block;
   line-height: 1;
 }
@@ -673,7 +685,8 @@ ul {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(197, 160, 89, 0.12);
+  background: transparent;
+  border: 1px solid var(--line);
   border-radius: 10px;
   padding: 8px;
 }
@@ -823,12 +836,25 @@ section {
 }
 
 .bg-fog {
-  background: rgba(8, 48, 96, 0.6);
-  backdrop-filter: blur(10px)
+  background: var(--ivory);
 }
 
 .bg-cream {
-  background: rgba(0, 91, 91, 0.3)
+  background: var(--ivory-dim);
+}
+
+/* Home category section — light theme override */
+.bg-fog .section-label {
+  color: var(--royal);
+}
+
+.bg-fog .section-title {
+  color: var(--navy);
+}
+
+.bg-fog .section-sub {
+  color: var(--ink);
+  opacity: 0.7;
 }
 
 .bg-dark {
@@ -1169,21 +1195,22 @@ section {
 
 /* ══ CATEGORY CARD ══ */
 .cat-card {
-  background: var(--bg-glass);
-  border: 1px solid var(--bd);
+  background: #FFFFFF;
+  border: 1px solid var(--line-dark);
   border-radius: var(--rl);
   padding: 22px 16px;
   text-align: center;
   cursor: pointer;
+  box-shadow: 0 2px 12px rgba(11, 27, 50, 0.06);
   transition: all .26s;
   backdrop-filter: blur(10px);
 }
 
 .cat-card:hover {
-  border-color: rgba(197, 160, 89, 0.5);
+  border-color: var(--gold);
   transform: translateY(-6px);
-  box-shadow: var(--shm);
-  background: var(--bg-glass-h);
+  box-shadow: 0 16px 40px rgba(11, 27, 50, 0.12);
+  background: #FDFAF2;
 }
 
 .cat-icon {
@@ -1581,12 +1608,17 @@ section {
    FOOTER — Premium Multi-Layer Enterprise Footer
 ══════════════════════════════════════════════════════════ */
 #site-footer {
-  background: linear-gradient(180deg, rgba(2, 8, 20, 0.98) 0%, rgba(4, 12, 26, 1) 100%);
-  color: var(--ts);
-  border-top: 1px solid rgba(197, 160, 89, 0.18);
+  background: var(--navy-2);
+  color: rgba(250, 246, 236, 0.5);
+  border-top: 1px solid var(--line);
   position: relative;
   overflow: hidden;
   animation: footerFadeIn .6s ease both;
+  --tp: var(--ivory);
+  --ts: rgba(250, 246, 236, 0.65);
+  --tm: rgba(250, 246, 236, 0.4);
+  --bd: var(--line);
+  --bd2: rgba(255, 255, 255, 0.06);
 }
 
 #site-footer::before {
