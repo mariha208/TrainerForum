@@ -484,7 +484,7 @@ ul {
   padding: 80px 5% 60px;
   position: relative;
   overflow: hidden;
-  background: radial-gradient(ellipse at top left, var(--navy-2), var(--navy) 65%);
+  background: #0B1B32;
 }
 
 .hero::before {
@@ -731,13 +731,8 @@ ul {
   position: relative;
   width: 100%;
   aspect-ratio: 16 / 9;
-  max-height: 380px;
-  background: linear-gradient(135deg,
-      rgba(11, 27, 50, 0.75) 0%,
-      rgba(36, 85, 201, 0.4) 50%,
-      rgba(36, 85, 201, 0.4) 100%);
-  border: 1.5px dashed rgba(197, 160, 89, 0.45);
-  border-radius: var(--rl);
+  background: transparent;
+  border: none;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -2622,7 +2617,6 @@ section {
 
   .hero-media-frame {
     aspect-ratio: 16 / 9;
-    max-height: 220px;
   }
 
   .hero-lower h1 {
