@@ -718,49 +718,7 @@ function subscribeToTrainers() {
         }); // end TRAINERS.forEach
 
         // ── RENDER DYNAMIC CATEGORIES ─────────────────────────────────────
-        const homeCats = document.getElementById('home-cats');
-        if (homeCats) {
-          const catCounts = {};
-          TRAINERS.forEach(t => {
-            const c = t.category || 'General';
-            catCounts[c] = (catCounts[c] || 0) + 1;
-          });
-          const topCats = Object.keys(catCounts).sort((a, b) => catCounts[b] - catCounts[a]).slice(0, 5);
-          
-          const catMeta = {
-            'Business Coaching': { icon: '💼', p: 'Leadership & Strategy' },
-            'AI & Technology': { icon: '🤖', p: 'Future-proof skills' },
-            'Fitness & Health': { icon: '💪', p: 'Physical wellbeing' },
-            'Cybersecurity': { icon: '🛡️', p: 'Data protection' },
-            'Soft Skills': { icon: '🗣️', p: 'Communication & EQ' },
-            'Language Training': { icon: '🌍', p: 'Global fluency' },
-            'Music & Dance': { icon: '🎵', p: 'Creative arts' },
-            'Career Mentoring': { icon: '🎯', p: 'Professional growth' },
-            'Sports Coaching': { icon: '🏃', p: 'Athletic performance' },
-            'Finance': { icon: '💰', p: 'Wealth & Investment' },
-            'Motivational': { icon: '⭐', p: 'Inspiring talks' }
-          };
-
-          let catsHtml = '';
-          topCats.forEach(cat => {
-            const meta = catMeta[cat] || { icon: '✨', p: 'Expert Training' };
-            catsHtml += `
-            <div class="cat-card" onclick="window.location.href='find-trainers.html?category=${encodeURIComponent(cat)}'">
-              <div class="cat-icon">${meta.icon}</div>
-              <h3>${cat}</h3>
-              <p>${meta.p}</p>
-            </div>`;
-          });
-          
-          catsHtml += `
-            <div class="cat-card" onclick="window.location.href='categories.html'" style="background:rgba(255,255,255,0.02); border:1px dashed var(--border); display:flex; flex-direction:column; justify-content:center; align-items:center; transition: .3s;">
-              <div class="cat-icon" style="background:rgba(245,200,66,0.1); color:var(--gold); border:1px solid rgba(245,200,66,0.3);">+</div>
-              <h3 style="color:var(--gold);">More</h3>
-              <p>View all categories</p>
-            </div>`;
-            
-          homeCats.innerHTML = catsHtml;
-        }
+        // Removed dynamic population so the hardcoded index.html categories are shown instead.
 
         // Setup filter mechanics mapping newly generated .trainer-card elements
         setupFilterToggles();
