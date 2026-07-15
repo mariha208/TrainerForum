@@ -66,7 +66,7 @@
   cursor: pointer; transition: var(--trans-fast, all .2s ease);
 }
 #tdb-banner-preview:not(.has-image)::after {
-  content: "Click to upload cover banner"; font-size: .82rem; color: #0A2551; font-weight: 600;
+  content: "Click to upload cover banner"; font-size: .82rem; color: #0B1B32; font-weight: 600;
 }
 #tdb-banner-preview.has-image::after { content: none; }
 

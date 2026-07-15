@@ -1017,15 +1017,43 @@ function verifyUserSessionToken() {
         
       if (nlDash) {
         nlDash.style.display = 'inline-flex';
-        nlDash.innerHTML = `Dashboard (${displayName})`;
-        nlDash.style.color = 'var(--gold)';
-        nlDash.style.fontWeight = '600';
+        let avInitials = displayName.charAt(0).toUpperCase();
+        let avatarStyle = '';
+        if (sessionUser.profileImageUrl || sessionUser.photoUrl || sessionUser.profilePic) {
+            let picUrl = sessionUser.profileImageUrl || sessionUser.photoUrl || sessionUser.profilePic;
+            avatarStyle = `background-image:url('` + picUrl + `');background-size:cover;background-position:center;`;
+        }
+        nlDash.innerHTML = `
+        <div class="nav-profile-btn" onclick="window.location.href='dashboard.html'" style="display:flex; align-items:center; gap:10px; background:var(--bg-card); border:1px solid var(--bd2); border-radius:10px; padding:5px 12px 5px 6px; cursor:pointer; transition:all 0.2s;">
+            <div class="nav-av" style="width:28px; height:28px; border-radius:50%; background:linear-gradient(135deg, #C5A059, #D4C18F); display:flex; align-items:center; justify-content:center; font-size:.72rem; font-weight:700; color:#fff; ` + avatarStyle + `">` + (avatarStyle ? '' : avInitials) + `</div>
+            <div style="text-align:left; line-height:1.2;">
+                <div class="nav-name" style="font-size:0.8rem; font-weight:600; color:var(--tp);">` + displayName + `</div>
+                <div class="nav-role" style="font-size:0.7rem; color:var(--gold);">Dashboard</div>
+            </div>
+        </div>
+        `;
+        nlDash.style.padding = '0';
+        nlDash.style.background = 'transparent';
       }
       if (mnDash) {
         mnDash.style.display = 'block';
-        mnDash.innerHTML = `Dashboard (${displayName})`;
-        mnDash.style.color = 'var(--gold)';
-        mnDash.style.fontWeight = '600';
+        let avInitials = displayName.charAt(0).toUpperCase();
+        let avatarStyle = '';
+        if (sessionUser.profileImageUrl || sessionUser.photoUrl || sessionUser.profilePic) {
+            let picUrl = sessionUser.profileImageUrl || sessionUser.photoUrl || sessionUser.profilePic;
+            avatarStyle = `background-image:url('` + picUrl + `');background-size:cover;background-position:center;`;
+        }
+        mnDash.innerHTML = `
+        <div class="nav-profile-btn" onclick="window.location.href='dashboard.html'" style="margin: 10px 0; display:flex; align-items:center; gap:10px; background:var(--bg-card); border:1px solid var(--bd2); border-radius:10px; padding:5px 12px 5px 6px; cursor:pointer;">
+            <div class="nav-av" style="width:28px; height:28px; border-radius:50%; background:linear-gradient(135deg, #C5A059, #D4C18F); display:flex; align-items:center; justify-content:center; font-size:.72rem; font-weight:700; color:#fff; ` + avatarStyle + `">` + (avatarStyle ? '' : avInitials) + `</div>
+            <div style="text-align:left; line-height:1.2;">
+                <div class="nav-name" style="font-size:0.8rem; font-weight:600; color:var(--tp);">` + displayName + `</div>
+                <div class="nav-role" style="font-size:0.7rem; color:var(--gold);">Dashboard</div>
+            </div>
+        </div>
+        `;
+        mnDash.style.padding = '0';
+        mnDash.style.background = 'transparent';
       }
     } else {
       if (nlDash) nlDash.style.display = 'none';

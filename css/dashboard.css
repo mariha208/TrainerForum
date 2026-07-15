@@ -14,7 +14,7 @@
   --gold:        #C5A059;
   --gold-lt:     #D4B87A;
   --gold-dk:     #A8863D;
-  --navy:        #0A2551;
+  --navy:        #0B1B32;
 
   /* Legacy aliases kept for compatibility */
   --gold-bg:     rgba(0, 139, 139, 0.12);
@@ -33,7 +33,7 @@
   --border2:     rgba(10, 37, 81, 0.22);
 
   /* Text */
-  --tp:          #0A2551;
+  --tp:          #0B1B32;
   --ts:          rgba(10, 37, 81, 0.75);
   --tm:          rgba(10, 37, 81, 0.5);
   --td:          rgba(10, 37, 81, 0.25);
@@ -43,7 +43,7 @@
   --green-bg:    rgba(39,174,96,.12);
   --red:         #E74C3C;
   --red-bg:      rgba(231,76,60,.1);
-  --blue:        #0A2551;
+  --blue:        #0B1B32;
   --blue-bg:     rgba(10, 37, 81, 0.12);
   --purple:      #C5A059;
   --orange:      #E67E22;
@@ -927,8 +927,8 @@ select.form-control { cursor: pointer; }
   justify-content: flex-end;
   font-size: .68rem; font-weight: 700; color: #0D1117;
 }
-.bar-h-fill.blue { background: linear-gradient(90deg, #B8D4E8, #D1E5F7); color: #0A2551; }
-.bar-h-fill.green { background: linear-gradient(90deg, #B8E6C9, #D4F1E0); color: #0A2551; }
+.bar-h-fill.blue { background: linear-gradient(90deg, #B8D4E8, #D1E5F7); color: #0B1B32; }
+.bar-h-fill.green { background: linear-gradient(90deg, #B8E6C9, #D4F1E0); color: #0B1B32; }
 .bar-h-val { width: 50px; font-size: .76rem; color: var(--ts); flex-shrink: 0; }
 
 /* Donut */

@@ -71,7 +71,7 @@ html {
 
 body {
   font-family: 'Poppins', sans-serif;
-  background: linear-gradient(158deg, #0A2551 0%, #005F5F 60%, #008B8B 100%);
+  background: var(--bg-main);
   background-attachment: fixed;
   color: var(--tp);
   line-height: 1.6;
@@ -616,7 +616,7 @@ ul {
 }
 
 .hero-search select option {
-  background: #0A2551;
+  background: #0B1B32;
   color: var(--tp)
 }
 
@@ -2216,7 +2216,7 @@ section {
 }
 
 .browse-bar select option {
-  background: #0A2551;
+  background: #0B1B32;
   color: var(--tp)
 }
 
