@@ -1,4 +1,4 @@
-﻿/* ══════════════════════════════════════════════
+/* ══════════════════════════════════════════════
    ABOUT PAGE — matches World Trainer Forum dark theme
    Inherits CSS variables from style.css
 ══════════════════════════════════════════════ */
@@ -828,7 +828,7 @@ p {
 }
 
 .collab-copy p {
-  color: rgba(237, 242, 247, .7);
+  color: rgba(16, 24, 38, 0.72);
   font-size: .95rem;
   line-height: 1.85;
 }
@@ -1195,28 +1195,51 @@ p {
     font-size: 1.5rem;
   }
 }
-/* â•â• FIX DARK SECTION TEXT VISIBILITY â•â• */
-.hero h1,
-.hero h2,
-.hero h3,
-.hero h4,
-.promise-section h1,
-.promise-section h2,
-.promise-section h3,
-.promise-section h4,
-.section--navy .benefit-block h4 {
-  color: var(--ivory, #FAF6EC) !important;
+/* ══ COMPREHENSIVE TEXT VISIBILITY FIXES ══ */
+
+/* Dark navy hero background — force light text */
+.hero h1, .hero h2, .hero h3, .hero h4 {
+  color: #FAF6EC !important;
+}
+.hero p, .hero .lead {
+  color: rgba(250, 246, 236, 0.80) !important;
+}
+.hero .eyebrow {
+  color: #E7C878 !important;
 }
 
-.hero p,
-.hero .lead,
-.promise-section p,
-.promise-section .lead,
-.section--navy .benefit-block p {
-  color: rgba(250, 246, 236, 0.75) !important;
+/* Promise / CTA section — dark background, light text */
+.promise-section h1, .promise-section h2,
+.promise-section h3, .promise-section h4 {
+  color: #FAF6EC !important;
 }
-
-.hero .eyebrow,
+.promise-section p, .promise-section .lead {
+  color: rgba(250, 246, 236, 0.80) !important;
+}
 .promise-section .eyebrow {
-  color: var(--gold-light, #E7C878) !important;
+  color: #E7C878 !important;
+}
+
+/* Navy section — fix all headings and paragraphs (override global dark color) */
+.section--navy h1, .section--navy h2,
+.section--navy h3, .section--navy h4 {
+  color: #FAF6EC !important;
+}
+.section--navy p {
+  color: rgba(250, 246, 236, 0.78) !important;
+}
+.section--navy .eyebrow {
+  color: #E7C878 !important;
+}
+
+/* Light section (ivory background) — text must be dark for readability */
+.section--light h1, .section--light h2,
+.section--light h3, .section--light h4 {
+  color: #0B1B32 !important;
+}
+.section--light p, .section--light .lead {
+  color: rgba(16, 24, 38, 0.72) !important;
+}
+.section--light .eyebrow {
+  color: rgba(197, 160, 89, 0.9) !important;
 }
