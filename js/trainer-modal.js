@@ -264,6 +264,17 @@ function buildPremiumModal(t, isOwner = false) {
     try { _rawAvs = JSON.parse(_rawAvs); } catch (e) { _rawAvs = null; }
   }
 
+  // If this is the logged-in trainer's own profile, always use currentTrainer localStorage
+  // so the front-end matches exactly what was saved in the dashboard.
+  if (isOwner) {
+    try {
+      const _ctOwner = JSON.parse(localStorage.getItem('currentTrainer') || '{}');
+      let _ctOwnerAvail = _ctOwner.availability;
+      if (typeof _ctOwnerAvail === 'string') _ctOwnerAvail = JSON.parse(_ctOwnerAvail);
+      if (_ctOwnerAvail && typeof _ctOwnerAvail === 'object') _rawAvs = _ctOwnerAvail;
+    } catch(e) {}
+  }
+
   if (_rawAvs && typeof _rawAvs === 'object') {
     if (Array.isArray(_rawAvs)) {
       _rawAvs.forEach((info, i) => { if (_DAY_NAMES[i] && info) avs[_DAY_NAMES[i]] = info; });
@@ -727,13 +738,25 @@ function buildPremiumModal(t, isOwner = false) {
         let isAvail = typeof info === 'object' ? (typeof info.available !== 'undefined' ? info.available : info.enabled) : true;
         _avMap[d] = isAvail !== false;
       });
-      // Read specificDates overrides from raw availability object
-      const _rawAvsForSpec = t.availability;
+
+      // Read specificDates: if this is the logged-in trainer's own profile,
+      // always read from currentTrainer localStorage (most up-to-date, set by dashboard).
+      // For other trainers, read from t.availability.
       let _specificDates = {};
       try {
-        let _parsed = typeof _rawAvsForSpec === 'string' ? JSON.parse(_rawAvsForSpec) : _rawAvsForSpec;
-        if (_parsed && _parsed.specificDates) _specificDates = _parsed.specificDates;
+        if (isOwner) {
+          // Own profile — pull fresh from localStorage
+          const _ctData = JSON.parse(localStorage.getItem('currentTrainer') || '{}');
+          let _ctAvail = _ctData.availability;
+          if (typeof _ctAvail === 'string') _ctAvail = JSON.parse(_ctAvail);
+          if (_ctAvail && _ctAvail.specificDates) _specificDates = _ctAvail.specificDates;
+        } else {
+          // Another trainer's profile — use t.availability
+          let _parsed = typeof t.availability === 'string' ? JSON.parse(t.availability) : t.availability;
+          if (_parsed && _parsed.specificDates) _specificDates = _parsed.specificDates;
+        }
       } catch(e) {}
+
       const _shortDay = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
       const now = new Date();
       const y = now.getFullYear(), m = now.getMonth();
