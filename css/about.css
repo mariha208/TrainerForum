@@ -1,4 +1,4 @@
-/* ══════════════════════════════════════════════
+﻿/* ══════════════════════════════════════════════
    ABOUT PAGE — matches World Trainer Forum dark theme
    Inherits CSS variables from style.css
 ══════════════════════════════════════════════ */
@@ -1194,4 +1194,29 @@ p {
   .promise-inner h2 {
     font-size: 1.5rem;
   }
+}
+/* â•â• FIX DARK SECTION TEXT VISIBILITY â•â• */
+.hero h1,
+.hero h2,
+.hero h3,
+.hero h4,
+.promise-section h1,
+.promise-section h2,
+.promise-section h3,
+.promise-section h4,
+.section--navy .benefit-block h4 {
+  color: var(--ivory, #FAF6EC) !important;
+}
+
+.hero p,
+.hero .lead,
+.promise-section p,
+.promise-section .lead,
+.section--navy .benefit-block p {
+  color: rgba(250, 246, 236, 0.75) !important;
+}
+
+.hero .eyebrow,
+.promise-section .eyebrow {
+  color: var(--gold-light, #E7C878) !important;
 }

@@ -1,0 +1,8 @@
+﻿
+
+
+@media (max-width: 900px) {
+  .nav-links { display: none; }
+  .ham-btn { display: flex; }
+  #btn-login, #btn-signup, #btn-logout { display: none; }
+}
