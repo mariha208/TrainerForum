@@ -67,6 +67,20 @@ window.openTrainerModal = function (idOrObj) {
   const lavail = JSON.parse(localStorage.getItem(lavailKey) || 'null');
   if (lavail) t.availability = lavail;
 
+  // Also merge specificDates from currentTrainer (dashboard-saved data) if it's the same trainer
+  try {
+    const _ct = JSON.parse(localStorage.getItem('currentTrainer') || '{}');
+    const _ctId = String(_ct.trainerId || _ct._id || _ct.id || '');
+    if (_ctId && _ctId === trainerId && _ct.availability) {
+      let _ctAvail = typeof _ct.availability === 'string' ? JSON.parse(_ct.availability) : _ct.availability;
+      if (_ctAvail && _ctAvail.specificDates) {
+        // Merge specificDates into t.availability
+        if (!t.availability || typeof t.availability !== 'object') t.availability = {};
+        t.availability.specificDates = _ctAvail.specificDates;
+      }
+    }
+  } catch(e) {}
+
   // Sync profile data (especially social links)
   const sp = JSON.parse(localStorage.getItem(lpKey) || 'null');
   if (sp) {
@@ -713,6 +727,13 @@ function buildPremiumModal(t, isOwner = false) {
         let isAvail = typeof info === 'object' ? (typeof info.available !== 'undefined' ? info.available : info.enabled) : true;
         _avMap[d] = isAvail !== false;
       });
+      // Read specificDates overrides from raw availability object
+      const _rawAvsForSpec = t.availability;
+      let _specificDates = {};
+      try {
+        let _parsed = typeof _rawAvsForSpec === 'string' ? JSON.parse(_rawAvsForSpec) : _rawAvsForSpec;
+        if (_parsed && _parsed.specificDates) _specificDates = _parsed.specificDates;
+      } catch(e) {}
       const _shortDay = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
       const now = new Date();
       const y = now.getFullYear(), m = now.getMonth();
@@ -726,7 +747,10 @@ function buildPremiumModal(t, isOwner = false) {
       for (let i = 0; i < firstDay; i++) cells += '<div></div>';
       for (let d = 1; d <= days; d++) {
         const dk = _shortDay[new Date(y, m, d).getDay()];
-        const en = _avMap[dk] !== false;
+        const dateKey = y + '-' + m + '-' + d;
+        let en = _avMap[dk] !== false;
+        // Apply specific date override if exists
+        if (typeof _specificDates[dateKey] !== 'undefined') en = _specificDates[dateKey];
         const isToday = d === now.getDate();
         const bg = en ? (isToday ? 'rgba(197,160,89,0.22)' : 'rgba(255,255,255,0.04)') : 'rgba(239,68,68,0.16)';
         const bdr = en ? (isToday ? '1.5px solid #C5A059' : '1px solid rgba(255,255,255,0.07)') : '1px solid rgba(239,68,68,0.32)';
@@ -1147,6 +1171,25 @@ window.renderBPMCalendar = function () {
 
   const booked = new Set([randomBetween(3, 8), randomBetween(12, 16), randomBetween(20, 25)]);
 
+  // Read blocked specific dates from the logged-in trainer's availability
+  let _bpmSpecificDates = {};
+  let _bpmWeeklyAvs = {};
+  const _daysMap = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  try {
+    const _bpmRaw = JSON.parse(localStorage.getItem('currentTrainer') || '{}');
+    let _bpmAvs = _bpmRaw.availability;
+    if (typeof _bpmAvs === 'string') _bpmAvs = JSON.parse(_bpmAvs);
+    if (_bpmAvs && _bpmAvs.specificDates) _bpmSpecificDates = _bpmAvs.specificDates;
+    if (_bpmAvs) {
+      ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].forEach(function(dk) {
+        if (_bpmAvs[dk]) {
+          var inf = _bpmAvs[dk];
+          _bpmWeeklyAvs[dk] = typeof inf.available !== 'undefined' ? inf.available : (inf.enabled !== false);
+        }
+      });
+    }
+  } catch(e) {}
+
   let cells = '';
   for (let i = firstDay - 1; i >= 0; i--) {
     cells += `<div class="bpm-cal-day other-month">${prevDays - i}</div>`;
@@ -1156,13 +1199,23 @@ window.renderBPMCalendar = function () {
     const isSelected = d === state.selectedDay;
     const isBk = booked.has(d);
     const isPast = new Date(year, month, d) < new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    // Check if this specific date is blocked
+    const _dateKey = year + '-' + month + '-' + d;
+    const _dayName = _daysMap[new Date(year, month, d).getDay()];
+    let isBlocked = false;
+    if (typeof _bpmSpecificDates[_dateKey] !== 'undefined') {
+      isBlocked = !_bpmSpecificDates[_dateKey];
+    } else if (typeof _bpmWeeklyAvs[_dayName] !== 'undefined') {
+      isBlocked = !_bpmWeeklyAvs[_dayName];
+    }
     let cls = 'bpm-cal-day';
     if (isPast) cls += ' other-month';
-    else if (isBk) cls += ' booked';
+    else if (isBk || isBlocked) cls += ' booked';
     else if (isSelected) cls += ' selected';
     else if (isToday) cls += ' today';
-    const click = (!isPast && !isBk) ? `onclick="selectBPMDay(${d})"` : '';
-    cells += `<div class="${cls}" ${click}>${d}</div>`;
+    const click = (!isPast && !isBk && !isBlocked) ? `onclick="selectBPMDay(${d})"` : '';
+    const titleAttr = isBlocked ? 'title="Unavailable"' : '';
+    cells += `<div class="${cls}" ${click} ${titleAttr}>${d}</div>`;
   }
   const totalCells = firstDay + daysCount;
   const remaining = (7 - (totalCells % 7)) % 7;

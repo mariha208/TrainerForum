@@ -142,14 +142,19 @@
       </div>
 
       <!-- Membership Status -->
-      <div class="db-card mb-24" style="background: linear-gradient(to right, rgba(10,37,81,0.8), rgba(20,20,20,0.9)); color: white; border: 1px solid var(--gold);">
+      <div class="db-card mb-24"
+        style="background: linear-gradient(to right, rgba(10,37,81,0.8), rgba(20,20,20,0.9)); color: white; border: 1px solid var(--gold);">
         <div style="display:flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
           <div style="flex:1">
-            <h3 style="color:var(--gold); margin-bottom: 15px; display:flex; align-items:center; gap:8px"><span class="ct-ico" style="background:var(--gold); color:#000; padding:4px 8px; border-radius:50%; font-size:0.8rem;">👑</span> Membership Status</h3>
+            <h3 style="color:var(--gold); margin-bottom: 15px; display:flex; align-items:center; gap:8px"><span
+                class="ct-ico"
+                style="background:var(--gold); color:#000; padding:4px 8px; border-radius:50%; font-size:0.8rem;">👑</span>
+              Membership Status</h3>
             <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px;">
               <div>
                 <p style="color:rgba(255,255,255,0.7); font-size: 0.8rem; margin:0">Current Plan</p>
-                <p><strong id="db-membership-type" style="color:white; font-size: 1.1rem; text-transform: uppercase;">FREE</strong></p>
+                <p><strong id="db-membership-type"
+                    style="color:white; font-size: 1.1rem; text-transform: uppercase;">FREE</strong></p>
               </div>
               <div>
                 <p style="color:rgba(255,255,255,0.7); font-size: 0.8rem; margin:0">Status</p>
@@ -266,7 +271,8 @@
               <div class="ban-overlay" id="banner-overlay"
                 style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,.45);color:white;font-size:1rem;opacity:0.6;transition:opacity 0.2s;gap:6px">
                 <span style="font-size:1.8rem">🖼️</span>
-                <span style="font-size:0.82rem;font-weight:600;letter-spacing:0.04em">Click anywhere to change banner</span>
+                <span style="font-size:0.82rem;font-weight:600;letter-spacing:0.04em">Click anywhere to change
+                  banner</span>
               </div>
             </div>
             <div style="display:flex;gap:8px;margin-bottom:16px">
@@ -325,10 +331,11 @@
               </div>
             </div>
 
-                        <div class="form-row">
+            <div class="form-row">
               <div class="form-group">
                 <label>Expertise Category 1 <span style="color:var(--red)">*</span></label>
-                <select class="form-control" id="p-category1" onchange="var t=document.getElementById('p-categoryOther1');t.style.display=this.value==='Other'?'block':'none';">
+                <select class="form-control" id="p-category1"
+                  onchange="var t=document.getElementById('p-categoryOther1');t.style.display=this.value==='Other'?'block':'none';">
                   <option value="" disabled>Select Category 1...</option>
                   <option>Academic Tutoring</option>
                   <option>Acting & Theatre</option>
@@ -386,11 +393,13 @@
                   <option>Yoga & Meditation</option>
                   <option value="Other">Other</option>
                 </select>
-                <input class="form-control" id="p-categoryOther1" placeholder="Specify your category" type="text" style="display:none; margin-top:8px;">
+                <input class="form-control" id="p-categoryOther1" placeholder="Specify your category" type="text"
+                  style="display:none; margin-top:8px;">
               </div>
               <div class="form-group">
                 <label>Expertise Category 2</label>
-                <select class="form-control" id="p-category2" onchange="var t=document.getElementById('p-categoryOther2');t.style.display=this.value==='Other'?'block':'none';">
+                <select class="form-control" id="p-category2"
+                  onchange="var t=document.getElementById('p-categoryOther2');t.style.display=this.value==='Other'?'block':'none';">
                   <option value="">None</option>
                   <option>Academic Tutoring</option>
                   <option>Acting & Theatre</option>
@@ -448,13 +457,15 @@
                   <option>Yoga & Meditation</option>
                   <option value="Other">Other</option>
                 </select>
-                <input class="form-control" id="p-categoryOther2" placeholder="Specify your category" type="text" style="display:none; margin-top:8px;">
+                <input class="form-control" id="p-categoryOther2" placeholder="Specify your category" type="text"
+                  style="display:none; margin-top:8px;">
               </div>
             </div>
             <div class="form-row">
               <div class="form-group">
                 <label>Expertise Category 3</label>
-                <select class="form-control" id="p-category3" onchange="var t=document.getElementById('p-categoryOther3');t.style.display=this.value==='Other'?'block':'none';">
+                <select class="form-control" id="p-category3"
+                  onchange="var t=document.getElementById('p-categoryOther3');t.style.display=this.value==='Other'?'block':'none';">
                   <option value="">None</option>
                   <option>Academic Tutoring</option>
                   <option>Acting & Theatre</option>
@@ -512,7 +523,8 @@
                   <option>Yoga & Meditation</option>
                   <option value="Other">Other</option>
                 </select>
-                <input class="form-control" id="p-categoryOther3" placeholder="Specify your category" type="text" style="display:none; margin-top:8px;">
+                <input class="form-control" id="p-categoryOther3" placeholder="Specify your category" type="text"
+                  style="display:none; margin-top:8px;">
               </div>
               <div class="form-group">
                 <label>Specialization</label>
@@ -697,8 +709,10 @@
 
           <!-- Save Profile Button -->
           <div style="margin-top:24px;padding-top:24px;border-top:1px solid var(--border)">
-            <button class="btn btn-gold w-100" id="save-profile-btn" onclick="saveProfileData()" style="padding:14px;font-size:1rem;font-weight:700;letter-spacing:0.03em">💾 Save Profile</button>
-            <p style="text-align:center;font-size:0.78rem;color:var(--tm);margin-top:10px">Your profile will be updated immediately after saving.</p>
+            <button class="btn btn-gold w-100" id="save-profile-btn" onclick="saveProfileData()"
+              style="padding:14px;font-size:1rem;font-weight:700;letter-spacing:0.03em">💾 Save Profile</button>
+            <p style="text-align:center;font-size:0.78rem;color:var(--tm);margin-top:10px">Your profile will be updated
+              immediately after saving.</p>
           </div>
         </div>
 
@@ -1447,7 +1461,7 @@
       if (!item.id) item.id = Date.now() + Math.floor(Math.random() * 9999);
       // Ensure features is always an array
       if (!Array.isArray(item.features)) {
-        item.features = typeof item.features === 'string' ? item.features.split(',').map(function(s){return s.trim();}).filter(Boolean) : [];
+        item.features = typeof item.features === 'string' ? item.features.split(',').map(function (s) { return s.trim(); }).filter(Boolean) : [];
       }
       var div = document.createElement('div');
       div.id = 'pkg-' + item.id;
@@ -1494,20 +1508,20 @@
         if (ap && ap.toUpperCase() === 'AM' && h === 12) h = 0;
         return (h < 10 ? '0' : '') + h + ':' + min;
       }
-      var timeRange = timePart.split('-').map(function(t){ return to24h(t.trim()); });
+      var timeRange = timePart.split('-').map(function (t) { return to24h(t.trim()); });
       var startT = timeRange[0] || '09:00', endT = timeRange[1] || '18:00';
       var dayOrder = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
       // Expand range like Mon-Fri
       if (dayPart.includes('-')) {
-        var bounds = dayPart.split('-').map(function(d){ return d.trim().slice(0,3); });
+        var bounds = dayPart.split('-').map(function (d) { return d.trim().slice(0, 3); });
         var si = dayOrder.indexOf(bounds[0]), ei = dayOrder.indexOf(bounds[1]);
         if (si >= 0 && ei >= 0) {
           for (var i = si; i <= ei; i++) { result[dayOrder[i]] = { available: true, start: startT, end: endT }; }
         }
       } else {
         // Comma-separated list
-        dayPart.split(',').forEach(function(d) {
-          var key = d.trim().slice(0,3);
+        dayPart.split(',').forEach(function (d) {
+          var key = d.trim().slice(0, 3);
           if (result[key] !== undefined) result[key] = { available: true, start: startT, end: endT };
         });
       }
@@ -1555,12 +1569,12 @@
       var cont = document.getElementById('weekly-hours-container');
       var cache = JSON.parse(localStorage.getItem('currentTrainer')) || {};
       var oldAvs = cache.availability;
-      if (typeof oldAvs === 'string') { try { oldAvs = JSON.parse(oldAvs); } catch(e){} }
+      if (typeof oldAvs === 'string') { try { oldAvs = JSON.parse(oldAvs); } catch (e) { } }
       oldAvs = oldAvs || {};
 
       var avs = {};
       avs.specificDates = oldAvs.specificDates || {};
-      
+
       cont.querySelectorAll('.avail-row').forEach(function (row) {
         var d = row.dataset.day;
         avs[d] = {
@@ -1623,10 +1637,10 @@
       var headerHtml = dayNames.map(function (n) {
         return '<div style="text-align:center;font-size:.68rem;font-weight:700;color:rgba(255,255,255,0.3);padding:5px 0">' + n + '</div>';
       }).join('');
-      
+
       var cells = '';
       for (var i = 0; i < firstDay; i++) cells += '<div></div>';
-      
+
       var cache = JSON.parse(localStorage.getItem('currentTrainer')) || {};
       var rawAvs = cache.availability;
       if (typeof rawAvs === 'string') { try { rawAvs = JSON.parse(rawAvs); } catch (e) { rawAvs = {}; } }
@@ -1636,7 +1650,7 @@
         var d = new Date(_dbCalYear, _dbCalMonth, day);
         var dayKey = _DB_DAY_MAP[d.getDay()];
         var dateStr = _dbCalYear + '-' + _dbCalMonth + '-' + day;
-        
+
         var enabled = avs[dayKey] !== false;
         if (typeof specificDates[dateStr] !== 'undefined') {
           enabled = specificDates[dateStr];
@@ -1663,11 +1677,11 @@
     function _dbCalPrev() { if (--_dbCalMonth < 0) { _dbCalMonth = 11; _dbCalYear--; } renderDashboardCalendar(); }
     function _dbCalNext() { if (++_dbCalMonth > 11) { _dbCalMonth = 0; _dbCalYear++; } renderDashboardCalendar(); }
 
-    window.toggleSpecificDate = function(y, m, d) {
+    window.toggleSpecificDate = function (y, m, d) {
       var cache = JSON.parse(localStorage.getItem('currentTrainer')) || {};
       var avs = cache.availability;
       if (typeof avs === 'string') {
-        try { avs = JSON.parse(avs); } catch(e) { avs = _parseAvailabilityString(cache.availability) || {}; }
+        try { avs = JSON.parse(avs); } catch (e) { avs = _parseAvailabilityString(cache.availability) || {}; }
       }
       avs = avs || {};
       if (!avs.specificDates) avs.specificDates = {};
@@ -1682,7 +1696,7 @@
       } else {
         var weeklyCont = document.getElementById('weekly-hours-container');
         if (weeklyCont) {
-          var row = weeklyCont.querySelector('.avail-row[data-day="'+dayKey+'"]');
+          var row = weeklyCont.querySelector('.avail-row[data-day="' + dayKey + '"]');
           if (row) currentState = row.querySelector('.avail-toggle').checked;
         } else {
           var w = avs[dayKey];
@@ -1757,7 +1771,7 @@
         localStorage.setItem('currentTrainer', JSON.stringify(cache));
       }
       var c = document.getElementById('portfolio-gallery');
-      if (c && c.children.length === 0) c.innerHTML = '<div class="empty-msg" style="grid-column:1/-1;text-align:center;padding:20px;color:var(--tm);font-size:.85rem">No portfolio media uploaded yet.</div>';
+      if (c && c.children.length === 0) c.innerHTML = '';
     }
 
     /* ═══════════════════════════════════════
@@ -1807,7 +1821,7 @@
       if (cache.introVideo && cache.introVideo.url) vidUrl = cache.introVideo.url;
       else if (typeof cache.introVideo === 'string') vidUrl = cache.introVideo;
       else if (cache.videoIntro) vidUrl = cache.videoIntro;
-      
+
       if (vidUrl) {
         var inp = document.getElementById('intro-video-url');
         if (inp) { inp.value = vidUrl; _previewIntroThumb(); }
@@ -1884,7 +1898,7 @@
         raw = cache.testis;
       } else if (cache.portfolioLinks && typeof cache.portfolioLinks === 'string' && cache.portfolioLinks.trim() && cache.portfolioLinks.trim() !== 'N/A') {
         // Fallback: split portfolioLinks string by ;; to get individual video URLs
-        raw = cache.portfolioLinks.split(';;').map(function(u) { return { url: u.trim(), label: '' }; }).filter(function(i){ return i.url; });
+        raw = cache.portfolioLinks.split(';;').map(function (u) { return { url: u.trim(), label: '' }; }).filter(function (i) { return i.url; });
       }
 
       // Normalise: sheet may store plain URL strings or {url,label} objects
@@ -2133,29 +2147,22 @@
         notifDrop.style.display = 'none';
       }
     });
-  
+
     // Global Save Button Popup
-    document.addEventListener('click', function(e) {
+    document.addEventListener('click', function (e) {
       var btn = e.target.closest('button');
       if (btn) {
         var text = (btn.textContent || btn.innerText).toLowerCase();
         var onclickAttr = btn.getAttribute('onclick') || '';
         if (text.includes('save') || onclickAttr.toLowerCase().includes('save')) {
-          setTimeout(function() {
+          setTimeout(function () {
             alert('your profile is updated');
           }, 300);
         }
       }
     });
   </script>
-<script src="js/mobile-nav.js"></script>
+  <script src="js/mobile-nav.js"></script>
 </body>
 
 </html>
-
-
-
-
-
-
-
