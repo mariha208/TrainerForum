@@ -1,9 +1,9 @@
-// ─────────────────────────────────────────────────────────────────────────────
-// WORLD TRAINER FORUM — Shared Navigation & Notification JS
+// -----------------------------------------------------------------------------
+// WORLD TRAINER FORUM � Shared Navigation & Notification JS
 // Loaded on: certificates.html, news-events.html, blog.html + any other pages
-// ─────────────────────────────────────────────────────────────────────────────
+// -----------------------------------------------------------------------------
 
-/* ── Mobile Menu Toggle ───────────────────────────────────────────────────── */
+/* -- Mobile Menu Toggle ----------------------------------------------------- */
 window.toggleMobileMenu = function () {
   const mn      = document.getElementById('mobile-nav');
   const ham     = document.getElementById('ham-btn');
@@ -24,7 +24,7 @@ window.toggleMobileMenu = function () {
   }
 };
 
-/* ── Notification Bell Toggle ─────────────────────────────────────────────── */
+/* -- Notification Bell Toggle ----------------------------------------------- */
 window.toggleNotif = function (e) {
   if (e) e.stopPropagation();
   const panel = document.getElementById('notif-panel');
@@ -51,9 +51,7 @@ document.addEventListener('keydown', function (e) {
   }
 });
 
-/* ── openModal Bridge ─────────────────────────────────────────────────────── */
-// Pages that load auth-modal.js but NOT app.js need this alias.
-// Guard: don't overwrite if app.js already defined it.
+/* -- openModal Bridge ------------------------------------------------------- */
 if (typeof window.openModal !== 'function') {
   window.openModal = function (mode) {
     const resolvedMode = (mode === 'login') ? 'login' : 'register';
@@ -63,7 +61,7 @@ if (typeof window.openModal !== 'function') {
   };
 }
 
-/* ── handleLogout Bridge ──────────────────────────────────────────────────── */
+/* -- handleLogout Bridge ---------------------------------------------------- */
 if (typeof window.handleLogout !== 'function') {
   window.handleLogout = function () {
     localStorage.removeItem('userSession');
@@ -73,11 +71,46 @@ if (typeof window.handleLogout !== 'function') {
   };
 }
 
-/* ── Navbar auth-state sync ────────────────────────────────────────────── */
-// NOTE: avatar population (user-avatar-wrap) is handled entirely by app.js.
-// mobile-nav.js only manages sign-in/out button visibility.
+/* -- Navbar auth-state sync & Auto-Inject Mobile Nav ------------------------ */
 document.addEventListener('DOMContentLoaded', function () {
-  // Always hide the dashboard link in the nav — app.js avatar handles navigation
+  
+  // 1. Inject Overlay if missing
+  if (!document.getElementById('nav-overlay')) {
+    const overlay = document.createElement('div');
+    overlay.className = 'nav-overlay';
+    overlay.id = 'nav-overlay';
+    overlay.onclick = window.toggleMobileMenu;
+    document.body.appendChild(overlay);
+  }
+
+  // 2. Inject Mobile Nav Drawer if missing
+  if (!document.getElementById('mobile-nav')) {
+    const mn = document.createElement('div');
+    mn.className = 'mobile-nav';
+    mn.id = 'mobile-nav';
+    mn.innerHTML = \
+    <div style="display:flex; justify-content:flex-end; margin-bottom: 20px;">
+      <button onclick="toggleMobileMenu()"
+        style="background:none; border:none; color:#fff; font-size:2rem; cursor:pointer;"
+        aria-label="Close Menu">&times;</button>
+    </div>
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="find-trainers.html">Find Trainers</a>
+    <a href="certificates.html">Certificates</a>
+    <a href="news-events.html">News & Events</a>
+    <a href="blog.html">Blog</a>
+    <a href="dashboard.html" id="mn-dash" style="display:none; color:var(--gold);">Dashboard</a>
+
+    <div class="mn-actions" style="margin-top:30px; display:flex; flex-direction:column; gap:12px;">
+      <button class="btn btn-ghost" id="mn-btn-signup" onclick="toggleMobileMenu(); openModal('register')">Sign Up</button>
+      <button class="btn btn-gold" id="mn-btn-login" onclick="toggleMobileMenu(); openModal('login')">Log In</button>
+      <button class="btn btn-dark" id="mn-btn-logout" onclick="handleLogout()" style="display:none;">Log Out</button>
+    </div>\;
+    document.body.appendChild(mn);
+  }
+
+  // Always hide the dashboard link in the nav
   ['nl-dash', 'mn-dash'].forEach(function (id) {
     var el = document.getElementById(id);
     if (el) el.style.display = 'none';
@@ -93,20 +126,18 @@ document.addEventListener('DOMContentLoaded', function () {
     var mnLogout = document.getElementById('mn-btn-logout');
     if (mnLogout) mnLogout.style.display = 'flex';
   } else {
-    // Not logged in: hide avatar (app.js may not have run yet)
     var avatarWrap = document.getElementById('user-avatar-wrap');
     if (avatarWrap) avatarWrap.style.display = 'none';
   }
 });
 
-/* ── User Avatar Dropdown Toggle ──────────────────────────────────────────── */
+/* -- User Avatar Dropdown Toggle -------------------------------------------- */
 window.toggleUserMenu = function (e) {
   if (e) { e.stopPropagation(); e.preventDefault(); }
   const drop = document.getElementById('user-dropdown');
   if (drop) drop.classList.toggle('show');
 };
 
-// Close user-dropdown when clicking outside
 document.addEventListener('click', function (e) {
   const drop = document.getElementById('user-dropdown');
   const btn  = document.getElementById('user-av-btn');
@@ -117,7 +148,6 @@ document.addEventListener('click', function (e) {
   }
 });
 
-// Escape key also closes user-dropdown
 document.addEventListener('keydown', function (e) {
   if (e.key === 'Escape') {
     const drop = document.getElementById('user-dropdown');
