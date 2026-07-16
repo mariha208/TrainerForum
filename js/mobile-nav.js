@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------------
-// WORLD TRAINER FORUM — Shared Navigation & Notification JS
+// WORLD TRAINER FORUM ï¿½ Shared Navigation & Notification JS
 // Loaded on: certificates.html, news-events.html, blog.html + any other pages
 // -----------------------------------------------------------------------------
 
@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const mn = document.createElement('div');
     mn.className = 'mobile-nav';
     mn.id = 'mobile-nav';
-    mn.innerHTML = \
+    mn.innerHTML = `
     <div style="display:flex; justify-content:flex-end; margin-bottom: 20px;">
       <button onclick="toggleMobileMenu()"
         style="background:none; border:none; color:#fff; font-size:2rem; cursor:pointer;"
@@ -106,7 +106,7 @@ document.addEventListener('DOMContentLoaded', function () {
       <button class="btn btn-ghost" id="mn-btn-signup" onclick="toggleMobileMenu(); openModal('register')">Sign Up</button>
       <button class="btn btn-gold" id="mn-btn-login" onclick="toggleMobileMenu(); openModal('login')">Log In</button>
       <button class="btn btn-dark" id="mn-btn-logout" onclick="handleLogout()" style="display:none;">Log Out</button>
-    </div>\;
+    </div>`;
     document.body.appendChild(mn);
   }
 
