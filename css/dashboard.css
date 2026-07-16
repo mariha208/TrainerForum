@@ -299,7 +299,7 @@ input, select, textarea { font-family: inherit; }
 
 .db-topnav .nav-r {
   display: flex; align-items: center; gap: 8px; margin-left: auto;
-}
+ flex-shrink: 0;}
 .nav-icon-btn {
   width: 36px; height: 36px;
   background: var(--bg3);
@@ -1529,18 +1529,18 @@ select.form-control { cursor: pointer; }
   .profile-preview-panel { position: static; }
 }
 @media (max-width: 600px) {
-  .db-section { padding: 16px 14px 48px; }
+  .db-section { padding: 16px 16px 48px; max-width: 100%; overflow-x: hidden; }
   .grid-2, .grid-4 { grid-template-columns: 1fr; }
   .grid-3:not(#services-container):not(#packages-container) { grid-template-columns: 1fr; }
-  #services-container, #packages-container { grid-template-columns: 1fr 1fr !important; }
+  #services-container, #packages-container { grid-template-columns: 1fr 1fr !important; max-width: 100%; overflow-x: hidden; }
   .db-page-header { flex-direction: column; }
   .db-modal { max-width: 100%; border-radius: var(--r-lg) var(--r-lg) 0 0; align-self: flex-end; }
   
   /* Make topnav fit on small phones */
   .db-topnav .logo-txt { display: none; }
   .db-topnav .nav-profile-btn > div:last-child { display: none; }
-  .db-topnav { padding: 0 12px 0 0; }
-  .db-topnav .nav-r { gap: 6px; }
+  .db-topnav { padding: 0 16px; }
+  .db-topnav .nav-r { gap: 6px;  flex-shrink: 0;}
   .nav-profile-btn { padding: 5px; border-radius: 50%; }
   
   /* Fix availability row overflow */
@@ -1658,20 +1658,6 @@ select.form-control { cursor: pointer; }
   border: 1px solid rgba(230,126,34,.2);
   border-radius: 999px; padding: 4px 12px;
   font-size: .75rem; font-weight: 700;
-  #services-container, #packages-container { grid-template-columns: 1fr !important; }
-  .db-page-header { flex-direction: column; }
-  .db-modal { max-width: 100%; border-radius: var(--r-lg) var(--r-lg) 0 0; align-self: flex-end; }
-  
-  /* Make topnav fit on small phones */
-  .db-topnav .logo-txt { display: none; }
-  .db-topnav .nav-profile-btn > div:last-child { display: none; }
-  .db-topnav { padding: 0 12px 0 0; }
-  .db-topnav .nav-r { gap: 6px; }
-  .nav-profile-btn { padding: 5px; border-radius: 50%; }
-  
-  /* Fix availability row overflow */
-  .avail-row { flex-wrap: wrap; gap: 6px !important; }
-  .avail-row input[type="time"] { width: 45% !important; flex: 1; }
 }
 
 /* ══════════════════════════════════════════
@@ -1788,7 +1774,7 @@ select.form-control { cursor: pointer; }
 
 
 @media (max-width: 768px) {
-  #services-container, #packages-container { grid-template-columns: 1fr 1fr !important; }
+  #services-container, #packages-container { grid-template-columns: 1fr 1fr !important; max-width: 100%; overflow-x: hidden; }
 }
 
 .profile-layout { display: grid; grid-template-columns: 1fr 280px; gap: 24px; align-items: start; }
@@ -1803,3 +1789,14 @@ select.form-control { cursor: pointer; }
   .photo-upload-row .photo-fields .form-control { width: 100%; box-sizing: border-box; }
   .photo-upload-row .photo-fields button { white-space: normal; word-break: break-word; width: 100%; }
 }
+
+/* --- MOBILE LAYOUT & CLIPPING FIXES --- */
+@media (max-width: 768px) {
+  #nav, .db-topnav { padding-left: 16px !important; padding-right: 16px !important; }
+  .nav-r > *, .nav-profile-btn, .notif-btn, .user-avatar-wrap { flex-shrink: 0 !important; }
+  .db-section, .db-main { padding-left: 16px !important; padding-right: 16px !important; max-width: 100vw !important; overflow-x: hidden !important; box-sizing: border-box !important; }
+  .dash-card, .cat-card, .card, .profile-layout, .db-modal, #services-container, #packages-container, form, input, textarea { max-width: 100% !important; box-sizing: border-box !important; }
+  /* Enforce single column for dashboard grids that overflow */
+  #services-container, #packages-container { grid-template-columns: 1fr !important; }
+}
+

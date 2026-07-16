@@ -161,7 +161,7 @@ ul {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 5%;
+  padding: 0  16px;
   transition: all .3s;
 }
 
@@ -236,7 +236,7 @@ ul {
   align-items: center;
   gap: 10px;
   position: relative;
-}
+ flex-shrink: 0;}
 
 /* Hamburger */
 .ham-btn {
@@ -2978,12 +2978,12 @@ section {
   position: relative;
   display: inline-block;
   margin-left: 10px;
-}
+ flex-shrink: 0;}
 
 /* Hidden by default — shown when logged in via JS */
 .user-avatar-wrap {
   display: none;
-}
+ flex-shrink: 0;}
 
 .user-av-btn {
   width: 42px;
@@ -3132,4 +3132,15 @@ section {
   color: #c0392b;
 }
 .fw-bold { font-weight: 700; }
+
+
+/* --- MOBILE LAYOUT & CLIPPING FIXES --- */
+@media (max-width: 768px) {
+  #nav, .db-topnav { padding-left: 16px !important; padding-right: 16px !important; }
+  .nav-r > *, .nav-profile-btn, .notif-btn, .user-avatar-wrap { flex-shrink: 0 !important; }
+  .db-section, .db-main { padding-left: 16px !important; padding-right: 16px !important; max-width: 100vw !important; overflow-x: hidden !important; box-sizing: border-box !important; }
+  .dash-card, .cat-card, .card, .profile-layout, .db-modal, #services-container, #packages-container, form, input, textarea { max-width: 100% !important; box-sizing: border-box !important; }
+  /* Enforce single column for dashboard grids that overflow */
+  #services-container, #packages-container { grid-template-columns: 1fr !important; }
+}
 
