@@ -3253,3 +3253,302 @@ textarea {
     line-height: 1.5;
   }
 }
+
+/* ================================================================
+   COMPREHENSIVE MOBILE FIX PATCH v2
+   1. Form fluidity  2. Ham-btn  3. Avatar dropdown  4. Calendar  5. Cat grid
+   ================================================================ */
+
+/* -- 1. FORM: Fluid sizing & label wrapping ---------------------- */
+.form-group,
+.form-row,
+.form-label,
+.form-group label {
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  max-width: 100%;
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.form-control,
+input[type="text"],
+input[type="email"],
+input[type="date"],
+input[type="time"],
+input[type="url"],
+input[type="number"],
+input[type="password"],
+select, textarea {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+}
+
+.input-group,
+.input-with-btn,
+.photo-fields,
+.fnl-input-wrap,
+.hero-search {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* -- 2. HAM-BTN: z-index & pointer-events guarantee ------------- */
+#nav {
+  overflow: visible !important;
+  z-index: 900;
+}
+
+.ham-btn {
+  position: relative;
+  z-index: 1001 !important;
+  pointer-events: auto !important;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  cursor: pointer;
+}
+
+.ham-btn span {
+  pointer-events: none; /* icon bars don't eat the click — button does */
+  display: block;
+}
+
+/* -- 3. AVATAR DROPDOWN: Clean layout for all viewports --------- */
+.user-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: 260px;
+  background: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.08);
+  border: 1px solid rgba(0,0,0,0.07);
+  z-index: 9999;
+  overflow: hidden;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-6px) scale(0.97);
+  transform-origin: top right;
+  transition: opacity .18s ease, transform .18s ease, visibility .18s;
+}
+
+.user-dropdown.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+}
+
+.ud-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 18px;
+  background: linear-gradient(135deg, #f8f9ff 0%, #fff 100%);
+}
+
+.ud-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0B1B32, #2455C9);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: .78rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.ud-name {
+  display: block;
+  font-size: .85rem;
+  font-weight: 700;
+  color: #0B1B32;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 170px;
+}
+
+.ud-email {
+  display: block;
+  font-size: .72rem;
+  color: #64748b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 170px;
+}
+
+.user-dropdown hr {
+  border: none;
+  border-top: 1px solid rgba(0,0,0,0.07);
+  margin: 0;
+}
+
+.ud-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 18px;
+  font-size: .84rem;
+  color: #1e293b;
+  transition: background .15s;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.ud-link:hover {
+  background: #f8f9ff;
+  color: #2455C9;
+}
+
+.ud-link i {
+  width: 16px;
+  text-align: center;
+  color: #64748b;
+  flex-shrink: 0;
+}
+
+.ud-link:hover i {
+  color: #2455C9;
+}
+
+.ud-logout {
+  color: #dc2626 !important;
+}
+
+.ud-logout i {
+  color: #dc2626 !important;
+}
+
+.ud-logout:hover {
+  background: rgba(220,38,38,0.06) !important;
+}
+
+/* Avatar button */
+.user-av-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0B1B32, #2455C9);
+  color: #fff;
+  border: 2px solid rgba(201,168,76,0.4);
+  font-size: .72rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color .2s, transform .2s;
+  flex-shrink: 0;
+}
+
+.user-av-btn:hover {
+  border-color: var(--gold, #C9A84C);
+  transform: scale(1.05);
+}
+
+/* -- 4. CALENDAR: High-contrast date readability ---------------- */
+.cal-day-cell {
+  color: #1e293b !important;
+  font-weight: 600 !important;
+}
+
+.cal-day-cell.empty {
+  color: transparent !important;
+  pointer-events: none;
+}
+
+.cal-day-cell.unavailable {
+  color: #94a3b8 !important;
+  text-decoration: line-through;
+  font-weight: 400 !important;
+}
+
+.cal-day-cell.available {
+  color: #166534 !important;
+  font-weight: 700 !important;
+}
+
+.cal-day-cell.booked {
+  color: #92400e !important;
+  font-weight: 700 !important;
+}
+
+.cal-day-cell.today {
+  color: #92400e !important;
+  font-weight: 700 !important;
+}
+
+.cal-day-cell.selected {
+  color: #0D1117 !important;
+  font-weight: 700 !important;
+}
+
+/* -- 5. CATEGORIES: 2-column mobile grid ------------------------ */
+@media (max-width: 768px) {
+  .cats-grid,
+  .cats-full-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+  }
+
+  .cat-card {
+    padding: 14px 8px !important;
+  }
+
+  .cat-icon {
+    width: 40px !important;
+    height: 40px !important;
+    font-size: 1.2rem !important;
+    margin-bottom: 8px !important;
+  }
+
+  .cat-card .h3-title,
+  .cat-card h3 {
+    font-size: .76rem !important;
+    margin-bottom: 2px !important;
+  }
+
+  .cat-card p {
+    font-size: .68rem !important;
+  }
+
+  /* Form fields stack on mobile */
+  .form-row {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+
+  .form-group,
+  .form-control,
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Ham btn mobile */
+  .ham-btn {
+    z-index: 1001 !important;
+    pointer-events: auto !important;
+  }
+
+  #nav {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+    overflow: visible !important;
+  }
+}

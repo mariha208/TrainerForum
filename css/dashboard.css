@@ -1875,3 +1875,74 @@ select.form-control { cursor: pointer; }
     gap: 6px !important;
   }
 }
+
+/* ================================================================
+   DASHBOARD CAL HIGH-CONTRAST + FORM FIX v2
+   ================================================================ */
+
+/* Calendar date cells — high contrast regardless of dark/light mode */
+.cal-day-cell {
+  color: #1e293b !important;
+  font-weight: 600 !important;
+}
+
+.cal-day-cell.empty {
+  color: transparent !important;
+  pointer-events: none;
+}
+
+.cal-day-cell.unavailable {
+  color: #94a3b8 !important;
+  text-decoration: line-through;
+  font-weight: 400 !important;
+}
+
+.cal-day-cell.available {
+  color: #166534 !important;
+  font-weight: 700 !important;
+}
+
+.cal-day-cell.booked {
+  color: #92400e !important;
+  font-weight: 700 !important;
+}
+
+.cal-day-cell.today {
+  color: #92400e !important;
+  font-weight: 700 !important;
+}
+
+.cal-day-cell.selected {
+  color: #0D1117 !important;
+  font-weight: 700 !important;
+}
+
+/* Dark mode calendar override — ensure visibility on dark backgrounds */
+html.dark-mode .cal-day-cell { color: #e2e8f0 !important; }
+html.dark-mode .cal-day-cell.available { color: #86efac !important; }
+html.dark-mode .cal-day-cell.booked { color: #fcd34d !important; }
+html.dark-mode .cal-day-cell.unavailable { color: #64748b !important; }
+html.dark-mode .cal-day-cell.today { color: #fcd34d !important; }
+
+/* Dashboard form fluidity */
+@media (max-width: 768px) {
+  .form-row {
+    grid-template-columns: 1fr !important;
+  }
+
+  .form-group,
+  .form-control,
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  .form-group label {
+    white-space: normal !important;
+    word-break: break-word !important;
+  }
+}

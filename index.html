@@ -41,20 +41,22 @@
       <!-- User Avatar Dropdown (shown when logged in) -->
       <div class="user-avatar-wrap" id="user-avatar-wrap">
         <button class="user-av-btn" id="user-av-btn" onclick="toggleUserMenu(event)" aria-label="User menu"
-          aria-haspopup="true">MK</button>
-        <div class="user-dropdown" id="user-dropdown" role="menu">
+          aria-haspopup="true" aria-expanded="false">MK</button>
+        <div class="user-dropdown" id="user-dropdown" role="menu" aria-label="User account menu">
           <div class="ud-header">
-            <div class="ud-avatar">MK</div>
+            <div class="ud-avatar" id="ud-av-initials">MK</div>
             <div class="ud-info">
-              <span class="ud-name">My Account</span>
-              <span class="ud-email">user@email.com</span>
+              <span class="ud-name" id="ud-display-name">My Account</span>
+              <span class="ud-email" id="ud-display-email">khanmariyah006@gmail.com</span>
             </div>
           </div>
           <hr>
-          <a href="dashboard.html" class="ud-link" role="menuitem"><i class="fa-solid fa-pen-to-square"></i> Edit
-            Profile</a>
-          <a href="#" class="ud-link ud-logout" role="menuitem" onclick="handleLogout(); return false;"><i
-              class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
+          <a href="dashboard.html" class="ud-link" role="menuitem">
+            <i class="fa-solid fa-pen-to-square" style="pointer-events:none"></i> Edit Profile
+          </a>
+          <a href="#" class="ud-link ud-logout" role="menuitem" onclick="handleLogout(); return false;">
+            <i class="fa-solid fa-arrow-right-from-bracket" style="pointer-events:none"></i> Logout
+          </a>
         </div>
       </div>
       <button class="ham-btn" id="ham-btn" onclick="toggleMobileMenu()" aria-label="Toggle Menu">
