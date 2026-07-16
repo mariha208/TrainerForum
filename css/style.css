@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Poppins:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,  wght@0,  400;0,  600;0,  700;1,  400;1,  600&family=Poppins:wght@300;400;500;600;700&display=swap');
 
 /* ══════════════════════════════════════════════
    WORLD TRAINER FORUM — DESIGN SYSTEM v3.0
@@ -54,8 +54,8 @@
   --nav: 70px;
 }
 
-*,
-*::before,
+*,  
+*::before,  
 *::after {
   margin: 0;
   padding: 0;
@@ -132,10 +132,10 @@ ul {
 
 /* ══ NAVBAR ══ */
 /* Dark context overrides for hero/nav/header sections */
-.hero,
-.page-hero,
-.prof-header,
-.dark-context,
+.hero,  
+.page-hero,  
+.prof-header,  
+.dark-context,  
 #nav {
   --tp: var(--ivory);
   --ts: rgba(250, 246, 236, 0.75);
@@ -222,7 +222,7 @@ ul {
   color: var(--ivory);
 }
 
-.nav-links a:hover::after,
+.nav-links a:hover::after,  
 .nav-links a.active::after {
   width: 100%;
 }
@@ -257,7 +257,7 @@ ul {
   transition: all .3s;
 }
 
-/* Mobile nav drawer — visibility controlled by transform, NOT display */
+/* Mobile nav drawer — visibility controlled by transform,   NOT display */
 .mobile-nav {
   display: flex;
   position: fixed;
@@ -442,7 +442,7 @@ ul {
   font-size: 0.74rem;
 }
 
-.mobile-nav a,
+.mobile-nav a,  
 .mobile-nav button.mn-link {
   font-size: 1.2rem;
   font-weight: 500;
@@ -459,7 +459,7 @@ ul {
   transition: color .2s;
 }
 
-.mobile-nav a:hover,
+.mobile-nav a:hover,  
 .mobile-nav button.mn-link:hover {
   color: var(--gold)
 }
@@ -533,7 +533,7 @@ ul {
   border-color: rgba(197, 160, 89, 0.4)
 }
 
-/* Inside dark navbar, ghost & dark buttons render as ivory */
+/* Inside dark navbar,   ghost & dark buttons render as ivory */
 #nav .btn-ghost {
   border-color: rgba(250, 246, 236, 0.3);
   color: rgba(250, 246, 236, 0.8);
@@ -688,7 +688,7 @@ ul {
 
 @keyframes orbFloat {
 
-  0%,
+  0%,  
   100% {
     transform: translateY(0) scale(1)
   }
@@ -739,7 +739,7 @@ ul {
 
 @keyframes blink {
 
-  0%,
+  0%,  
   100% {
     opacity: 1
   }
@@ -748,6 +748,8 @@ ul {
     opacity: .25
   }
 }
+
+.hero h1 , 
 
 .hero h1 {
   font-family: 'Cormorant Garamond', serif;
@@ -787,7 +789,7 @@ ul {
   box-shadow: var(--sh);
 }
 
-.hero-search input,
+.hero-search input,  
 .hero-search select {
   background: transparent;
   border: none;
@@ -958,6 +960,8 @@ ul {
   gap: 22px;
 }
 
+.hero-lower h1 , 
+
 .hero-lower h1 {
   font-family: 'Cormorant Garamond', serif;
   font-size: clamp(2.6rem, 5.5vw, 4.8rem);
@@ -1020,6 +1024,8 @@ section {
   padding: 26px;
   box-shadow: var(--sh);
 }
+
+.card h3 ,  
 
 .card h3 {
   font-size: .95rem;
@@ -1372,6 +1378,8 @@ section {
   transform: scale(1.15)
 }
 
+.cat-card h3 ,  
+
 .cat-card h3 {
   font-size: .84rem;
   font-weight: 600;
@@ -1460,6 +1468,8 @@ section {
   color: var(--gold);
   margin: 0 auto 20px;
 }
+
+.how-step h3 ,  
 
 .how-step h3 {
   font-size: 1rem;
@@ -1661,7 +1671,7 @@ section {
 
 @keyframes dotBounce {
 
-  0%,
+  0%,  
   100% {
     transform: translateY(0)
   }
@@ -2147,8 +2157,8 @@ section {
   letter-spacing: .02em;
 }
 
-.form-input,
-.form-select,
+.form-input,  
+.form-select,  
 .form-textarea {
   width: 100%;
   background: var(--bg-card);
@@ -2162,8 +2172,8 @@ section {
   transition: border-color .2s;
 }
 
-.form-input:focus,
-.form-select:focus,
+.form-input:focus,  
+.form-select:focus,  
 .form-textarea:focus {
   border-color: var(--royal)
 }
@@ -2179,6 +2189,8 @@ section {
   background: var(--navy);
   border-bottom: 1px solid var(--line);
 }
+
+.page-hero h1 , 
 
 .page-hero h1 {
   font-family: 'Cormorant Garamond', serif;
@@ -2215,6 +2227,8 @@ section {
   pointer-events: none;
 }
 
+.browse-hero h1 , 
+
 .browse-hero h1 {
   font-family: 'Cormorant Garamond', serif;
   font-size: clamp(2rem, 5vw, 3.6rem);
@@ -2246,7 +2260,7 @@ section {
   position: relative;
 }
 
-.browse-bar input,
+.browse-bar input,  
 .browse-bar select {
   background: transparent;
   border: none;
@@ -2334,6 +2348,8 @@ section {
   top: calc(var(--nav) + 16px);
 }
 
+.filter-panel h3 ,  
+
 .filter-panel h3 {
   font-size: .88rem;
   font-weight: 700;
@@ -2353,7 +2369,7 @@ section {
   margin-bottom: 6px;
 }
 
-.filter-group select,
+.filter-group select,  
 .filter-group input[type="range"] {
   width: 100%;
   background: var(--bg-card);
@@ -2683,6 +2699,8 @@ section {
   box-shadow: var(--sh);
 }
 
+.dash-card h3 ,  
+
 .dash-card h3 {
   font-size: .92rem;
   font-weight: 700;
@@ -2836,12 +2854,12 @@ section {
   }
 
   /* 2-Column Responsive Categories Grid */
-  .cats-grid, .cats-full-grid {
+  .cats-grid,   .cats-full-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
     gap: 12px;
   }
 
-  .cat-card, .cat-full-card {
+  .cat-card,   .cat-full-card {
     padding: 12px 8px;
   }
 
@@ -2857,7 +2875,9 @@ section {
     font-size: 1.25rem;
   }
 
-  .cat-card h3, .cat-full-card h3 {
+  .cat-card h3,  
+
+  .cat-card .h3-title,   .cat-full-card h3 ,   .cat-full-card h3 {
     font-size: 0.75rem;
   }
 
@@ -2868,6 +2888,8 @@ section {
   .hero {
     padding: 60px 5% 40px
   }
+
+  .hero h1 , 
 
   .hero h1 {
     font-size: 2.6rem
@@ -2894,6 +2916,8 @@ section {
     aspect-ratio: 16 / 9;
   }
 
+  .hero-lower h1 , 
+
   .hero-lower h1 {
     font-size: clamp(2rem, 7vw, 3rem)
   }
@@ -2909,6 +2933,8 @@ section {
   html {
     font-size: 14px
   }
+
+  .hero h1 , 
 
   .hero h1 {
     font-size: 2.1rem
@@ -3105,3 +3131,5 @@ section {
   background: rgba(192,57,43,0.07);
   color: #c0392b;
 }
+.fw-bold { font-weight: 700; }
+
