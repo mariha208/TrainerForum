@@ -252,7 +252,7 @@
         </div>
       </div>
 
-      <div style="display:grid;grid-template-columns:1fr 280px;gap:24px;align-items:start">
+      <div class="profile-layout">
         <div>
           <!-- Photos & Banner Media Section -->
           <div class="db-card mb-16">
@@ -1126,8 +1126,8 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%) scale(0.95);
-      background: var(--card-bg, #1e1e1e);
-      border: 1px solid var(--border, #333);
+      background: var(--bg2);
+      border: 1px solid var(--border2);
       border-radius: 12px;
       padding: 24px;
       width: 90%;
@@ -1139,6 +1139,7 @@
       box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
       max-height: 90vh;
       overflow-y: auto;
+      color: var(--tp);
     }
 
     .db-modal.active {
@@ -1321,6 +1322,7 @@
         cache.achievements.push(item);
         localStorage.setItem('currentTrainer', JSON.stringify(cache));
         _renderCertificateItem(item);
+        if (typeof commitLocalProfileChanges === 'function') commitLocalProfileChanges();
         closeAllModals();
       }
 
@@ -1358,6 +1360,7 @@
       }
       var list = document.getElementById('achievements-list');
       if (list && list.children.length === 0) _showCertEmptyState();
+      if (typeof commitLocalProfileChanges === 'function') commitLocalProfileChanges();
     }
 
     function _showCertEmptyState() {
@@ -1380,6 +1383,7 @@
         cache.events.push(item);
         localStorage.setItem('currentTrainer', JSON.stringify(cache));
         _renderEventRow(item);
+        if (typeof commitLocalProfileChanges === 'function') commitLocalProfileChanges();
         closeAllModals();
       }
 
@@ -1412,6 +1416,7 @@
       cache.services.push(item);
       localStorage.setItem('currentTrainer', JSON.stringify(cache));
       _renderServiceItem(item);
+      if (typeof commitLocalProfileChanges === 'function') commitLocalProfileChanges();
       closeAllModals();
     }
     function _renderServiceItem(item) {
@@ -1436,6 +1441,7 @@
       }
       var c = document.getElementById('services-container');
       if (c && c.children.length === 0) c.innerHTML = '<div class="empty-msg" style="grid-column:1/-1;text-align:center;padding:20px;color:var(--tm);font-size:.85rem">No services defined.</div>';
+      if (typeof commitLocalProfileChanges === 'function') commitLocalProfileChanges();
     }
 
     /* ── Packages Logic ── */
@@ -1457,9 +1463,8 @@
       cache.packages.push(item);
       localStorage.setItem('currentTrainer', JSON.stringify(cache));
       _renderPackageItem(item);
-      closeAllModals();
-
       if (typeof commitLocalProfileChanges === 'function') commitLocalProfileChanges();
+      closeAllModals();
     }
     function _renderPackageItem(item) {
       var cont = document.getElementById('packages-container');
@@ -1492,6 +1497,7 @@
       }
       var c = document.getElementById('packages-container');
       if (c && c.children.length === 0) c.innerHTML = '<div class="empty-msg" style="grid-column:1/-1;text-align:center;padding:20px;color:var(--tm);font-size:.85rem">No packages defined.</div>';
+      if (typeof commitLocalProfileChanges === 'function') commitLocalProfileChanges();
     }
 
     /* ── Availability Logic ── */
@@ -1548,13 +1554,11 @@
           avs = _parseAvailabilityString(cache.availability);
         }
       }
-      avs = avs || {
+      if (!avs || (!avs.Mon && !avs.Tue && !avs.Wed && !avs.Thu && !avs.Fri && !avs.Sat && !avs.Sun)) { avs = {
         Mon: { available: true, start: '09:00', end: '18:00' }, Tue: { available: true, start: '09:00', end: '18:00' },
         Wed: { available: true, start: '09:00', end: '17:00' }, Thu: { available: true, start: '10:00', end: '18:00' },
         Fri: { available: true, start: '09:00', end: '17:00' }, Sat: { available: true, start: '10:00', end: '14:00' },
-        Sun: { available: false, start: '10:00', end: '14:00' }
-      };
-      var days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+        Sun: { available: false, start: '10:00', end: '14:00' } }; } var days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
       cont.innerHTML = days.map(function (d) {
         var info = avs[d] || { available: false, start: '09:00', end: '17:00' };
         // Fallback for older data format

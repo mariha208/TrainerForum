@@ -1658,3 +1658,10 @@ select.form-control { cursor: pointer; }
   font-size: .75rem; font-weight: 700;
 }
 
+
+@media (max-width: 768px) {
+  #services-container, #packages-container { grid-template-columns: 1fr 1fr; }
+}
+
+.profile-layout { display: grid; grid-template-columns: 1fr 280px; gap: 24px; align-items: start; }
+@media (max-width: 900px) { .profile-layout { grid-template-columns: 1fr; } }
