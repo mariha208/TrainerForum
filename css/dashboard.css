@@ -1800,3 +1800,78 @@ select.form-control { cursor: pointer; }
   #services-container, #packages-container { grid-template-columns: 1fr !important; }
 }
 
+
+/* =============================================================
+   DASHBOARD MOBILE FIX — Form Sizing & Input Wrapping
+   ============================================================= */
+
+/* Form controls always fluid */
+.form-control,
+.form-group input,
+.form-group select,
+.form-group textarea {
+  box-sizing: border-box;
+  max-width: 100%;
+}
+
+/* Labels always wrap */
+.form-group label,
+.form-hint,
+.form-group small {
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  max-width: 100%;
+}
+
+@media (max-width: 768px) {
+  /* Form rows stack on mobile */
+  .form-row {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+
+  /* Every form element fills full width */
+  .form-group,
+  .form-control,
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Input-with-button groups wrap vertically */
+  .input-group,
+  .input-with-btn {
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+  }
+
+  .input-group input,
+  .input-with-btn input {
+    flex: 1 1 100% !important;
+    min-width: 0 !important;
+  }
+
+  /* Drop zone / upload area helper text */
+  .upload-hint,
+  .drop-zone p,
+  .drop-zone span,
+  .photo-fields p,
+  .photo-fields small {
+    white-space: normal !important;
+    word-break: break-word !important;
+    font-size: 0.76rem;
+    line-height: 1.5;
+  }
+
+  /* Tag chips wrap instead of overflow */
+  .tag-input-wrap,
+  .tags-row {
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+  }
+}

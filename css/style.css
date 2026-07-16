@@ -64,7 +64,8 @@
 
 html {
   font-size: 17px;
-  scroll-behavior: smooth
+  scroll-behavior: smooth;
+  overflow-x: hidden
 }
 
 body {
@@ -73,7 +74,7 @@ body {
   background-attachment: fixed;
   color: var(--tp);
   line-height: 1.6;
-  overflow-x: hidden;
+  
   min-height: 100vh;
 }
 
@@ -3144,3 +3145,111 @@ section {
   #services-container, #packages-container { grid-template-columns: 1fr !important; }
 }
 
+
+/* =============================================================
+   MOBILE FIX PATCH � Form Sizing, Label Wrapping, Ham-btn
+   ============================================================= */
+
+/* 1. Universal Form Fluid Sizing */
+.form-group,
+.form-control,
+.form-row,
+input[type="text"],
+input[type="email"],
+input[type="date"],
+input[type="time"],
+input[type="number"],
+input[type="url"],
+input[type="password"],
+select,
+textarea {
+  box-sizing: border-box;
+  max-width: 100%;
+}
+
+/* 2. Labels & helper text must wrap cleanly */
+.form-group label,
+.form-label,
+.form-hint,
+.form-group small,
+.form-group p {
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  max-width: 100%;
+}
+
+/* 3. Input-with-button wrappers flex-wrap */
+.input-group,
+.input-row,
+.fnl-input-wrap,
+.search-bar,
+.hero-search {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* 4. Hamburger button � always above everything on mobile */
+.ham-btn {
+  position: relative;
+  z-index: 1001 !important;
+  pointer-events: auto !important;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+/* 5. Nav must not clip the ham-btn */
+#nav {
+  overflow: visible !important;
+}
+
+/* 6. Ensure nav-r cannot block ham-btn on mobile */
+@media (max-width: 768px) {
+  #nav {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+    overflow: visible !important;
+  }
+
+  .nav-r {
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  /* Ensure ham-btn is always clickable � nothing should sit above z-index 1001 except modals */
+  .ham-btn {
+    z-index: 1001 !important;
+    pointer-events: auto !important;
+  }
+
+  /* Form fields stack fluidly in narrow containers */
+  .form-row {
+    display: flex;
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+
+  .form-group,
+  .form-control,
+  input, select, textarea {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Drop-zone helper text wraps */
+  .upload-hint,
+  .drop-zone p,
+  .drop-zone span,
+  .photo-fields p,
+  .photo-fields small {
+    white-space: normal !important;
+    word-break: break-word !important;
+    font-size: 0.78rem;
+    line-height: 1.5;
+  }
+}
