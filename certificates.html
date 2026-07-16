@@ -706,7 +706,7 @@
     }
 
     /* CTA section buttons — rectangular to match global design system */
-    .btn-gold {
+    .final-cta .btn-gold {
       background: var(--gold);
       color: var(--navy);
       padding: 15px 30px;
@@ -715,11 +715,11 @@
       transition: transform .25s ease;
     }
 
-    .btn-gold:hover {
+    .final-cta .btn-gold:hover {
       transform: translateY(-2px);
     }
 
-    .btn-ghost {
+    .final-cta .btn-ghost {
       border: 1px solid rgba(250, 246, 236, 0.3);
       color: var(--ivory);
       padding: 15px 30px;
@@ -728,7 +728,7 @@
       transition: background .25s ease;
     }
 
-    .btn-ghost:hover {
+    .final-cta .btn-ghost:hover {
       background: rgba(250, 246, 236, 0.08);
     }
 
@@ -784,56 +784,27 @@
 
 <body>
 
-  <!-- â•â•â• NAVBAR â•â•â• -->
+  <!-- ═══ NAVBAR ═══ -->
   <nav id="nav">
     <a class="logo" href="index.html">
-      <img src="img/logo.svg" alt="World Trainer Forum Logo" style="height:42px; margin-right:10px;">World Trainer <span class="g">Forum</span>
+      <img src="img/logo.svg" alt="World Trainer Forum Logo" style="height:42px; margin-right:10px;">World Trainer <span
+        class="g">Forum</span>
     </a>
     <ul class="nav-links">
-      <li><a id="nl-home"    href="index.html">Home</a></li>
-      <li><a id="nl-about"   href="about.html">About</a></li>
-      <li><a id="nl-browse"  href="find-trainers.html">Find Trainers</a></li>
-      <li><a id="nl-cats"    href="certificates.html" class="active">Certificates</a></li>
-      <li><a id="nl-pricing" href="news-events.html">News &amp; Events</a></li>
-      <li><a id="nl-blog"    href="blog.html">Blog</a></li>
-      <li><a id="nl-dash"    href="dashboard.html" target="_blank" style="display:none;">Dashboard</a></li>
+      <li><a id="nl-home" href="index.html">Home</a></li>
+      <li><a id="nl-about" href="about.html">About</a></li>
+      <li><a id="nl-browse" href="find-trainers.html">Find Trainers</a></li>
+      <li><a id="nl-cats" href="certificates.html" class="active">Certificates</a></li>
+      <li><a id="nl-pricing" href="news-events.html">News & Events</a></li>
+      <li><a id="nl-blog" href="blog.html">Blog</a></li>
+      <li><a id="nl-dash" href="dashboard.html" target="_blank" style="display:none;">Dashboard</a></li>
     </ul>
     <div class="nav-r">
-      <div class="notif-wrap">
-        <button class="notif-btn" id="notif-btn" onclick="toggleNotif(event)" aria-label="Notifications">&#x1F514;<span class="notif-dot"></span></button>
-        <div id="notif-panel" class="notif-panel">
-          <div class="notif-panel-header">
-            <span>Notifications</span>
-            <button onclick="document.getElementById('notif-panel').classList.remove('open')" aria-label="Close notifications">&#x2715;</button>
-          </div>
-          <div class="notif-panel-body">
-            <div class="notif-item">
-              <span class="notif-icon">&#x1F3C5;</span>
-              <div class="notif-item-text">
-                <p>New verification tier available &mdash; explore Master credentials.</p>
-                <span>2 hours ago</span>
-              </div>
-            </div>
-            <div class="notif-item">
-              <span class="notif-icon">&#x1F4CB;</span>
-              <div class="notif-item-text">
-                <p>Your Verified application is under review. Est. 24&ndash;72 hrs.</p>
-                <span>Yesterday</span>
-              </div>
-            </div>
-            <div class="notif-item">
-              <span class="notif-icon">&#x1F4E2;</span>
-              <div class="notif-item-text">
-                <p>Elite tier now includes verified client outcomes. Learn more.</p>
-                <span>Jul 10, 2026</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <button class="notif-btn" id="notif-btn" onclick="toggleNotif()">🔔<span class="notif-dot"></span></button>
       <button class="btn btn-ghost btn-sm" id="btn-signup" onclick="openModal('register')">Sign Up</button>
-      <button class="btn btn-gold  btn-sm" id="btn-login"  onclick="openModal('login')">Log In</button>
-      <button class="btn btn-dark  btn-sm" id="btn-logout" onclick="handleLogout()" style="display:none;">Log Out</button>
+      <button class="btn btn-gold btn-sm" id="btn-login" onclick="openModal('login')">Log In</button>
+      <button class="btn btn-dark btn-sm" id="btn-logout" onclick="handleLogout()" style="display:none;">Log
+        Out</button>
       <button class="ham-btn" id="ham-btn" onclick="toggleMobileMenu()" aria-label="Toggle Menu">
         <span></span><span></span><span></span>
       </button>
@@ -843,22 +814,56 @@
   <!-- Mobile Nav Drawer -->
   <div class="mobile-nav" id="mobile-nav">
     <div style="display:flex; justify-content:flex-end; margin-bottom: 20px;">
-      <button onclick="toggleMobileMenu()" style="background:none; border:none; color:#fff; font-size:2rem; cursor:pointer;" aria-label="Close Menu">&times;</button>
+      <button onclick="toggleMobileMenu()"
+        style="background:none; border:none; color:#fff; font-size:2rem; cursor:pointer;"
+        aria-label="Close Menu">&times;</button>
     </div>
     <a href="index.html">Home</a>
     <a href="about.html">About</a>
     <a href="find-trainers.html">Find Trainers</a>
     <a href="certificates.html">Certificates</a>
-    <a href="news-events.html">News &amp; Events</a>
+    <a href="news-events.html">News & Events</a>
     <a href="blog.html">Blog</a>
     <a href="dashboard.html" id="mn-dash" style="display:none; color:var(--gold);">Dashboard</a>
+
     <div class="mn-actions" style="margin-top:30px; display:flex; flex-direction:column; gap:12px;">
-      <button class="btn btn-ghost" id="mn-btn-signup" onclick="toggleMobileMenu(); openModal('register')">Sign Up</button>
-      <button class="btn btn-gold"  id="mn-btn-login"  onclick="toggleMobileMenu(); openModal('login')">Log In</button>
-      <button class="btn btn-dark"  id="mn-btn-logout" onclick="handleLogout()" style="display:none;">Log Out</button>
+      <button class="btn btn-ghost" id="mn-btn-signup" onclick="toggleMobileMenu(); openModal('register')">Sign
+        Up</button>
+      <button class="btn btn-gold" id="mn-btn-login" onclick="toggleMobileMenu(); openModal('login')">Log In</button>
+      <button class="btn btn-dark" id="mn-btn-logout" onclick="handleLogout()" style="display:none;">Log Out</button>
     </div>
   </div>
-  <div class="nav-overlay" id="nav-overlay" onclick="toggleMobileMenu()"></div>
+
+  <!-- Notification Panel -->
+  <div class="notif-panel" id="notif-panel">
+    <div class="notif-header">
+      <h4>Notifications</h4><a href="#" style="font-size:.78rem;color:var(--gold-dk)">Mark all read</a>
+    </div>
+    <div class="notif-item unread">
+      <div class="notif-ico" style="background:rgba(201,168,76,.12)">📅</div>
+      <div class="notif-text">
+        <p><strong>Rajesh Kumar</strong> accepted your booking for May 20.</p><span>2 hours ago</span>
+      </div>
+    </div>
+    <div class="notif-item unread">
+      <div class="notif-ico" style="background:rgba(39,103,73,.12)">⭐</div>
+      <div class="notif-text">
+        <p>Your session with <strong>Priya Mehta</strong> is in 2 days.</p><span>5 hours ago</span>
+      </div>
+    </div>
+    <div class="notif-item">
+      <div class="notif-ico" style="background:rgba(42,108,176,.12)">💬</div>
+      <div class="notif-text">
+        <p>New message from <strong>Arun Kapoor</strong>.</p><span>Yesterday</span>
+      </div>
+    </div>
+    <div class="notif-item">
+      <div class="notif-ico" style="background:rgba(201,168,76,.12)">🎉</div>
+      <div class="notif-text">
+        <p>Welcome to World Trainer Forum! Complete your profile.</p><span>2 days ago</span>
+      </div>
+    </div>
+  </div>
 
 
   
