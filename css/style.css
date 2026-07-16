@@ -2821,6 +2821,12 @@ section {
     display: none !important;
   }
   
+  /* Make ghost button visible on dark mobile nav */
+  .mobile-nav .btn-ghost {
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.4);
+  }
+  
   .logo {
     font-size: 1.15rem;
   }
@@ -2830,23 +2836,29 @@ section {
   }
 
   /* 2-Column Responsive Categories Grid */
-  .cats-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .cats-grid, .cats-full-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 12px;
   }
 
-  .cat-card {
-    padding: 14px 10px;
+  .cat-card, .cat-full-card {
+    padding: 12px 8px;
   }
 
   .cat-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+  }
+  .cat-full-card .cat-icon {
     width: 40px;
     height: 40px;
     font-size: 1.25rem;
-    margin-bottom: 8px;
   }
 
-  .cat-card h3 {
-    font-size: 0.78rem;
+  .cat-card h3, .cat-full-card h3 {
+    font-size: 0.75rem;
   }
 
   .cat-card p {
@@ -2925,4 +2937,171 @@ section {
   .kpi-row {
     grid-template-columns: 1fr 1fr
   }
+
+  /* Dropdown: prevent right overflow on narrow screens */
+  .user-dropdown {
+    right: 0;
+    min-width: 220px;
+  }
+}
+
+/* ════════════════════════════════════════
+   UNIFIED USER AVATAR & DROPDOWN
+   ════════════════════════════════════════ */
+.user-avatar-wrap {
+  position: relative;
+  display: inline-block;
+  margin-left: 10px;
+}
+
+/* Hidden by default — shown when logged in via JS */
+.user-avatar-wrap {
+  display: none;
+}
+
+.user-av-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--gold);
+  color: #0a1f3c;
+  font-weight: 700;
+  font-size: 1rem;
+  border: 2.5px solid rgba(255,255,255,0.25);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color .2s, transform .2s;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  letter-spacing: .03em;
+}
+
+.user-av-btn:hover {
+  border-color: rgba(255,255,255,0.8);
+  transform: scale(1.07);
+}
+
+/* Floating dropdown card */
+.user-dropdown {
+  position: absolute;
+  top: 52px;
+  right: 0;
+  width: 250px;
+  background: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.08);
+  border: 1px solid rgba(0,0,0,0.07);
+  padding: 0;
+  z-index: 9999;
+  overflow: hidden;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px) scale(0.97);
+  transform-origin: top right;
+  transition: opacity .22s ease, transform .22s ease, visibility .22s ease;
+}
+
+.user-dropdown.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+}
+
+/* Header section: avatar + name/email */
+.ud-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 18px 14px;
+  background: #f8f7f4;
+}
+
+.ud-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--gold);
+  color: #0a1f3c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1rem;
+  flex-shrink: 0;
+  letter-spacing: .03em;
+}
+
+.ud-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.ud-name {
+  font-weight: 700;
+  font-size: .88rem;
+  color: #0a1f3c;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.3;
+}
+
+.ud-email {
+  font-size: .72rem;
+  color: #6b7a90;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 2px;
+}
+
+.user-dropdown hr {
+  border: none;
+  border-top: 1px solid rgba(0,0,0,0.07);
+  margin: 0;
+}
+
+/* Menu links */
+.ud-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 18px;
+  color: #1e2d45;
+  text-decoration: none;
+  font-size: .88rem;
+  font-weight: 500;
+  transition: background .18s;
+  border: none;
+  background: transparent;
+  width: 100%;
+  cursor: pointer;
+}
+
+.ud-link i {
+  font-size: .95rem;
+  color: var(--gold);
+  width: 18px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.ud-link:hover {
+  background: rgba(0,0,0,0.04);
+  color: var(--gold);
+}
+
+.ud-logout {
+  color: #c0392b;
+}
+
+.ud-logout i {
+  color: #c0392b;
+}
+
+.ud-logout:hover {
+  background: rgba(192,57,43,0.07);
+  color: #c0392b;
 }

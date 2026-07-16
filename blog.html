@@ -617,13 +617,13 @@
       .blog-grid {
         grid-template-columns: 1fr;
       }
+    }
 
-      .topic-row {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .load-more {
-        margin-top: 0;
+    .load-more {
+      display: flex;
+      justify-content: center;
+      margin-top: -56px;
+      padding-bottom: 110px;
     }
 
     .load-btn {
@@ -843,8 +843,21 @@
       <button class="notif-btn" id="notif-btn" onclick="toggleNotif()">🔔<span class="notif-dot"></span></button>
       <button class="btn btn-ghost btn-sm" id="btn-signup" onclick="openModal('register')">Sign Up</button>
       <button class="btn btn-gold btn-sm" id="btn-login" onclick="openModal('login')">Log In</button>
-      <button class="btn btn-dark btn-sm" id="btn-logout" onclick="handleLogout()" style="display:none;">Log
-        Out</button>
+      <div class="user-avatar-wrap" id="user-avatar-wrap">
+        <button class="user-av-btn" id="user-av-btn" onclick="toggleUserMenu(event)" aria-label="User menu" aria-haspopup="true">MK</button>
+        <div class="user-dropdown" id="user-dropdown" role="menu">
+          <div class="ud-header">
+            <div class="ud-avatar">MK</div>
+            <div class="ud-info">
+              <span class="ud-name">My Account</span>
+              <span class="ud-email">user@email.com</span>
+            </div>
+          </div>
+          <hr>
+          <a href="dashboard.html" class="ud-link" role="menuitem"><i class="fa-solid fa-pen-to-square"></i> Edit Profile</a>
+          <a href="#" class="ud-link ud-logout" role="menuitem" onclick="handleLogout(); return false;"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
+        </div>
+      </div>
       <button class="ham-btn" id="ham-btn" onclick="toggleMobileMenu()" aria-label="Toggle Menu">
         <span></span><span></span><span></span>
       </button>

@@ -76,15 +76,75 @@ if (typeof window.handleLogout !== 'function') {
 /* ── Navbar auth-state sync ───────────────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', function () {
   const session = localStorage.getItem('userSession');
+  const avatarWrap = document.getElementById('user-avatar-wrap');
+  const signupBtn  = document.getElementById('btn-signup');
+  const loginBtn   = document.getElementById('btn-login');
+
   if (session) {
-    // Show logout, hide login/signup
-    ['btn-signup', 'btn-login', 'mn-btn-signup', 'mn-btn-login'].forEach(function (id) {
+    // Logged in: show avatar, hide sign-up/log-in/logout buttons
+    ['btn-signup', 'btn-login', 'btn-logout', 'mn-btn-signup', 'mn-btn-login'].forEach(function (id) {
       const el = document.getElementById(id);
       if (el) el.style.display = 'none';
     });
-    ['btn-logout', 'mn-btn-logout', 'nl-dash', 'mn-dash'].forEach(function (id) {
+    ['nl-dash', 'mn-dash'].forEach(function (id) {
       const el = document.getElementById(id);
       if (el) el.style.display = '';
     });
+
+    // Populate initials and email dynamically
+    try {
+      var trainer = JSON.parse(localStorage.getItem('currentTrainer')) || {};
+      var email   = trainer.email || session;
+      var name    = trainer.name || trainer.fullName || '';
+      var initials = name
+        ? name.split(' ').map(function(w){ return w[0]; }).join('').substring(0,2).toUpperCase()
+        : email.substring(0,2).toUpperCase();
+
+      var avBtn = document.getElementById('user-av-btn');
+      if (avBtn) avBtn.textContent = initials;
+
+      var udAvatar = document.querySelector('#user-dropdown .ud-avatar');
+      if (udAvatar) udAvatar.textContent = initials;
+
+      var udName = document.querySelector('#user-dropdown .ud-name');
+      if (udName) udName.textContent = name || 'My Account';
+
+      var udEmail = document.querySelector('#user-dropdown .ud-email');
+      if (udEmail) udEmail.textContent = email;
+    } catch(ex) {}
+
+    if (avatarWrap) avatarWrap.style.display = 'inline-block';
+    if (signupBtn)  signupBtn.style.display  = 'none';
+    if (loginBtn)   loginBtn.style.display   = 'none';
+
+  } else {
+    // Not logged in: hide avatar
+    if (avatarWrap) avatarWrap.style.display = 'none';
+  }
+});
+
+/* ── User Avatar Dropdown Toggle ──────────────────────────────────────────── */
+window.toggleUserMenu = function (e) {
+  if (e) { e.stopPropagation(); e.preventDefault(); }
+  const drop = document.getElementById('user-dropdown');
+  if (drop) drop.classList.toggle('show');
+};
+
+// Close user-dropdown when clicking outside
+document.addEventListener('click', function (e) {
+  const drop = document.getElementById('user-dropdown');
+  const btn  = document.getElementById('user-av-btn');
+  if (drop && drop.classList.contains('show')) {
+    if ((!btn || !btn.contains(e.target)) && !drop.contains(e.target)) {
+      drop.classList.remove('show');
+    }
+  }
+});
+
+// Escape key also closes user-dropdown
+document.addEventListener('keydown', function (e) {
+  if (e.key === 'Escape') {
+    const drop = document.getElementById('user-dropdown');
+    if (drop) drop.classList.remove('show');
   }
 });
