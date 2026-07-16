@@ -975,23 +975,17 @@ function verifyUserSessionToken() {
         
       if (nlDash) {
         nlDash.style.display = 'inline-flex';
-        let avInitials = displayName.charAt(0).toUpperCase();
+        nlDash.style.padding = '0';
+        nlDash.style.background = 'transparent';
+        let avInitials = displayName.split(' ').map(w => w[0] || '').join('').substring(0,2).toUpperCase();
         let avatarStyle = '';
         if (sessionUser.profileImageUrl || sessionUser.photoUrl || sessionUser.profilePic) {
             let picUrl = sessionUser.profileImageUrl || sessionUser.photoUrl || sessionUser.profilePic;
             avatarStyle = `background-image:url('` + picUrl + `');background-size:cover;background-position:center;`;
         }
         nlDash.innerHTML = `
-        <div class="nav-profile-btn" onclick="window.location.href='dashboard.html'" style="display:flex; align-items:center; gap:10px; background:var(--bg-card); border:1px solid var(--bd2); border-radius:10px; padding:5px 12px 5px 6px; cursor:pointer; transition:all 0.2s;">
-            <div class="nav-av" style="width:28px; height:28px; border-radius:50%; background:linear-gradient(135deg, #C5A059, #D4C18F); display:flex; align-items:center; justify-content:center; font-size:.72rem; font-weight:700; color:#fff; ` + avatarStyle + `">` + (avatarStyle ? '' : avInitials) + `</div>
-            <div style="text-align:left; line-height:1.2;">
-                <div class="nav-name" style="font-size:0.8rem; font-weight:600; color:var(--tp);">` + displayName + `</div>
-                <div class="nav-role" style="font-size:0.7rem; color:var(--gold);">Dashboard</div>
-            </div>
-        </div>
+        <div title="Go to Dashboard" onclick="window.location.href='dashboard.html'" style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#C5A059,#D4C18F);display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;color:#fff;cursor:pointer;border:2px solid rgba(197,160,89,0.5);transition:transform .2s,box-shadow .2s;` + avatarStyle + `" onmouseover="this.style.transform='scale(1.1)';this.style.boxShadow='0 4px 14px rgba(197,160,89,0.4)';" onmouseout="this.style.transform='scale(1)';this.style.boxShadow='none';">` + (avatarStyle ? '' : avInitials) + `</div>
         `;
-        nlDash.style.padding = '0';
-        nlDash.style.background = 'transparent';
       }
       if (mnDash) {
         mnDash.style.display = 'block';
@@ -1002,12 +996,9 @@ function verifyUserSessionToken() {
             avatarStyle = `background-image:url('` + picUrl + `');background-size:cover;background-position:center;`;
         }
         mnDash.innerHTML = `
-        <div class="nav-profile-btn" onclick="window.location.href='dashboard.html'" style="margin: 10px 0; display:flex; align-items:center; gap:10px; background:var(--bg-card); border:1px solid var(--bd2); border-radius:10px; padding:5px 12px 5px 6px; cursor:pointer;">
-            <div class="nav-av" style="width:28px; height:28px; border-radius:50%; background:linear-gradient(135deg, #C5A059, #D4C18F); display:flex; align-items:center; justify-content:center; font-size:.72rem; font-weight:700; color:#fff; ` + avatarStyle + `">` + (avatarStyle ? '' : avInitials) + `</div>
-            <div style="text-align:left; line-height:1.2;">
-                <div class="nav-name" style="font-size:0.8rem; font-weight:600; color:var(--tp);">` + displayName + `</div>
-                <div class="nav-role" style="font-size:0.7rem; color:var(--gold);">Dashboard</div>
-            </div>
+        <div onclick="window.location.href='dashboard.html'" style="margin:10px 0;display:flex;align-items:center;gap:10px;cursor:pointer;">
+            <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#C5A059,#D4C18F);display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;color:#fff;border:2px solid rgba(197,160,89,0.5);` + avatarStyle + `">` + (avatarStyle ? '' : avInitials) + `</div>
+            <span style="font-size:0.88rem;font-weight:600;color:#fff;">Dashboard</span>
         </div>
         `;
         mnDash.style.padding = '0';
