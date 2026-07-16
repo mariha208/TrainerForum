@@ -946,70 +946,72 @@ function setupModalDismissals() {
 
 // ── RECOVERY USER STATE INITIALIZER SESSION ENGINE ────────────────────────────
 function verifyUserSessionToken() {
-  // ONLY read userSession — the actual auth token.
-  // currentTrainer is just a profile cache and must NOT be used to detect login state.
   const sessionUser = JSON.parse(localStorage.getItem('userSession') || 'null');
 
-  const btnSignup = document.getElementById('btn-signup');
-  const btnLogin = document.getElementById('btn-login');
-  const btnLogout = document.getElementById('btn-logout');
-  const navLinksUl = document.querySelector('.nav-links');
+  const btnSignup  = document.getElementById('btn-signup');
+  const btnLogin   = document.getElementById('btn-login');
+  const btnLogout  = document.getElementById('btn-logout');
+  const avatarWrap = document.getElementById('user-avatar-wrap');
+  const avBtn      = document.getElementById('user-av-btn');
+  const udAvatar   = document.querySelector('#user-dropdown .ud-avatar');
+  const udName     = document.querySelector('#user-dropdown .ud-name');
+  const udEmail    = document.querySelector('#user-dropdown .ud-email');
+
+  // Always keep nlDash & mnDash hidden — the user-avatar-wrap handles profile
+  ['nl-dash', 'mn-dash'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
 
   document.querySelectorAll('.dynamic-auth-item').forEach(el => el.remove());
 
   if (sessionUser) {
+    // ── Hide sign-in buttons ──────────────────────────────────────────────
     if (btnSignup) btnSignup.style.display = 'none';
-    if (btnLogin) btnLogin.style.display = 'none';
+    if (btnLogin)  btnLogin.style.display  = 'none';
     if (btnLogout) btnLogout.style.display = 'inline-block';
 
-    // ── Update Dashboard Links (Desktop & Mobile) ──
-    const isTrainer = (sessionUser.role && sessionUser.role.toLowerCase() === 'trainer') ||
-      (!sessionUser.role && (sessionUser.trainerEmail || sessionUser.expertiseCategory || sessionUser.category));
-      
-    const nlDash = document.getElementById('nl-dash');
-    const mnDash = document.getElementById('mn-dash');
-    
-    if (isTrainer) {
-      const displayName = sessionUser.fullName || sessionUser.name ||
-        ((sessionUser.firstName || '') + ' ' + (sessionUser.lastName || '')).trim() || 'Trainer';
-        
-      if (nlDash) {
-        nlDash.style.display = 'inline-flex';
-        nlDash.style.padding = '0';
-        nlDash.style.background = 'transparent';
-        let avInitials = displayName.split(' ').map(w => w[0] || '').join('').substring(0,2).toUpperCase();
-        let avatarStyle = '';
-        if (sessionUser.profileImageUrl || sessionUser.photoUrl || sessionUser.profilePic) {
-            let picUrl = sessionUser.profileImageUrl || sessionUser.photoUrl || sessionUser.profilePic;
-            avatarStyle = `background-image:url('` + picUrl + `');background-size:cover;background-position:center;`;
-        }
-        nlDash.innerHTML = `
-        <div title="Go to Dashboard" onclick="window.location.href='dashboard.html'" style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#C5A059,#D4C18F);display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;color:#fff;cursor:pointer;border:2px solid rgba(197,160,89,0.5);transition:transform .2s,box-shadow .2s;` + avatarStyle + `" onmouseover="this.style.transform='scale(1.1)';this.style.boxShadow='0 4px 14px rgba(197,160,89,0.4)';" onmouseout="this.style.transform='scale(1)';this.style.boxShadow='none';">` + (avatarStyle ? '' : avInitials) + `</div>
-        `;
-      }
-      if (mnDash) {
-        mnDash.style.display = 'block';
-        let avInitials = displayName.charAt(0).toUpperCase();
-        let avatarStyle = '';
-        if (sessionUser.profileImageUrl || sessionUser.photoUrl || sessionUser.profilePic) {
-            let picUrl = sessionUser.profileImageUrl || sessionUser.photoUrl || sessionUser.profilePic;
-            avatarStyle = `background-image:url('` + picUrl + `');background-size:cover;background-position:center;`;
-        }
-        mnDash.innerHTML = `
-        <div onclick="window.location.href='dashboard.html'" style="margin:10px 0;display:flex;align-items:center;gap:10px;cursor:pointer;">
-            <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#C5A059,#D4C18F);display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;color:#fff;border:2px solid rgba(197,160,89,0.5);` + avatarStyle + `">` + (avatarStyle ? '' : avInitials) + `</div>
-            <span style="font-size:0.88rem;font-weight:600;color:#fff;">Dashboard</span>
-        </div>
-        `;
-        mnDash.style.padding = '0';
-        mnDash.style.background = 'transparent';
-      }
-    } else {
-      if (nlDash) nlDash.style.display = 'none';
-      if (mnDash) mnDash.style.display = 'none';
-    }
+    // ── Populate & show avatar ────────────────────────────────────────────
+    try {
+      const trainer = JSON.parse(localStorage.getItem('currentTrainer') || '{}');
+      const name     = trainer.name || trainer.fullName ||
+                       ((sessionUser.firstName || '') + ' ' + (sessionUser.lastName || '')).trim() ||
+                       sessionUser.name || 'User';
+      const email    = trainer.email || sessionUser.email || sessionUser.trainerEmail || '';
+      const initials = name.trim().split(/\s+/).map(w => w[0] || '').join('').substring(0, 2).toUpperCase() || '?';
+      const picUrl   = sessionUser.profileImageUrl || sessionUser.photoUrl || sessionUser.profilePic ||
+                       trainer.profilePictureUrl   || trainer.profilePic   || '';
 
-    // Mobile auth button states
+      if (avBtn) {
+        if (picUrl) {
+          avBtn.style.backgroundImage    = `url('${picUrl}')`;
+          avBtn.style.backgroundSize     = 'cover';
+          avBtn.style.backgroundPosition = 'center';
+          avBtn.textContent = '';
+        } else {
+          avBtn.style.backgroundImage = '';
+          avBtn.textContent = initials;
+        }
+      }
+      if (udAvatar) {
+        if (picUrl) {
+          udAvatar.style.backgroundImage    = `url('${picUrl}')`;
+          udAvatar.style.backgroundSize     = 'cover';
+          udAvatar.style.backgroundPosition = 'center';
+          udAvatar.textContent = '';
+        } else {
+          udAvatar.style.backgroundImage = '';
+          udAvatar.textContent = initials;
+        }
+      }
+      if (udName)  udName.textContent  = name;
+      if (udEmail) udEmail.textContent = email;
+      window.loggedInTrainerId = email || null;
+    } catch(ex) { console.warn('Avatar populate error:', ex); }
+
+    if (avatarWrap) avatarWrap.style.display = 'inline-block';
+
+    // ── Mobile auth buttons ───────────────────────────────────────────────
     const mnSignup = document.getElementById('mn-btn-signup');
     const mnLogin  = document.getElementById('mn-btn-login');
     const mnLogout = document.getElementById('mn-btn-logout');
@@ -1017,20 +1019,13 @@ function verifyUserSessionToken() {
     if (mnLogin)  mnLogin.style.display  = 'none';
     if (mnLogout) mnLogout.style.display = 'flex';
 
-    window.loggedInTrainerId = sessionUser.email || sessionUser.trainerEmail || null;
-
   } else {
-    if (btnSignup) btnSignup.style.display = 'inline-block';
-    if (btnLogin) btnLogin.style.display = 'inline-block';
-    if (btnLogout) btnLogout.style.display = 'none';
+    // ── Not logged in: show sign-in buttons, hide avatar instantly ────────
+    if (avatarWrap) avatarWrap.style.display = 'none';
+    if (btnSignup)  btnSignup.style.display  = 'inline-block';
+    if (btnLogin)   btnLogin.style.display   = 'inline-block';
+    if (btnLogout)  btnLogout.style.display  = 'none';
 
-    // Hide Dashboard in mobile nav when logged out
-    const mnDash = document.getElementById('mn-dash');
-    const nlDash = document.getElementById('nl-dash');
-    if (mnDash) mnDash.style.display = 'none';
-    if (nlDash) nlDash.style.display = 'none';
-
-    // Mobile auth button states
     const mnSignup = document.getElementById('mn-btn-signup');
     const mnLogin  = document.getElementById('mn-btn-login');
     const mnLogout = document.getElementById('mn-btn-logout');
@@ -1042,16 +1037,18 @@ function verifyUserSessionToken() {
 
 // ── GLOBAL LOGOUT HANDLER ────────────────────────────────────────────────────
 window.handleLogout = function () {
+  // Instantly hide the avatar so it disappears without delay
+  const avatarWrap = document.getElementById('user-avatar-wrap');
+  if (avatarWrap) avatarWrap.style.display = 'none';
+
   localStorage.removeItem('userSession');
   localStorage.removeItem('currentTrainer');
   window.loggedInTrainerId = null;
   verifyUserSessionToken();
-  if (typeof updateNavbarAuthUI === 'function') updateNavbarAuthUI();
-  
+
   if (window.location.pathname.includes('dashboard.html')) {
     window.location.href = 'index.html';
   } else {
-    // If we have a toast function, show it
     if (window.toast) window.toast('Logged out successfully', 3000);
   }
 }

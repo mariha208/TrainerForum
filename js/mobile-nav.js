@@ -73,52 +73,28 @@ if (typeof window.handleLogout !== 'function') {
   };
 }
 
-/* ── Navbar auth-state sync ───────────────────────────────────────────────── */
+/* ── Navbar auth-state sync ────────────────────────────────────────────── */
+// NOTE: avatar population (user-avatar-wrap) is handled entirely by app.js.
+// mobile-nav.js only manages sign-in/out button visibility.
 document.addEventListener('DOMContentLoaded', function () {
-  const session = localStorage.getItem('userSession');
-  const avatarWrap = document.getElementById('user-avatar-wrap');
-  const signupBtn  = document.getElementById('btn-signup');
-  const loginBtn   = document.getElementById('btn-login');
+  // Always hide the dashboard link in the nav — app.js avatar handles navigation
+  ['nl-dash', 'mn-dash'].forEach(function (id) {
+    var el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
 
+  var session = localStorage.getItem('userSession');
   if (session) {
-    // Logged in: show avatar, hide sign-up/log-in/logout buttons
-    ['btn-signup', 'btn-login', 'btn-logout', 'mn-btn-signup', 'mn-btn-login'].forEach(function (id) {
-      const el = document.getElementById(id);
+    ['btn-signup', 'btn-login', 'btn-logout',
+     'mn-btn-signup', 'mn-btn-login'].forEach(function (id) {
+      var el = document.getElementById(id);
       if (el) el.style.display = 'none';
     });
-    ['nl-dash', 'mn-dash'].forEach(function (id) {
-      const el = document.getElementById(id);
-      if (el) el.style.display = '';
-    });
-
-    // Populate initials and email dynamically
-    try {
-      var trainer = JSON.parse(localStorage.getItem('currentTrainer')) || {};
-      var email   = trainer.email || session;
-      var name    = trainer.name || trainer.fullName || '';
-      var initials = name
-        ? name.split(' ').map(function(w){ return w[0]; }).join('').substring(0,2).toUpperCase()
-        : email.substring(0,2).toUpperCase();
-
-      var avBtn = document.getElementById('user-av-btn');
-      if (avBtn) avBtn.textContent = initials;
-
-      var udAvatar = document.querySelector('#user-dropdown .ud-avatar');
-      if (udAvatar) udAvatar.textContent = initials;
-
-      var udName = document.querySelector('#user-dropdown .ud-name');
-      if (udName) udName.textContent = name || 'My Account';
-
-      var udEmail = document.querySelector('#user-dropdown .ud-email');
-      if (udEmail) udEmail.textContent = email;
-    } catch(ex) {}
-
-    if (avatarWrap) avatarWrap.style.display = 'inline-block';
-    if (signupBtn)  signupBtn.style.display  = 'none';
-    if (loginBtn)   loginBtn.style.display   = 'none';
-
+    var mnLogout = document.getElementById('mn-btn-logout');
+    if (mnLogout) mnLogout.style.display = 'flex';
   } else {
-    // Not logged in: hide avatar
+    // Not logged in: hide avatar (app.js may not have run yet)
+    var avatarWrap = document.getElementById('user-avatar-wrap');
     if (avatarWrap) avatarWrap.style.display = 'none';
   }
 });
