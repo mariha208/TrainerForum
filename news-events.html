@@ -611,7 +611,38 @@
       <li><a id="nl-dash"    href="dashboard.html" target="_blank" style="display:none;">Dashboard</a></li>
     </ul>
     <div class="nav-r">
-      <button class="notif-btn" id="notif-btn" onclick="toggleNotif()">&#x1F514;<span class="notif-dot"></span></button>
+      <div class="notif-wrap">
+        <button class="notif-btn" id="notif-btn" onclick="toggleNotif(event)" aria-label="Notifications">&#x1F514;<span class="notif-dot"></span></button>
+        <div id="notif-panel" class="notif-panel">
+          <div class="notif-panel-header">
+            <span>Notifications</span>
+            <button onclick="document.getElementById('notif-panel').classList.remove('open')" aria-label="Close notifications">&#x2715;</button>
+          </div>
+          <div class="notif-panel-body">
+            <div class="notif-item">
+              <span class="notif-icon">&#x1F4C5;</span>
+              <div class="notif-item-text">
+                <p>Upcoming: Building a 6-Figure Coaching Roster &mdash; Jul 22.</p>
+                <span>Today</span>
+              </div>
+            </div>
+            <div class="notif-item">
+              <span class="notif-icon">&#x1F4E2;</span>
+              <div class="notif-item-text">
+                <p>Elite tier now includes verified client outcomes.</p>
+                <span>Jul 10, 2026</span>
+              </div>
+            </div>
+            <div class="notif-item">
+              <span class="notif-icon">&#x1F465;</span>
+              <div class="notif-item-text">
+                <p>First cohort of Master-tier trainers announced.</p>
+                <span>Jul 3, 2026</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
       <button class="btn btn-ghost btn-sm" id="btn-signup" onclick="openModal('register')">Sign Up</button>
       <button class="btn btn-gold  btn-sm" id="btn-login"  onclick="openModal('login')">Log In</button>
       <button class="btn btn-dark  btn-sm" id="btn-logout" onclick="handleLogout()" style="display:none;">Log Out</button>

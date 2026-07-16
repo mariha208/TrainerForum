@@ -62,83 +62,9 @@
       display: block;
     }
 
-    /* ---------- NAV ---------- */
-    header {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: rgba(11, 27, 50, 0.92);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid var(--line);
-    }
 
-    .nav-wrap {
-      max-width: 1240px;
-      margin: 0 auto;
-      padding: 18px 32px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
+    /* ---------- NAV — Styles live in css/style.css ---------- */
 
-    .logo {
-      font-family: 'Fraunces', serif;
-      font-weight: 600;
-      font-size: 1.35rem;
-      color: var(--ivory);
-      letter-spacing: 0.01em;
-    }
-
-    .logo span {
-      color: var(--gold);
-    }
-
-    nav ul {
-      list-style: none;
-      display: flex;
-      gap: 34px;
-    }
-
-    nav a {
-      color: rgba(250, 246, 236, 0.72);
-      font-size: 0.92rem;
-      font-weight: 600;
-      letter-spacing: 0.01em;
-      transition: color .25s ease;
-      position: relative;
-    }
-
-    nav a:hover {
-      color: var(--ivory);
-    }
-
-    nav a.active {
-      color: var(--gold-light);
-    }
-
-    .nav-cta {
-      background: var(--gold);
-      color: var(--navy);
-      padding: 10px 22px;
-      border-radius: 999px;
-      font-weight: 700;
-      font-size: 0.88rem;
-      transition: transform .25s ease, box-shadow .25s ease;
-    }
-
-    .nav-cta:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 24px rgba(201, 162, 75, 0.35);
-    }
-
-    .menu-btn {
-      display: none;
-      background: none;
-      border: none;
-      color: var(--ivory);
-      font-size: 1.5rem;
-      cursor: pointer;
-    }
 
     /* ---------- HERO ---------- */
     .hero {
@@ -779,11 +705,12 @@
       flex-wrap: wrap;
     }
 
+    /* CTA section buttons — rectangular to match global design system */
     .btn-gold {
       background: var(--gold);
       color: var(--navy);
       padding: 15px 30px;
-      border-radius: 999px;
+      border-radius: 8px;
       font-weight: 700;
       transition: transform .25s ease;
     }
@@ -796,7 +723,7 @@
       border: 1px solid rgba(250, 246, 236, 0.3);
       color: var(--ivory);
       padding: 15px 30px;
-      border-radius: 999px;
+      border-radius: 8px;
       font-weight: 700;
       transition: background .25s ease;
     }
@@ -872,7 +799,38 @@
       <li><a id="nl-dash"    href="dashboard.html" target="_blank" style="display:none;">Dashboard</a></li>
     </ul>
     <div class="nav-r">
-      <button class="notif-btn" id="notif-btn" onclick="toggleNotif()">&#x1F514;<span class="notif-dot"></span></button>
+      <div class="notif-wrap">
+        <button class="notif-btn" id="notif-btn" onclick="toggleNotif(event)" aria-label="Notifications">&#x1F514;<span class="notif-dot"></span></button>
+        <div id="notif-panel" class="notif-panel">
+          <div class="notif-panel-header">
+            <span>Notifications</span>
+            <button onclick="document.getElementById('notif-panel').classList.remove('open')" aria-label="Close notifications">&#x2715;</button>
+          </div>
+          <div class="notif-panel-body">
+            <div class="notif-item">
+              <span class="notif-icon">&#x1F3C5;</span>
+              <div class="notif-item-text">
+                <p>New verification tier available &mdash; explore Master credentials.</p>
+                <span>2 hours ago</span>
+              </div>
+            </div>
+            <div class="notif-item">
+              <span class="notif-icon">&#x1F4CB;</span>
+              <div class="notif-item-text">
+                <p>Your Verified application is under review. Est. 24&ndash;72 hrs.</p>
+                <span>Yesterday</span>
+              </div>
+            </div>
+            <div class="notif-item">
+              <span class="notif-icon">&#x1F4E2;</span>
+              <div class="notif-item-text">
+                <p>Elite tier now includes verified client outcomes. Learn more.</p>
+                <span>Jul 10, 2026</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
       <button class="btn btn-ghost btn-sm" id="btn-signup" onclick="openModal('register')">Sign Up</button>
       <button class="btn btn-gold  btn-sm" id="btn-login"  onclick="openModal('login')">Log In</button>
       <button class="btn btn-dark  btn-sm" id="btn-logout" onclick="handleLogout()" style="display:none;">Log Out</button>
