@@ -1516,8 +1516,8 @@ select.form-control { cursor: pointer; }
     pointer-events: all;
   }
   .db-main { margin-left: 0; }
-  .grid-3 { grid-template-columns: 1fr 1fr; }
-  .grid-4 { grid-template-columns: 1fr 1fr; }
+  .grid-3 { grid-template-columns: 1fr 1fr !important; }
+  .grid-4 { grid-template-columns: 1fr 1fr !important; }
   .form-row { grid-template-columns: 1fr; }
   .db-topnav .nav-search { display: none; }
   .db-topnav .logo-area {
@@ -1660,7 +1660,7 @@ select.form-control { cursor: pointer; }
 
 
 @media (max-width: 768px) {
-  #services-container, #packages-container { grid-template-columns: 1fr 1fr; }
+  #services-container, #packages-container { grid-template-columns: 1fr 1fr !important; }
 }
 
 .profile-layout { display: grid; grid-template-columns: 1fr 280px; gap: 24px; align-items: start; }
