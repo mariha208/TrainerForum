@@ -653,6 +653,17 @@ ul {
   background: #0B1B32;
 }
 
+.hero-bg-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+  opacity: 0.4;
+  pointer-events: none;
+}
+
 .hero::before {
   content: '';
   position: absolute;
@@ -879,6 +890,8 @@ ul {
 }
 
 .hero-split .hero-inner {
+  position: relative;
+  z-index: 1;
   max-width: 1200px;
   width: 100%;
   margin: 0 auto;
