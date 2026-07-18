@@ -1396,8 +1396,14 @@ section {
 /* ══ GRIDS ══ */
 .trainers-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-  gap: 22px
+  grid-template-columns: repeat(5, 1fr);
+  gap: 22px;
+}
+@media (max-width: 1024px) {
+  .trainers-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 768px) {
+  .trainers-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
 .cats-grid {

@@ -1795,9 +1795,10 @@ select.form-control { cursor: pointer; }
   #nav, .db-topnav { padding-left: 16px !important; padding-right: 16px !important; }
   .nav-r > *, .nav-profile-btn, .notif-btn, .user-avatar-wrap { flex-shrink: 0 !important; }
   .db-section, .db-main { padding-left: 16px !important; padding-right: 16px !important; max-width: 100vw !important; overflow-x: hidden !important; box-sizing: border-box !important; }
-  .dash-card, .cat-card, .card, .profile-layout, .db-modal, #services-container, #packages-container, form, input, textarea { max-width: 100% !important; box-sizing: border-box !important; }
+  .db-card, .dash-card, .cat-card, .card, .profile-layout, .db-modal, #services-container, #packages-container, form, input, textarea { max-width: 100% !important; box-sizing: border-box !important; }
+  #save-profile-btn { width: 60% !important; margin: 0 auto !important; display: block !important; }
   /* Enforce single column for dashboard grids that overflow */
-  #services-container, #packages-container { grid-template-columns: 1fr !important; }
+  #services-container, #packages-container { grid-template-columns: 1fr 1fr !important; }
 }
 
 
@@ -1946,3 +1947,7 @@ html.dark-mode .cal-day-cell.today { color: #fcd34d !important; }
     word-break: break-word !important;
   }
 }
+
+
+/* Hide global mobile nav on dashboard */
+.mobile-nav, .nav-overlay { display: none !important; }

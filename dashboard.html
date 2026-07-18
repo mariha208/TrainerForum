@@ -21,10 +21,12 @@
        TOP NAVIGATION BAR
   ═══════════════════════════════════════════════ -->
   <nav class="db-topnav">
-    <div class="logo-area" href="index.html">
-      <button class="mobile-menu-btn" onclick="toggleSidebar()" id="mob-menu-btn">☰</button>
-      <img src="img/logo.svg" alt="World Trainer Form Logo" style="height:34px; margin-right:8px;">
-      <div class="logo-txt">World Trainer <span>Form</span></div>
+    <div class="logo-area" style="display:flex; align-items:center;">
+      <button class="mobile-menu-btn" onclick="toggleSidebar()" id="mob-menu-btn" style="margin-right:10px;">&#9776;</button>
+      <a href="index.html" style="display:flex; align-items:center; text-decoration:none;">
+        <img src="img/logo.svg" alt="World Trainer Form Logo" style="height:34px; margin-right:8px;">
+        <div class="logo-txt">World Trainer <span>Form</span></div>
+      </a>
     </div>
     <div class="nav-center">
       <div class="auto-save-pulse" id="autosave-indicator" style="opacity:0">Saved</div>
