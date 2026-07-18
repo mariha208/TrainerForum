@@ -1,12 +1,12 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
   <meta name="description"
-    content="World Trainer Form Trainer Dashboard — Manage your profile, bookings, earnings and grow your training business.">
-  <title>Trainer Dashboard — World Trainer Form</title>
+    content="World Trainer Form Trainer Dashboard â€” Manage your profile, bookings, earnings and grow your training business.">
+  <title>Trainer Dashboard â€” World Trainer Form</title>
   <link rel="stylesheet" href="css/dashboard.css?v=3">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -17,25 +17,23 @@
 
 <body>
 
-  <!-- ═══════════════════════════════════════════════
+  <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
        TOP NAVIGATION BAR
-  ═══════════════════════════════════════════════ -->
+  â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
   <nav class="db-topnav">
-    <div class="logo-area" style="display:flex; align-items:center;">
-      <button class="mobile-menu-btn" onclick="toggleSidebar()" id="mob-menu-btn" style="margin-right:10px;">&#9776;</button>
-      <a href="index.html" style="display:flex; align-items:center; text-decoration:none;">
-        <img src="img/logo.svg" alt="World Trainer Form Logo" style="height:34px; margin-right:8px;">
-        <div class="logo-txt">World Trainer <span>Form</span></div>
-      </a>
+    <div class="logo-area" href="index.html">
+      <button class="mobile-menu-btn" onclick="toggleSidebar()" id="mob-menu-btn">☰</button>
+      <img src="img/logo.svg" alt="World Trainer Form Logo" style="height:34px; margin-right:8px;">
+      <div class="logo-txt">World Trainer <span>Form</span></div>
     </div>
     <div class="nav-center">
       <div class="auto-save-pulse" id="autosave-indicator" style="opacity:0">Saved</div>
     </div>
     <div class="nav-r">
       <div class="nav-icon-btn" onclick="toggleNotif()" id="notif-trigger" title="Notifications">
-        🔔<span class="badge" id="notif-count">4</span>
+        ðŸ””<span class="badge" id="notif-count">4</span>
       </div>
-      <a href="index.html" class="nav-icon-btn" title="Back to site">🌐</a>
+      <a href="index.html" class="nav-icon-btn" title="Back to site">ðŸŒ</a>
       <div class="nav-profile-btn" onclick="showSection('settings')">
         <div class="nav-av" id="nav-av"></div>
         <div>
@@ -49,7 +47,7 @@
   <!-- Notifications Dropdown -->
   <div class="notif-dropdown" id="notif-dropdown">
     <div class="notif-header">
-      <h4>🔔 Notifications</h4>
+      <h4>ðŸ”” Notifications</h4>
       <a href="#" onclick="markAllRead()">Mark all read</a>
     </div>
     <div class="notif-list" id="notif-list"></div>
@@ -58,87 +56,87 @@
     </div>
   </div>
 
-  <!-- ═══════════════════════════════════════════════
+  <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
        SIDEBAR
-  ═══════════════════════════════════════════════ -->
+  â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
   <aside class="db-sidebar" id="db-sidebar">
     <div class="sidebar-section">
       <div class="sidebar-section-label">Management</div>
       <a class="sidebar-nav-item active" href="javascript:void(0)" data-section="profile"
         onclick="showSection('profile')">
-        <span class="nav-ico">👤</span><span class="nav-label">Edit Profile</span>
+        <span class="nav-ico">ðŸ‘¤</span><span class="nav-label">Edit Profile</span>
       </a>
     </div>
 
     <div class="sidebar-section">
       <div class="sidebar-section-label">Business</div>
       <a class="sidebar-nav-item" href="javascript:void(0)" data-section="services" onclick="showSection('services')">
-        <span class="nav-ico">📦</span><span class="nav-label">Services & Packages</span>
+        <span class="nav-ico">ðŸ“¦</span><span class="nav-label">Services & Packages</span>
       </a>
       <a class="sidebar-nav-item" href="javascript:void(0)" data-section="availability"
         onclick="showSection('availability')">
-        <span class="nav-ico">🗓️</span><span class="nav-label">Availability</span>
+        <span class="nav-ico">ðŸ—“ï¸</span><span class="nav-label">Availability</span>
       </a>
       <a class="sidebar-nav-item" href="javascript:void(0)" data-section="portfolio" onclick="showSection('portfolio')">
-        <span class="nav-ico">🖼️</span><span class="nav-label">Portfolio</span>
+        <span class="nav-ico">ðŸ–¼ï¸</span><span class="nav-label">Portfolio</span>
       </a>
     </div>
 
     <div class="sidebar-bottom">
       <div class="sidebar-nav-item" style="color:var(--red)" onclick="confirmLogout()">
-        <span class="nav-ico">🚪</span><span class="nav-label">Logout</span>
+        <span class="nav-ico">ðŸšª</span><span class="nav-label">Logout</span>
       </div>
     </div>
   </aside>
 
-  <!-- ═══════════════════════════════════════════════
+  <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
        MAIN CONTENT
-  ═══════════════════════════════════════════════ -->
+  â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
   <main class="db-main">
 
-    <!-- ════════════════════════════════
+    <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
          1. OVERVIEW / HOME
-    ════════════════════════════════ -->
+    â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
     <section class="db-section" id="sec-overview">
       <div class="db-page-header">
         <div class="phead-left">
-          <h1>Good evening, <span class="grad-text" id="greeting-name"></span> 👋</h1>
+          <h1>Good evening, <span class="grad-text" id="greeting-name"></span> ðŸ‘‹</h1>
           <p>Here's what's happening with your training business today.</p>
         </div>
         <div class="phead-right">
-          <button class="btn btn-dark btn-sm" onclick="showSection('profile')">✏️ Edit Profile</button>
-          <button class="btn btn-gold btn-sm" onclick="openPublicProfile()">🌐 View Public Profile</button>
+          <button class="btn btn-dark btn-sm" onclick="showSection('profile')">âœï¸ Edit Profile</button>
+          <button class="btn btn-gold btn-sm" onclick="openPublicProfile()">ðŸŒ View Public Profile</button>
         </div>
       </div>
 
       <!-- KPI Row -->
       <div class="grid-4 mb-24">
         <div class="kpi-card">
-          <div class="kpi-ico gold">📅</div>
+          <div class="kpi-ico gold">ðŸ“…</div>
           <div class="kpi-info">
             <div class="label">Total Bookings</div>
             <div class="value">1,248</div>
-            <div class="sub"><span class="up">↑ 18%</span> vs last month</div>
+            <div class="sub"><span class="up">â†‘ 18%</span> vs last month</div>
           </div>
         </div>
         <div class="kpi-card">
-          <div class="kpi-ico green">💰</div>
+          <div class="kpi-ico green">ðŸ’°</div>
           <div class="kpi-info">
             <div class="label">Total Earnings</div>
-            <div class="value">₹18.4L</div>
-            <div class="sub"><span class="up">↑ 22%</span> this year</div>
+            <div class="value">â‚¹18.4L</div>
+            <div class="sub"><span class="up">â†‘ 22%</span> this year</div>
           </div>
         </div>
         <div class="kpi-card">
-          <div class="kpi-ico blue">👁️</div>
+          <div class="kpi-ico blue">ðŸ‘ï¸</div>
           <div class="kpi-info">
             <div class="label">Profile Views</div>
             <div class="value">9,240</div>
-            <div class="sub"><span class="up">↑ 34%</span> this month</div>
+            <div class="sub"><span class="up">â†‘ 34%</span> this month</div>
           </div>
         </div>
         <div class="kpi-card">
-          <div class="kpi-ico" style="background:rgba(142,68,173,.15)">⭐</div>
+          <div class="kpi-ico" style="background:rgba(142,68,173,.15)">â­</div>
           <div class="kpi-info">
             <div class="label">Avg Rating</div>
             <div class="value">4.9</div>
@@ -154,7 +152,7 @@
           <div style="flex:1">
             <h3 style="color:var(--gold); margin-bottom: 15px; display:flex; align-items:center; gap:8px"><span
                 class="ct-ico"
-                style="background:var(--gold); color:#000; padding:4px 8px; border-radius:50%; font-size:0.8rem;">👑</span>
+                style="background:var(--gold); color:#000; padding:4px 8px; border-radius:50%; font-size:0.8rem;">ðŸ‘‘</span>
               Membership Status</h3>
             <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px;">
               <div>
@@ -187,7 +185,7 @@
         <!-- Pending Bookings -->
         <div class="db-card">
           <div class="card-title">
-            <div class="ct-ico">📅</div>Pending Booking Requests
+            <div class="ct-ico">ðŸ“…</div>Pending Booking Requests
             <div class="ct-action"><span class="pill pill-orange">3 new</span></div>
           </div>
           <div id="pending-bookings-list"></div>
@@ -196,7 +194,7 @@
         <!-- Quick Stats -->
         <div class="db-card">
           <div class="card-title">
-            <div class="ct-ico">📊</div>This Month at a Glance
+            <div class="ct-ico">ðŸ“Š</div>This Month at a Glance
           </div>
           <div class="bar-chart-h" id="month-chart"></div>
         </div>
@@ -206,7 +204,7 @@
         <!-- Recent Activity -->
         <div class="db-card">
           <div class="card-title">
-            <div class="ct-ico">🔔</div>Recent Activity
+            <div class="ct-ico">ðŸ””</div>Recent Activity
           </div>
           <div id="activity-feed"></div>
         </div>
@@ -214,7 +212,7 @@
         <!-- AI Profile Score -->
         <div class="ai-panel">
           <div class="ai-header">
-            <div class="ai-icon">🤖</div>
+            <div class="ai-icon">ðŸ¤–</div>
             <div>
               <h3>AI Profile Health Score</h3>
               <p>Powered by World Trainer Form AI</p>
@@ -229,14 +227,14 @@
             </div>
           </div>
           <div id="ai-suggestions-mini"></div>
-          <button class="btn btn-gold btn-sm w-100 mt-12" onclick="showSection('ai')">View Full AI Analysis →</button>
+          <button class="btn btn-gold btn-sm w-100 mt-12" onclick="showSection('ai')">View Full AI Analysis â†’</button>
         </div>
       </div>
 
       <!-- Top Reviews Preview -->
       <div class="db-card">
         <div class="card-title">
-          <div class="ct-ico">⭐</div>Featured Reviews
+          <div class="ct-ico">â­</div>Featured Reviews
           <div class="ct-action"><button class="btn btn-dark btn-sm" onclick="showSection('reviews')">Manage
               All</button></div>
         </div>
@@ -244,9 +242,9 @@
       </div>
     </section>
 
-    <!-- ════════════════════════════════
+    <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
          2. EDIT PROFILE
-    ════════════════════════════════ -->
+    â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
     <section class="db-section active" id="sec-profile">
       <div class="db-page-header">
         <div class="phead-left">
@@ -254,7 +252,7 @@
           <p>Keep your profile up to date to attract more clients and improve your visibility.</p>
         </div>
         <div class="phead-right">
-          <div class="auto-save-pulse" id="profile-save-status" style="opacity:0;">✓ All changes saved</div>
+          <div class="auto-save-pulse" id="profile-save-status" style="opacity:0;">âœ“ All changes saved</div>
         </div>
       </div>
 
@@ -263,7 +261,7 @@
           <!-- Photos & Banner Media Section -->
           <div class="db-card mb-16">
             <div class="card-title">
-              <div class="ct-ico">📸</div>Profile Photo & Banner
+              <div class="ct-ico">ðŸ“¸</div>Profile Photo & Banner
             </div>
 
             <div class="form-section-title">Cover Banner</div>
@@ -276,13 +274,14 @@
               onmouseout="this.querySelector('.ban-overlay').style.opacity='0.6'">
               <div class="ban-overlay" id="banner-overlay"
                 style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,.45);color:white;font-size:1rem;opacity:0.6;transition:opacity 0.2s;gap:6px">
-                <span style="font-size:1.8rem">🖼️</span>
+                <span style="font-size:1.8rem">ðŸ–¼ï¸</span>
                 <span style="font-size:0.82rem;font-weight:600;letter-spacing:0.04em">Click anywhere to change
                   banner</span>
               </div>
             </div>
             <div style="display:flex;gap:8px;margin-bottom:16px">
-              <button class="btn btn-dark btn-sm" onclick="document.getElementById('upload-banner-file').click()">🖼️
+              <button class="btn btn-dark btn-sm"
+                onclick="document.getElementById('upload-banner-file').click()">ðŸ–¼ï¸
                 Click to change banner</button>
             </div>
 
@@ -297,7 +296,7 @@
                   <span id="photo-initials"></span>
                 </div>
                 <button onclick="document.getElementById('upload-photo-file').click()" title="Upload photo"
-                  style="position:absolute;bottom:2px;right:2px;width:28px;height:28px;border-radius:50%;background:var(--gold);border:2px solid var(--bg2);color:#000;font-size:.85rem;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1">📷</button>
+                  style="position:absolute;bottom:2px;right:2px;width:28px;height:28px;border-radius:50%;background:var(--gold);border:2px solid var(--bg2);color:#000;font-size:.85rem;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1">ðŸ“·</button>
               </div>
               <div class="photo-fields" style="flex-grow:1;min-width:0;">
                 <label style="font-weight:600;font-size:.88rem;margin-bottom:6px;display:block;">Remote Profile Image
@@ -305,7 +304,8 @@
                 <input class="form-control" type="text" id="p-photo-url"
                   placeholder="e.g. https://cdn.example.com/user.jpg" style="margin-bottom:8px;">
                 <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-                  <button class="btn btn-dark btn-sm" onclick="document.getElementById('upload-photo-file').click()">📸
+                  <button class="btn btn-dark btn-sm"
+                    onclick="document.getElementById('upload-photo-file').click()">ðŸ“¸
                     Upload Photo (Simulate S3)</button>
                   <span id="photo-upload-status" style="font-size:.76rem;color:var(--tm)">No file selected</span>
                 </div>
@@ -318,7 +318,7 @@
           <!-- Basic Information -->
           <div class="db-card mb-16">
             <div class="card-title">
-              <div class="ct-ico">📝</div>Basic Information
+              <div class="ct-ico">ðŸ“</div>Basic Information
             </div>
 
             <div class="form-row">
@@ -327,7 +327,7 @@
                 <input class="form-control" id="p-name" type="text" value="">
               </div>
               <div class="form-group">
-                <label>Tagline <span class="hint">— shown below your name</span></label>
+                <label>Tagline <span class="hint">â€” shown below your name</span></label>
                 <input class="form-control" id="p-tagline" type="text" value="" maxlength="100">
                 <div class="form-footer">
                   <div></div>
@@ -558,9 +558,9 @@
                 </select>
               </div>
               <div class="form-group">
-                <label>Session Rate (₹/hour)</label>
+                <label>Session Rate (â‚¹/hour)</label>
                 <div class="input-icon-wrap">
-                  <span class="i-ico">₹</span>
+                  <span class="i-ico">â‚¹</span>
                   <input class="form-control" id="p-rate" type="number" value="">
                 </div>
               </div>
@@ -570,13 +570,13 @@
           <!-- Bio -->
           <div class="db-card mb-16">
             <div class="card-title">
-              <div class="ct-ico">📖</div>Professional Bio
+              <div class="ct-ico">ðŸ“–</div>Professional Bio
             </div>
             <div class="form-group">
               <label>About You</label>
               <textarea class="form-control" id="p-bio" rows="4" maxlength="5000"></textarea>
               <div class="form-footer">
-                <div style="font-size:.72rem;color:var(--tm)">Tip: A compelling bio increases profile views by 3×</div>
+                <div style="font-size:.72rem;color:var(--tm)">Tip: A compelling bio increases profile views by 3Ã—</div>
                 <div class="char-count" id="bio-count">0/5000</div>
               </div>
             </div>
@@ -585,16 +585,16 @@
           <!-- Connect / Social Links -->
           <div class="db-card mb-16">
             <div class="card-title">
-              <div class="ct-ico" style="background:rgba(42,108,176,.15)">🌐</div>Connect & Social Links
+              <div class="ct-ico" style="background:rgba(42,108,176,.15)">ðŸŒ</div>Connect & Social Links
               <div class="ct-action"><span class="pill pill-blue" style="font-size:.68rem">Public Profile Links</span>
               </div>
             </div>
 
             <div class="form-row">
               <div class="form-group">
-                <label>WhatsApp Number <span class="hint">— clients will message you here</span></label>
+                <label>WhatsApp Number <span class="hint">â€” clients will message you here</span></label>
                 <div class="input-icon-wrap">
-                  <span class="i-ico">📱</span>
+                  <span class="i-ico">ðŸ“±</span>
                   <input class="form-control" id="p-whatsapp" type="tel" placeholder="+91 98765 43210"
                     style="padding-left:2.4rem">
                 </div>
@@ -613,7 +613,7 @@
               <div class="form-group">
                 <label>Instagram</label>
                 <div class="input-icon-wrap">
-                  <span class="i-ico">📷</span>
+                  <span class="i-ico">ðŸ“·</span>
                   <input class="form-control" id="p-instagram" type="url" placeholder="https://instagram.com/..."
                     style="padding-left:2.4rem">
                 </div>
@@ -621,7 +621,7 @@
               <div class="form-group">
                 <label>YouTube</label>
                 <div class="input-icon-wrap">
-                  <span class="i-ico" style="color: red;">▶</span>
+                  <span class="i-ico" style="color: red;">â–¶</span>
                   <input class="form-control" id="p-youtube" type="url" placeholder="https://youtube.com/c/..."
                     style="padding-left:2.4rem">
                 </div>
@@ -632,7 +632,7 @@
               <div class="form-group">
                 <label>Twitter / X</label>
                 <div class="input-icon-wrap">
-                  <span class="i-ico">𝕏</span>
+                  <span class="i-ico">ð•</span>
                   <input class="form-control" id="p-twitter" type="url" placeholder="https://twitter.com/..."
                     style="padding-left:2.4rem">
                 </div>
@@ -651,7 +651,7 @@
               <div class="form-group">
                 <label>Website</label>
                 <div class="input-icon-wrap">
-                  <span class="i-ico">🌐</span>
+                  <span class="i-ico">ðŸŒ</span>
                   <input class="form-control" id="p-website" type="url" placeholder="https://yourwebsite.com"
                     style="padding-left:2.4rem">
                 </div>
@@ -659,7 +659,7 @@
               <div class="form-group">
                 <label>Portfolio Link (PDF)</label>
                 <div class="input-icon-wrap">
-                  <span class="i-ico">🗂</span>
+                  <span class="i-ico">ðŸ—‚</span>
                   <input class="form-control" id="p-portfolio" type="file" accept="application/pdf"
                     style="padding-left:2.4rem; padding-top:6px;">
                   <input type="hidden" id="p-portfolio-base64">
@@ -672,7 +672,7 @@
           <!-- Expertise Tags -->
           <div class="db-card mb-16">
             <div class="card-title">
-              <div class="ct-ico">🏷️</div>Expertise Tags (for SEO Layout Structure)
+              <div class="ct-ico">ðŸ·ï¸</div>Expertise Tags (for SEO Layout Structure)
             </div>
             <div class="form-group">
               <label>Tags (comma-separated list)</label>
@@ -682,10 +682,10 @@
             </div>
           </div>
 
-          <!-- Certifications By — Unified Panel -->
+          <!-- Certifications By â€” Unified Panel -->
           <div class="db-card mb-16" id="certifications-by-card">
             <div class="card-title">
-              <div class="ct-ico">🏅</div>Certifications By
+              <div class="ct-ico">ðŸ…</div>Certifications By
               <div class="ct-action">
                 <button class="btn btn-gold btn-sm" id="add-cert-row-btn" onclick="addCertificationRow()">+ Add
                   Row</button>
@@ -715,7 +715,7 @@
           <!-- Save Profile Button -->
           <div style="margin-top:24px;padding-top:24px;border-top:1px solid var(--border)">
             <button class="btn btn-gold w-100" id="save-profile-btn" onclick="saveProfileData()"
-              style="padding:14px;font-size:1rem;font-weight:700;letter-spacing:0.03em">💾 Save Profile</button>
+              style="padding:14px;font-size:1rem;font-weight:700;letter-spacing:0.03em">ðŸ’¾ Save Profile</button>
             <p style="text-align:center;font-size:0.78rem;color:var(--tm);margin-top:10px">Your profile will be updated
               immediately after saving.</p>
           </div>
@@ -730,7 +730,7 @@
             <div class="pp-avatar" id="pp-avatar"
               style="width:60px;height:60px;background:#2d5fa8;color:#fff;font-weight:700;font-size:1.5rem;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-top:-30px;margin-bottom:12px;border:2px solid var(--bg2);background-size:cover;background-position:center;">
             </div>
-            <div class="verified-badge mb-12" style="font-size:.72rem;color:var(--green);margin-bottom:8px">✓ Verified
+            <div class="verified-badge mb-12" style="font-size:.72rem;color:var(--green);margin-bottom:8px">âœ“ Verified
               Expert</div>
             <div class="pp-name" id="pp-name" style="font-size:1.1rem;font-weight:700;margin-bottom:4px"></div>
             <div class="pp-tagline" id="pp-tagline" style="font-size:.82rem;color:var(--tm);margin-bottom:8px"></div>
@@ -740,9 +740,9 @@
       </div>
     </section>
 
-    <!-- ════════════════════════════════
+    <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
          3. ANALYTICS
-    ════════════════════════════════ -->
+    â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
     <section class="db-section" id="sec-analytics">
       <div class="db-page-header">
         <div class="phead-left">
@@ -761,23 +761,23 @@
 
       <div class="grid-4 mb-24">
         <div class="kpi-card gold">
-          <div class="kpi-ico gold">👁️</div>
+          <div class="kpi-ico gold">ðŸ‘ï¸</div>
           <div class="kpi-info">
             <div class="label">Profile Views</div>
             <div class="value">9,240</div>
-            <div class="sub"><span class="up">↑ 34%</span></div>
+            <div class="sub"><span class="up">â†‘ 34%</span></div>
           </div>
         </div>
         <div class="kpi-card">
-          <div class="kpi-ico green">🔄</div>
+          <div class="kpi-ico green">ðŸ”„</div>
           <div class="kpi-info">
             <div class="label">Conversion Rate</div>
             <div class="value">4.2%</div>
-            <div class="sub"><span class="up">↑ 0.8 pts</span></div>
+            <div class="sub"><span class="up">â†‘ 0.8 pts</span></div>
           </div>
         </div>
         <div class="kpi-card">
-          <div class="kpi-ico blue">⏱️</div>
+          <div class="kpi-ico blue">â±ï¸</div>
           <div class="kpi-info">
             <div class="label">Avg Session Length</div>
             <div class="value">82 min</div>
@@ -785,11 +785,11 @@
           </div>
         </div>
         <div class="kpi-card">
-          <div class="kpi-ico" style="background:rgba(142,68,173,.15)">🔁</div>
+          <div class="kpi-ico" style="background:rgba(142,68,173,.15)">ðŸ”</div>
           <div class="kpi-info">
             <div class="label">Repeat Clients</div>
             <div class="value">78%</div>
-            <div class="sub"><span class="up">↑ 5%</span></div>
+            <div class="sub"><span class="up">â†‘ 5%</span></div>
           </div>
         </div>
       </div>
@@ -797,7 +797,7 @@
       <div class="grid-2 mb-24">
         <div class="db-card">
           <div class="card-title">
-            <div class="ct-ico">📈</div>Profile Views (Last 30 Days)
+            <div class="ct-ico">ðŸ“ˆ</div>Profile Views (Last 30 Days)
           </div>
           <div style="position:relative;height:180px;display:flex;align-items:flex-end;gap:5px;padding:8px 0"
             id="views-bar-chart"></div>
@@ -807,7 +807,7 @@
 
         <div class="db-card">
           <div class="card-title">
-            <div class="ct-ico">📅</div>Bookings Trend
+            <div class="ct-ico">ðŸ“…</div>Bookings Trend
           </div>
           <div style="position:relative;height:180px;display:flex;align-items:flex-end;gap:5px;padding:8px 0"
             id="bookings-bar-chart"></div>
@@ -817,9 +817,9 @@
       </div>
     </section>
 
-    <!-- ════════════════════════════════
+    <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
          4. BOOKINGS VIEWPANELS
-    ════════════════════════════════ -->
+    â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
     <section class="db-section" id="sec-bookings">
       <div class="db-page-header">
         <div class="phead-left">
@@ -833,9 +833,9 @@
       <div class="grid-2" id="bookings-grid"></div>
     </section>
 
-    <!-- ════════════════════════════════
+    <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
          5. EARNINGS & PAYOUTS
-    ════════════════════════════════ -->
+    â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
     <section class="db-section" id="sec-earnings">
       <div class="db-page-header">
         <div class="phead-left">
@@ -843,41 +843,41 @@
           <p>Track your income, commissions, and payout history</p>
         </div>
         <div class="phead-right">
-          <button class="btn btn-dark btn-sm">📥 Export CSV</button>
-          <button class="btn btn-gold btn-sm" onclick="openModal('payout')">💸 Request Payout</button>
+          <button class="btn btn-dark btn-sm">ðŸ“¥ Export CSV</button>
+          <button class="btn btn-gold btn-sm" onclick="openModal('payout')">ðŸ’¸ Request Payout</button>
         </div>
       </div>
 
       <div class="grid-4 mb-24">
         <div class="kpi-card green">
-          <div class="kpi-ico green">💰</div>
+          <div class="kpi-ico green">ðŸ’°</div>
           <div class="kpi-info">
             <div class="label">Total Earned</div>
-            <div class="value">₹18.4L</div>
-            <div class="sub"><span class="up">↑ 22%</span> YTD</div>
+            <div class="value">â‚¹18.4L</div>
+            <div class="sub"><span class="up">â†‘ 22%</span> YTD</div>
           </div>
         </div>
         <div class="kpi-card">
-          <div class="kpi-ico gold">📅</div>
+          <div class="kpi-ico gold">ðŸ“…</div>
           <div class="kpi-info">
             <div class="label">This Month</div>
-            <div class="value">₹1.84L</div>
-            <div class="sub"><span class="up">↑ 18%</span></div>
+            <div class="value">â‚¹1.84L</div>
+            <div class="sub"><span class="up">â†‘ 18%</span></div>
           </div>
         </div>
         <div class="kpi-card">
-          <div class="kpi-ico blue">⏳</div>
+          <div class="kpi-ico blue">â³</div>
           <div class="kpi-info">
             <div class="label">Pending Payout</div>
-            <div class="value">₹32,500</div>
+            <div class="value">â‚¹32,500</div>
             <div class="sub">Processing next Friday</div>
           </div>
         </div>
         <div class="kpi-card">
-          <div class="kpi-ico" style="background:rgba(46,204,113,.15)">💳</div>
+          <div class="kpi-ico" style="background:rgba(46,204,113,.15)">ðŸ’³</div>
           <div class="kpi-info">
             <div class="label">Wallet Balance</div>
-            <div class="value">₹45,800</div>
+            <div class="value">â‚¹45,800</div>
             <div class="sub">Available to withdraw</div>
           </div>
         </div>
@@ -886,7 +886,7 @@
       <div class="grid-2 mb-24" style="align-items:start">
         <div class="db-card">
           <div class="card-title">
-            <div class="ct-ico">📈</div>Earnings Distribution
+            <div class="ct-ico">ðŸ“ˆ</div>Earnings Distribution
           </div>
           <div style="position:relative;height:180px;display:flex;align-items:flex-end;gap:12px;padding:8px 0"
             id="earnings-bar-chart"></div>
@@ -896,7 +896,7 @@
 
         <div class="db-card">
           <div class="card-title">
-            <div class="ct-ico">🏦</div>Payout Configuration
+            <div class="ct-ico">ðŸ¦</div>Payout Configuration
           </div>
           <div class="form-group mb-12">
             <label>Bank Name</label>
@@ -904,7 +904,7 @@
           </div>
           <div class="form-group mb-12">
             <label>Account Number</label>
-            <input type="text" class="form-control" value="•••• •••• 5019" readonly>
+            <input type="text" class="form-control" value="â€¢â€¢â€¢â€¢ â€¢â€¢â€¢â€¢ 5019" readonly>
           </div>
           <div class="form-group">
             <label>UPI ID</label>
@@ -915,7 +915,7 @@
 
       <div class="db-card">
         <div class="card-title">
-          <div class="ct-ico">📝</div>Recent Payout History
+          <div class="ct-ico">ðŸ“</div>Recent Payout History
         </div>
         <div class="db-table-wrap">
           <table class="db-table">
@@ -934,9 +934,9 @@
       </div>
     </section>
 
-    <!-- ════════════════════════════════
+    <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
          6. SERVICES & PACKAGES
-    ════════════════════════════════ -->
+    â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
     <section class="db-section" id="sec-services">
       <div class="db-page-header">
         <div class="phead-left">
@@ -954,9 +954,9 @@
       <div class="grid-3" id="packages-container"></div>
     </section>
 
-    <!-- ════════════════════════════════
+    <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
          7. AVAILABILITY
-    ════════════════════════════════ -->
+    â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
     <section class="db-section" id="sec-availability">
       <div class="db-page-header">
         <div class="phead-left">
@@ -964,21 +964,21 @@
           <p>Define your active hours and calendar preferences for incoming bookable slots</p>
         </div>
         <div class="phead-right">
-          <button class="btn btn-gold btn-sm" onclick="saveAvailability()">💾 Save Slots</button>
+          <button class="btn btn-gold btn-sm" onclick="saveAvailability()">ðŸ’¾ Save Slots</button>
         </div>
       </div>
 
       <div class="grid-2" style="align-items:start">
         <div class="db-card">
           <div class="card-title">
-            <div class="ct-ico">⏰</div>Weekly Recurring Hours
+            <div class="ct-ico">â°</div>Weekly Recurring Hours
           </div>
           <div id="weekly-hours-container" style="display:flex; flex-direction:column; gap:12px;"></div>
         </div>
 
         <div class="db-card">
           <div class="card-title">
-            <div class="ct-ico">📅</div>Monthly Availability Calendar
+            <div class="ct-ico">ðŸ“…</div>Monthly Availability Calendar
           </div>
           <p class="text-sm text-muted mb-12">Automatically syncs with your weekly hours. Days marked in red are
             unavailable.</p>
@@ -986,9 +986,9 @@
           <!-- Tip Note -->
           <div
             style="display:flex;align-items:flex-start;gap:10px;background:rgba(197,160,89,0.12);border:1.5px solid rgba(197,160,89,0.45);border-radius:10px;padding:12px 14px;margin-bottom:14px;">
-            <span style="font-size:1.3rem;line-height:1;flex-shrink:0;">👆</span>
+            <span style="font-size:1.3rem;line-height:1;flex-shrink:0;">ðŸ‘†</span>
             <p style="margin:0;font-size:0.92rem;font-weight:600;color:var(--gold);line-height:1.5;">
-              Click on a specific day to block it separately — without affecting other days of the same week.
+              Click on a specific day to block it separately â€” without affecting other days of the same week.
             </p>
           </div>
 
@@ -1000,9 +1000,9 @@
       </div>
     </section>
 
-    <!-- ════════════════════════════════
+    <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
          8. PORTFOLIO SHOWCASE
-    ════════════════════════════════ -->
+    â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
     <section class="db-section" id="sec-portfolio">
       <div class="db-page-header">
         <div class="phead-left">
@@ -1013,13 +1013,13 @@
       <input type="file" id="portfolio-file-upload" accept="image/*" style="display:none">
       <div class="grid-4" id="portfolio-gallery" style="margin-bottom:32px"></div>
 
-      <!-- ── Permanent Sub-Sections ── -->
+      <!-- â”€â”€ Permanent Sub-Sections â”€â”€ -->
       <div class="grid-2" style="align-items:start;gap:24px">
 
         <!-- 1. YOUR INTRO VIDEO -->
         <div class="db-card">
           <div class="card-title">
-            <div class="ct-ico">🎬</div>Your Intro Video
+            <div class="ct-ico">ðŸŽ¬</div>Your Intro Video
           </div>
           <p class="text-sm text-muted mb-12">Paste your YouTube intro video link. It will show as a clickable thumbnail
             on your public profile.</p>
@@ -1034,16 +1034,16 @@
               style="width:100%;height:160px;object-fit:cover;display:block">
             <div
               style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.4)">
-              <span style="font-size:2.5rem">▶</span>
+              <span style="font-size:2.5rem">â–¶</span>
             </div>
           </div>
-          <button class="btn btn-gold w-100" onclick="saveIntroVideo()">💾 Save Intro Video</button>
+          <button class="btn btn-gold w-100" onclick="saveIntroVideo()">ðŸ’¾ Save Intro Video</button>
         </div>
 
         <!-- 2. TESTIMONIAL VIDEOS -->
         <div class="db-card">
           <div class="card-title">
-            <div class="ct-ico">▶️</div>Testimonial Videos <span
+            <div class="ct-ico">â–¶ï¸</div>Testimonial Videos <span
               style="font-size:0.7rem;color:var(--tm);font-weight:400;margin-left:4px">(Max 5)</span>
           </div>
           <p class="text-sm text-muted mb-12">Add YouTube testimonial videos from clients. Each shows as a thumbnail on
@@ -1052,7 +1052,7 @@
             <!-- rows injected by JS on load -->
           </div>
           <button class="btn btn-dark btn-sm" style="margin-top:8px" onclick="_addTestiRow()">+ Add Video</button>
-          <button class="btn btn-gold w-100" style="margin-top:12px" onclick="saveTestiVideos()">💾 Save
+          <button class="btn btn-gold w-100" style="margin-top:12px" onclick="saveTestiVideos()">ðŸ’¾ Save
             Testimonials</button>
         </div>
 
@@ -1062,9 +1062,9 @@
 
 
 
-    <!-- ════════════════════════════════
+    <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
          9. ACCOUNT SETTINGS
-    ════════════════════════════════ -->
+    â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
     <section class="db-section" id="sec-settings">
       <div class="db-page-header">
         <div class="phead-left">
@@ -1076,11 +1076,11 @@
       <div class="grid-2" style="align-items:start">
         <div class="db-card">
           <div class="card-title">
-            <div class="ct-ico">🔒</div>Security Settings
+            <div class="ct-ico">ðŸ”’</div>Security Settings
           </div>
           <div class="form-group mb-12">
             <label>Current Password</label>
-            <input type="password" class="form-control" placeholder="••••••••">
+            <input type="password" class="form-control" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢">
           </div>
           <div class="form-group mb-12">
             <label>New Password</label>
@@ -1091,9 +1091,9 @@
       </div>
     </section>
 
-    <!-- ════════════════════════════════
+    <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
          10. AI PROFILE DIAGNOSTICS
-    ════════════════════════════════ -->
+    â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
     <section class="db-section" id="sec-ai">
       <div class="db-page-header">
         <div class="phead-left">
@@ -1108,9 +1108,9 @@
 
   </main>
 
-  <!-- ═══════════════════════════════════════════════
+  <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
        MODALS & GLOBAL OVERLAYS
-  ═══════════════════════════════════════════════ -->
+  â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
   <style>
     .modal-backdrop {
       position: fixed;
@@ -1186,20 +1186,20 @@
   <div class="db-modal" id="global-modal">
     <div class="modal-header">
       <h3 id="modal-title">Modal Title</h3>
-      <button class="close-btn" onclick="closeAllModals()">✕</button>
+      <button class="close-btn" onclick="closeAllModals()">âœ•</button>
     </div>
     <div class="modal-body" id="modal-body"></div>
   </div>
 
-  <!-- ═══════════════════════════════════════════════
+  <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
        APPLICATION ROUTING ENGINE
-  ═══════════════════════════════════════════════ -->
+  â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 
   <script src="js/dashboard.js"></script>
   <script>
-    // ─────────────────────────────────────────────────
+    // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     // SECTION ROUTING
-    // ─────────────────────────────────────────────────
+    // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     function showSection(sectionId) {
       document.querySelectorAll('.db-section').forEach(sec => sec.classList.remove('active'));
       document.querySelectorAll('.sidebar-nav-item').forEach(item => item.classList.remove('active'));
@@ -1223,10 +1223,10 @@
       const btn = document.getElementById('mob-menu-btn');
       if (sidebar.classList.contains('mobile-open')) {
         sidebar.classList.remove('mobile-open');
-        btn.innerHTML = "☰";
+        btn.innerHTML = "â˜°";
       } else {
         sidebar.classList.add('mobile-open');
-        btn.innerHTML = "✕";
+        btn.innerHTML = "âœ•";
       }
     }
 
@@ -1244,9 +1244,9 @@
       drop.style.display = drop.style.display === 'block' ? 'none' : 'block';
     }
 
-    // ─────────────────────────────────────────────────
+    // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     // MODAL FRAMEWORK
-    // ─────────────────────────────────────────────────
+    // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     function closeAllModals() {
       document.getElementById('modal-backdrop').classList.remove('active');
       const modal = document.getElementById('global-modal');
@@ -1301,11 +1301,11 @@
 
       } else if (type === 'service') {
         title.innerText = 'Create Custom Service';
-        body.innerHTML = '<div class="form-group mb-12"><label>Service Name <span style="color:var(--red)">*</span></label><input class="form-control" type="text" id="modal-svc-name" placeholder="e.g. 1-on-1 Consultation"></div><div class="form-group mb-12"><label>Description</label><textarea class="form-control" id="modal-svc-desc" rows="2" placeholder="Brief description of the service"></textarea></div><div class="grid-2 mb-12" style="gap:12px"><div class="form-group"><label>Duration</label><input class="form-control" type="text" id="modal-svc-duration" placeholder="e.g. 60 mins"></div><div class="form-group"><label>Price (₹)</label><input class="form-control" type="number" id="modal-svc-price" placeholder="1500"></div></div><div class="grid-2 mb-16" style="gap:12px"><div class="form-group"><label>Mode</label><select class="form-control" id="modal-svc-mode"><option>Online</option><option>In-Person</option><option>Hybrid</option></select></div><div class="form-group"><label>Type</label><select class="form-control" id="modal-svc-type"><option>1-on-1</option><option>Group</option><option>Corporate</option></select></div></div><div class="form-group mb-16" style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="modal-svc-featured" style="width:18px;height:18px;accent-color:var(--gold)"> <label style="margin:0;cursor:pointer" for="modal-svc-featured">Mark as Featured Service</label></div><div style="display:flex;gap:8px"><button class="btn btn-gold" style="flex:1" onclick="saveService()">Save Service</button><button class="btn btn-dark" onclick="closeAllModals()">Cancel</button></div>';
+        body.innerHTML = '<div class="form-group mb-12"><label>Service Name <span style="color:var(--red)">*</span></label><input class="form-control" type="text" id="modal-svc-name" placeholder="e.g. 1-on-1 Consultation"></div><div class="form-group mb-12"><label>Description</label><textarea class="form-control" id="modal-svc-desc" rows="2" placeholder="Brief description of the service"></textarea></div><div class="grid-2 mb-12" style="gap:12px"><div class="form-group"><label>Duration</label><input class="form-control" type="text" id="modal-svc-duration" placeholder="e.g. 60 mins"></div><div class="form-group"><label>Price (â‚¹)</label><input class="form-control" type="number" id="modal-svc-price" placeholder="1500"></div></div><div class="grid-2 mb-16" style="gap:12px"><div class="form-group"><label>Mode</label><select class="form-control" id="modal-svc-mode"><option>Online</option><option>In-Person</option><option>Hybrid</option></select></div><div class="form-group"><label>Type</label><select class="form-control" id="modal-svc-type"><option>1-on-1</option><option>Group</option><option>Corporate</option></select></div></div><div class="form-group mb-16" style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="modal-svc-featured" style="width:18px;height:18px;accent-color:var(--gold)"> <label style="margin:0;cursor:pointer" for="modal-svc-featured">Mark as Featured Service</label></div><div style="display:flex;gap:8px"><button class="btn btn-gold" style="flex:1" onclick="saveService()">Save Service</button><button class="btn btn-dark" onclick="closeAllModals()">Cancel</button></div>';
 
       } else if (type === 'package') {
         title.innerText = 'Create Training Package';
-        body.innerHTML = '<div class="form-group mb-12"><label>Package Name <span style="color:var(--red)">*</span></label><input class="form-control" type="text" id="modal-pkg-name" placeholder="e.g. 4-Week Transformation"></div><div class="form-group mb-12"><label>Description</label><textarea class="form-control" id="modal-pkg-desc" rows="2" placeholder="Brief description"></textarea></div><div class="grid-2 mb-12" style="gap:12px"><div class="form-group"><label>Duration</label><input class="form-control" type="text" id="modal-pkg-duration" placeholder="e.g. 4 Weeks"></div><div class="form-group"><label>Price (₹)</label><input class="form-control" type="number" id="modal-pkg-price" placeholder="12000"></div></div><div class="form-group mb-12"><label>Features (comma separated)</label><textarea class="form-control" id="modal-pkg-features" rows="2" placeholder="Diet Plan, Weekly Calls, 24/7 Support"></textarea></div><div class="form-group mb-16" style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="modal-pkg-featured" style="width:18px;height:18px;accent-color:var(--gold)"> <label style="margin:0;cursor:pointer" for="modal-pkg-featured">Mark as Featured Package</label></div><div style="display:flex;gap:8px"><button class="btn btn-gold" style="flex:1" onclick="savePackage()">Save Package</button><button class="btn btn-dark" onclick="closeAllModals()">Cancel</button></div>';
+        body.innerHTML = '<div class="form-group mb-12"><label>Package Name <span style="color:var(--red)">*</span></label><input class="form-control" type="text" id="modal-pkg-name" placeholder="e.g. 4-Week Transformation"></div><div class="form-group mb-12"><label>Description</label><textarea class="form-control" id="modal-pkg-desc" rows="2" placeholder="Brief description"></textarea></div><div class="grid-2 mb-12" style="gap:12px"><div class="form-group"><label>Duration</label><input class="form-control" type="text" id="modal-pkg-duration" placeholder="e.g. 4 Weeks"></div><div class="form-group"><label>Price (â‚¹)</label><input class="form-control" type="number" id="modal-pkg-price" placeholder="12000"></div></div><div class="form-group mb-12"><label>Features (comma separated)</label><textarea class="form-control" id="modal-pkg-features" rows="2" placeholder="Diet Plan, Weekly Calls, 24/7 Support"></textarea></div><div class="form-group mb-16" style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="modal-pkg-featured" style="width:18px;height:18px;accent-color:var(--gold)"> <label style="margin:0;cursor:pointer" for="modal-pkg-featured">Mark as Featured Package</label></div><div style="display:flex;gap:8px"><button class="btn btn-gold" style="flex:1" onclick="savePackage()">Save Package</button><button class="btn btn-dark" onclick="closeAllModals()">Cancel</button></div>';
 
       } else if (type === 'portfolio') {
         title.innerText = 'Add Portfolio Item';
@@ -1403,7 +1403,7 @@
       }
     }
 
-    /* ── Services Logic ── */
+    /* â”€â”€ Services Logic â”€â”€ */
     function saveService() {
       var name = (document.getElementById('modal-svc-name').value || '').trim();
       if (!name) return alert('Service Name is required.');
@@ -1434,7 +1434,7 @@
       div.id = 'svc-' + item.id;
       div.className = 'db-card';
       div.style.position = 'relative';
-      div.innerHTML = '<button onclick="_deleteService(' + item.id + ')" style="position:absolute;top:10px;right:10px;background:none;border:none;color:var(--red);cursor:pointer;font-size:1.2rem">&#128465;</button><div style="font-weight:700;font-size:1.05rem;color:var(--ts);margin-bottom:6px">' + item.name + (item.featured ? '<span style="font-size:0.65rem;background:rgba(197,160,89,0.2);color:var(--gold);padding:2px 6px;border-radius:4px;margin-left:6px;vertical-align:middle">Featured</span>' : '') + '</div><div style="font-size:0.82rem;color:var(--tm);margin-bottom:12px;line-height:1.4">' + item.desc + '</div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px"><span style="font-size:0.75rem;padding:2px 8px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;color:var(--tm)">⏱ ' + item.duration + '</span><span style="font-size:0.75rem;padding:2px 8px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;color:var(--tm)">📍 ' + item.mode + '</span><span style="font-size:0.75rem;padding:2px 8px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;color:var(--tm)">👥 ' + item.type + '</span></div><div style="font-size:1.1rem;font-weight:700;color:var(--gold)">₹' + item.price + '</div>';
+      div.innerHTML = '<button onclick="_deleteService(' + item.id + ')" style="position:absolute;top:10px;right:10px;background:none;border:none;color:var(--red);cursor:pointer;font-size:1.2rem">&#128465;</button><div style="font-weight:700;font-size:1.05rem;color:var(--ts);margin-bottom:6px">' + item.name + (item.featured ? '<span style="font-size:0.65rem;background:rgba(197,160,89,0.2);color:var(--gold);padding:2px 6px;border-radius:4px;margin-left:6px;vertical-align:middle">Featured</span>' : '') + '</div><div style="font-size:0.82rem;color:var(--tm);margin-bottom:12px;line-height:1.4">' + item.desc + '</div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px"><span style="font-size:0.75rem;padding:2px 8px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;color:var(--tm)">â± ' + item.duration + '</span><span style="font-size:0.75rem;padding:2px 8px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;color:var(--tm)">ðŸ“ ' + item.mode + '</span><span style="font-size:0.75rem;padding:2px 8px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;color:var(--tm)">ðŸ‘¥ ' + item.type + '</span></div><div style="font-size:1.1rem;font-weight:700;color:var(--gold)">â‚¹' + item.price + '</div>';
       cont.appendChild(div);
     }
     function _deleteService(id) {
@@ -1450,7 +1450,7 @@
       if (typeof commitLocalProfileChanges === 'function') commitLocalProfileChanges();
     }
 
-    /* ── Packages Logic ── */
+    /* â”€â”€ Packages Logic â”€â”€ */
     function savePackage() {
       var name = (document.getElementById('modal-pkg-name').value || '').trim();
       if (!name) return alert('Package Name is required.');
@@ -1488,9 +1488,9 @@
       div.className = 'db-card';
       div.style.position = 'relative';
       if (item.featured) div.style.borderColor = 'var(--gold)';
-      var featsHtml = item.features.map(function (f) { return '<li style="font-size:0.8rem;color:var(--tm);margin-bottom:4px;display:flex;gap:6px"><span style="color:var(--gold)">✓</span> ' + f + '</li>' }).join('');
+      var featsHtml = item.features.map(function (f) { return '<li style="font-size:0.8rem;color:var(--tm);margin-bottom:4px;display:flex;gap:6px"><span style="color:var(--gold)">âœ“</span> ' + f + '</li>' }).join('');
       var descHtml = item.desc ? '<div style="font-size:0.82rem;color:var(--tm);margin-bottom:12px;line-height:1.4">' + item.desc + '</div>' : '';
-      div.innerHTML = '<button onclick="_deletePackage(' + item.id + ')" style="position:absolute;top:10px;right:10px;background:none;border:none;color:var(--red);cursor:pointer;font-size:1.2rem">&#128465;</button>' + (item.featured ? '<div style="font-size:0.65rem;color:var(--gold);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">⭐ Featured Package</div>' : '') + '<div style="font-weight:700;font-size:1.1rem;color:var(--ts);margin-bottom:6px">' + (item.name || 'Package') + '</div><div style="font-size:1.2rem;font-weight:700;color:var(--ts);margin-bottom:12px">₹' + (item.price || '0') + ' <span style="font-size:0.8rem;color:var(--tm);font-weight:400">/ ' + (item.duration || '') + '</span></div>' + descHtml + '<ul style="list-style:none;padding:0;margin:0">' + featsHtml + '</ul>';
+      div.innerHTML = '<button onclick="_deletePackage(' + item.id + ')" style="position:absolute;top:10px;right:10px;background:none;border:none;color:var(--red);cursor:pointer;font-size:1.2rem">&#128465;</button>' + (item.featured ? '<div style="font-size:0.65rem;color:var(--gold);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">â­ Featured Package</div>' : '') + '<div style="font-weight:700;font-size:1.1rem;color:var(--ts);margin-bottom:6px">' + (item.name || 'Package') + '</div><div style="font-size:1.2rem;font-weight:700;color:var(--ts);margin-bottom:12px">â‚¹' + (item.price || '0') + ' <span style="font-size:0.8rem;color:var(--tm);font-weight:400">/ ' + (item.duration || '') + '</span></div>' + descHtml + '<ul style="list-style:none;padding:0;margin:0">' + featsHtml + '</ul>';
       cont.appendChild(div);
     }
     function _deletePackage(id) {
@@ -1506,7 +1506,7 @@
       if (typeof commitLocalProfileChanges === 'function') commitLocalProfileChanges();
     }
 
-    /* ── Availability Logic ── */
+    /* â”€â”€ Availability Logic â”€â”€ */
     function _parseAvailabilityString(str) {
       // Parses "Mon-Fri | 9:00 AM - 6:00 PM" or "Mon,Wed,Fri | 09:00-18:00" into structured object
       var result = {
@@ -1608,7 +1608,7 @@
       cache.availability = avs;
       localStorage.setItem('currentTrainer', JSON.stringify(cache));
 
-      // ── Write to per-trainer key so trainer-modal & booking modal can read correct data ──
+      // â”€â”€ Write to per-trainer key so trainer-modal & booking modal can read correct data â”€â”€
       var _tid = cache.trainerId || cache._id || cache.id || '1';
       var _avsJson = JSON.stringify(avs);
       localStorage.setItem('tv-trainer-' + _tid + '-availability', _avsJson);
@@ -1618,10 +1618,10 @@
 
       window.toast && window.toast('Saving availability to database...', 3000);
 
-      if (typeof commitLocalProfileChanges === 'function') { commitLocalProfileChanges(); window.toast ? window.toast('✅ Availability slots synchronized!') : alert('Availability saved successfully!'); }
+      if (typeof commitLocalProfileChanges === 'function') { commitLocalProfileChanges(); window.toast ? window.toast('âœ… Availability slots synchronized!') : alert('Availability saved successfully!'); }
     }
 
-    /* ── Dashboard Calendar ── */
+    /* â”€â”€ Dashboard Calendar â”€â”€ */
     var _dbCalMonth = new Date().getMonth();
     var _dbCalYear = new Date().getFullYear();
     var _DB_DAY_MAP = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -1729,7 +1729,7 @@
         }
       }
 
-      // ── Confirm before blocking/unblocking ──
+      // â”€â”€ Confirm before blocking/unblocking â”€â”€
       var _action = currentState ? 'block (mark unavailable)' : 'unblock (mark available)';
       var _confirmed = window.confirm(
         'Are you sure you want to ' + _action + ':\n\n' + _friendlyDate + '?\n\n' +
@@ -1743,7 +1743,7 @@
       cache.availability = avs;
       localStorage.setItem('currentTrainer', JSON.stringify(cache));
 
-      // ── Keep per-trainer key in sync ──
+      // â”€â”€ Keep per-trainer key in sync â”€â”€
       var _tid = cache.trainerId || cache._id || cache.id || '1';
       var _avsJson = JSON.stringify(avs);
       localStorage.setItem('tv-trainer-' + _tid + '-availability', _avsJson);
@@ -1753,7 +1753,7 @@
       if (typeof commitLocalProfileChanges === 'function') commitLocalProfileChanges();
     };
 
-    /* ── Portfolio Logic ── */
+    /* â”€â”€ Portfolio Logic â”€â”€ */
     window.tempPortfolioImgUrl = '';
     var portInput = document.getElementById('portfolio-file-upload');
     if (portInput) {
@@ -1800,7 +1800,7 @@
       div.id = 'port-' + item.id;
       div.style.cssText = 'background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:12px;position:relative';
       var tagHtml = item.tags.slice(0, 2).map(function (t) { return '<span style="font-size:0.65rem;background:var(--bg3);padding:2px 6px;border-radius:4px;color:var(--tm);border:1px solid var(--border)">' + t + '</span>' }).join('');
-      div.innerHTML = '<button onclick="_deletePortfolio(' + item.id + ')" style="position:absolute;top:18px;right:18px;background:rgba(0,0,0,0.6);border:none;color:#fff;cursor:pointer;font-size:1.1rem;padding:4px;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;z-index:2" onmouseover="this.style.background=\'rgba(231,76,60,.9)\'" onmouseout="this.style.background=\'rgba(0,0,0,0.6)\'">&#10005;</button><div style="width:100%;height:120px;border-radius:8px;background:var(--bg3) url(\'' + item.thumbUrl + '\') center/cover;border:1px solid var(--border);margin-bottom:10px"></div><div style="font-size:0.6rem;text-transform:uppercase;color:var(--gold);letter-spacing:1px;font-weight:700;margin-bottom:4px">' + item.category + '</div><div style="font-weight:600;font-size:.9rem;color:var(--ts);margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + item.title + '</div>' + (item.client ? '<div style="font-size:0.75rem;color:var(--tm);margin-bottom:8px">🏢 ' + item.client + '</div>' : '') + '<div style="display:flex;gap:4px;flex-wrap:wrap">' + tagHtml + '</div>';
+      div.innerHTML = '<button onclick="_deletePortfolio(' + item.id + ')" style="position:absolute;top:18px;right:18px;background:rgba(0,0,0,0.6);border:none;color:#fff;cursor:pointer;font-size:1.1rem;padding:4px;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;z-index:2" onmouseover="this.style.background=\'rgba(231,76,60,.9)\'" onmouseout="this.style.background=\'rgba(0,0,0,0.6)\'">&#10005;</button><div style="width:100%;height:120px;border-radius:8px;background:var(--bg3) url(\'' + item.thumbUrl + '\') center/cover;border:1px solid var(--border);margin-bottom:10px"></div><div style="font-size:0.6rem;text-transform:uppercase;color:var(--gold);letter-spacing:1px;font-weight:700;margin-bottom:4px">' + item.category + '</div><div style="font-weight:600;font-size:.9rem;color:var(--ts);margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + item.title + '</div>' + (item.client ? '<div style="font-size:0.75rem;color:var(--tm);margin-bottom:8px">ðŸ¢ ' + item.client + '</div>' : '') + '<div style="display:flex;gap:4px;flex-wrap:wrap">' + tagHtml + '</div>';
       cont.appendChild(div);
     }
     function _deletePortfolio(id) {
@@ -1815,9 +1815,9 @@
       if (c && c.children.length === 0) c.innerHTML = '';
     }
 
-    /* ═══════════════════════════════════════
+    /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
        INTRO VIDEO
-    ═══════════════════════════════════════ */
+    â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
     function _ytIdFromUrl(url) {
       var m = String(url || '').match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=|shorts\/|live\/))([\w-]{11})/);
       return m ? m[1] : '';
@@ -1853,7 +1853,7 @@
       if (typeof window.commitLocalProfileChanges === 'function') {
         window.commitLocalProfileChanges();
       } else {
-        alert('✅ Intro video saved locally! Click Save Profile to sync to database.');
+        alert('âœ… Intro video saved locally! Click Save Profile to sync to database.');
       }
     }
     function _loadIntroVideo() {
@@ -1869,9 +1869,9 @@
       }
     }
 
-    /* ═══════════════════════════════════════
+    /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
        TESTIMONIAL VIDEOS
-    ═══════════════════════════════════════ */
+    â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
     function _addTestiRow(data) {
       var cont = document.getElementById('testi-inputs-container');
       if (!cont) return;
@@ -1884,11 +1884,11 @@
       var thumbId = 'testi-thumb-' + idx;
       row.innerHTML =
         '<div id="' + thumbId + '" style="position:relative;flex:0 0 64px;height:36px;border-radius:6px;background:var(--bg2);overflow:hidden;border:1px solid var(--border)">' +
-        (data && _ytIdFromUrl(data.url) ? '<iframe src="https://www.youtube.com/embed/' + _ytIdFromUrl(data.url) + '?rel=0&modestbranding=1" frameborder="0" allowfullscreen style="position:absolute;inset:0;width:100%;height:100%;"></iframe>' : '<div style="display:flex;height:100%;align-items:center;justify-content:center;font-size:0.9rem;color:var(--tm)">▶</div>') +
+        (data && _ytIdFromUrl(data.url) ? '<iframe src="https://www.youtube.com/embed/' + _ytIdFromUrl(data.url) + '?rel=0&modestbranding=1" frameborder="0" allowfullscreen style="position:absolute;inset:0;width:100%;height:100%;"></iframe>' : '<div style="display:flex;height:100%;align-items:center;justify-content:center;font-size:0.9rem;color:var(--tm)">â–¶</div>') +
         '</div>' +
         '<input type="url" class="form-control testi-url" placeholder="YouTube URL" style="flex:1" value="' + (data ? data.url : '') + '" oninput="_updateTestiThumb(this,\'' + thumbId + '\')">' +
         '<input type="text" class="form-control testi-label" placeholder="Label (optional)" style="flex:0 0 130px" value="' + (data ? (data.label || '') : '') + '">' +
-        '<button onclick="this.closest(\'.testi-row\').remove()" style="background:none;border:none;cursor:pointer;color:var(--red);font-size:1.2rem;padding:0 4px">✕</button>';
+        '<button onclick="this.closest(\'.testi-row\').remove()" style="background:none;border:none;cursor:pointer;color:var(--red);font-size:1.2rem;padding:0 4px">âœ•</button>';
       cont.appendChild(row);
     }
     function _updateTestiThumb(input, thumbId) {
@@ -1897,7 +1897,7 @@
       if (!box) return;
       box.innerHTML = vid
         ? '<iframe src="https://www.youtube.com/embed/' + vid + '?rel=0&modestbranding=1" frameborder="0" allowfullscreen style="position:absolute;inset:0;width:100%;height:100%;"></iframe>'
-        : '<div style="display:flex;height:100%;align-items:center;justify-content:center;font-size:0.9rem;color:var(--tm)">▶</div>';
+        : '<div style="display:flex;height:100%;align-items:center;justify-content:center;font-size:0.9rem;color:var(--tm)">â–¶</div>';
     }
     function saveTestiVideos() {
       var rows = document.querySelectorAll('#testi-inputs-container .testi-row');
@@ -1926,7 +1926,7 @@
       var currentTrainerId = cache.trainerId || cache._id || cache.id || "T-1001";
       if (typeof commitLocalProfileChanges === 'function') commitLocalProfileChanges();
 
-      alert('✅ Testimonial videos saved (' + arr.length + ')!');
+      alert('âœ… Testimonial videos saved (' + arr.length + ')!');
     }
     function _loadTestiVideos() {
       var cache = JSON.parse(localStorage.getItem('currentTrainer')) || {};
@@ -1952,9 +1952,9 @@
       arr.forEach(function (item) { _addTestiRow(item); });
     }
 
-    /* ═══════════════════════════════════════
+    /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
        COMPANY LOGOS
-    ═══════════════════════════════════════ */
+    â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
     function _pickCompanyLogo() {
       var cache = JSON.parse(localStorage.getItem('currentTrainer')) || {};
       var logos = Array.isArray(cache.logos) ? cache.logos : [];
@@ -1976,7 +1976,7 @@
       logos.forEach(function (logo, i) {
         var div = document.createElement('div');
         div.style.cssText = 'position:relative;display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;width:90px';
-        div.innerHTML = '<button onclick="_deleteCompanyLogo(' + i + ')" style="position:absolute;top:4px;right:4px;background:rgba(0,0,0,0.6);border:none;color:#fff;cursor:pointer;font-size:.75rem;border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center" onmouseover="this.style.background=\'rgba(231,76,60,.9)\'" onmouseout="this.style.background=\'rgba(0,0,0,0.6)\'">✕</button>' +
+        div.innerHTML = '<button onclick="_deleteCompanyLogo(' + i + ')" style="position:absolute;top:4px;right:4px;background:rgba(0,0,0,0.6);border:none;color:#fff;cursor:pointer;font-size:.75rem;border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center" onmouseover="this.style.background=\'rgba(231,76,60,.9)\'" onmouseout="this.style.background=\'rgba(0,0,0,0.6)\'">âœ•</button>' +
           '<img src="' + logo.src + '" alt="' + logo.name + '" style="width:52px;height:52px;object-fit:contain;border-radius:6px">' +
           '<div style="font-size:0.65rem;color:var(--tm);text-align:center;max-width:70px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + logo.name + '</div>';
         grid.appendChild(div);
@@ -2091,13 +2091,13 @@
         cache.portfolio.forEach(function (item) { _renderPortfolioItem(item); });
       } else if (portCont) portCont.innerHTML = '<div class="empty-msg" style="grid-column:1/-1;text-align:center;padding:20px;color:var(--tm);font-size:.85rem">No portfolio media uploaded yet.</div>';
 
-      // ── Load Intro Video ──────────────────────────────────────────
+      // â”€â”€ Load Intro Video â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
       if (typeof _loadIntroVideo === 'function') _loadIntroVideo();
 
-      // ── Load Testimonial Videos ───────────────────────────────────
+      // â”€â”€ Load Testimonial Videos â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
       if (typeof _loadTestiVideos === 'function') _loadTestiVideos();
 
-      // ── Load Company Logos ────────────────────────────────────────
+      // â”€â”€ Load Company Logos â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
       if (typeof _renderCompanyLogos === 'function') _renderCompanyLogos();
 
 
@@ -2110,7 +2110,7 @@
 
           var statusSpan = document.getElementById('photo-upload-status');
           if (statusSpan) {
-            statusSpan.innerHTML = 'Uploading... <span style="display:inline-block;animation:spin 1s linear infinite">⏳</span>';
+            statusSpan.innerHTML = 'Uploading... <span style="display:inline-block;animation:spin 1s linear infinite">â³</span>';
           }
 
           // Simulate asynchronous background upload routine
@@ -2142,7 +2142,7 @@
             }
 
             if (statusSpan) {
-              statusSpan.innerHTML = '<span style="color:var(--green)">✓ Uploaded successfully</span>';
+              statusSpan.innerHTML = '<span style="color:var(--green)">âœ“ Uploaded successfully</span>';
             }
 
             if (typeof autoSave === 'function') autoSave();
