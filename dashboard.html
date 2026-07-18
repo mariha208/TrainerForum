@@ -21,7 +21,7 @@
        TOP NAVIGATION BAR
   ═══════════════════════════════════════════════ -->
   <nav class="db-topnav">
-    <div class="logo-area">
+    <div class="logo-area" href="index.html">
       <button class="mobile-menu-btn" onclick="toggleSidebar()" id="mob-menu-btn">☰</button>
       <img src="img/logo.svg" alt="World Trainer Form Logo" style="height:34px; margin-right:8px;">
       <div class="logo-txt">World Trainer <span>Form</span></div>
@@ -301,8 +301,7 @@
                 <label style="font-weight:600;font-size:.88rem;margin-bottom:6px;display:block;">Remote Profile Image
                   Database URL</label>
                 <input class="form-control" type="text" id="p-photo-url"
-                  placeholder="e.g. https://cdn.example.com/user.jpg"
-                  style="margin-bottom:8px;">
+                  placeholder="e.g. https://cdn.example.com/user.jpg" style="margin-bottom:8px;">
                 <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
                   <button class="btn btn-dark btn-sm" onclick="document.getElementById('upload-photo-file').click()">📸
                     Upload Photo (Simulate S3)</button>
@@ -983,7 +982,8 @@
             unavailable.</p>
 
           <!-- Tip Note -->
-          <div style="display:flex;align-items:flex-start;gap:10px;background:rgba(197,160,89,0.12);border:1.5px solid rgba(197,160,89,0.45);border-radius:10px;padding:12px 14px;margin-bottom:14px;">
+          <div
+            style="display:flex;align-items:flex-start;gap:10px;background:rgba(197,160,89,0.12);border:1.5px solid rgba(197,160,89,0.45);border-radius:10px;padding:12px 14px;margin-bottom:14px;">
             <span style="font-size:1.3rem;line-height:1;flex-shrink:0;">👆</span>
             <p style="margin:0;font-size:0.92rem;font-weight:600;color:var(--gold);line-height:1.5;">
               Click on a specific day to block it separately — without affecting other days of the same week.
@@ -1558,11 +1558,14 @@
           avs = _parseAvailabilityString(cache.availability);
         }
       }
-      if (!avs || (!avs.Mon && !avs.Tue && !avs.Wed && !avs.Thu && !avs.Fri && !avs.Sat && !avs.Sun)) { avs = {
-        Mon: { available: true, start: '09:00', end: '18:00' }, Tue: { available: true, start: '09:00', end: '18:00' },
-        Wed: { available: true, start: '09:00', end: '17:00' }, Thu: { available: true, start: '10:00', end: '18:00' },
-        Fri: { available: true, start: '09:00', end: '17:00' }, Sat: { available: true, start: '10:00', end: '14:00' },
-        Sun: { available: false, start: '10:00', end: '14:00' } }; } var days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+      if (!avs || (!avs.Mon && !avs.Tue && !avs.Wed && !avs.Thu && !avs.Fri && !avs.Sat && !avs.Sun)) {
+        avs = {
+          Mon: { available: true, start: '09:00', end: '18:00' }, Tue: { available: true, start: '09:00', end: '18:00' },
+          Wed: { available: true, start: '09:00', end: '17:00' }, Thu: { available: true, start: '10:00', end: '18:00' },
+          Fri: { available: true, start: '09:00', end: '17:00' }, Sat: { available: true, start: '10:00', end: '14:00' },
+          Sun: { available: false, start: '10:00', end: '14:00' }
+        };
+      } var days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
       cont.innerHTML = days.map(function (d) {
         var info = avs[d] || { available: false, start: '09:00', end: '17:00' };
         // Fallback for older data format
@@ -1706,7 +1709,7 @@
       var dateStr = y + '-' + m + '-' + d;
       var dObj = new Date(y, m, d);
       var dayKey = _DB_DAY_MAP[dObj.getDay()];
-      var _monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      var _monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
       var _friendlyDate = dObj.toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
 
       var currentState = true;
