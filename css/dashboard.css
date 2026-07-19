@@ -3940,47 +3940,14 @@ html, body {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   8. ASYMMETRICAL FORM LAYOUT FIX (Dashboard Mobile Only)
-   Problem: Large gap on left, zero space on right causing clipping.
-   Fix: Enforce symmetric px-4 (16px) padding, center via mx-auto,
-   and ensure fluid max-width.
-   ═══════════════════════════════════════════════════════════════ */
-@media (max-width: 768px) {
-  /* Reset large left margins/paddings and center the containers */
-  .db-section,
-  .profile-layout,
-  .db-card,
-  form {
-    margin-left: auto !important;
-    margin-right: auto !important;
-    padding-left: 16px !important;
-    padding-right: 16px !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    box-sizing: border-box !important;
-  }
-
-  /* Ensure the form wrapper doesn't exceed a readable mobile width (max-w-md approx) 
-     but remains fluid. Setting max-width to 100% guarantees no edge touching. */
-  .profile-layout > div,
-  .db-card > div {
-    max-width: 100% !important;
-    box-sizing: border-box !important;
-  }
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   9. MOBILE SIDEBAR / LAYOUT RESET (Up to 1024px / md screens)
-   User noted the layout shifts right because the desktop sidebar
-   or margin is still occupying space. This forces it hidden.
+   MOBILE LAYOUT FIX (Dashboard)
+   Addresses left-margin ghosting, compounding padding, and centering.
    ═══════════════════════════════════════════════════════════════ */
 @media (max-width: 1024px) {
-  /* 1. Completely remove the sidebar from the DOM layout flow */
+  /* 1. Remove desktop sidebar space entirely */
   .db-sidebar {
     display: none !important;
   }
-
-  /* 2. Show it only when the mobile hamburger toggles the class */
   .db-sidebar.mobile-open {
     display: flex !important;
     transform: translateX(0) !important;
@@ -3988,13 +3955,54 @@ html, body {
     z-index: 10000 !important;
   }
 
-  /* 3. Force main wrapper to reset any desktop left-margins (like ml-64) */
+  /* 2. Main Wrapper: Zero left margin, fluid width */
   .db-main {
     margin-left: 0 !important;
     padding-left: 0 !important;
+    padding-right: 0 !important;
     width: 100% !important;
     max-width: 100vw !important;
     box-sizing: border-box !important;
   }
+
+  /* 3. Section Container: Center via mx-auto, w-full, balanced px-4 (16px) padding */
+  .db-section {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding: 16px 16px 48px 16px !important; /* equal left/right */
+    box-sizing: border-box !important;
+    overflow-x: hidden !important;
+  }
+
+  /* 4. Reset any inherited padding/margins on internal layout grids so it doesn't stack */
+  .profile-layout,
+  .db-card,
+  form {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-left: 0 !important; /* db-card originally had 22px, removing to rely on card padding OR section padding? */
+  }
+
+  /* Wait, db-card needs its internal padding. Just remove margin. */
+  .profile-layout {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .db-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 16px !important; /* override the 22px desktop padding to save space, but keep it balanced */
+    box-sizing: border-box !important;
+  }
+
+  .profile-layout > div,
+  .db-card > div {
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
 }
+
 
