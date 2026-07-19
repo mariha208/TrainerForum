@@ -1409,17 +1409,17 @@ section {
 /* ══ GRIDS ══ */
 .trainers-grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(5, 1fr) !important;
   gap: 22px;
 }
 @media (max-width: 1024px) {
-  .trainers-grid { grid-template-columns: repeat(4, 1fr); }
+  .trainers-grid { grid-template-columns: repeat(4, 1fr) !important; }
 }
 @media (max-width: 768px) {
-  .trainers-grid { grid-template-columns: repeat(3, 1fr); }
+  .trainers-grid { grid-template-columns: repeat(3, 1fr) !important; }
 }
 @media (max-width: 480px) {
-  .trainers-grid { grid-template-columns: repeat(2, 1fr); }
+  .trainers-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 12px; }
 }
 
 .cats-grid {

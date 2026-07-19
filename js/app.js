@@ -1035,6 +1035,8 @@ function verifyUserSessionToken() {
   }
 }
 
+window.updateNavbarAuthUI = verifyUserSessionToken;
+
 // ── GLOBAL LOGOUT HANDLER ────────────────────────────────────────────────────
 window.handleLogout = function () {
   // Instantly hide the avatar so it disappears without delay

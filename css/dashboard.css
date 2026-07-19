@@ -3832,3 +3832,109 @@ html.dark-mode .cal-day-cell.today {
     word-break: break-word !important;
   }
 }
+
+/* ================================================================
+   MOBILE LAYOUT MASTER FIX — v3
+   Fixes: content shifted right, social inputs clipping, grids overflow
+   ================================================================ */
+
+/* 1. Root containment — prevent ANY child from causing horizontal scroll */
+html, body {
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
+/* 2. Main content area — no sidebar margin on mobile, equal side padding */
+@media (max-width: 900px) {
+  .db-main {
+    margin-left: 0 !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+}
+
+@media (max-width: 768px) {
+  /* 3. Section wrapper — symmetric padding, no overflow */
+  .db-section {
+    padding: 16px 16px 48px 16px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    overflow-x: hidden !important;
+  }
+
+  /* 4. Every card and container is fully contained */
+  .db-card,
+  .dash-card,
+  .card,
+  .db-modal,
+  .profile-layout,
+  .form-section,
+  [class*="section"] {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    min-width: 0 !important;
+  }
+
+  /* 5. Social link rows — CRITICAL flex overflow fix */
+  /* The icon is fixed-width (flex-shrink:0), the input MUST have min-width:0
+     so it can shrink below its content width inside the flex row */
+  .social-link-row {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+  }
+
+  .social-link-row .social-ico {
+    flex-shrink: 0 !important;
+  }
+
+  .social-link-row .form-control,
+  .social-link-row input {
+    flex: 1 1 0% !important;
+    min-width: 0 !important;        /* ← THE key fix: allows input to shrink */
+    width: 0 !important;            /* combined with flex:1 this forces fluid sizing */
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  /* 6. Services & Packages grid — 2 columns on mobile, no overflow */
+  #services-container,
+  #packages-container {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 12px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    overflow-x: hidden !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Service/package cards fully contained inside their grid cell */
+  #services-container > *,
+  #packages-container > * {
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+  }
+}
+
+/* 7. Narrow phones (≤ 480px): single column for services/packages */
+@media (max-width: 480px) {
+  #services-container,
+  #packages-container {
+    grid-template-columns: 1fr !important;
+  }
+
+  .db-section {
+    padding: 12px 12px 48px 12px !important;
+  }
+}

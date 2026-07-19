@@ -582,9 +582,19 @@ section {
 ═══════════════════════════════════════════════════════════════════════════ */
 .trainers-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  grid-template-columns: repeat(5, 1fr) !important;
   gap: var(--spacing-lg);
   margin-top: var(--spacing-2xl);
+}
+
+@media (max-width: 1024px) {
+  .trainers-grid { grid-template-columns: repeat(4, 1fr) !important; }
+}
+@media (max-width: 768px) {
+  .trainers-grid { grid-template-columns: repeat(3, 1fr) !important; }
+}
+@media (max-width: 480px) {
+  .trainers-grid { grid-template-columns: repeat(2, 1fr) !important; gap: var(--spacing-sm) !important; }
 }
 
 .trainer-card {
