@@ -4,7 +4,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-  <meta name="description" content="Explore 140+ trainer categories on World Trainer Forum — from AI & Technology to Fitness, Business Coaching, Music, and more.">
+  <meta name="description"
+    content="Explore 140+ trainer categories on World Trainer Forum — from AI & Technology to Fitness, Business Coaching, Music and more.">
   <title>Categories — World Trainer Forum</title>
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/trainer-modal.css">
@@ -21,7 +22,8 @@
   <!-- ═══ NAVBAR ═══ -->
   <nav id="nav">
     <a class="logo" href="index.html">
-      <img src="img/logo.svg" alt="World Trainer Forum Logo" style="height:42px; margin-right:10px;">World Trainer <span class="g">Forum</span>
+      <img src="img/logo.svg" alt="World Trainer Forum Logo" style="height:42px; margin-right:10px;">World Trainer <span
+        class="g">Forum</span>
     </a>
     <ul class="nav-links">
       <li><a id="nl-home" href="index.html">Home</a></li>
@@ -36,7 +38,8 @@
       <button class="notif-btn" id="notif-btn" onclick="toggleNotif()">🔔<span class="notif-dot"></span></button>
       <button class="btn btn-ghost btn-sm" id="btn-signup" onclick="openModal('register')">Sign Up</button>
       <button class="btn btn-gold btn-sm" id="btn-login" onclick="openModal('login')">Log In</button>
-      <button class="btn btn-dark btn-sm" id="btn-logout" onclick="handleLogout()" style="display:none;">Log Out</button>
+      <button class="btn btn-dark btn-sm" id="btn-logout" onclick="handleLogout()" style="display:none;">Log
+        Out</button>
       <button class="ham-btn" id="ham-btn" onclick="toggleMobileMenu()" aria-label="Toggle Menu">
         <span></span><span></span><span></span>
       </button>
@@ -46,7 +49,9 @@
   <!-- Mobile Nav Drawer -->
   <div class="mobile-nav" id="mobile-nav">
     <div style="display:flex; justify-content:flex-end; margin-bottom: 20px;">
-      <button onclick="toggleMobileMenu()" style="background:none; border:none; color:#fff; font-size:2rem; cursor:pointer;" aria-label="Close Menu">&times;</button>
+      <button onclick="toggleMobileMenu()"
+        style="background:none; border:none; color:#fff; font-size:2rem; cursor:pointer;"
+        aria-label="Close Menu">&times;</button>
     </div>
     <a href="index.html">Home</a>
     <a href="about.html">About</a>
@@ -55,9 +60,10 @@
     <a href="news-events.html">News & Events</a>
     <a href="blog.html">Blog</a>
     <a href="dashboard.html" id="mn-dash" style="display:none; color:var(--gold);">Dashboard</a>
-    
+
     <div class="mn-actions" style="margin-top:30px; display:flex; flex-direction:column; gap:12px;">
-      <button class="btn btn-ghost" id="mn-btn-signup" onclick="toggleMobileMenu(); openModal('register')">Sign Up</button>
+      <button class="btn btn-ghost" id="mn-btn-signup" onclick="toggleMobileMenu(); openModal('register')">Sign
+        Up</button>
       <button class="btn btn-gold" id="mn-btn-login" onclick="toggleMobileMenu(); openModal('login')">Log In</button>
       <button class="btn btn-dark" id="mn-btn-logout" onclick="handleLogout()" style="display:none;">Log Out</button>
     </div>
@@ -70,7 +76,9 @@
     </div>
     <div class="notif-item unread">
       <div class="notif-ico" style="background:rgba(201,168,76,.12)">📅</div>
-      <div class="notif-text"><p><strong>Rajesh Kumar</strong> accepted your booking for May 20.</p><span>2 hours ago</span></div>
+      <div class="notif-text">
+        <p><strong>Rajesh Kumar</strong> accepted your booking for May 20.</p><span>2 hours ago</span>
+      </div>
     </div>
   </div>
 
@@ -108,42 +116,78 @@
         padding: calc(var(--nav) + 48px) 5% 48px;
         text-align: center;
       }
+
       .page-hero h1 {
         font-family: 'Cormorant Garamond', serif;
         font-size: clamp(2.4rem, 5vw, 4rem);
-        font-weight: 700; color: var(--tp);
-        margin: 10px 0 12px; letter-spacing: -.02em;
+        font-weight: 700;
+        color: var(--tp);
+        margin: 10px 0 12px;
+        letter-spacing: -.02em;
       }
-      .page-hero p { color: var(--ts); font-size: .95rem; }
+
+      .page-hero p {
+        color: var(--ts);
+        font-size: .95rem;
+      }
 
       /* Search bar */
       .cats-search-bar {
-        display: flex; align-items: center; gap: 10px;
-        background: rgba(255,255,255,.07);
-        border: 1px solid rgba(197,160,89,.25);
-        border-radius: 999px; padding: 10px 20px;
-        max-width: 500px; margin: 28px auto 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: rgba(255, 255, 255, .07);
+        border: 1px solid rgba(197, 160, 89, .25);
+        border-radius: 999px;
+        padding: 10px 20px;
+        max-width: 500px;
+        margin: 28px auto 0;
         backdrop-filter: blur(12px);
       }
+
       .cats-search-bar input {
-        flex: 1; background: transparent; border: none; outline: none;
-        font-size: .9rem; color: var(--tp); font-family: 'Poppins', sans-serif;
+        flex: 1;
+        background: transparent;
+        border: none;
+        outline: none;
+        font-size: .9rem;
+        color: var(--tp);
+        font-family: 'Poppins', sans-serif;
       }
-      .cats-search-bar input::placeholder { color: var(--tm); }
-      .cats-search-bar span { color: var(--tm); font-size: 1.1rem; }
+
+      .cats-search-bar input::placeholder {
+        color: var(--tm);
+      }
+
+      .cats-search-bar span {
+        color: var(--tm);
+        font-size: 1.1rem;
+      }
 
       /* Category group heading */
-      .cats-group { padding: 0 5% 20px; }
-      .cats-group-title {
-        font-size: .7rem; font-weight: 700; letter-spacing: .15em;
-        text-transform: uppercase; color: var(--gold);
-        margin-bottom: 18px; padding-bottom: 10px;
-        border-bottom: 1px solid rgba(197,160,89,.15);
-        display: flex; align-items: center; gap: 10px;
+      .cats-group {
+        padding: 0 5% 20px;
       }
+
+      .cats-group-title {
+        font-size: .7rem;
+        font-weight: 700;
+        letter-spacing: .15em;
+        text-transform: uppercase;
+        color: var(--gold);
+        margin-bottom: 18px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid rgba(197, 160, 89, .15);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
       .cats-group-title::after {
-        content: ''; flex: 1; height: 1px;
-        background: rgba(197,160,89,.1);
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: rgba(197, 160, 89, .1);
       }
 
       /* Cat cards grid */
@@ -152,39 +196,73 @@
         grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
         gap: 14px;
       }
+
       .cat-full-card {
         background: var(--bg-glass);
-        border: 1px solid var(--bd); border-radius: var(--rl);
-        padding: 22px 16px; text-align: center; cursor: pointer;
-        transition: all .26s; backdrop-filter: blur(10px);
-        display: flex; flex-direction: column;
-        align-items: center; gap: 10px;
+        border: 1px solid var(--bd);
+        border-radius: var(--rl);
+        padding: 22px 16px;
+        text-align: center;
+        cursor: pointer;
+        transition: all .26s;
+        backdrop-filter: blur(10px);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
         text-decoration: none;
       }
+
       .cat-full-card:hover {
-        border-color: rgba(197,160,89,.5); transform: translateY(-6px);
-        box-shadow: var(--shm); background: var(--bg-glass-h);
+        border-color: rgba(197, 160, 89, .5);
+        transform: translateY(-6px);
+        box-shadow: var(--shm);
+        background: var(--bg-glass-h);
       }
+
       .cat-full-card .cat-icon {
-        width: 52px; height: 52px;
-        background: rgba(197,160,89,.12); border-radius: 14px;
-        display: flex; align-items: center; justify-content: center;
-        font-size: 1.6rem; transition: transform .25s; flex-shrink: 0;
+        width: 52px;
+        height: 52px;
+        background: rgba(197, 160, 89, .12);
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.6rem;
+        transition: transform .25s;
+        flex-shrink: 0;
       }
-      .cat-full-card:hover .cat-icon { transform: scale(1.18); }
+
+      .cat-full-card:hover .cat-icon {
+        transform: scale(1.18);
+      }
+
       .cat-full-card h3 {
-        font-size: .84rem; font-weight: 600;
-        color: var(--tp); margin: 0; line-height: 1.35;
+        font-size: .84rem;
+        font-weight: 600;
+        color: var(--tp);
+        margin: 0;
+        line-height: 1.35;
       }
+
       .cat-full-card .cat-count {
-        font-size: .7rem; color: var(--tm); margin: 0;
+        font-size: .7rem;
+        color: var(--tm);
+        margin: 0;
       }
 
       /* hide filtered cards */
-      .cat-full-card.hidden { display: none; }
+      .cat-full-card.hidden {
+        display: none;
+      }
+
       .no-results {
-        text-align: center; padding: 40px; color: var(--tm);
-        font-size: .9rem; display: none; grid-column: 1/-1;
+        text-align: center;
+        padding: 40px;
+        color: var(--tm);
+        font-size: .9rem;
+        display: none;
+        grid-column: 1/-1;
       }
     </style>
 
@@ -195,202 +273,320 @@
         <div class="cats-group-title" id="business" style="scroll-margin-top: 80px;">Business &amp; Leadership</div>
         <div class="cats-full-grid" id="all-cats">
           <a href="find-trainers.html" class="cat-full-card">
-            <div class="cat-icon">💼</div><h3>Business Coaching</h3><p class="cat-count">240+ trainers</p>
+            <div class="cat-icon">💼</div>
+            <h3>Business Coaching</h3>
+            <p class="cat-count">240+ trainers</p>
           </a>
           <a href="find-trainers.html" class="cat-full-card">
-            <div class="cat-icon">👑</div><h3>Leadership Development</h3><p class="cat-count">185+ trainers</p>
+            <div class="cat-icon">👑</div>
+            <h3>Leadership Development</h3>
+            <p class="cat-count">185+ trainers</p>
           </a>
           <a href="find-trainers.html" class="cat-full-card">
-            <div class="cat-icon">📊</div><h3>Strategy &amp; Management</h3><p class="cat-count">162+ trainers</p>
+            <div class="cat-icon">📊</div>
+            <h3>Strategy &amp; Management</h3>
+            <p class="cat-count">162+ trainers</p>
           </a>
           <a href="find-trainers.html" class="cat-full-card">
-            <div class="cat-icon">🚀</div><h3>Entrepreneurship</h3><p class="cat-count">138+ trainers</p>
+            <div class="cat-icon">🚀</div>
+            <h3>Entrepreneurship</h3>
+            <p class="cat-count">138+ trainers</p>
           </a>
           <a href="find-trainers.html" class="cat-full-card">
-            <div class="cat-icon">🤝</div><h3>Corporate Training</h3><p class="cat-count">210+ trainers</p>
+            <div class="cat-icon">🤝</div>
+            <h3>Corporate Training</h3>
+            <p class="cat-count">210+ trainers</p>
           </a>
           <a href="find-trainers.html" class="cat-full-card">
-            <div class="cat-icon">📈</div><h3>Sales &amp; Marketing</h3><p class="cat-count">175+ trainers</p>
+            <div class="cat-icon">📈</div>
+            <h3>Sales &amp; Marketing</h3>
+            <p class="cat-count">175+ trainers</p>
           </a>
           <a href="find-trainers.html" class="cat-full-card">
-            <div class="cat-icon">🏦</div><h3>Finance &amp; Accounting</h3><p class="cat-count">130+ trainers</p>
+            <div class="cat-icon">🏦</div>
+            <h3>Finance &amp; Accounting</h3>
+            <p class="cat-count">130+ trainers</p>
           </a>
           <a href="find-trainers.html" class="cat-full-card">
-            <div class="cat-icon">⚡</div><h3>Change Management</h3><p class="cat-count">98+ trainers</p>
+            <div class="cat-icon">⚡</div>
+            <h3>Change Management</h3>
+            <p class="cat-count">98+ trainers</p>
           </a>
 
           <!-- ── TECHNOLOGY ── -->
-          <a id="tech" href="find-trainers.html" class="cat-full-card" style="grid-column:1/-1; display:block; padding:0; border:none; background:none; transform:none; box-shadow:none; cursor:default; margin-top:12px; scroll-margin-top: 80px;">
+          <a id="tech" href="find-trainers.html" class="cat-full-card"
+            style="grid-column:1/-1; display:block; padding:0; border:none; background:none; transform:none; box-shadow:none; cursor:default; margin-top:12px; scroll-margin-top: 80px;">
             <div class="cats-group-title" style="margin-bottom:14px">Technology &amp; AI</div>
           </a>
           <a href="find-trainers.html" class="cat-full-card">
-            <div class="cat-icon">🤖</div><h3>AI &amp; Machine Learning</h3><p class="cat-count">220+ trainers</p>
+            <div class="cat-icon">🤖</div>
+            <h3>AI &amp; Machine Learning</h3>
+            <p class="cat-count">220+ trainers</p>
           </a>
           <a href="find-trainers.html" class="cat-full-card">
-            <div class="cat-icon">🛡️</div><h3>Cybersecurity</h3><p class="cat-count">145+ trainers</p>
+            <div class="cat-icon">🛡️</div>
+            <h3>Cybersecurity</h3>
+            <p class="cat-count">145+ trainers</p>
           </a>
           <a href="find-trainers.html" class="cat-full-card">
-            <div class="cat-icon">💻</div><h3>Software Development</h3><p class="cat-count">195+ trainers</p>
+            <div class="cat-icon">💻</div>
+            <h3>Software Development</h3>
+            <p class="cat-count">195+ trainers</p>
           </a>
           <a href="find-trainers.html" class="cat-full-card">
-            <div class="cat-icon">📊</div><h3>Data &amp; Analytics</h3><p class="cat-count">168+ trainers</p>
+            <div class="cat-icon">📊</div>
+            <h3>Data &amp; Analytics</h3>
+            <p class="cat-count">168+ trainers</p>
           </a>
           <a href="find-trainers.html" class="cat-full-card">
-            <div class="cat-icon">☁️</div><h3>Cloud Computing</h3><p class="cat-count">112+ trainers</p>
+            <div class="cat-icon">☁️</div>
+            <h3>Cloud Computing</h3>
+            <p class="cat-count">112+ trainers</p>
           </a>
           <a href="find-trainers.html" class="cat-full-card">
-            <div class="cat-icon">📱</div><h3>Digital Marketing</h3><p class="cat-count">203+ trainers</p>
+            <div class="cat-icon">📱</div>
+            <h3>Digital Marketing</h3>
+            <p class="cat-count">203+ trainers</p>
           </a>
           <a href="find-trainers.html" class="cat-full-card">
-            <div class="cat-icon">🎨</div><h3>UI/UX Design</h3><p class="cat-count">89+ trainers</p>
+            <div class="cat-icon">🎨</div>
+            <h3>UI/UX Design</h3>
+            <p class="cat-count">89+ trainers</p>
           </a>
           <a href="find-trainers.html" class="cat-full-card">
-            <div class="cat-icon">🔗</div><h3>Blockchain &amp; Web3</h3><p class="cat-count">74+ trainers</p>
+            <div class="cat-icon">🔗</div>
+            <h3>Blockchain &amp; Web3</h3>
+            <p class="cat-count">74+ trainers</p>
           </a>
 
           <!-- ── SOFT SKILLS ── -->
-          <a id="soft-skills" href="find-trainers.html" class="cat-full-card" style="grid-column:1/-1; display:block; padding:0; border:none; background:none; transform:none; box-shadow:none; cursor:default; margin-top:12px; scroll-margin-top: 80px;">
+          <a id="soft-skills" href="find-trainers.html" class="cat-full-card"
+            style="grid-column:1/-1; display:block; padding:0; border:none; background:none; transform:none; box-shadow:none; cursor:default; margin-top:12px; scroll-margin-top: 80px;">
             <div class="cats-group-title" style="margin-bottom:14px">Soft Skills &amp; Communication</div>
           </a>
           <a href="find-trainers.html" class="cat-full-card">
-            <div class="cat-icon">🗣️</div><h3>Public Speaking</h3><p class="cat-count">192+ trainers</p>
+            <div class="cat-icon">🗣️</div>
+            <h3>Public Speaking</h3>
+            <p class="cat-count">192+ trainers</p>
           </a>
           <a href="find-trainers.html" class="cat-full-card">
-            <div class="cat-icon">🧠</div><h3>Emotional Intelligence</h3><p class="cat-count">154+ trainers</p>
+            <div class="cat-icon">🧠</div>
+            <h3>Emotional Intelligence</h3>
+            <p class="cat-count">154+ trainers</p>
           </a>
           <a href="find-trainers.html" class="cat-full-card">
-            <div class="cat-icon">💬</div><h3>Communication Skills</h3><p class="cat-count">178+ trainers</p>
+            <div class="cat-icon">💬</div>
+            <h3>Communication Skills</h3>
+            <p class="cat-count">178+ trainers</p>
           </a>
           <a href="find-trainers.html" class="cat-full-card">
-            <div class="cat-icon">🧩</div><h3>Problem Solving</h3><p class="cat-count">121+ trainers</p>
+            <div class="cat-icon">🧩</div>
+            <h3>Problem Solving</h3>
+            <p class="cat-count">121+ trainers</p>
           </a>
           <a href="find-trainers.html" class="cat-full-card">
-            <div class="cat-icon">⏰</div><h3>Time Management</h3><p class="cat-count">143+ trainers</p>
+            <div class="cat-icon">⏰</div>
+            <h3>Time Management</h3>
+            <p class="cat-count">143+ trainers</p>
           </a>
           <a href="find-trainers.html" class="cat-full-card">
-            <div class="cat-icon">🤜</div><h3>Conflict Resolution</h3><p class="cat-count">96+ trainers</p>
+            <div class="cat-icon">🤜</div>
+            <h3>Conflict Resolution</h3>
+            <p class="cat-count">96+ trainers</p>
           </a>
           <a href="find-trainers.html" class="cat-full-card">
-            <div class="cat-icon">🌟</div><h3>Personality Development</h3><p class="cat-count">210+ trainers</p>
+            <div class="cat-icon">🌟</div>
+            <h3>Personality Development</h3>
+            <p class="cat-count">210+ trainers</p>
           </a>
           <a href="find-trainers.html" class="cat-full-card">
-            <div class="cat-icon">🎯</div><h3>Goal Setting</h3><p class="cat-count">118+ trainers</p>
+            <div class="cat-icon">🎯</div>
+            <h3>Goal Setting</h3>
+            <p class="cat-count">118+ trainers</p>
           </a>
 
           <!-- ── HEALTH & FITNESS ── -->
-          <a id="health" href="find-trainers.html" class="cat-full-card" style="grid-column:1/-1; display:block; padding:0; border:none; background:none; transform:none; box-shadow:none; cursor:default; margin-top:12px; scroll-margin-top: 80px;">
+          <a id="health" href="find-trainers.html" class="cat-full-card"
+            style="grid-column:1/-1; display:block; padding:0; border:none; background:none; transform:none; box-shadow:none; cursor:default; margin-top:12px; scroll-margin-top: 80px;">
             <div class="cats-group-title" style="margin-bottom:14px">Health, Fitness &amp; Wellness</div>
           </a>
           <a href="find-trainers.html" class="cat-full-card">
-            <div class="cat-icon">💪</div><h3>Fitness &amp; Exercise</h3><p class="cat-count">230+ trainers</p>
+            <div class="cat-icon">💪</div>
+            <h3>Fitness &amp; Exercise</h3>
+            <p class="cat-count">230+ trainers</p>
           </a>
           <a href="find-trainers.html" class="cat-full-card">
-            <div class="cat-icon">🧘</div><h3>Yoga &amp; Meditation</h3><p class="cat-count">185+ trainers</p>
+            <div class="cat-icon">🧘</div>
+            <h3>Yoga &amp; Meditation</h3>
+            <p class="cat-count">185+ trainers</p>
           </a>
           <a href="find-trainers.html" class="cat-full-card">
-            <div class="cat-icon">🥗</div><h3>Nutrition &amp; Diet</h3><p class="cat-count">142+ trainers</p>
+            <div class="cat-icon">🥗</div>
+            <h3>Nutrition &amp; Diet</h3>
+            <p class="cat-count">142+ trainers</p>
           </a>
           <a href="find-trainers.html" class="cat-full-card">
-            <div class="cat-icon">🏃</div><h3>Sports Coaching</h3><p class="cat-count">167+ trainers</p>
+            <div class="cat-icon">🏃</div>
+            <h3>Sports Coaching</h3>
+            <p class="cat-count">167+ trainers</p>
           </a>
           <a href="find-trainers.html" class="cat-full-card">
-            <div class="cat-icon">🧠</div><h3>Mental Health &amp; Mindfulness</h3><p class="cat-count">128+ trainers</p>
+            <div class="cat-icon">🧠</div>
+            <h3>Mental Health &amp; Mindfulness</h3>
+            <p class="cat-count">128+ trainers</p>
           </a>
           <a href="find-trainers.html" class="cat-full-card">
-            <div class="cat-icon">🌿</div><h3>Life Coaching</h3><p class="cat-count">195+ trainers</p>
+            <div class="cat-icon">🌿</div>
+            <h3>Life Coaching</h3>
+            <p class="cat-count">195+ trainers</p>
           </a>
           <a href="find-trainers.html" class="cat-full-card">
-            <div class="cat-icon">😴</div><h3>Sleep &amp; Recovery</h3><p class="cat-count">54+ trainers</p>
+            <div class="cat-icon">😴</div>
+            <h3>Sleep &amp; Recovery</h3>
+            <p class="cat-count">54+ trainers</p>
           </a>
           <a href="find-trainers.html" class="cat-full-card">
-            <div class="cat-icon">🫀</div><h3>Functional Training</h3><p class="cat-count">98+ trainers</p>
+            <div class="cat-icon">🫀</div>
+            <h3>Functional Training</h3>
+            <p class="cat-count">98+ trainers</p>
           </a>
 
           <!-- ── LANGUAGE & EDUCATION ── -->
-          <a id="language" href="find-trainers.html" class="cat-full-card" style="grid-column:1/-1; display:block; padding:0; border:none; background:none; transform:none; box-shadow:none; cursor:default; margin-top:12px; scroll-margin-top: 80px;">
+          <a id="language" href="find-trainers.html" class="cat-full-card"
+            style="grid-column:1/-1; display:block; padding:0; border:none; background:none; transform:none; box-shadow:none; cursor:default; margin-top:12px; scroll-margin-top: 80px;">
             <div class="cats-group-title" style="margin-bottom:14px">Language &amp; Education</div>
           </a>
           <a href="find-trainers.html" class="cat-full-card">
-            <div class="cat-icon">🌍</div><h3>English Language</h3><p class="cat-count">310+ trainers</p>
+            <div class="cat-icon">🌍</div>
+            <h3>English Language</h3>
+            <p class="cat-count">310+ trainers</p>
           </a>
           <a href="find-trainers.html" class="cat-full-card">
-            <div class="cat-icon">🇮🇳</div><h3>Hindi &amp; Regional</h3><p class="cat-count">145+ trainers</p>
+            <div class="cat-icon">🇮🇳</div>
+            <h3>Hindi &amp; Regional</h3>
+            <p class="cat-count">145+ trainers</p>
           </a>
           <a href="find-trainers.html" class="cat-full-card">
-            <div class="cat-icon">🇫🇷</div><h3>European Languages</h3><p class="cat-count">92+ trainers</p>
+            <div class="cat-icon">🇫🇷</div>
+            <h3>European Languages</h3>
+            <p class="cat-count">92+ trainers</p>
           </a>
           <a href="find-trainers.html" class="cat-full-card">
-            <div class="cat-icon">📚</div><h3>Academic Tutoring</h3><p class="cat-count">223+ trainers</p>
+            <div class="cat-icon">📚</div>
+            <h3>Academic Tutoring</h3>
+            <p class="cat-count">223+ trainers</p>
           </a>
           <a href="find-trainers.html" class="cat-full-card">
-            <div class="cat-icon">✍️</div><h3>Writing &amp; Copywriting</h3><p class="cat-count">108+ trainers</p>
+            <div class="cat-icon">✍️</div>
+            <h3>Writing &amp; Copywriting</h3>
+            <p class="cat-count">108+ trainers</p>
           </a>
           <a href="find-trainers.html" class="cat-full-card">
-            <div class="cat-icon">🎤</div><h3>Interview Preparation</h3><p class="cat-count">162+ trainers</p>
+            <div class="cat-icon">🎤</div>
+            <h3>Interview Preparation</h3>
+            <p class="cat-count">162+ trainers</p>
           </a>
           <a href="find-trainers.html" class="cat-full-card">
-            <div class="cat-icon">📜</div><h3>Test &amp; Exam Prep</h3><p class="cat-count">187+ trainers</p>
+            <div class="cat-icon">📜</div>
+            <h3>Test &amp; Exam Prep</h3>
+            <p class="cat-count">187+ trainers</p>
           </a>
           <a href="find-trainers.html" class="cat-full-card">
-            <div class="cat-icon">🏫</div><h3>Corporate L&amp;D</h3><p class="cat-count">134+ trainers</p>
+            <div class="cat-icon">🏫</div>
+            <h3>Corporate L&amp;D</h3>
+            <p class="cat-count">134+ trainers</p>
           </a>
 
           <!-- ── CREATIVE & PERFORMING ARTS ── -->
-          <a id="creative" href="find-trainers.html" class="cat-full-card" style="grid-column:1/-1; display:block; padding:0; border:none; background:none; transform:none; box-shadow:none; cursor:default; margin-top:12px; scroll-margin-top: 80px;">
+          <a id="creative" href="find-trainers.html" class="cat-full-card"
+            style="grid-column:1/-1; display:block; padding:0; border:none; background:none; transform:none; box-shadow:none; cursor:default; margin-top:12px; scroll-margin-top: 80px;">
             <div class="cats-group-title" style="margin-bottom:14px">Creative &amp; Performing Arts</div>
           </a>
           <a href="find-trainers.html" class="cat-full-card">
-            <div class="cat-icon">🎵</div><h3>Music</h3><p class="cat-count">198+ trainers</p>
+            <div class="cat-icon">🎵</div>
+            <h3>Music</h3>
+            <p class="cat-count">198+ trainers</p>
           </a>
           <a href="find-trainers.html" class="cat-full-card">
-            <div class="cat-icon">💃</div><h3>Dance</h3><p class="cat-count">174+ trainers</p>
+            <div class="cat-icon">💃</div>
+            <h3>Dance</h3>
+            <p class="cat-count">174+ trainers</p>
           </a>
           <a href="find-trainers.html" class="cat-full-card">
-            <div class="cat-icon">🎭</div><h3>Acting &amp; Theatre</h3><p class="cat-count">86+ trainers</p>
+            <div class="cat-icon">🎭</div>
+            <h3>Acting &amp; Theatre</h3>
+            <p class="cat-count">86+ trainers</p>
           </a>
           <a href="find-trainers.html" class="cat-full-card">
-            <div class="cat-icon">🖌️</div><h3>Visual Arts &amp; Design</h3><p class="cat-count">112+ trainers</p>
+            <div class="cat-icon">🖌️</div>
+            <h3>Visual Arts &amp; Design</h3>
+            <p class="cat-count">112+ trainers</p>
           </a>
           <a href="find-trainers.html" class="cat-full-card">
-            <div class="cat-icon">📸</div><h3>Photography</h3><p class="cat-count">94+ trainers</p>
+            <div class="cat-icon">📸</div>
+            <h3>Photography</h3>
+            <p class="cat-count">94+ trainers</p>
           </a>
           <a href="find-trainers.html" class="cat-full-card">
-            <div class="cat-icon">🎬</div><h3>Video &amp; Filmmaking</h3><p class="cat-count">78+ trainers</p>
+            <div class="cat-icon">🎬</div>
+            <h3>Video &amp; Filmmaking</h3>
+            <p class="cat-count">78+ trainers</p>
           </a>
           <a href="find-trainers.html" class="cat-full-card">
-            <div class="cat-icon">🎙️</div><h3>Podcasting</h3><p class="cat-count">52+ trainers</p>
+            <div class="cat-icon">🎙️</div>
+            <h3>Podcasting</h3>
+            <p class="cat-count">52+ trainers</p>
           </a>
           <a href="find-trainers.html" class="cat-full-card">
-            <div class="cat-icon">🖊️</div><h3>Creative Writing</h3><p class="cat-count">89+ trainers</p>
+            <div class="cat-icon">🖊️</div>
+            <h3>Creative Writing</h3>
+            <p class="cat-count">89+ trainers</p>
           </a>
 
           <!-- ── CAREER & PERSONAL DEVELOPMENT ── -->
-          <a id="career" href="find-trainers.html" class="cat-full-card" style="grid-column:1/-1; display:block; padding:0; border:none; background:none; transform:none; box-shadow:none; cursor:default; margin-top:12px; scroll-margin-top: 80px;">
+          <a id="career" href="find-trainers.html" class="cat-full-card"
+            style="grid-column:1/-1; display:block; padding:0; border:none; background:none; transform:none; box-shadow:none; cursor:default; margin-top:12px; scroll-margin-top: 80px;">
             <div class="cats-group-title" style="margin-bottom:14px">Career &amp; Personal Development</div>
           </a>
           <a href="find-trainers.html" class="cat-full-card">
-            <div class="cat-icon">🧭</div><h3>Career Mentoring</h3><p class="cat-count">220+ trainers</p>
+            <div class="cat-icon">🧭</div>
+            <h3>Career Mentoring</h3>
+            <p class="cat-count">220+ trainers</p>
           </a>
           <a href="find-trainers.html" class="cat-full-card">
-            <div class="cat-icon">📋</div><h3>Resume &amp; LinkedIn</h3><p class="cat-count">148+ trainers</p>
+            <div class="cat-icon">📋</div>
+            <h3>Resume &amp; LinkedIn</h3>
+            <p class="cat-count">148+ trainers</p>
           </a>
           <a href="find-trainers.html" class="cat-full-card">
-            <div class="cat-icon">💡</div><h3>Motivational Speaking</h3><p class="cat-count">175+ trainers</p>
+            <div class="cat-icon">💡</div>
+            <h3>Motivational Speaking</h3>
+            <p class="cat-count">175+ trainers</p>
           </a>
           <a href="find-trainers.html" class="cat-full-card">
-            <div class="cat-icon">⚖️</div><h3>Work-Life Balance</h3><p class="cat-count">97+ trainers</p>
+            <div class="cat-icon">⚖️</div>
+            <h3>Work-Life Balance</h3>
+            <p class="cat-count">97+ trainers</p>
           </a>
           <a href="find-trainers.html" class="cat-full-card">
-            <div class="cat-icon">🎓</div><h3>Professional Certifications</h3><p class="cat-count">134+ trainers</p>
+            <div class="cat-icon">🎓</div>
+            <h3>Professional Certifications</h3>
+            <p class="cat-count">134+ trainers</p>
           </a>
           <a href="find-trainers.html" class="cat-full-card">
-            <div class="cat-icon">💰</div><h3>Personal Finance</h3><p class="cat-count">112+ trainers</p>
+            <div class="cat-icon">💰</div>
+            <h3>Personal Finance</h3>
+            <p class="cat-count">112+ trainers</p>
           </a>
           <a href="find-trainers.html" class="cat-full-card">
-            <div class="cat-icon">🌐</div><h3>Networking Skills</h3><p class="cat-count">84+ trainers</p>
+            <div class="cat-icon">🌐</div>
+            <h3>Networking Skills</h3>
+            <p class="cat-count">84+ trainers</p>
           </a>
           <a href="find-trainers.html" class="cat-full-card">
-            <div class="cat-icon">🔥</div><h3>Mindset &amp; NLP</h3><p class="cat-count">143+ trainers</p>
+            <div class="cat-icon">🔥</div>
+            <h3>Mindset &amp; NLP</h3>
+            <p class="cat-count">143+ trainers</p>
           </a>
 
           <div class="no-results" id="no-results">No categories match your search.</div>
@@ -401,11 +597,11 @@
 
     <script>
       /* Live category search */
-      document.getElementById('cat-search').addEventListener('input', function() {
+      document.getElementById('cat-search').addEventListener('input', function () {
         var q = this.value.toLowerCase();
         var cards = document.querySelectorAll('.cat-full-card:not([style*="cursor:default"])');
         var visible = 0;
-        cards.forEach(function(c) {
+        cards.forEach(function (c) {
           var txt = c.querySelector('h3').textContent.toLowerCase();
           if (txt.includes(q)) { c.classList.remove('hidden'); visible++; }
           else { c.classList.add('hidden'); }
@@ -440,7 +636,8 @@
               <img src="img/logo.svg" alt="World Trainer Forum Logo">
               <span>World Trainer <span class="g">Forum</span></span>
             </a>
-            <p class="footer-tagline">Connecting organizations with world-class trainers, coaches, mentors, and speakers worldwide.</p>
+            <p class="footer-tagline">Connecting organizations with world-class trainers, coaches, mentors and speakers
+              worldwide.</p>
 
             <!-- Trust Indicators -->
             <ul class="footer-trust-list">
@@ -495,7 +692,7 @@
             </div>
           </div>
 
-                    <!-- SECTION 2: For Clients -->
+          <!-- SECTION 2: For Clients -->
           <div class="footer-col">
             <h4 class="footer-col-hd">For Clients</h4>
             <ul class="footer-links">
@@ -559,11 +756,12 @@
             <div class="footer-newsletter-card">
               <div class="fnl-icon"><i class="fa-solid fa-paper-plane"></i></div>
               <h4 class="fnl-title">Stay Updated</h4>
-              <p class="fnl-sub">Get training insights, industry trends, and expert resources.</p>
+              <p class="fnl-sub">Get training insights, industry trends and expert resources.</p>
               <form class="fnl-form" onsubmit="return false;">
                 <div class="fnl-input-wrap">
                   <i class="fa-regular fa-envelope fnl-input-ico"></i>
-                  <input type="email" class="fnl-input" placeholder="Your email address" aria-label="Email for newsletter">
+                  <input type="email" class="fnl-input" placeholder="Your email address"
+                    aria-label="Email for newsletter">
                   <button type="submit" class="fnl-btn">Subscribe</button>
                 </div>
               </form>
@@ -654,7 +852,7 @@
   <script>
     applyTheme();
   </script>
-<script src="js/mobile-nav.js"></script>
+  <script src="js/mobile-nav.js"></script>
 </body>
 
 </html>

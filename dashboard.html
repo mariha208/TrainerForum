@@ -1595,6 +1595,7 @@
       oldAvs = oldAvs || {};
 
       var avs = {};
+      // Carry over old specific date overrides
       avs.specificDates = oldAvs.specificDates || {};
 
       cont.querySelectorAll('.avail-row').forEach(function (row) {
@@ -1605,6 +1606,22 @@
           end: row.querySelector('.avail-to').value
         };
       });
+
+      // ── BUGFIX: prune specificDates entries that now match the new weekly default ──
+      // This prevents old blocks from persisting after the weekly schedule changes.
+      Object.keys(avs.specificDates).forEach(function (dateKey) {
+        var parts = dateKey.split('-');
+        if (parts.length < 3) return;
+        var y = parseInt(parts[0]), mo = parseInt(parts[1]), dy = parseInt(parts[2]);
+        var dObj = new Date(y, mo, dy);
+        var wkDay = _DB_DAY_MAP[dObj.getDay()];
+        var weeklyDefault = avs[wkDay] ? (avs[wkDay].available !== false) : true;
+        // If the specificDate value now matches the weekly default, remove it — it's redundant
+        if (avs.specificDates[dateKey] === weeklyDefault) {
+          delete avs.specificDates[dateKey];
+        }
+      });
+
       cache.availability = avs;
       localStorage.setItem('currentTrainer', JSON.stringify(cache));
 
@@ -1618,7 +1635,7 @@
 
       window.toast && window.toast('Saving availability to database...', 3000);
 
-      if (typeof commitLocalProfileChanges === 'function') { commitLocalProfileChanges(); window.toast ? window.toast('✅ Availability slots synchronized!') : alert('Availability saved successfully!'); }
+      if (typeof commitLocalProfileChanges === 'function') { commitLocalProfileChanges(); window.toast ? window.toast('\u2705 Availability slots synchronized!') : alert('Availability saved successfully!'); }
     }
 
     /* ── Dashboard Calendar ── */
@@ -1711,13 +1728,14 @@
       var dateStr = y + '-' + m + '-' + d;
       var dObj = new Date(y, m, d);
       var dayKey = _DB_DAY_MAP[dObj.getDay()];
-      var _monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
       var _friendlyDate = dObj.toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
 
-      var currentState = true;
+      // Read the current effective state of this specific date
+      var currentState = true; // default = available
       if (typeof avs.specificDates[dateStr] !== 'undefined') {
         currentState = avs.specificDates[dateStr];
       } else {
+        // No specific override — read from weekly schedule
         var weeklyCont = document.getElementById('weekly-hours-container');
         if (weeklyCont) {
           var row = weeklyCont.querySelector('.avail-row[data-day="' + dayKey + '"]');
@@ -1739,7 +1757,28 @@
       );
       if (!_confirmed) return;
 
-      avs.specificDates[dateStr] = !currentState;
+      var newState = !currentState;
+
+      // ── BUGFIX: only store a specific override when it DIFFERS from the weekly default.
+      // If the new state matches the weekly default, delete the override instead.
+      var weeklyDefault = true;
+      var weeklyCont2 = document.getElementById('weekly-hours-container');
+      if (weeklyCont2) {
+        var row2 = weeklyCont2.querySelector('.avail-row[data-day="' + dayKey + '"]');
+        if (row2) weeklyDefault = row2.querySelector('.avail-toggle').checked;
+      } else if (avs[dayKey]) {
+        var w2 = avs[dayKey];
+        weeklyDefault = typeof w2.available !== 'undefined' ? w2.available : w2.enabled;
+        if (weeklyDefault === undefined) weeklyDefault = true;
+      }
+
+      if (newState === weeklyDefault) {
+        // Override now matches weekly default — remove it so there's no stale entry
+        delete avs.specificDates[dateStr];
+      } else {
+        avs.specificDates[dateStr] = newState;
+      }
+
       cache.availability = avs;
       localStorage.setItem('currentTrainer', JSON.stringify(cache));
 

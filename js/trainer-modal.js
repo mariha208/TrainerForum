@@ -1215,9 +1215,19 @@ window.renderBPMCalendar = function () {
   try {
     let _bpmAvs = window.bookingState.trainerAvailability;
     if (!_bpmAvs) {
-      const _bpmRaw = JSON.parse(localStorage.getItem('currentTrainer') || '{}');
-      _bpmAvs = _bpmRaw.availability;
-      if (typeof _bpmAvs === 'string') _bpmAvs = JSON.parse(_bpmAvs);
+      // ── BUGFIX: only fall back to currentTrainer if the booked trainer IS the logged-in trainer ──
+      const _ct = JSON.parse(localStorage.getItem('currentTrainer') || '{}');
+      const _ctId = String(_ct.trainerId || _ct._id || _ct.id || '');
+      const _bookedId = String(window.bookingState.trainerId || '');
+      if (_ctId && _bookedId && _ctId === _bookedId) {
+        _bpmAvs = _ct.availability;
+        if (typeof _bpmAvs === 'string') _bpmAvs = JSON.parse(_bpmAvs);
+      }
+      // Also try the per-trainer localStorage key directly
+      if (!_bpmAvs && _bookedId) {
+        const _lavail = JSON.parse(localStorage.getItem('tv-trainer-' + _bookedId + '-availability') || 'null');
+        if (_lavail) _bpmAvs = _lavail;
+      }
     }
     if (_bpmAvs && _bpmAvs.specificDates) _bpmSpecificDates = _bpmAvs.specificDates;
     if (_bpmAvs) {
