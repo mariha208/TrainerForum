@@ -3574,5 +3574,62 @@ select, textarea {
     overflow: visible !important;
   }
 }
+/* ═══════════════════════════════════════════════════════════════
+   MOBILE FIX: Footer newsletter form (.fnl-form / .fnl-input-wrap)
+   Root cause: .fnl-input-wrap is a flex row that never wraps → input
+   and button overflow the screen edge on narrow viewports.
+   Fix: stack vertically, full width, symmetric padding.
+   Applies to: about.html, certificates.html, any page with footer.
+   ═══════════════════════════════════════════════════════════════ */
+@media (max-width: 600px) {
 
+  /* Footer newsletter card: full width, no side overflow */
+  .footer-newsletter-col,
+  .footer-newsletter-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
 
+  /* Stack input + button vertically */
+  .fnl-input-wrap {
+    flex-direction: column !important;
+    gap: 10px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Input fills full width */
+  .fnl-input {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+    border-radius: 8px !important;
+  }
+
+  /* Button fills full width below input */
+  .fnl-btn {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    border-radius: 8px !important;
+    text-align: center !important;
+  }
+
+  /* Footer main grid: stack all columns */
+  .footer-top-grid {
+    grid-template-columns: 1fr !important;
+    gap: 28px !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+
+  .footer-main {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+}

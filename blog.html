@@ -821,6 +821,80 @@
         margin-top: 0;
       }
     }
+
+    /* ═══ MOBILE LAYOUT FIX ═══
+       Root cause: all wrappers use fixed padding:0 32px on desktop.
+       On mobile this creates an uneven left-gap + right-clip.
+       Fix: reduce to symmetric 16px and stack the subscribe form.
+    ═══════════════════════════════════════════════════════════ */
+    @media (max-width: 600px) {
+
+      /* 1. All section wrappers: symmetric, breathing-room padding */
+      .featured-wrap,
+      .blog-main,
+      .topics,
+      .newsletter {
+        padding-left: 16px !important;
+        padding-right: 16px !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+      }
+
+      .newsletter {
+        padding-top: 60px !important;
+        padding-bottom: 60px !important;
+      }
+
+      /* 2. Hero section: reduce side padding so text doesn't clip */
+      .hero {
+        padding-left: 16px !important;
+        padding-right: 16px !important;
+      }
+
+      /* 3. Subscribe form: stack input + button vertically, full width */
+      .sub-form {
+        flex-direction: column !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 auto !important;
+        padding: 0 !important;
+        gap: 12px !important;
+      }
+
+      .sub-form input,
+      .sub-form button {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        min-width: 0 !important;
+      }
+
+      /* 4. Topic chips: 2 columns on small screens */
+      .topic-row {
+        grid-template-columns: 1fr 1fr !important;
+      }
+
+      /* 5. Blog cards: single column, no overflow */
+      .blog-grid {
+        grid-template-columns: 1fr !important;
+        gap: 20px !important;
+      }
+
+      /* 6. Featured body padding tightened */
+      .featured-body {
+        padding: 24px 16px !important;
+      }
+    }
+
+    @media (max-width: 380px) {
+      /* Extra-small phones: single column topic chips */
+      .topic-row {
+        grid-template-columns: 1fr !important;
+      }
+    }
   </style>
 
   <link rel="icon" type="image/svg+xml" href="img/logo.svg">

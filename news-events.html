@@ -591,6 +591,73 @@
         margin-top: 20px;
       }
     }
+
+    /* ═══ MOBILE LAYOUT FIX ═══
+       Root cause: wrappers use fixed padding:0 32px on desktop.
+       On mobile this creates a left-gap and right-clip bug.
+    ═══════════════════════════════════════════════════════════ */
+    @media (max-width: 600px) {
+
+      /* 1. All section wrappers: symmetric 16px padding */
+      .events-section,
+      .news-section,
+      .newsletter {
+        padding-left: 16px !important;
+        padding-right: 16px !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+      }
+
+      .newsletter {
+        padding-top: 60px !important;
+        padding-bottom: 60px !important;
+      }
+
+      /* 2. Hero: reduce side padding */
+      .hero {
+        padding-left: 16px !important;
+        padding-right: 16px !important;
+      }
+
+      /* 3. Subscribe form: stack vertically, full width */
+      .sub-form {
+        flex-direction: column !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 auto !important;
+        padding: 0 !important;
+        gap: 12px !important;
+      }
+
+      .sub-form input,
+      .sub-form button {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        min-width: 0 !important;
+      }
+
+      /* 4. News grid: single column */
+      .news-grid {
+        grid-template-columns: 1fr !important;
+        gap: 20px !important;
+      }
+
+      /* 5. Event cards: full width (no horizontal scroll on mobile) */
+      .events-scroll {
+        flex-direction: column !important;
+        overflow-x: visible !important;
+      }
+
+      .event-card {
+        flex: 0 0 auto !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+      }
+    }
   </style>
 
   <link rel="icon" type="image/svg+xml" href="img/logo.svg">
