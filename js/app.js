@@ -29,7 +29,26 @@ document.addEventListener('DOMContentLoaded', () => {
   setupFilterToggles();
   setupModalDismissals();
   verifyUserSessionToken();
+  applyConditionalHeaderLogic();
 });
+
+// ── GLOBAL HEADER COMPONENT LOGIC ──────────────────────────────────────────
+function applyConditionalHeaderLogic() {
+  const currentPath = window.location.pathname.toLowerCase();
+  
+  // If the current route is "/news-events" or "/blog", completely remove/hide the 
+  // mobile hamburger button container from the DOM.
+  const isSpecialPage = currentPath.includes('news-events.html') || currentPath.includes('blog.html');
+  
+  if (isSpecialPage) {
+    const hamBtn = document.getElementById('ham-btn');
+    if (hamBtn) {
+      hamBtn.style.display = 'none'; // 'hidden' equivalent
+      hamBtn.className = 'hidden';
+      // or hamBtn.remove() to completely remove from DOM
+    }
+  }
+}
 
 // ── SYNC ENGINE: STREAM MONGODB LIVE DATA ROWS ──────────────────────────
 function subscribeToTrainers() {

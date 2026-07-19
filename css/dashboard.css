@@ -3967,4 +3967,34 @@ html, body {
     max-width: 100% !important;
     box-sizing: border-box !important;
   }
-}
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   9. MOBILE SIDEBAR / LAYOUT RESET (Up to 1024px / md screens)
+   User noted the layout shifts right because the desktop sidebar
+   or margin is still occupying space. This forces it hidden.
+   ═══════════════════════════════════════════════════════════════ */
+@media (max-width: 1024px) {
+  /* 1. Completely remove the sidebar from the DOM layout flow */
+  .db-sidebar {
+    display: none !important;
+  }
+
+  /* 2. Show it only when the mobile hamburger toggles the class */
+  .db-sidebar.mobile-open {
+    display: flex !important;
+    transform: translateX(0) !important;
+    position: fixed !important;
+    z-index: 10000 !important;
+  }
+
+  /* 3. Force main wrapper to reset any desktop left-margins (like ml-64) */
+  .db-main {
+    margin-left: 0 !important;
+    padding-left: 0 !important;
+    width: 100% !important;
+    max-width: 100vw !important;
+    box-sizing: border-box !important;
+  }
+}
+
