@@ -34,41 +34,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // ── GLOBAL HEADER COMPONENT LOGIC ──────────────────────────────────────────
 function applyConditionalHeaderLogic() {
-  const currentPath = window.location.pathname.toLowerCase();
-  
-  // 1. Dynamic Visibility: Check the current active URL path/route
-  const isSpecialPage = currentPath.includes('news-events.html') || currentPath.includes('blog.html');
-  
-  if (isSpecialPage) {
-    // Completely remove/hide the mobile hamburger button container from the DOM
-    const hamBtn = document.getElementById('ham-btn');
-    if (hamBtn) {
-      hamBtn.style.display = 'none'; // 'hidden' equivalent
-      hamBtn.className = 'hidden';
-    }
-
-    // 2. Layout Alignment: Ensure hiding the 3 lines doesn't break spacing
-    const nav = document.getElementById('nav');
-    if (nav) {
-      // Use standard flexbox properties to keep the remaining header elements neatly spaced
-      nav.style.display = 'flex';
-      nav.style.justifyContent = 'space-between';
-      nav.style.alignItems = 'center';
-    }
-
-    const navR = document.querySelector('.nav-r');
-    if (navR) {
-      // Ensure the right-side icons (profile/bell) stay aligned to the right edge
-      navR.style.display = 'flex';
-      navR.style.justifyContent = 'flex-end';
-    }
+  // The user requested to keep the hamburger menu visible on ALL pages now,
+  // so we ensure it's explicitly shown if it was hidden previously.
+  const hamBtn = document.getElementById('ham-btn');
+  if (hamBtn) {
+    hamBtn.style.display = 'block'; // Ensure it's fully visible
+    hamBtn.classList.remove('hidden');
   }
 
-  // 3. Fallback Navigation Option: Ensure the brand logo links back to the main landing page
-  // so mobile users don't get trapped on the page.
+  // Ensure hiding logic doesn't break spacing for the nav globally
+  const nav = document.getElementById('nav');
+  if (nav) {
+    nav.style.display = 'flex';
+    nav.style.justifyContent = 'space-between';
+    nav.style.alignItems = 'center';
+  }
+
   const logo = document.querySelector('.logo');
   if (logo) {
-    logo.href = 'index.html';
+    logo.href = 'index.html'; // Fallback navigation option
   }
 }
 

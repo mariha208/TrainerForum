@@ -1292,3 +1292,38 @@ footer {
 [data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
   background: var(--royal);
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   MOBILE RESPONSIVE CARD GRID LOGIC (≤ 480px)
+   Enforces a fluid 2-column layout and prevents fixed widths from clipping
+   ═══════════════════════════════════════════════════════════════ */
+@media (max-width: 480px) {
+  /* Enforce 2-column layouts for container grids on mobile */
+  .trainers-grid,
+  .cats-grid,
+  .grid-2,
+  .grid-3,
+  .grid-4 {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Force all cards to be fluid and shrink-to-fit without hardcoded widths */
+  .card, 
+  .cat-card, 
+  .trainer-card,
+  .story-card,
+  .testi-card,
+  .tc {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 12px !important;
+    box-sizing: border-box !important;
+    min-width: 0 !important; /* Prevents flex/grid blowouts */
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+}
