@@ -663,8 +663,10 @@
        User requested hiding the 3-line menu icon specifically on this page.
        Brand logo and other header items remain visible.
     ═════════════════════════════════════ */
-    #ham-btn {
-      display: none !important;
+    @media (min-width: 769px) {
+      #ham-btn {
+        display: none !important;
+      }
     }
   </style>
 
