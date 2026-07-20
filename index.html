@@ -1,12 +1,12 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
   <meta name="description"
-    content="World Trainer Forum â€” Find, compare and book world-class trainers, coaches and mentors. LinkedIn + Fiverr + BigSpeak for every field.">
-  <title>World Trainer Forum â€” Find & Book World-Class Trainers</title>
+    content="World Trainer Forum — Find, compare and book world-class trainers, coaches and mentors. LinkedIn + Fiverr + BigSpeak for every field.">
+  <title>World Trainer Forum — Find & Book World-Class Trainers</title>
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/trainer-modal.css">
   <link rel="stylesheet" href="css/auth-modal.css">
@@ -19,7 +19,7 @@
 
 <body>
 
-  <!-- â•â•â• NAVBAR â•â•â• -->
+  <!-- — NAVBAR — -->
   <nav id="nav">
     <a class="logo" href="index.html">
       <img src="img/logo.svg" alt="World Trainer Forum Logo" style="height:42px; margin-right:10px;">World Trainer <span
@@ -35,7 +35,7 @@
       <li><a id="nl-dash" href="dashboard.html" target="_blank" style="display:none;">Dashboard</a></li>
     </ul>
     <div class="nav-r">
-      <button class="notif-btn" id="notif-btn" onclick="toggleNotif()">ðŸ””<span class="notif-dot"></span></button>
+      <button class="notif-btn" id="notif-btn" onclick="toggleNotif()">🔔<span class="notif-dot"></span></button>
       <button class="btn btn-ghost btn-sm" id="btn-signup" onclick="openModal('register')">Sign Up</button>
       <button class="btn btn-gold btn-sm" id="btn-login" onclick="openModal('login')">Log In</button>
       <!-- User Avatar Dropdown (shown when logged in) -->
@@ -94,25 +94,25 @@
       <p class="h4-title">Notifications</p><a href="#" style="font-size:.78rem;color:var(--gold-dk)">Mark all read</a>
     </div>
     <div class="notif-item unread">
-      <div class="notif-ico" style="background:rgba(201,168,76,.12)">ðŸ“…</div>
+      <div class="notif-ico" style="background:rgba(201,168,76,.12)">📅</div>
       <div class="notif-text">
         <p><strong>Rajesh Kumar</strong> accepted your booking for May 20.</p><span>2 hours ago</span>
       </div>
     </div>
     <div class="notif-item unread">
-      <div class="notif-ico" style="background:rgba(39,103,73,.12)">â­</div>
+      <div class="notif-ico" style="background:rgba(39,103,73,.12)">⭐</div>
       <div class="notif-text">
         <p>Your session with <strong>Priya Mehta</strong> is in 2 days.</p><span>5 hours ago</span>
       </div>
     </div>
     <div class="notif-item">
-      <div class="notif-ico" style="background:rgba(42,108,176,.12)">ðŸ’¬</div>
+      <div class="notif-ico" style="background:rgba(42,108,176,.12)">💬</div>
       <div class="notif-text">
         <p>New message from <strong>Arun Kapoor</strong>.</p><span>Yesterday</span>
       </div>
     </div>
     <div class="notif-item">
-      <div class="notif-ico" style="background:rgba(201,168,76,.12)">ðŸŽ‰</div>
+      <div class="notif-ico" style="background:rgba(201,168,76,.12)">🎉</div>
       <div class="notif-text">
         <p>Welcome to World Trainer Forum! Complete your profile.</p><span>2 days ago</span>
       </div>
@@ -125,23 +125,23 @@
   <!-- Modal -->
   <div class="modal-bg" id="modal-bg">
     <div class="modal-box">
-      <button class="modal-close" onclick="closeModal()">âœ•</button>
+      <button class="modal-close" onclick="closeModal()">✕</button>
       <div id="modal-body"></div>
     </div>
   </div>
 
-  <!-- â•â•â• PREMIUM TRAINER PROFILE MODAL â•â•â• -->
+  <!-- — PREMIUM TRAINER PROFILE MODAL — -->
   <div id="trainer-modal" aria-modal="true" role="dialog" aria-label="Trainer Profile"></div>
 
-  <!-- â•â•â• PREMIUM AUTH MODAL â•â•â• -->
+  <!-- — PREMIUM AUTH MODAL — -->
   <div id="auth-modal" aria-modal="true" role="dialog" aria-label="Authentication"></div>
 
-  <!-- â•â•â• PREMIUM BOOKING MODAL â•â•â• -->
+  <!-- ——— PREMIUM BOOKING MODAL ——— -->
   <div id="booking-modal" aria-modal="true" role="dialog" aria-label="Book a Session"></div>
 
-  <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  <!-- ——————————————————————————————————————————————————————————————————————————————————————————————————————————
      HOME PAGE
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+—————————————————————————————————————————————————————————————————————————————————————————————————————————— -->
   <div id="p-home" class="page active">
 
     <!-- Hero -->
@@ -156,8 +156,10 @@
         <div class="hero-lower">
           <h1>Find Your <span class="gld">Expert Trainer.</span></h1>
           <div class="hero-search">
-            <span style="color:#999;padding:0 6px;font-size:1.1rem">ðŸ”</span>
-            <input type="text" id="hs-input" placeholder="Search trainers, skills, topicsâ€¦"
+            <span style="color:#999;padding:0 6px; display:flex; align-items:center;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" x2="16.65" y1="21" y2="16.65"></line></svg>
+            </span>
+            <input type="text" id="hs-input" placeholder="Search trainers, skills, topics…"
               onclick="window.location.href='find-trainers.html'">
             <div class="h-sep"></div>
             <select id="hs-cat">
@@ -219,7 +221,7 @@
                 <polygon
                   points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
               </svg></div>
-            <div><span class="n">4.9â˜…</span><span class="l">Average Rating</span></div>
+            <div><span class="n">4.9★</span><span class="l">Average Rating</span></div>
           </div>
         </div>
       </div>
@@ -230,35 +232,35 @@
       <div class="section-hdr">
         <span class="section-label">Explore</span>
         <h2 class="section-title">Browse by <span class="a">Category</span></h2>
-        <p class="section-sub">Find top experts across every discipline â€” from AI to Fitness to Music.</p>
+        <p class="section-sub">Find top experts across every discipline — from AI to Fitness to Music.</p>
       </div>
       <div class="cats-grid" id="home-cats">
         <div class="cat-card" onclick="window.location.href='categories.html#business'">
-          <div class="cat-icon">ðŸ’¼</div>
+          <div class="cat-icon">💼</div>
           <p class="h3-title">Business & Leadership</p>
         </div>
         <div class="cat-card" onclick="window.location.href='categories.html#tech'">
-          <div class="cat-icon">ðŸ¤–</div>
+          <div class="cat-icon">🤖</div>
           <p class="h3-title">Technology & AI</p>
         </div>
         <div class="cat-card" onclick="window.location.href='categories.html#soft-skills'">
-          <div class="cat-icon">ðŸ—£ï¸</div>
+          <div class="cat-icon">🗣️</div>
           <p class="h3-title">Soft Skills & Communication</p>
         </div>
         <div class="cat-card" onclick="window.location.href='categories.html#health'">
-          <div class="cat-icon">ðŸ’ª</div>
+          <div class="cat-icon">💪</div>
           <p class="h3-title">Health, Fitness & Wellness</p>
         </div>
         <div class="cat-card" onclick="window.location.href='categories.html#language'">
-          <div class="cat-icon">ðŸŒ</div>
+          <div class="cat-icon">🌍</div>
           <p class="h3-title">Language & Education</p>
         </div>
         <div class="cat-card" onclick="window.location.href='categories.html#creative'">
-          <div class="cat-icon">ðŸŽ¨</div>
+          <div class="cat-icon">🎨</div>
           <p class="h3-title">Creative & Performing Arts</p>
         </div>
         <div class="cat-card" onclick="window.location.href='categories.html#career'">
-          <div class="cat-icon">ðŸš€</div>
+          <div class="cat-icon">🚀</div>
           <p class="h3-title">Career & Personal Development</p>
         </div>
       </div>
@@ -274,7 +276,7 @@
       <div class="trainers-grid" id="home-grid" style="overflow:visible; padding-top:20px; padding-bottom:20px;"></div>
       <div style="text-align:center;margin-top:36px">
         <button class="btn btn-outline btn-lg" onclick="window.location.href='find-trainers.html'">View All Trainers
-          â†’</button>
+          →</button>
       </div>
     </section>
 
@@ -285,7 +287,7 @@
         <h2 class="section-title" style="color:var(--ivory)">How <span class="a">It Works</span></h2>
         <p class="section-sub" style="color:rgba(250, 246, 236, 0.7);margin:0 auto 52px">Hire your perfect trainer in
           three
-          simple steps â€”
+          simple steps —
           from discovery to transformation.</p>
       </div>
       <div class="how-grid">
@@ -317,37 +319,37 @@
           <span class="section-label">For Trainers &amp; Coaches</span>
           <h2 class="section-title">Grow Your <span class="a">Practice</span><br>on One Platform</h2>
           <p style="color:var(--ts);font-weight:300;line-height:1.85;margin-bottom:26px">Create a stunning professional
-            profile, showcase your expertise, set your own rates and manage bookings â€” all in one place. Join 2,800+
+            profile, showcase your expertise, set your own rates and manage bookings — all in one place. Join 2,800+
             trainers already thriving on World Trainer Forum.</p>
           <div class="check-item">Beautiful customisable profile with video intro</div>
           <div class="check-item">Built-in booking &amp; availability calendar</div>
           <div class="check-item">Secure Razorpay / Stripe payouts directly to you</div>
           <div class="check-item">Direct WhatsApp contact with clients</div>
           <div class="check-item">Verified badge, ratings &amp; trust reviews</div>
-          <div class="check-item">Full analytics dashboard â€” bookings, earnings, views</div>
+          <div class="check-item">Full analytics dashboard — bookings, earnings, views</div>
           <div style="margin-top:28px;display:flex;gap:12px;flex-wrap:wrap">
-            <button class="btn btn-gold btn-lg" onclick="openModal('register-trainer')">Start Free Profile â†’</button>
+            <button class="btn btn-gold btn-lg" onclick="openModal('register-trainer')">Start Free Profile →</button>
             <button class="btn btn-outline" onclick="nav('pricing')">View Plans</button>
           </div>
         </div>
         <div style="flex:1;min-width:260px;display:grid;grid-template-columns:1fr 1fr;gap:14px">
           <div class="quick-stat">
-            <div style="font-size:1.5rem;margin-bottom:8px">ðŸ“ˆ</div>
-            <div class="qs-num">18Ã—</div>
+            <div style="font-size:1.5rem;margin-bottom:8px">📈</div>
+            <div class="qs-num">18×</div>
             <div class="qs-lbl">Avg. growth in bookings within 90 days</div>
           </div>
           <div class="quick-stat">
-            <div style="font-size:1.5rem;margin-bottom:8px">ðŸ’°</div>
-            <div class="qs-num">â‚¹2.4L</div>
+            <div style="font-size:1.5rem;margin-bottom:8px">💰</div>
+            <div class="qs-num">₹2.4L</div>
             <div class="qs-lbl">Avg. monthly earnings for top trainers</div>
           </div>
           <div class="quick-stat">
-            <div style="font-size:1.5rem;margin-bottom:8px">â­</div>
+            <div style="font-size:1.5rem;margin-bottom:8px">⭐</div>
             <div class="qs-num">4.9</div>
             <div class="qs-lbl">Platform average across 40,000+ reviews</div>
           </div>
           <div class="quick-stat">
-            <div style="font-size:1.5rem;margin-bottom:8px">ðŸŒ</div>
+            <div style="font-size:1.5rem;margin-bottom:8px">🌍</div>
             <div class="qs-num">62</div>
             <div class="qs-lbl">Countries with active trainers &amp; clients</div>
           </div>
@@ -360,7 +362,7 @@
       <div class="section-hdr">
         <span class="section-label">Social Proof</span>
         <h2 class="section-title">What <span class="a">Clients Say</span></h2>
-        <p class="section-sub">Real outcomes from real people â€” organizations and trainers alike.</p>
+        <p class="section-sub">Real outcomes from real people — organizations and trainers alike.</p>
       </div>
       <div class="testi-grid" id="home-testimonials">
       </div>
@@ -372,7 +374,7 @@
       <p>Join 40,000+ organizations who've found their perfect trainer on World Trainer Forum.</p>
       <div class="cta-btns">
         <button class="btn btn-gold btn-xl" onclick="window.location.href='find-trainers.html'">Find My
-          Trainerâ†’</button>
+          Trainer→</button>
         <button class="btn btn-gold btn-lg" onclick="openModal('register-trainer')">List as Trainer</button>
       </div>
     </div>
@@ -380,7 +382,7 @@
     <!-- Footer -->
     <footer id="site-footer">
 
-      <!-- â”€â”€ MAIN FOOTER BODY â”€â”€ -->
+      <!-- ——— MAIN FOOTER BODY ——— -->
       <div class="footer-main">
 
         <!-- ROW 1: Brand + 4 link columns + Newsletter -->
@@ -583,19 +585,19 @@
       <!-- SECTION 8: Bottom Legal Bar -->
       <div class="footer-legal">
         <div class="footer-legal-inner">
-          <span class="fl-copy">Â© 2026 World Trainer Forum Technologies Pvt. Ltd. All rights reserved.</span>
+          <span class="fl-copy">© 2026 World Trainer Forum Technologies Pvt. Ltd. All rights reserved.</span>
           <nav class="fl-links" aria-label="Legal links">
             <a href="#">Privacy Policy</a>
-            <span class="fl-dot">Â·</span>
+            <span class="fl-dot">·</span>
             <a href="#">Terms</a>
-            <span class="fl-dot">Â·</span>
+            <span class="fl-dot">·</span>
             <a href="#">Cookies</a>
-            <span class="fl-dot">Â·</span>
+            <span class="fl-dot">·</span>
             <a href="#">Accessibility</a>
-            <span class="fl-dot">Â·</span>
+            <span class="fl-dot">·</span>
             <a href="#">Sitemap</a>
           </nav>
-          <span class="fl-tagline">Made for Global Learning &amp; Growth ðŸŒ</span>
+          <span class="fl-tagline">Made for Global Learning &amp; Growth 🌍</span>
         </div>
       </div>
 
@@ -605,16 +607,16 @@
   <!-- Browse, Categories, Pricing, About, Blog moved to separate pages -->
   <!-- find-trainers.html | categories.html | pricing.html | about.html | blog.html -->
 
-  <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-     (removed â€” now at find-trainers.html)
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+  <!-- ——————————————————————————————————————————————————————————————————————————————————————————————————————————
+     (removed — now at find-trainers.html)
+—————————————————————————————————————————————————————————————————————————————————————————————————————————— -->
   <div id="p-browse" class="page" style="display:none">
     <div class="browse-hero">
       <h1>Browse Expert Trainers</h1>
       <p>2,800+ verified professionals across 140+ specialisations</p>
       <div class="browse-bar">
-        <span style="color:#999">ðŸ”</span>
-        <input type="text" id="browse-search" placeholder="Search name, skill, topicâ€¦" oninput="applyFilters()">
+        <span style="color:#999">🔍</span>
+        <input type="text" id="browse-search" placeholder="Search name, skill, topic…" oninput="applyFilters()">
         <div class="h-sep"></div>
         <select id="f-cat" onchange="applyFilters()">
           <option value="">All Categories</option>
@@ -664,7 +666,7 @@
         <div class="fg"><label>Price / hour</label>
           <input type="range" id="f-price" min="500" max="100000" value="100000"
             oninput="updatePriceDisplay(this.value);applyFilters()">
-          <div style="font-size:.78rem;color:var(--tm);margin-top:4px">Up to <span id="price-out">â‚¹1,00,000</span></div>
+          <div style="font-size:.78rem;color:var(--tm);margin-top:4px">Up to <span id="price-out">₹1,00,000</span></div>
         </div>
         <div class="fg"><label>Minimum Rating</label>
           <select id="f-rating" onchange="applyFilters()">
@@ -685,9 +687,9 @@
         <div class="fg"><label>Experience</label>
           <select id="f-exp" onchange="applyFilters()">
             <option value="">Any</option>
-            <option>1â€“3 years</option>
-            <option>3â€“5 years</option>
-            <option>5â€“10 years</option>
+            <option>1–3 years</option>
+            <option>3–5 years</option>
+            <option>5–10 years</option>
             <option>10+ years</option>
           </select>
         </div>
@@ -716,31 +718,31 @@
         <div class="results-bar">
           <div class="results-count">Showing <strong id="results-count">12</strong> trainers</div>
           <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-            <button class="btn btn-dark btn-sm" onclick="nav('compare')">âš–ï¸ Compare</button>
+            <button class="btn btn-dark btn-sm" onclick="nav('compare')">⚖️ Compare</button>
             <select class="sort-sel" onchange="sortResults(this.value)">
               <option value="default">Recommended</option>
               <option value="rating">Top Rated</option>
-              <option value="price-asc">Price: Low â†’ High</option>
-              <option value="price-desc">Price: High â†’ Low</option>
+              <option value="price-asc">Price: Low → High</option>
+              <option value="price-desc">Price: High → Low</option>
               <option value="sessions">Most Booked</option>
             </select>
           </div>
         </div>
         <div class="trainers-grid" id="browse-grid"></div>
         <div style="display:flex;justify-content:center;gap:8px;margin-top:32px;flex-wrap:wrap">
-          <button class="btn btn-dark btn-sm">â† Prev</button>
+          <button class="btn btn-dark btn-sm">← Prev</button>
           <button class="btn btn-gold btn-sm">1</button>
           <button class="btn btn-dark btn-sm">2</button>
           <button class="btn btn-dark btn-sm">3</button>
-          <button class="btn btn-dark btn-sm">Next â†’</button>
+          <button class="btn btn-dark btn-sm">Next →</button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  <!-- ——————————————————————————————————————————————————————————————————————————————————————————————————————————
      TRAINER PROFILE PAGE
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+—————————————————————————————————————————————————————————————————————————————————————————————————————————— -->
   <div id="p-profile" class="page">
     <div class="prof-banner gb-blue" id="prof-banner">
       <div class="overlay"></div>
@@ -750,19 +752,19 @@
         <div class="prof-av" id="prof-av" style="background:#2d5fa8">RK</div>
         <div class="prof-info">
           <h1 id="prof-name">Rajesh Kumar</h1>
-          <p class="sub" id="prof-subtitle">Senior AI &amp; ML Trainer Â· 12yr Experience Â· Mumbai / Online</p>
+          <p class="sub" id="prof-subtitle">Senior AI &amp; ML Trainer · 12yr Experience · Mumbai / Online</p>
           <div style="display:flex;gap:7px;flex-wrap:wrap">
-            <span class="verified">âœ“ Verified Expert</span>
+            <span class="verified">✓ Verified Expert</span>
 
-            <span class="chip">ðŸ† Top Rated 2025</span>
+            <span class="chip">🏆 Top Rated 2025</span>
             <span class="chip"><span id="prof-stat-sessions">1.2K</span> sessions</span>
           </div>
         </div>
         <div class="prof-actions">
-          <button class="btn btn-dark btn-sm" onclick="toggleFav(this,currentTrainer?.id||1)">â™¡ Save</button>
-          <button class="btn btn-dark btn-sm" id="msg-btn-header" onclick="openWhatsApp()">ðŸ’¬ WhatsApp</button>
+          <button class="btn btn-dark btn-sm" onclick="toggleFav(this,currentTrainer?.id||1)">♡ Save</button>
+          <button class="btn btn-dark btn-sm" id="msg-btn-header" onclick="openWhatsApp()">💬 WhatsApp</button>
           <button class="btn btn-dark btn-sm"
-            onclick="toggleCompare(currentTrainer?.id||1);toast('âš–ï¸ Added to compare!')">âš–ï¸ Compare</button>
+            onclick="toggleCompare(currentTrainer?.id||1);toast('⚖️ Added to compare!')">⚖️ Compare</button>
           <button class="btn btn-gold btn-sm" onclick="scrollToId('booking-widget')">Book Session</button>
         </div>
       </div>
@@ -825,7 +827,7 @@
             </div>
             <div
               style="margin-top:18px;background:var(--fog);border-radius:var(--r);padding:14px;font-size:.84rem;color:var(--ts)">
-              <strong>Available time slots:</strong> 9:00 AM Â· 11:00 AM Â· 2:00 PM Â· 4:00 PM Â· 7:00 PM (IST)
+              <strong>Available time slots:</strong> 9:00 AM · 11:00 AM · 2:00 PM · 4:00 PM · 7:00 PM (IST)
             </div>
           </div>
         </div>
@@ -867,11 +869,11 @@
       <!-- Booking Sidebar -->
       <div class="prof-sidebar">
         <div class="booking-widget" id="booking-widget">
-          <div class="bw-price"><span class="amt" id="prof-price-amt">â‚¹3,500</span><span class="per"> / hour</span>
+          <div class="bw-price"><span class="amt" id="prof-price-amt">₹3,500</span><span class="per"> / hour</span>
           </div>
           <div class="bw-stats">
             <div class="bw-stat">
-              <div class="v" style="color:var(--gold)" id="prof-stat-rating2">4.9â˜…</div>
+              <div class="v" style="color:var(--gold)" id="prof-stat-rating2">4.9★</div>
               <div class="k">Rating</div>
             </div>
             <div class="bw-stat">
@@ -885,7 +887,7 @@
           </div>
           <div class="form-group"><label>Session Type</label><select id="bw-type">
               <option>1-on-1 Session</option>
-              <option>Group Session (2â€“5)</option>
+              <option>Group Session (2–5)</option>
               <option>Corporate Training</option>
               <option>Workshop</option>
             </select></div>
@@ -905,14 +907,14 @@
           <div
             style="display:flex;justify-content:space-between;margin-bottom:14px;padding:12px;background:var(--fog);border-radius:var(--r)">
             <span style="font-size:.84rem;color:var(--ts)">Total</span>
-            <span style="font-weight:700;color:var(--gold-dk)" id="bw-total">â‚¹3,500</span>
+            <span style="font-weight:700;color:var(--gold-dk)" id="bw-total">₹3,500</span>
           </div>
           <button class="btn btn-gold btn-full" style="padding:13px;margin-bottom:10px"
             onclick="openModal('book')">Request Booking</button>
           <button class="btn btn-dark btn-full"
             style="padding:11px;background:linear-gradient(135deg,#25d366,#128c7e);border:none;color:#fff"
-            id="msg-btn-sidebar" onclick="openWhatsApp()">ðŸ’¬ Message on WhatsApp</button>
-          <p style="text-align:center;font-size:.72rem;color:var(--tm);margin-top:12px">ðŸ”’ Secure payment Â· Free
+            id="msg-btn-sidebar" onclick="openWhatsApp()">💬 Message on WhatsApp</button>
+          <p style="text-align:center;font-size:.72rem;color:var(--tm);margin-top:12px">🔒 Secure payment · Free
             cancellation 24h before</p>
         </div>
         <div class="card" style="margin-top:18px">
@@ -937,14 +939,14 @@
     </div>
   </div>
 
-  <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  <!-- ——————————————————————————————————————————————————————————————————————————————————————————————————————————
      CATEGORIES  |  PRICING  |  ABOUT  |  BLOG  |  CONTACT  |  COMPARE
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+—————————————————————————————————————————————————————————————————————————————————————————————————————————— -->
 
   <div id="p-categories" class="page">
     <div class="page-hero"><span class="section-label">All Specialisations</span>
       <h1>Explore <span style="color:var(--gold)">Every Field</span></h1>
-      <p>140+ specialisations Â· 2,800+ verified trainers Â· 62 countries</p>
+      <p>140+ specialisations · 2,800+ verified trainers · 62 countries</p>
     </div>
     <section class="bg-cream">
       <div class="cats-grid" id="all-cats"></div>
@@ -984,7 +986,7 @@
           <div
             style="font-size:.74rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(226,201,126,.6);margin-bottom:12px">
             Professional</div>
-          <div style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:700;color:#0A2551">â‚¹999<span
+          <div style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:700;color:#0A2551">₹999<span
               style="font-size:1rem;font-weight:400;color:#666">/mo</span></div>
           <div style="font-size:.84rem;color:#666;margin:6px 0 22px">For growing trainers</div>
           <div class="pf on">Premium profile with video intro</div>
@@ -1023,30 +1025,30 @@
             class="a">Questions</span></h2>
         <div class="faq-item">
           <div class="faq-q" onclick="toggleFaq(this)">Is there a free trial for the Professional plan? <span
-              class="faq-arrow">â–¼</span></div>
-          <div class="faq-a">Yes! 14 days free on the Professional plan â€” no credit card required. After the trial,
+              class="faq-arrow">▼</span></div>
+          <div class="faq-a">Yes! 14 days free on the Professional plan — no credit card required. After the trial,
             subscribe or downgrade to the free Starter plan.</div>
         </div>
         <div class="faq-item">
-          <div class="faq-q" onclick="toggleFaq(this)">How does the commission work? <span class="faq-arrow">â–¼</span>
+          <div class="faq-q" onclick="toggleFaq(this)">How does the commission work? <span class="faq-arrow">▼</span>
           </div>
-          <div class="faq-a">We charge a percentage of each completed booking â€” 20% on Starter and 12% on Professional.
+          <div class="faq-a">We charge a percentage of each completed booking — 20% on Starter and 12% on Professional.
             Enterprise clients negotiate custom rates. No hidden fees.</div>
         </div>
         <div class="faq-item">
-          <div class="faq-q" onclick="toggleFaq(this)">When do I receive my payout? <span class="faq-arrow">â–¼</span>
+          <div class="faq-q" onclick="toggleFaq(this)">When do I receive my payout? <span class="faq-arrow">▼</span>
           </div>
           <div class="faq-a">Payouts are processed within 48 hours of session completion directly to your bank account
-            via Razorpay. International payouts via Stripe take 7â€“10 business days.</div>
+            via Razorpay. International payouts via Stripe take 7–10 business days.</div>
         </div>
         <div class="faq-item">
-          <div class="faq-q" onclick="toggleFaq(this)">Can I cancel anytime? <span class="faq-arrow">â–¼</span></div>
+          <div class="faq-q" onclick="toggleFaq(this)">Can I cancel anytime? <span class="faq-arrow">▼</span></div>
           <div class="faq-a">Yes. Cancel the Professional plan at any time. Your profile reverts to the free Starter
             plan and all data, reviews and bookings are preserved.</div>
         </div>
         <div class="faq-item">
           <div class="faq-q" onclick="toggleFaq(this)">Is World Trainer Forum available for corporate clients? <span
-              class="faq-arrow">â–¼</span></div>
+              class="faq-arrow">▼</span></div>
           <div class="faq-a">Yes! Organisations can book multiple trainers, manage team-wide training and get dedicated
             GST-compliant invoicing. Contact our sales team for enterprise pricing.</div>
         </div>
@@ -1063,19 +1065,19 @@
     <section class="bg-cream">
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:22px;margin-bottom:60px">
         <div class="card">
-          <div style="font-size:2rem;margin-bottom:12px">ðŸŽ¯</div>
+          <div style="font-size:2rem;margin-bottom:12px">🎯</div>
           <p class="h3-title" style="margin-bottom:10px">Our Mission</p>
           <p style="color:var(--ts);font-size:.9rem;line-height:1.8">To democratise access to world-class expertise,
             connecting ambitious organizations with transformative trainers across every field and geography.</p>
         </div>
         <div class="card">
-          <div style="font-size:2rem;margin-bottom:12px">ðŸ‘ï¸</div>
+          <div style="font-size:2rem;margin-bottom:12px">👁️</div>
           <p class="h3-title" style="margin-bottom:10px">Our Vision</p>
           <p style="color:var(--ts);font-size:.9rem;line-height:1.8">A world where every expert can build a thriving
             practice online and every organization can find the perfect guide for their unique journey.</p>
         </div>
         <div class="card">
-          <div style="font-size:2rem;margin-bottom:12px">ðŸ’Ž</div>
+          <div style="font-size:2rem;margin-bottom:12px">💎</div>
           <p class="h3-title" style="margin-bottom:10px">Our Values</p>
           <p style="color:var(--ts);font-size:.9rem;line-height:1.8">Trust, transparency and quality above all. Every
             trainer is verified. Every interaction protected. Every outcome matters deeply to us.</p>
@@ -1101,7 +1103,7 @@
           <div style="font-size:.82rem;color:var(--tm)">Head of Growth</div>
         </div>
         <div class="team-card">
-          <div class="team-av" style="background:#e67e22">RS</div>
+          <div class="team-av" style="background:#e67e22">Rohit Sharma</div>
           <div style="font-weight:700;margin-bottom:4px">Rohit Sharma</div>
           <div style="font-size:.82rem;color:var(--tm)">Head of Product</div>
         </div>
@@ -1134,7 +1136,7 @@
           <div style="font-size:.84rem;color:var(--tm)">Countries</div>
         </div>
         <div>
-          <div style="font-family:'Cormorant Garamond',serif;font-size:2.4rem;font-weight:700;color:var(--gold)">â‚¹48Cr+
+          <div style="font-family:'Cormorant Garamond',serif;font-size:2.4rem;font-weight:700;color:var(--gold)">₹48Cr+
           </div>
           <div style="font-size:.84rem;color:var(--tm)">Trainer Earnings</div>
         </div>
@@ -1145,7 +1147,7 @@
   <div id="p-blog" class="page">
     <div class="page-hero"><span class="section-label">Resources</span>
       <h1>Blog &amp; <span style="color:var(--gold)">Resources</span></h1>
-      <p>Insights for trainers and organizations â€” tips, strategies and success stories.</p>
+      <p>Insights for trainers and organizations — tips, strategies and success stories.</p>
     </div>
     <section class="bg-cream">
       <div class="trainers-grid" id="blog-grid"></div>
@@ -1173,28 +1175,28 @@
             </select></div>
           <div class="form-group"><label>Message</label><textarea rows="5" placeholder="How can we help?"></textarea>
           </div>
-          <button class="btn btn-gold btn-full btn-lg" onclick="submitContact()">Send Message â†’</button>
+          <button class="btn btn-gold btn-full btn-lg" onclick="submitContact()">Send Message →</button>
         </div>
         <div>
           <div class="card" style="margin-bottom:18px">
             <p class="h3-title">Contact Information</p>
             <div style="display:flex;gap:14px;margin-bottom:18px">
-              <div class="contact-ico">ðŸ“§</div>
+              <div class="contact-ico">📧</div>
               <div>
                 <div style="font-weight:600;margin-bottom:3px">Email</div>
                 <div style="font-size:.85rem;color:var(--ts)">hello@World Trainer Forum.com</div>
               </div>
             </div>
             <div style="display:flex;gap:14px;margin-bottom:18px">
-              <div class="contact-ico">ðŸ“ž</div>
+              <div class="contact-ico">📞</div>
               <div>
                 <div style="font-weight:600;margin-bottom:3px">Phone</div>
                 <div style="font-size:.85rem;color:var(--ts)">+91 98765 43210</div>
-                <div style="font-size:.8rem;color:var(--tm)">Monâ€“Fri 9AMâ€“6PM IST</div>
+                <div style="font-size:.8rem;color:var(--tm)">Mon–Fri 9AM–6PM IST</div>
               </div>
             </div>
             <div style="display:flex;gap:14px">
-              <div class="contact-ico">ðŸ“</div>
+              <div class="contact-ico">📍</div>
               <div>
                 <div style="font-weight:600;margin-bottom:3px">Office</div>
                 <div style="font-size:.85rem;color:var(--ts)">Bandra Kurla Complex, Mumbai 400051</div>
@@ -1204,9 +1206,9 @@
           <div class="card">
             <p class="h3-title">Platform Status</p>
             <div style="margin-bottom:12px"><span
-                style="display:inline-flex;align-items:center;gap:6px;background:rgba(39,103,73,.1);color:var(--ok);padding:5px 14px;border-radius:999px;font-size:.8rem;font-weight:600">â—
+                style="display:inline-flex;align-items:center;gap:6px;background:rgba(39,103,73,.1);color:var(--ok);padding:5px 14px;border-radius:999px;font-size:.8rem;font-weight:600">• 
                 All systems operational</span></div>
-            <p style="font-size:.82rem;color:var(--tm);line-height:1.8">Bookings Â· Payments Â· Messaging Â· Profiles â€” All
+            <p style="font-size:.82rem;color:var(--tm);line-height:1.8">Bookings · Payments · Messaging · Profiles — All
               running normally.</p>
           </div>
         </div>
@@ -1223,45 +1225,45 @@
       <div style="margin-bottom:24px">
         <div style="display:flex;flex-wrap:wrap;gap:10px">
           <button class="btn btn-outline btn-sm" onclick="window.location.href='find-trainers.html'">Browse All Trainers
-            â†’</button>
+            →</button>
         </div>
       </div>
       <div id="compare-content"></div>
     </section>
   </div>
 
-  <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  <!-- ——————————————————————————————————————————————————————————————————————————————————————————————————————————
      TRAINER DASHBOARD
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+—————————————————————————————————————————————————————————————————————————————————————————————————————————— -->
   <div id="p-trainer-dash" class="page" style="padding-top:var(--nav)">
     <div class="dash-wrap">
       <div class="dash-sidebar">
         <div class="ds-sec">Main</div>
         <button class="ds-link on" onclick="switchDashSection(this,'overview')"><span
-            class="ds-ico">ðŸ“Š</span>Dashboard</button>
-        <button class="ds-link" onclick="switchDashSection(this,'profile')"><span class="ds-ico">ðŸ‘¤</span>My
+            class="ds-ico">📈</span>Dashboard</button>
+        <button class="ds-link" onclick="switchDashSection(this,'profile')"><span class="ds-ico">👤</span>My
           Profile</button>
         <button class="ds-link" onclick="switchDashSection(this,'bookings')"><span
-            class="ds-ico">ðŸ“…</span>Bookings</button>
-        <button class="ds-link" onclick="switchDashSection(this,'messages')"><span class="ds-ico">ðŸ’¬</span>WhatsApp
-          Contact<span class="ds-badge">âœ“</span></button>
+            class="ds-ico">📅</span>Bookings</button>
+        <button class="ds-link" onclick="switchDashSection(this,'messages')"><span class="ds-ico">💬</span>WhatsApp
+          Contact<span class="ds-badge">✓</span></button>
         <div class="ds-sec">Business</div>
         <button class="ds-link" onclick="switchDashSection(this,'earnings')"><span
-            class="ds-ico">ðŸ’°</span>Earnings</button>
+            class="ds-ico">💰</span>Earnings</button>
         <button class="ds-link" onclick="switchDashSection(this,'reviews')"><span
-            class="ds-ico">â­</span>Reviews</button>
+            class="ds-ico">⭐</span>Reviews</button>
         <button class="ds-link" onclick="switchDashSection(this,'packages')"><span
-            class="ds-ico">ðŸ“¦</span>Packages</button>
+            class="ds-ico">📦</span>Packages</button>
         <button class="ds-link" onclick="switchDashSection(this,'availability')"><span
-            class="ds-ico">ðŸ—“ï¸</span>Availability</button>
+            class="ds-ico">🗓️</span>Availability</button>
         <button class="ds-link" onclick="switchDashSection(this,'portfolio')"><span
-            class="ds-ico">ðŸŽ¬</span>Portfolio</button>
+            class="ds-ico">🎥</span>Portfolio</button>
         <div class="ds-sec">Account</div>
         <button class="ds-link" onclick="switchDashSection(this,'settings')"><span
-            class="ds-ico">âš™ï¸</span>Settings</button>
-        <button class="ds-link" onclick="toggleNotif()"><span class="ds-ico">ðŸ””</span>Notifications<span
+            class="ds-ico">⚙️</span>Settings</button>
+        <button class="ds-link" onclick="toggleNotif()"><span class="ds-ico">🔔</span>Notifications<span
             class="ds-badge">2</span></button>
-        <button class="ds-link" onclick="nav('home')"><span class="ds-ico">ðŸ </span>Back to Site</button>
+        <button class="ds-link" onclick="nav('home')"><span class="ds-ico">🏠</span>Back to Site</button>
       </div>
       <div class="dash-main">
 
@@ -1269,37 +1271,37 @@
         <div id="ds-overview" class="dash-section on">
           <div class="dash-topbar">
             <div>
-              <h2>Good morning, Rajesh ðŸ‘‹</h2>
+              <h2>Good morning, Rajesh 👋</h2>
               <p>Here's what's happening with your training business today.</p>
             </div>
             <div style="display:flex;gap:10px"><button class="btn btn-dark btn-sm"
-                onclick="toggleNotif()">ðŸ””</button><button class="btn btn-gold btn-sm" onclick="nav('profile')">View My
-                Profile â†’</button></div>
+                onclick="toggleNotif()">🔔</button><button class="btn btn-gold btn-sm" onclick="nav('profile')">View My
+                Profile →</button></div>
           </div>
           <div class="kpi-row">
             <div class="kpi">
-              <div class="ico">ðŸ’°</div>
+              <div class="ico">💰</div>
               <div class="lbl">Earnings (May)</div>
-              <div class="val">â‚¹1,24,500</div>
-              <div class="chg up">â†‘ 18% vs April</div>
+              <div class="val">₹1,24,500</div>
+              <div class="chg up">↑ 18% vs April</div>
             </div>
             <div class="kpi">
-              <div class="ico">ðŸ“…</div>
+              <div class="ico">📅</div>
               <div class="lbl">Active Bookings</div>
               <div class="val">23</div>
-              <div class="chg up">â†‘ 5 new this week</div>
+              <div class="chg up">↑ 5 new this week</div>
             </div>
             <div class="kpi">
-              <div class="ico">â­</div>
+              <div class="ico">⭐</div>
               <div class="lbl">Avg. Rating</div>
               <div class="val">4.9</div>
               <div class="chg up">87 total reviews</div>
             </div>
             <div class="kpi">
-              <div class="ico">ðŸ‘ï¸</div>
+              <div class="ico">👤</div>
               <div class="lbl">Profile Views</div>
               <div class="val">3,240</div>
-              <div class="chg up">â†‘ 32% this month</div>
+              <div class="chg up">↑ 32% this month</div>
             </div>
           </div>
           <div class="dash-row">
@@ -1398,21 +1400,21 @@
                   <tr>
                     <td><strong>Ananya Patel</strong></td>
                     <td>AI Bootcamp (4wk)</td>
-                    <td>May 14, 2026 Â· 10AM</td>
-                    <td><strong>â‚¹18,000</strong></td>
+                    <td>May 14, 2026 · 10AM</td>
+                    <td><strong>₹18,000</strong></td>
                     <td>Online</td>
                     <td><span class="pill p-warn">Pending</span></td>
                     <td style="display:flex;gap:5px;padding:12px 0"><button class="btn btn-ok btn-sm"
                         style="padding:4px 10px;font-size:.74rem"
-                        onclick="toast('âœ… Booking accepted!')">Accept</button><button class="btn btn-err btn-sm"
+                        onclick="toast('✅ Booking accepted!')">Accept</button><button class="btn btn-err btn-sm"
                         style="padding:4px 10px;font-size:.74rem" onclick="toast('Booking declined.')">Decline</button>
                     </td>
                   </tr>
                   <tr>
                     <td><strong>Rahul Singh</strong></td>
                     <td>1-on-1 Session (90min)</td>
-                    <td>May 12 Â· 2PM</td>
-                    <td><strong>â‚¹5,250</strong></td>
+                    <td>May 12 · 2PM</td>
+                    <td><strong>₹5,250</strong></td>
                     <td>Online</td>
                     <td><span class="pill p-ok">Confirmed</span></td>
                     <td><button class="btn btn-dark btn-sm" style="padding:4px 10px;font-size:.74rem">View</button></td>
@@ -1420,8 +1422,8 @@
                   <tr>
                     <td><strong>TechCorp India</strong></td>
                     <td>Corporate Training (2 days)</td>
-                    <td>May 16â€“17</td>
-                    <td><strong>â‚¹95,000</strong></td>
+                    <td>May 16–17</td>
+                    <td><strong>₹95,000</strong></td>
                     <td>In-Person</td>
                     <td><span class="pill p-ok">Confirmed</span></td>
                     <td><button class="btn btn-dark btn-sm" style="padding:4px 10px;font-size:.74rem">View</button></td>
@@ -1429,8 +1431,8 @@
                   <tr>
                     <td><strong>Neha Gupta</strong></td>
                     <td>Intro Session</td>
-                    <td>May 8 Â· 11AM</td>
-                    <td><strong>â‚¹2,500</strong></td>
+                    <td>May 8 · 11AM</td>
+                    <td><strong>₹2,500</strong></td>
                     <td>Online</td>
                     <td><span class="pill p-info">Completed</span></td>
                     <td><button class="btn btn-dark btn-sm" style="padding:4px 10px;font-size:.74rem">Invoice</button>
@@ -1439,8 +1441,8 @@
                   <tr>
                     <td><strong>Vikram Rao</strong></td>
                     <td>Advanced LLMs (6 sessions)</td>
-                    <td>Apr 28 â€“ May 5</td>
-                    <td><strong>â‚¹28,000</strong></td>
+                    <td>Apr 28 – May 5</td>
+                    <td><strong>₹28,000</strong></td>
                     <td>Online</td>
                     <td><span class="pill p-info">Completed</span></td>
                     <td><button class="btn btn-dark btn-sm" style="padding:4px 10px;font-size:.74rem">Invoice</button>
@@ -1468,10 +1470,10 @@
                   value="Senior AI &amp; ML Trainer"></div>
             </div>
             <div class="form-group"><label>Bio</label><textarea id="cp-bio"
-                rows="4">With over 12 years of hands-on experience in AI and ML, I have trained 2,000+ professionalsâ€¦</textarea>
+                rows="4">With over 12 years of hands-on experience in AI and ML, I have trained 2,000+ professionals…</textarea>
             </div>
             <div class="grid2">
-              <div class="form-group"><label>Hourly Rate (â‚¹)</label><input id="cp-rate" type="number" value="3500">
+              <div class="form-group"><label>Hourly Rate (₹)</label><input id="cp-rate" type="number" value="3500">
               </div>
               <div class="form-group"><label>Primary Category</label><select id="cp-category">
                   <option>AI &amp; Technology</option>
@@ -1496,11 +1498,11 @@
                 <div
                   style="width:88px;height:88px;border-radius:50%;background:#C5A059;display:flex;align-items:center;justify-content:center;font-size:1.8rem;font-weight:700;color:#fff;margin:0 auto 10px">
                   RK</div><button class="btn btn-dark btn-sm"
-                  onclick="toast('ðŸ“¸ Photo upload in full implementation.')">Change Photo</button>
+                  onclick="toast('📸 Photo upload in full implementation.')">Change Photo</button>
               </div>
               <div
                 style="flex:1;min-width:200px;height:90px;background:linear-gradient(135deg,#D1E5F7,#E8F2FA);border-radius:var(--r);display:flex;align-items:center;justify-content:center;cursor:pointer"
-                onclick="toast('ðŸ–¼ï¸ Banner upload in full implementation.')"><span
+                onclick="toast('🖼️ Banner upload in full implementation.')"><span
                   style="color:#0A2551;font-size:.84rem">Click to change cover banner</span></div>
             </div>
           </div>
@@ -1540,26 +1542,26 @@
                     <td><strong>Ananya Patel</strong></td>
                     <td>AI Bootcamp (4wk)</td>
                     <td>May 14, 2026</td>
-                    <td>â‚¹18,000</td>
+                    <td>₹18,000</td>
                     <td>Online</td>
                     <td><span class="pill p-warn">Pending</span></td>
-                    <td><button class="btn btn-ok btn-sm" onclick="toast('âœ… Accepted!')">Accept</button></td>
+                    <td><button class="btn btn-ok btn-sm" onclick="toast('✅ Accepted!')">Accept</button></td>
                   </tr>
                   <tr>
                     <td><strong>Rahul Singh</strong></td>
                     <td>1-on-1 Session</td>
                     <td>May 12, 2026</td>
-                    <td>â‚¹5,250</td>
+                    <td>₹5,250</td>
                     <td>Online</td>
                     <td><span class="pill p-ok">Confirmed</span></td>
                     <td><button class="btn btn-dark btn-sm"
-                        onclick="openWhatsAppClient('919876543210', 'Rahul Singh')">ðŸ’¬ WhatsApp</button></td>
+                        onclick="openWhatsAppClient('919876543210', 'Rahul Singh')">💬 WhatsApp</button></td>
                   </tr>
                   <tr>
                     <td><strong>TechCorp India</strong></td>
                     <td>Corporate 2-day</td>
-                    <td>May 16â€“17</td>
-                    <td>â‚¹95,000</td>
+                    <td>May 16–17</td>
+                    <td>₹95,000</td>
                     <td>In-Person</td>
                     <td><span class="pill p-ok">Confirmed</span></td>
                     <td><button class="btn btn-dark btn-sm">View</button></td>
@@ -1568,7 +1570,7 @@
                     <td><strong>Neha Gupta</strong></td>
                     <td>Intro Session</td>
                     <td>May 8, 2026</td>
-                    <td>â‚¹2,500</td>
+                    <td>₹2,500</td>
                     <td>Online</td>
                     <td><span class="pill p-info">Completed</span></td>
                     <td><button class="btn btn-dark btn-sm">Invoice</button></td>
@@ -1586,32 +1588,32 @@
               <h2>Earnings</h2>
               <p>Track your revenue and payouts.</p>
             </div><button class="btn btn-gold btn-sm"
-              onclick="toast('ðŸ’° Payout requested! Arrives in 48 hours.')">Request Payout</button>
+              onclick="toast('💰 Payout requested! Arrives in 48 hours.')">Request Payout</button>
           </div>
           <div class="kpi-row">
             <div class="kpi">
-              <div class="ico">ðŸ’°</div>
+              <div class="ico">💰</div>
               <div class="lbl">Total Earned (All Time)</div>
-              <div class="val">â‚¹18.4L</div>
+              <div class="val">₹18.4L</div>
               <div class="chg up">Since Mar 2022</div>
             </div>
             <div class="kpi">
-              <div class="ico">ðŸ“…</div>
+              <div class="ico">📅</div>
               <div class="lbl">This Month (May)</div>
-              <div class="val">â‚¹1,24,500</div>
-              <div class="chg up">â†‘ 18% vs Apr</div>
+              <div class="val">₹1,24,500</div>
+              <div class="chg up">↑ 18% vs Apr</div>
             </div>
             <div class="kpi">
-              <div class="ico">ðŸ’¸</div>
+              <div class="ico">💸</div>
               <div class="lbl">Pending Payout</div>
-              <div class="val">â‚¹48,750</div>
+              <div class="val">₹48,750</div>
               <div class="chg up">Clears in 48h</div>
             </div>
             <div class="kpi">
-              <div class="ico">ðŸ“Š</div>
+              <div class="ico">📈</div>
               <div class="lbl">Commission (May)</div>
-              <div class="val">â‚¹14,940</div>
-              <div class="chg">12% of â‚¹1,24,500</div>
+              <div class="val">₹14,940</div>
+              <div class="chg">12% of ₹1,24,500</div>
             </div>
           </div>
           <div class="dash-card">
@@ -1630,26 +1632,26 @@
                 </thead>
                 <tbody>
                   <tr>
-                    <td>May 1â€“11, 2026</td>
-                    <td>â‚¹1,24,500</td>
-                    <td>â‚¹14,940</td>
-                    <td><strong>â‚¹1,09,560</strong></td>
+                    <td>May 1–11, 2026</td>
+                    <td>₹1,24,500</td>
+                    <td>₹14,940</td>
+                    <td><strong>₹1,09,560</strong></td>
                     <td><span class="pill p-warn">Pending</span></td>
-                    <td>â€”</td>
+                    <td>—</td>
                   </tr>
                   <tr>
                     <td>April 2026</td>
-                    <td>â‚¹1,05,500</td>
-                    <td>â‚¹12,660</td>
-                    <td><strong>â‚¹92,840</strong></td>
+                    <td>₹1,05,500</td>
+                    <td>₹12,660</td>
+                    <td><strong>₹92,840</strong></td>
                     <td><span class="pill p-ok">Paid</span></td>
                     <td>May 3, 2026</td>
                   </tr>
                   <tr>
                     <td>March 2026</td>
-                    <td>â‚¹88,000</td>
-                    <td>â‚¹10,560</td>
-                    <td><strong>â‚¹77,440</strong></td>
+                    <td>₹88,000</td>
+                    <td>₹10,560</td>
+                    <td><strong>₹77,440</strong></td>
                     <td><span class="pill p-ok">Paid</span></td>
                     <td>Apr 3, 2026</td>
                   </tr>
@@ -1665,7 +1667,7 @@
             <div>
               <h2>Availability Calendar</h2>
               <p>Set your available slots for clients to book.</p>
-            </div><button class="btn btn-gold btn-sm" onclick="toast('ðŸ—“ï¸ Availability saved!')">Save Changes</button>
+            </div><button class="btn btn-gold btn-sm" onclick="toast('🗓️ Availability saved!')">Save Changes</button>
           </div>
           <div class="dash-card">
             <p class="h3-title">Weekly Availability Template</p>
@@ -1674,7 +1676,7 @@
               <div style="border:1px solid var(--bd);border-radius:var(--r);padding:14px;text-align:center">
                 <div style="font-weight:600;margin-bottom:8px">Monday</div><label class="chk"
                   style="justify-content:center"><input type="checkbox" checked> Active</label>
-                <div style="margin-top:8px;font-size:.78rem;color:var(--tm)">9AMâ€“6PM</div>
+                <div style="margin-top:8px;font-size:.78rem;color:var(--tm)">9AM–6PM</div>
               </div>
               <div style="border:1px solid var(--bd);border-radius:var(--r);padding:14px;text-align:center">
                 <div style="font-weight:600;margin-bottom:8px">Tuesday</div><label class="chk"
@@ -1684,22 +1686,22 @@
               <div style="border:1px solid var(--bd);border-radius:var(--r);padding:14px;text-align:center">
                 <div style="font-weight:600;margin-bottom:8px">Wednesday</div><label class="chk"
                   style="justify-content:center"><input type="checkbox" checked> Active</label>
-                <div style="margin-top:8px;font-size:.78rem;color:var(--tm)">9AMâ€“6PM</div>
+                <div style="margin-top:8px;font-size:.78rem;color:var(--tm)">9AM–6PM</div>
               </div>
               <div style="border:1px solid var(--bd);border-radius:var(--r);padding:14px;text-align:center">
                 <div style="font-weight:600;margin-bottom:8px">Thursday</div><label class="chk"
                   style="justify-content:center"><input type="checkbox" checked> Active</label>
-                <div style="margin-top:8px;font-size:.78rem;color:var(--tm)">2PMâ€“8PM</div>
+                <div style="margin-top:8px;font-size:.78rem;color:var(--tm)">2PM–8PM</div>
               </div>
               <div style="border:1px solid var(--bd);border-radius:var(--r);padding:14px;text-align:center">
                 <div style="font-weight:600;margin-bottom:8px">Friday</div><label class="chk"
                   style="justify-content:center"><input type="checkbox" checked> Active</label>
-                <div style="margin-top:8px;font-size:.78rem;color:var(--tm)">9AMâ€“6PM</div>
+                <div style="margin-top:8px;font-size:.78rem;color:var(--tm)">9AM–6PM</div>
               </div>
               <div style="border:1px solid var(--bd);border-radius:var(--r);padding:14px;text-align:center">
                 <div style="font-weight:600;margin-bottom:8px">Saturday</div><label class="chk"
                   style="justify-content:center"><input type="checkbox" checked> Active</label>
-                <div style="margin-top:8px;font-size:.78rem;color:var(--tm)">10AMâ€“4PM</div>
+                <div style="margin-top:8px;font-size:.78rem;color:var(--tm)">10AM–4PM</div>
               </div>
               <div style="border:1px solid var(--bd);border-radius:var(--r);padding:14px;text-align:center">
                 <div style="font-weight:600;margin-bottom:8px">Sunday</div><label class="chk"
@@ -1721,11 +1723,11 @@
           <div class="dash-card" style="margin-bottom:18px">
             <p class="h3-title">Security</p>
             <div class="grid2">
-              <div class="form-group"><label>Current Password</label><input type="password" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢">
+              <div class="form-group"><label>Current Password</label><input type="password" placeholder="••••••••">
               </div>
               <div class="form-group"><label>New Password</label><input type="password" placeholder="New password">
               </div>
-            </div><button class="btn btn-gold btn-sm" onclick="toast('ðŸ”’ Security updated!')">Update Security</button>
+            </div><button class="btn btn-gold btn-sm" onclick="toast('🔒 Security updated!')">Update Security</button>
           </div>
           <div class="dash-card" style="margin-bottom:18px">
             <p class="h3-title">Payment Details</p>
@@ -1734,7 +1736,7 @@
               <div class="form-group"><label>IFSC Code</label><input placeholder="SBIN0000123"></div>
             </div>
             <div class="form-group"><label>UPI ID</label><input placeholder="rajesh@paytm"></div><button
-              class="btn btn-gold btn-sm" onclick="toast('ðŸ’³ Payment details saved!')">Save</button>
+              class="btn btn-gold btn-sm" onclick="toast('💳 Payment details saved!')">Save</button>
           </div>
           <div class="dash-card">
             <p class="h3-title">Notification Preferences</p>
@@ -1752,7 +1754,7 @@
                   style="color:var(--ts)">Payout processed</span><label class="chk"><input type="checkbox" checked>
                   Email &amp; SMS</label></div>
             </div><button class="btn btn-gold btn-sm" style="margin-top:16px"
-              onclick="toast('ðŸ”” Preferences saved!')">Save Preferences</button>
+              onclick="toast('🔔 Preferences saved!')">Save Preferences</button>
           </div>
         </div>
 
@@ -1761,42 +1763,42 @@
           <div class="dash-topbar">
             <div>
               <h2>WhatsApp Contact</h2>
-              <p>Clients message you directly on WhatsApp â€” no in-app chat needed.</p>
+              <p>Clients message you directly on WhatsApp — no in-app chat needed.</p>
             </div>
           </div>
           <div class="dash-card">
             <div
               style="background:linear-gradient(135deg,rgba(37,211,102,.12),rgba(18,140,126,.12));border:1px solid rgba(37,211,102,.3);border-radius:var(--r);padding:20px;display:flex;align-items:center;gap:16px;margin-bottom:16px">
-              <div style="font-size:2.4rem">ðŸ’¬</div>
+              <div style="font-size:2.4rem">💬</div>
               <div style="flex:1">
                 <div style="font-weight:700;font-size:1rem;margin-bottom:4px;color:#25d366">WhatsApp Direct Messaging
                 </div>
-                <div style="font-size:.84rem;color:var(--ts)" id="dash-wa-display">No WhatsApp number set â€” add it in My
+                <div style="font-size:.84rem;color:var(--ts)" id="dash-wa-display">No WhatsApp number set — add it in My
                   Profile</div>
               </div>
               <button class="btn btn-sm"
                 style="background:linear-gradient(135deg,#25d366,#128c7e);border:none;color:#fff;padding:10px 18px;border-radius:var(--r);font-weight:600;cursor:pointer"
-                onclick="switchDashSection(null,'profile')">Set Number â†’</button>
+                onclick="switchDashSection(null,'profile')">Set Number →</button>
             </div>
             <p style="color:var(--tm);font-size:.88rem;margin-bottom:14px">When clients click the <strong
-                style="color:#25d366">ðŸ’¬ Message on WhatsApp</strong> button on your profile, they are redirected
+                style="color:#25d366">💬 Message on WhatsApp</strong> button on your profile, they are redirected
               directly to your WhatsApp. No platform messaging required.</p>
             <div style="display:flex;flex-direction:column;gap:10px">
               <div
                 style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--fog);border-radius:var(--r)">
-                <div style="font-size:1.2rem">âœ…</div>
+                <div style="font-size:1.2rem">✅</div>
                 <div style="font-size:.84rem;color:var(--ts)">Client clicks <strong>Message on WhatsApp</strong> on your
                   profile page</div>
               </div>
               <div
                 style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--fog);border-radius:var(--r)">
-                <div style="font-size:1.2rem">ðŸ“²</div>
+                <div style="font-size:1.2rem">📱</div>
                 <div style="font-size:.84rem;color:var(--ts)">WhatsApp opens directly with a pre-filled introduction
                   message</div>
               </div>
               <div
                 style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--fog);border-radius:var(--r)">
-                <div style="font-size:1.2rem">ðŸ’¬</div>
+                <div style="font-size:1.2rem">💬</div>
                 <div style="font-size:.84rem;color:var(--ts)">You chat, discuss requirements and close the booking on
                   WhatsApp</div>
               </div>
@@ -1813,7 +1815,7 @@
                 <div class="rev-av" style="background:#2d5fa8">VR</div>
                 <div>
                   <div class="rev-name">Vikram Rao</div>
-                  <div class="rev-stars">â˜…â˜…â˜…â˜…â˜…</div>
+                  <div class="rev-stars">★★★★★</div>
                 </div><span class="rev-date">3 days ago</span>
               </div>
               <p class="rev-text">Absolutely phenomenal trainer.</p>
@@ -1822,17 +1824,17 @@
         </div>
         <div id="ds-packages" class="dash-section">
           <div class="dash-topbar">
-            <h2>Packages</h2><button class="btn btn-gold btn-sm" onclick="toast('ðŸ“¦ Add package!')">+ Add
+            <h2>Packages</h2><button class="btn btn-gold btn-sm" onclick="toast('📦 Add package!')">+ Add
               Package</button>
           </div>
           <div class="dash-card">
             <div class="pkg-card">
               <div>
                 <div class="pkg-name">Introductory Session</div>
-                <div class="pkg-desc">60 min Â· 1-on-1</div>
+                <div class="pkg-desc">60 min · 1-on-1</div>
               </div>
               <div style="text-align:right">
-                <div class="pkg-price">â‚¹2,500</div><button class="btn btn-dark btn-sm"
+                <div class="pkg-price">₹2,500</div><button class="btn btn-dark btn-sm"
                   style="margin-top:6px">Edit</button>
               </div>
             </div>
@@ -1840,10 +1842,10 @@
               <div class="pkg-badge">Popular</div>
               <div>
                 <div class="pkg-name">AI Bootcamp</div>
-                <div class="pkg-desc">4 weeks Â· 8 sessions</div>
+                <div class="pkg-desc">4 weeks · 8 sessions</div>
               </div>
               <div style="text-align:right">
-                <div class="pkg-price">â‚¹18,000</div><button class="btn btn-dark btn-sm"
+                <div class="pkg-price">₹18,000</div><button class="btn btn-dark btn-sm"
                   style="margin-top:6px">Edit</button>
               </div>
             </div>
@@ -1852,12 +1854,12 @@
         <div id="ds-portfolio" class="dash-section">
           <div class="dash-topbar">
             <h2>Portfolio</h2><button class="btn btn-gold btn-sm"
-              onclick="toast('ðŸ“ Upload feature in full implementation.')">+ Add Project</button>
+              onclick="toast('📍 Upload feature in full implementation.')">+ Add Project</button>
           </div>
 
-          <!-- â”€â”€ Introduction Video â”€â”€ -->
+          <!-- ——— Introduction Video ——— -->
           <div class="dash-card mb-16">
-            <p class="h3-title" style="margin-bottom:8px">ðŸŽ¬ Introduction Video</p>
+            <p class="h3-title" style="margin-bottom:8px">🎥 Introduction Video</p>
             <p style="font-size:.82rem;color:var(--tm);margin-bottom:14px">Paste your YouTube video link. Clients will
               be redirected to YouTube when they click play on your profile. If left empty, this section will be hidden
               on your public profile.</p>
@@ -1867,31 +1869,31 @@
             </div>
           </div>
 
-          <!-- â”€â”€ Resources & Media â”€â”€ -->
+          <!-- ——— Resources & Media ——— -->
           <div class="dash-card mb-16">
-            <p class="h3-title" style="margin-bottom:8px">ðŸ“‚ Resources & Media</p>
+            <p class="h3-title" style="margin-bottom:8px">📂 Resources & Media</p>
             <p style="font-size:.82rem;color:var(--tm);margin-bottom:14px">Upload PDFs, slides, or session recordings to
               showcase your expertise.</p>
-            <button class="btn btn-dark btn-sm" onclick="toast('Upload feature in full implementation.')">ðŸ“¤ Upload
+            <button class="btn btn-dark btn-sm" onclick="toast('📂 Upload feature in full implementation.')">📁 Upload
               Resource</button>
           </div>
 
-          <!-- â”€â”€ Testimonial Videos â”€â”€ -->
+          <!-- ——— Testimonial Videos ——— -->
           <div class="dash-card mb-16">
-            <p class="h3-title" style="margin-bottom:8px">ðŸ—£ï¸ Testimonial Videos</p>
+            <p class="h3-title" style="margin-bottom:8px">🗣️ Testimonial Videos</p>
             <p style="font-size:.82rem;color:var(--tm);margin-bottom:14px">Add YouTube links of client testimonial
               videos. If none are added, this section will be hidden on your public profile.</p>
             <button class="btn btn-gold btn-sm" onclick="toast('Add Video functionality in full implementation.')">+ Add
               Video Link</button>
           </div>
 
-          <!-- â”€â”€ Companies Worked With â”€â”€ -->
+          <!-- ——— Companies Worked With ——— -->
           <div class="dash-card mb-16">
-            <p class="h3-title" style="margin-bottom:8px">ðŸ¢ Companies Worked With</p>
+            <p class="h3-title" style="margin-bottom:8px">🏢 Companies Worked With</p>
             <p style="font-size:.82rem;color:var(--tm);margin-bottom:14px">Upload up to 5 company logos. They will
               appear in a "Companies Worked With" section on your public profile. If none are uploaded, this section
               will be hidden.</p>
-            <button class="btn btn-dark btn-sm" onclick="toast('Upload Logo functionality in full implementation.')">ðŸ“¤
+            <button class="btn btn-dark btn-sm" onclick="toast('Upload Logo functionality in full implementation.')">📁
               Upload Logo</button>
             <span style="font-size:.76rem;color:var(--tm);margin-left:10px">Max 5 logos</span>
           </div>
@@ -1900,53 +1902,53 @@
     </div>
   </div>
 
-  <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  <!-- ——————————————————————————————————————————————————————————————————————————————————————————————————————————
      USER DASHBOARD
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+—————————————————————————————————————————————————————————————————————————————————————————————————————————— -->
   <div id="p-user-dash" class="page" style="padding-top:var(--nav)">
     <div class="dash-wrap">
       <div class="dash-sidebar">
         <div class="ds-sec">My Account</div>
-        <button class="ds-link on"><span class="ds-ico">ðŸ“Š</span>Dashboard</button>
-        <button class="ds-link"><span class="ds-ico">ðŸ“…</span>My Bookings</button>
-        <button class="ds-link" onclick="renderFavGrid()"><span class="ds-ico">â¤ï¸</span>Saved Trainers</button>
-        <button class="ds-link"><span class="ds-ico">â­</span>My Reviews</button>
-        <button class="ds-link"><span class="ds-ico">ðŸ’³</span>Payments</button>
+        <button class="ds-link on"><span class="ds-ico">📈</span>Dashboard</button>
+        <button class="ds-link"><span class="ds-ico">📅</span>My Bookings</button>
+        <button class="ds-link" onclick="renderFavGrid()"><span class="ds-ico">❤️</span>Saved Trainers</button>
+        <button class="ds-link"><span class="ds-ico">⭐</span>My Reviews</button>
+        <button class="ds-link"><span class="ds-ico">💳</span>Payments</button>
         <div class="ds-sec">Account</div>
-        <button class="ds-link"><span class="ds-ico">âš™ï¸</span>Settings</button>
-        <button class="ds-link" onclick="nav('home')"><span class="ds-ico">ðŸ </span>Back to Site</button>
+        <button class="ds-link"><span class="ds-ico">⚙️</span>Settings</button>
+        <button class="ds-link" onclick="nav('home')"><span class="ds-ico">🏠</span>Back to Site</button>
       </div>
       <div class="dash-main">
         <div class="dash-topbar">
           <div>
-            <h2>Welcome back, Rahul ðŸ‘‹</h2>
+            <h2>Welcome back, Rahul 👋</h2>
             <p>You have 2 upcoming sessions this week.</p>
           </div><button class="btn btn-gold btn-sm" onclick="window.location.href='find-trainers.html'">Find More
-            Trainers â†’</button>
+            Trainers →</button>
         </div>
         <div class="kpi-row">
           <div class="kpi">
-            <div class="ico">ðŸ“…</div>
+            <div class="ico">📅</div>
             <div class="lbl">Upcoming Sessions</div>
             <div class="val">2</div>
             <div class="chg up">This week</div>
           </div>
           <div class="kpi">
-            <div class="ico">âœ…</div>
+            <div class="ico">✅</div>
             <div class="lbl">Completed Sessions</div>
             <div class="val">14</div>
             <div class="chg up">All-time</div>
           </div>
           <div class="kpi">
-            <div class="ico">â¤ï¸</div>
+            <div class="ico">❤️</div>
             <div class="lbl">Saved Trainers</div>
             <div class="val">7</div>
             <div class="chg">Click to view</div>
           </div>
           <div class="kpi">
-            <div class="ico">ðŸ’°</div>
+            <div class="ico">💰</div>
             <div class="lbl">Total Spent</div>
-            <div class="val">â‚¹62,500</div>
+            <div class="val">₹62,500</div>
             <div class="chg">14 sessions</div>
           </div>
         </div>
@@ -1959,12 +1961,12 @@
                 style="width:48px;height:48px;border-radius:50%;background:#2d5fa8;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;flex-shrink:0">
                 RK</div>
               <div style="flex:1">
-                <div style="font-weight:600">Rajesh Kumar â€” AI Bootcamp Session 3</div>
-                <div style="font-size:.82rem;color:var(--tm)">May 14, 2026 Â· 10:00 AM IST Â· Online (Zoom link sent)
+                <div style="font-weight:600">Rajesh Kumar — AI Bootcamp Session 3</div>
+                <div style="font-size:.82rem;color:var(--tm)">May 14, 2026 · 10:00 AM IST · Online (Zoom link sent)
                 </div>
               </div>
               <div style="display:flex;gap:8px"><button class="btn btn-dark btn-sm">Join</button><button
-                  class="btn btn-err btn-sm" onclick="toast('âŒ Cancellation request sent.')">Cancel</button></div>
+                  class="btn btn-err btn-sm" onclick="toast('❌ Cancellation request sent.')">Cancel</button></div>
             </div>
             <div
               style="display:flex;align-items:center;gap:14px;padding:14px;background:var(--fog);border-radius:var(--r)">
@@ -1972,8 +1974,8 @@
                 style="width:48px;height:48px;border-radius:50%;background:#2d8a4e;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;flex-shrink:0">
                 PM</div>
               <div style="flex:1">
-                <div style="font-weight:600">Priya Mehta â€” Fitness Assessment</div>
-                <div style="font-size:.82rem;color:var(--tm)">May 17, 2026 Â· 7:00 PM IST Â· Online</div>
+                <div style="font-weight:600">Priya Mehta — Fitness Assessment</div>
+                <div style="font-size:.82rem;color:var(--tm)">May 17, 2026 · 7:00 PM IST · Online</div>
               </div>
               <button class="btn btn-dark btn-sm">Details</button>
             </div>
@@ -1982,59 +1984,59 @@
         <div class="dash-card">
           <p class="h3-title">Saved Trainers</p>
           <div class="trainers-grid" id="fav-grid" style="margin-top:8px">
-            <p style="color:var(--tm);font-size:.88rem">Heart â™¡ trainers while browsing to save them here.</p>
+            <p style="color:var(--tm);font-size:.88rem">Heart ♡ trainers while browsing to save them here.</p>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  <!-- ——————————————————————————————————————————————————————————————————————————————————————————————————————————
      ADMIN DASHBOARD
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+—————————————————————————————————————————————————————————————————————————————————————————————————————————— -->
   <div id="p-admin" class="page" style="padding-top:var(--nav)">
     <div class="page-hero" style="padding-top:40px;padding-bottom:30px"><span class="section-label">Super Admin</span>
       <h1>Admin Dashboard</h1>
-      <p>World Trainer Forum Platform Management Â· Full access</p>
+      <p>World Trainer Forum Platform Management · Full access</p>
     </div>
     <div style="padding:28px 5%;display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap">
       <div style="width:200px;flex-shrink:0">
-        <button class="atab on" onclick="switchAdminTab(this,'at-overview')">ðŸ“Š Overview</button>
-        <button class="atab" onclick="switchAdminTab(this,'at-trainers')">ðŸ‘¥ Trainers</button>
-        <button class="atab" onclick="switchAdminTab(this,'at-clients')">ðŸŽ“ Clients</button>
-        <button class="atab" onclick="switchAdminTab(this,'at-bookings')">ðŸ“… Bookings</button>
-        <button class="atab" onclick="switchAdminTab(this,'at-payments')">ðŸ’° Payments</button>
-        <button class="atab" onclick="switchAdminTab(this,'at-reviews')">â­ Reviews</button>
-        <button class="atab" onclick="switchAdminTab(this,'at-categories')">ðŸ·ï¸ Categories</button>
-        <button class="atab" onclick="switchAdminTab(this,'at-analytics')">ðŸ“ˆ Analytics</button>
-        <button class="atab" onclick="nav('home')">ðŸ  Back to Site</button>
+        <button class="atab on" onclick="switchAdminTab(this,'at-overview')">📈 Overview</button>
+        <button class="atab" onclick="switchAdminTab(this,'at-trainers')">👥 Trainers</button>
+        <button class="atab" onclick="switchAdminTab(this,'at-clients')">🎓 Clients</button>
+        <button class="atab" onclick="switchAdminTab(this,'at-bookings')">📅 Bookings</button>
+        <button class="atab" onclick="switchAdminTab(this,'at-payments')">💰 Payments</button>
+        <button class="atab" onclick="switchAdminTab(this,'at-reviews')">⭐ Reviews</button>
+        <button class="atab" onclick="switchAdminTab(this,'at-categories')">🧩 Categories</button>
+        <button class="atab" onclick="switchAdminTab(this,'at-analytics')">📈 Analytics</button>
+        <button class="atab" onclick="nav('home')">🏠 Back to Site</button>
       </div>
       <div style="flex:1;min-width:0">
         <div id="at-overview" class="admin-section on">
           <div class="kpi-row">
             <div class="kpi">
-              <div class="ico">ðŸ‘¤</div>
+              <div class="ico">👤</div>
               <div class="lbl">Total Trainers</div>
               <div class="val">2,847</div>
-              <div class="chg up">â†‘ 124 this month</div>
+              <div class="chg up">↑ 124 this month</div>
             </div>
             <div class="kpi">
-              <div class="ico">ðŸŽ“</div>
+              <div class="ico">🎓</div>
               <div class="lbl">Total Clients</div>
               <div class="val">41,280</div>
-              <div class="chg up">â†‘ 1,840 this month</div>
+              <div class="chg up">↑ 1,840 this month</div>
             </div>
             <div class="kpi">
-              <div class="ico">ðŸ“…</div>
+              <div class="ico">📅</div>
               <div class="lbl">Total Bookings</div>
               <div class="val">8,924</div>
-              <div class="chg up">â†‘ 18% vs last month</div>
+              <div class="chg up">↑ 18% vs last month</div>
             </div>
             <div class="kpi">
-              <div class="ico">ðŸ’°</div>
+              <div class="ico">💰</div>
               <div class="lbl">Platform Revenue</div>
-              <div class="val">â‚¹48.2L</div>
-              <div class="chg up">â†‘ 22% vs last month</div>
+              <div class="val">₹48.2L</div>
+              <div class="chg up">↑ 22% vs last month</div>
             </div>
           </div>
           <div class="dash-card" style="margin-bottom:20px">
@@ -2057,7 +2059,7 @@
                     <td>May 9, 2026</td>
                     <td><span class="pill p-ok">All submitted</span></td>
                     <td style="display:flex;gap:5px;padding:12px 0"><button class="btn btn-ok btn-sm"
-                        onclick="toast('âœ… Sneha Iyer approved!')">Approve</button><button class="btn btn-err btn-sm"
+                        onclick="toast('✅ Sneha Iyer approved!')">Approve</button><button class="btn btn-err btn-sm"
                         onclick="toast('Rejected.')">Reject</button></td>
                   </tr>
                   <tr>
@@ -2065,7 +2067,7 @@
                     <td>Cybersecurity</td>
                     <td>May 8, 2026</td>
                     <td><span class="pill p-warn">Missing cert.</span></td>
-                    <td><button class="btn btn-dark btn-sm" onclick="toast('ðŸ“§ Doc request sent.')">Request
+                    <td><button class="btn btn-dark btn-sm" onclick="toast('📧 Doc request sent.')">Request
                         Docs</button></td>
                   </tr>
                   <tr>
@@ -2074,7 +2076,7 @@
                     <td>May 7, 2026</td>
                     <td><span class="pill p-ok">All submitted</span></td>
                     <td style="display:flex;gap:5px;padding:12px 0"><button class="btn btn-ok btn-sm"
-                        onclick="toast('âœ… Divya Shah approved!')">Approve</button><button
+                        onclick="toast('✅ Divya Shah approved!')">Approve</button><button
                         class="btn btn-err btn-sm">Reject</button></td>
                   </tr>
                 </tbody>

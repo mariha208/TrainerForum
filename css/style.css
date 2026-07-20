@@ -3236,7 +3236,9 @@ textarea {
   #nav {
     padding-left: 16px !important;
     padding-right: 16px !important;
-    overflow: visible !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    overflow-x: hidden !important;
   }
 
   .nav-r {
@@ -3248,6 +3250,23 @@ textarea {
   .ham-btn {
     z-index: 1001 !important;
     pointer-events: auto !important;
+  }
+
+  .hero-search {
+    flex-direction: column !important;
+    padding: 16px !important;
+    gap: 12px !important;
+    width: 100% !important;
+  }
+
+  .hero-search input, .hero-search select, .hero-search button {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .hero-search .h-sep {
+    display: none !important;
   }
 
   /* Form fields stack fluidly in narrow containers */
@@ -3574,7 +3593,9 @@ select, textarea {
   #nav {
     padding-left: 16px !important;
     padding-right: 16px !important;
-    overflow: visible !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    overflow-x: hidden !important;
   }
 }
 /* ═══════════════════════════════════════════════════════════════
