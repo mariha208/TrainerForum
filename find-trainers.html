@@ -1,11 +1,11 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Browse and filter 2,800+ verified trainers across 140+ specialisations on World Trainer Forum. Find your perfect expert by skill, category, price and rating.">
-  <title>Find Trainers — World Trainer Forum</title>
+  <title>Find Trainers â€” World Trainer Forum</title>
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/trainer-modal.css">
   <link rel="stylesheet" href="css/auth-modal.css">
@@ -18,7 +18,7 @@
 
 <body>
 
-  <!-- ═══ NAVBAR ═══ -->
+  <!-- â•â•â• NAVBAR â•â•â• -->
   <nav id="nav">
     <a class="logo" href="index.html">
       <img src="img/logo.svg" alt="World Trainer Forum Logo" style="height:42px; margin-right:10px;">World Trainer <span class="g">Forum</span>
@@ -33,7 +33,7 @@
       <li><a id="nl-dash" href="dashboard.html" target="_blank" style="display:none;">Dashboard</a></li>
     </ul>
     <div class="nav-r">
-      <button class="notif-btn" id="notif-btn" onclick="toggleNotif()">🔔<span class="notif-dot"></span></button>
+      <button class="notif-btn" id="notif-btn" onclick="toggleNotif()">ðŸ””<span class="notif-dot"></span></button>
       <button class="btn btn-ghost btn-sm" id="btn-signup" onclick="openModal('register')">Sign Up</button>
       <button class="btn btn-gold btn-sm" id="btn-login" onclick="openModal('login')">Log In</button>
       <div class="user-avatar-wrap" id="user-avatar-wrap">
@@ -52,7 +52,7 @@
         </div>
       </div>
       <button class="ham-btn" id="ham-btn" onclick="toggleMobileMenu()" aria-label="Toggle Menu">
-        <span></span><span></span><span></span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
       </button>
     </div>
   </nav>
@@ -83,25 +83,25 @@
       <h4>Notifications</h4><a href="#" style="font-size:.78rem;color:var(--gold-dk)">Mark all read</a>
     </div>
     <div class="notif-item unread">
-      <div class="notif-ico" style="background:rgba(201,168,76,.12)">📅</div>
+      <div class="notif-ico" style="background:rgba(201,168,76,.12)">ðŸ“…</div>
       <div class="notif-text">
         <p><strong>Rajesh Kumar</strong> accepted your booking for May 20.</p><span>2 hours ago</span>
       </div>
     </div>
     <div class="notif-item unread">
-      <div class="notif-ico" style="background:rgba(39,103,73,.12)">⭐</div>
+      <div class="notif-ico" style="background:rgba(39,103,73,.12)">â­</div>
       <div class="notif-text">
         <p>Your session with <strong>Priya Mehta</strong> is in 2 days.</p><span>5 hours ago</span>
       </div>
     </div>
     <div class="notif-item">
-      <div class="notif-ico" style="background:rgba(42,108,176,.12)">💬</div>
+      <div class="notif-ico" style="background:rgba(42,108,176,.12)">ðŸ’¬</div>
       <div class="notif-text">
         <p>New message from <strong>Arun Kapoor</strong>.</p><span>Yesterday</span>
       </div>
     </div>
     <div class="notif-item">
-      <div class="notif-ico" style="background:rgba(201,168,76,.12)">🎉</div>
+      <div class="notif-ico" style="background:rgba(201,168,76,.12)">ðŸŽ‰</div>
       <div class="notif-text">
         <p>Welcome to World Trainer Forum! Complete your profile.</p><span>2 days ago</span>
       </div>
@@ -114,7 +114,7 @@
   <!-- Modal -->
   <div class="modal-bg" id="modal-bg">
     <div class="modal-box">
-      <button class="modal-close" onclick="closeModal()">✕</button>
+      <button class="modal-close" onclick="closeModal()">âœ•</button>
       <div id="modal-body"></div>
     </div>
   </div>
@@ -126,16 +126,16 @@
   <!-- Booking Modal -->
   <div id="booking-modal" aria-modal="true" role="dialog" aria-label="Book a Session"></div>
 
-  <!-- ═══════════════════════════════════════════════════════
+  <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
        FIND TRAINERS PAGE
-  ═══════════════════════════════════════════════════════ -->
+  â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
   <div id="p-browse" class="page active">
     <div class="browse-hero">
       <h1>Browse Expert Trainers</h1>
       <p>2,800+ verified professionals across 140+ specialisations</p>
       <div class="browse-bar">
-        <span style="color:#999">🔍</span>
-        <input type="text" id="browse-search" placeholder="Search name, skill, topic…" oninput="applyFilters()">
+        <span style="color:#999">ðŸ”</span>
+        <input type="text" id="browse-search" placeholder="Search name, skill, topicâ€¦" oninput="applyFilters()">
         <div class="h-sep"></div>
         <select id="f-cat" onchange="applyFilters()">
           <option value="">All Categories</option>
@@ -171,19 +171,19 @@
             <select class="sort-sel" onchange="sortResults(this.value)">
               <option value="default">Recommended</option>
               <option value="rating">Top Rated</option>
-              <option value="price-asc">Price: Low → High</option>
-              <option value="price-desc">Price: High → Low</option>
+              <option value="price-asc">Price: Low â†’ High</option>
+              <option value="price-desc">Price: High â†’ Low</option>
               <option value="sessions">Most Booked</option>
             </select>
           </div>
         </div>
         <div class="trainers-grid" id="browse-grid"></div>
         <div style="display:flex;justify-content:center;gap:8px;margin-top:32px;flex-wrap:wrap">
-          <button class="btn btn-dark btn-sm">← Prev</button>
+          <button class="btn btn-dark btn-sm">â† Prev</button>
           <button class="btn btn-gold btn-sm">1</button>
           <button class="btn btn-dark btn-sm">2</button>
           <button class="btn btn-dark btn-sm">3</button>
-          <button class="btn btn-dark btn-sm">Next →</button>
+          <button class="btn btn-dark btn-sm">Next â†’</button>
         </div>
       </div>
     </div>
@@ -191,7 +191,7 @@
     <!-- Footer -->
     <footer id="site-footer">
 
-      <!-- ── MAIN FOOTER BODY ── -->
+      <!-- â”€â”€ MAIN FOOTER BODY â”€â”€ -->
       <div class="footer-main">
 
         <!-- ROW 1: Brand + 4 link columns + Newsletter -->
@@ -392,19 +392,19 @@
       <!-- SECTION 8: Bottom Legal Bar -->
       <div class="footer-legal">
         <div class="footer-legal-inner">
-          <span class="fl-copy">© 2026 World Trainer Forum Technologies Pvt. Ltd. All rights reserved.</span>
+          <span class="fl-copy">Â© 2026 World Trainer Forum Technologies Pvt. Ltd. All rights reserved.</span>
           <nav class="fl-links" aria-label="Legal links">
             <a href="#">Privacy Policy</a>
-            <span class="fl-dot">·</span>
+            <span class="fl-dot">Â·</span>
             <a href="#">Terms</a>
-            <span class="fl-dot">·</span>
+            <span class="fl-dot">Â·</span>
             <a href="#">Cookies</a>
-            <span class="fl-dot">·</span>
+            <span class="fl-dot">Â·</span>
             <a href="#">Accessibility</a>
-            <span class="fl-dot">·</span>
+            <span class="fl-dot">Â·</span>
             <a href="#">Sitemap</a>
           </nav>
-          <span class="fl-tagline">Made for Global Learning &amp; Growth 🌍</span>
+          <span class="fl-tagline">Made for Global Learning &amp; Growth ðŸŒ</span>
         </div>
       </div>
 
@@ -444,3 +444,4 @@
 </body>
 
 </html>
+

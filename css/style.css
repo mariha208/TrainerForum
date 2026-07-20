@@ -241,21 +241,37 @@ ul {
 
 /* Hamburger */
 .ham-btn {
-  display: none;
-  flex-direction: column;
-  gap: 5px;
-  background: none;
-  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
   cursor: pointer;
   padding: 8px;
+  color: var(--ivory);
+  transition: all .25s ease;
 }
 
-.ham-btn span {
-  width: 22px;
-  height: 2px;
-  background: var(--ivory);
-  border-radius: 2px;
-  transition: all .3s;
+.ham-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.ham-btn svg {
+  width: 24px;
+  height: 24px;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+}
+
+/* Strict Desktop Hiding */
+@media (min-width: 769px) {
+  .ham-btn {
+    display: none !important;
+  }
 }
 
 /* Mobile nav drawer — visibility controlled by transform,   NOT display */
@@ -298,22 +314,8 @@ ul {
 }
 
 /* Hamburger → X animation */
-.ham-btn span {
-  transform-origin: center;
-  transition: transform .3s ease, opacity .3s ease;
-}
-
-.ham-btn.open span:nth-child(1) {
-  transform: rotate(45deg) translate(5px, 5px);
-}
-
-.ham-btn.open span:nth-child(2) {
-  opacity: 0;
-  transform: scaleX(0);
-}
-
-.ham-btn.open span:nth-child(3) {
-  transform: rotate(-45deg) translate(5px, -5px);
+.ham-btn.open {
+  background: rgba(255, 255, 255, 0.15);
 }
 
 /* ── Notification Bell & Panel ── */
@@ -2849,7 +2851,7 @@ section {
   }
 
   .ham-btn {
-    display: flex;
+    display: flex !important;
   }
 
   /* Hide desktop-only nav links in inline-styled pages */
@@ -3169,7 +3171,7 @@ section {
 
 
 /* =============================================================
-   MOBILE FIX PATCH � Form Sizing, Label Wrapping, Ham-btn
+   MOBILE FIX PATCH  Form Sizing, Label Wrapping, Ham-btn
    ============================================================= */
 
 /* 1. Universal Form Fluid Sizing */
@@ -3214,13 +3216,14 @@ textarea {
   box-sizing: border-box;
 }
 
-/* 4. Hamburger button � always above everything on mobile */
+/* 4. Hamburger button  always above everything on mobile */
 .ham-btn {
   position: relative;
   z-index: 1001 !important;
   pointer-events: auto !important;
-  -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  cursor: pointer;
 }
 
 /* 5. Nav must not clip the ham-btn */
@@ -3241,7 +3244,7 @@ textarea {
     flex-shrink: 0;
   }
 
-  /* Ensure ham-btn is always clickable � nothing should sit above z-index 1001 except modals */
+  /* Ensure ham-btn is always clickable  nothing should sit above z-index 1001 except modals */
   .ham-btn {
     z-index: 1001 !important;
     pointer-events: auto !important;

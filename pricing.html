@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -19,7 +19,7 @@
 
 <body>
 
-  <!-- ═══ NAVBAR ═══ -->
+  <!-- â•â•â• NAVBAR â•â•â• -->
   <nav id="nav">
     <a class="logo" href="index.html">
       <img src="img/logo.svg" alt="World Trainer Forum Logo" style="height:42px; margin-right:10px;">World Trainer <span
@@ -35,13 +35,13 @@
       <li><a id="nl-dash" href="dashboard.html" target="_blank" style="display:none;">Dashboard</a></li>
     </ul>
     <div class="nav-r">
-      <button class="notif-btn" id="notif-btn" onclick="toggleNotif()">🔔<span class="notif-dot"></span></button>
+      <button class="notif-btn" id="notif-btn" onclick="toggleNotif()">ðŸ””<span class="notif-dot"></span></button>
       <button class="btn btn-ghost btn-sm" id="btn-signup" onclick="openModal('register')">Sign Up</button>
       <button class="btn btn-gold btn-sm" id="btn-login" onclick="openModal('login')">Log In</button>
       <button class="btn btn-dark btn-sm" id="btn-logout" onclick="handleLogout()" style="display:none;">Log
         Out</button>
       <button class="ham-btn" id="ham-btn" onclick="toggleMobileMenu()" aria-label="Toggle Menu">
-        <span></span><span></span><span></span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
       </button>
     </div>
   </nav>
@@ -75,19 +75,19 @@
       <h4>Notifications</h4><a href="#" style="font-size:.78rem;color:var(--gold-dk)">Mark all read</a>
     </div>
     <div class="notif-item unread">
-      <div class="notif-ico" style="background:rgba(201,168,76,.12)">📅</div>
+      <div class="notif-ico" style="background:rgba(201,168,76,.12)">ðŸ“…</div>
       <div class="notif-text">
         <p><strong>Rajesh Kumar</strong> accepted your booking for May 20.</p><span>2 hours ago</span>
       </div>
     </div>
     <div class="notif-item unread">
-      <div class="notif-ico" style="background:rgba(39,103,73,.12)">⭐</div>
+      <div class="notif-ico" style="background:rgba(39,103,73,.12)">â­</div>
       <div class="notif-text">
         <p>Your session with <strong>Priya Mehta</strong> is in 2 days.</p><span>5 hours ago</span>
       </div>
     </div>
     <div class="notif-item">
-      <div class="notif-ico" style="background:rgba(42,108,176,.12)">💬</div>
+      <div class="notif-ico" style="background:rgba(42,108,176,.12)">ðŸ’¬</div>
       <div class="notif-text">
         <p>New message from <strong>Arun Kapoor</strong>.</p><span>Yesterday</span>
       </div>
@@ -100,7 +100,7 @@
   <!-- Modal -->
   <div class="modal-bg" id="modal-bg">
     <div class="modal-box">
-      <button class="modal-close" onclick="closeModal()">✕</button>
+      <button class="modal-close" onclick="closeModal()">âœ•</button>
       <div id="modal-body"></div>
     </div>
   </div>
@@ -108,9 +108,9 @@
   <!-- Auth Modal -->
   <div id="auth-modal" aria-modal="true" role="dialog" aria-label="Authentication"></div>
 
-  <!-- ═══════════════════════════════════════════════════════
+  <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
        PRICING PAGE
-  ═══════════════════════════════════════════════════════ -->
+  â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
   <div id="p-pricing" class="page active">
     <div class="page-hero" style="text-align:center"><span class="section-label">Trainer Membership Plans</span>
       <h1 style="font-size:3rem">Choose the Right Membership <span style="color:var(--gold)">for Your Growth</span></h1>
@@ -128,7 +128,7 @@
           <div
             style="font-size:.74rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--tm);margin-bottom:12px">
             Starter Plan</div>
-          <div style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:700;color:var(--tp)">₹0 / Year
+          <div style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:700;color:var(--tp)">â‚¹0 / Year
             (Free)
           </div>
           <div style="font-size:.84rem;color:var(--tm);margin:6px 0 22px">Basic listing only</div>
@@ -151,7 +151,7 @@
           <div
             style="font-size:.74rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(226,201,126,.6);margin-bottom:12px">
             Professional Membership</div>
-          <div style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:700;color:#fff">₹4,999<span
+          <div style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:700;color:#fff">â‚¹4,999<span
               style="font-size:1rem;font-weight:400;color:rgba(255,255,255,0.6)">/year</span></div>
           <div style="font-size:.84rem;color:rgba(255,255,255,0.7);margin:6px 0 22px">Everything in Starter, Plus:</div>
           <div class="pf on" style="color:#fff"> Professional Dashboard Access</div>
@@ -182,7 +182,7 @@
             style="font-size:.74rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--tm);margin-bottom:12px">
             ELITE Member</div>
           <div style="font-family:'aria-label',serif;font-size:2.5rem;font-weight:700;color:var(--tp)">
-            ₹14,999<span style="font-size:1rem;font-weight:400;color:var(--tm)">/Year</span></div>
+            â‚¹14,999<span style="font-size:1rem;font-weight:400;color:var(--tm)">/Year</span></div>
           <div style="font-size:.84rem;color:var(--tm);margin:6px 0 22px">Everything in Professional, Plus:</div>
           <div class="pf on"> Premium Elite Badge & Recognition</div>
           <div class="pf on">Priority Corporate Training Referrals</div>
@@ -245,10 +245,10 @@
                 Feature</td>
               <td
                 style="padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.05);text-align:center;color:var(--tm);">
-                —</td>
+                â€”</td>
               <td
                 style="padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.05);text-align:center;color:var(--tm);">
-                —</td>
+                â€”</td>
               <td
                 style="padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.05);text-align:center;color:var(--gold);">
                 Top Placement</td>
@@ -271,10 +271,10 @@
                 Badge</td>
               <td
                 style="padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.05);text-align:center;color:var(--tm);">
-                —</td>
+                â€”</td>
               <td
                 style="padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.05);text-align:center;color:var(--tm);">
-                —</td>
+                â€”</td>
               <td
                 style="padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.05);text-align:center;color:var(--gold);">
                 Yes</td>
@@ -309,7 +309,7 @@
               </td>
               <td
                 style="padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.05);text-align:center;color:var(--tm);">
-                —</td>
+                â€”</td>
               <td
                 style="padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.05);text-align:center;color:var(--ts);">
                 Yes</td>
@@ -331,30 +331,30 @@
             class="a">Questions</span></h2>
         <div class="faq-item">
           <div class="faq-q" onclick="toggleFaq(this)">Is there a free trial for the Professional plan? <span
-              class="faq-arrow">▼</span></div>
-          <div class="faq-a">Yes! 14 days free on the Professional plan — no credit card required. After the trial,
+              class="faq-arrow">â–¼</span></div>
+          <div class="faq-a">Yes! 14 days free on the Professional plan â€” no credit card required. After the trial,
             subscribe or downgrade to the free Starter plan.</div>
         </div>
         <div class="faq-item">
-          <div class="faq-q" onclick="toggleFaq(this)">How does the commission work? <span class="faq-arrow">▼</span>
+          <div class="faq-q" onclick="toggleFaq(this)">How does the commission work? <span class="faq-arrow">â–¼</span>
           </div>
-          <div class="faq-a">We charge a percentage of each completed booking — 20% on Starter and 12% on Professional.
+          <div class="faq-a">We charge a percentage of each completed booking â€” 20% on Starter and 12% on Professional.
             Enterprise clients negotiate custom rates. No hidden fees.</div>
         </div>
         <div class="faq-item">
-          <div class="faq-q" onclick="toggleFaq(this)">When do I receive my payout? <span class="faq-arrow">▼</span>
+          <div class="faq-q" onclick="toggleFaq(this)">When do I receive my payout? <span class="faq-arrow">â–¼</span>
           </div>
           <div class="faq-a">Payouts are processed within 48 hours of session completion directly to your bank account
-            via Razorpay. International payouts via Stripe take 7–10 business days.</div>
+            via Razorpay. International payouts via Stripe take 7â€“10 business days.</div>
         </div>
         <div class="faq-item">
-          <div class="faq-q" onclick="toggleFaq(this)">Can I cancel anytime? <span class="faq-arrow">▼</span></div>
+          <div class="faq-q" onclick="toggleFaq(this)">Can I cancel anytime? <span class="faq-arrow">â–¼</span></div>
           <div class="faq-a">Yes. Cancel the Professional plan at any time. Your profile reverts to the free Starter
             plan and all data, reviews, and bookings are preserved.</div>
         </div>
         <div class="faq-item">
           <div class="faq-q" onclick="toggleFaq(this)">Is World Trainer Forum available for corporate clients? <span
-              class="faq-arrow">▼</span></div>
+              class="faq-arrow">â–¼</span></div>
           <div class="faq-a">Yes! Organisations can book multiple trainers, manage team-wide training, and get dedicated
             GST-compliant invoicing. Contact our sales team for enterprise pricing.</div>
         </div>
@@ -366,7 +366,7 @@
       <h2>Ready to Grow Your Practice?</h2>
       <p>Join 2,800+ trainers already thriving on World Trainer Forum.</p>
       <div class="cta-btns">
-        <button class="btn btn-gold btn-xl" onclick="openModal('register-trainer')">Start Free Profile →</button>
+        <button class="btn btn-gold btn-xl" onclick="openModal('register-trainer')">Start Free Profile â†’</button>
         <a href="find-trainers.html" class="btn btn-ghost btn-xl">Browse Trainers</a>
       </div>
     </div>
@@ -374,7 +374,7 @@
     <!-- Footer -->
     <footer id="site-footer">
 
-      <!-- ── MAIN FOOTER BODY ── -->
+      <!-- â”€â”€ MAIN FOOTER BODY â”€â”€ -->
       <div class="footer-main">
 
         <!-- ROW 1: Brand + 4 link columns + Newsletter -->
@@ -577,19 +577,19 @@
       <!-- SECTION 8: Bottom Legal Bar -->
       <div class="footer-legal">
         <div class="footer-legal-inner">
-          <span class="fl-copy">© 2026 World Trainer Forum Technologies Pvt. Ltd. All rights reserved.</span>
+          <span class="fl-copy">Â© 2026 World Trainer Forum Technologies Pvt. Ltd. All rights reserved.</span>
           <nav class="fl-links" aria-label="Legal links">
             <a href="#">Privacy Policy</a>
-            <span class="fl-dot">·</span>
+            <span class="fl-dot">Â·</span>
             <a href="#">Terms</a>
-            <span class="fl-dot">·</span>
+            <span class="fl-dot">Â·</span>
             <a href="#">Cookies</a>
-            <span class="fl-dot">·</span>
+            <span class="fl-dot">Â·</span>
             <a href="#">Accessibility</a>
-            <span class="fl-dot">·</span>
+            <span class="fl-dot">Â·</span>
             <a href="#">Sitemap</a>
           </nav>
-          <span class="fl-tagline">Made for Global Learning &amp; Growth 🌍</span>
+          <span class="fl-tagline">Made for Global Learning &amp; Growth ðŸŒ</span>
         </div>
       </div>
 
