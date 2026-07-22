@@ -598,131 +598,102 @@ function subscribeToTrainers() {
           const isPremium = normalizedTrainer.membershipType === 'PREMIUM';
           const isStandard = normalizedTrainer.membershipType === 'STANDARD';
 
-          // Tier badge
-          const memberBadgeHtml = isPremium
-            ? `<div style="position:absolute;top:12px;left:12px;z-index:20;background:linear-gradient(90deg,#b8860b,#f5c842,#b8860b);color:#000;font-size:9.5px;font-weight:800;padding:4px 11px;border-radius:99px;letter-spacing:.08em;box-shadow:0 2px 12px rgba(245,200,66,0.45);">&#11088; FEATURED</div>`
-            : isStandard
-            ? `<div style="position:absolute;top:12px;left:12px;z-index:20;background:rgba(7,24,58,0.9);color:#f5c842;font-size:9px;font-weight:700;padding:4px 11px;border-radius:99px;letter-spacing:.06em;border:1px solid rgba(245,200,66,0.4);backdrop-filter:blur(6px);">&#10022; PRO</div>`
-            : '';
-
-          // Card border/glow per tier
-          const cardBorderStyle = isPremium
-            ? 'border:1.5px solid rgba(245,200,66,0.45);box-shadow:0 4px 24px rgba(245,200,66,0.1),0 12px 40px rgba(0,0,0,0.5);'
-            : isStandard
-            ? 'border:1px solid rgba(99,102,241,0.3);box-shadow:0 4px 24px rgba(99,102,241,0.08),0 12px 40px rgba(0,0,0,0.45);'
-            : 'border:1px solid rgba(255,255,255,0.07);box-shadow:0 4px 24px rgba(0,0,0,0.4);';
-
-          // Avatar ring gradient per tier
-          const avatarRing = isPremium
-            ? 'linear-gradient(135deg,#b8860b,#f5c842,#b8860b)'
-            : isStandard
-            ? 'linear-gradient(135deg,#6366f1,#a78bfa)'
-            : 'linear-gradient(135deg,#334155,#64748b)';
-
-          // Rating stars
-          const ratingVal = parseFloat(normalizedTrainer.rating) || 5.0;
-          const starsHtml = '&#9733;'.repeat(Math.floor(ratingVal)) + '&#9734;'.repeat(5 - Math.floor(ratingVal));
-
-          // Location + mode pill
-          const _locText = normalizedTrainer.location && normalizedTrainer.location !== 'Remote' ? normalizedTrainer.location : '';
-          const _modeText = normalizedTrainer.deliveryMode || normalizedTrainer.mode || 'Online';
-          const locationPill = (_locText ? _locText + ' &middot; ' : '') + _modeText;
-
-          // Sessions
-          const sessionsNum = parseInt(normalizedTrainer.sessions || '0') || 0;
-
           const cardHtml = `
             <div class="trainer-card"
                  data-category="${normalizedTrainer.category}"
                  data-id="${normalizedTrainer.id}"
                  data-membership="${normalizedTrainer.membershipType}"
                  onclick="openTrainerModal('${normalizedTrainer.id}')"
-                 style="background: linear-gradient(135deg, #f8fafc, #f1f5f9); border-radius: 20px; overflow: hidden; position: relative; cursor: pointer; display: flex; flex-direction: column; min-height: 180px; font-family: 'Inter', sans-serif; box-shadow: 0 10px 30px rgba(0,0,0,0.08); margin-top: 12px; border: 1px solid #e2e8f0; text-align: left; transition: all 0.3s ease;"
-                 onmouseover="this.style.transform='translateY(-6px)'; this.style.boxShadow='0 20px 40px rgba(0,0,0,0.12)';"
-                 onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 30px rgba(0,0,0,0.08)';">
-                 
-              <!-- BACKGROUND WRAPPER (for banner image and ribbon clipping) -->
-              <div style="position: absolute; inset: 0; border-radius: 20px; overflow: hidden; pointer-events: none; z-index: 1;">
-                <!-- Banner Image Placeholder -->
-                <div style="position: absolute; top: 0; right: 0; width: 45%; height: 110px; background: url('${(normalizedTrainer.bannerPic && normalizedTrainer.bannerPic.startsWith('http')) ? normalizedTrainer.bannerPic : 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?q=80&w=600&auto=format&fit=crop'}') center / cover no-repeat; -webkit-mask-image: linear-gradient(to right, transparent, black 30%); mask-image: linear-gradient(to right, transparent, black 30%);"></div>
-                
-                <!-- Ribbon -->
+                 style="background: #ffffff; border-radius: 18px; overflow: hidden; position: relative; cursor: pointer; display: flex; flex-direction: column; font-family: 'Inter', sans-serif; box-shadow: 0 4px 20px rgba(0,0,0,0.09); margin-top: 10px; border: 1px solid #e8edf2; text-align: left; transition: all 0.3s ease; flex-shrink: 0;"
+                 onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 12px 36px rgba(0,0,0,0.14)';"
+                 onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 20px rgba(0,0,0,0.09)';">
+
+              <!-- TOP HEADER: Banner + Avatar row (no absolute overlap) -->
+              <div style="position: relative; height: 100px; overflow: hidden; border-radius: 18px 18px 0 0; flex-shrink: 0;">
+                <!-- Banner bg -->
+                <div style="position: absolute; inset: 0; background: url('${(normalizedTrainer.bannerPic && normalizedTrainer.bannerPic.startsWith('http')) ? normalizedTrainer.bannerPic : 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?q=80&w=600&auto=format&fit=crop'}') center / cover no-repeat; filter: brightness(0.75);"></div>
+                <!-- Dark gradient overlay for readability -->
+                <div style="position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(15,23,42,0.2) 0%, rgba(15,23,42,0.55) 100%);"></div>
+                <!-- Tier ribbon -->
                 ${isPremium
-                  ? `<div style="position: absolute; top: 16px; right: -36px; background: linear-gradient(90deg, #d4af37, #ffdf00); color: #000; font-size: 11px; font-weight: 800; padding: 6px 40px; text-transform: uppercase; letter-spacing: 0.1em; transform: rotate(45deg); box-shadow: 0 4px 10px rgba(0,0,0,0.2);">Featured</div>`
+                  ? `<div style="position: absolute; top: 12px; right: -30px; background: linear-gradient(90deg, #d4af37, #ffdf00); color: #000; font-size: 10px; font-weight: 800; padding: 5px 36px; text-transform: uppercase; letter-spacing: 0.1em; transform: rotate(45deg); box-shadow: 0 2px 8px rgba(0,0,0,0.2);">Featured</div>`
                   : isStandard
-                  ? `<div style="position: absolute; top: 16px; right: -36px; background: linear-gradient(90deg, #0d9488, #14b8a6); color: #fff; font-size: 11px; font-weight: 800; padding: 6px 40px; text-transform: uppercase; letter-spacing: 0.1em; transform: rotate(45deg); box-shadow: 0 4px 10px rgba(0,0,0,0.2);">Pro</div>`
-                  : `<div style="position: absolute; top: 16px; right: -36px; background: #94a3b8; color: #fff; font-size: 11px; font-weight: 800; padding: 6px 40px; text-transform: uppercase; letter-spacing: 0.1em; transform: rotate(45deg); box-shadow: 0 4px 10px rgba(0,0,0,0.2);">Free</div>`
+                  ? `<div style="position: absolute; top: 12px; right: -30px; background: linear-gradient(90deg, #0d9488, #14b8a6); color: #fff; font-size: 10px; font-weight: 800; padding: 5px 36px; text-transform: uppercase; letter-spacing: 0.1em; transform: rotate(45deg); box-shadow: 0 2px 8px rgba(0,0,0,0.2);">Pro</div>`
+                  : `<div style="position: absolute; top: 12px; right: -30px; background: #94a3b8; color: #fff; font-size: 10px; font-weight: 800; padding: 5px 36px; text-transform: uppercase; letter-spacing: 0.1em; transform: rotate(45deg); box-shadow: 0 2px 8px rgba(0,0,0,0.2);">Free</div>`
                 }
               </div>
 
-              <div style="position: absolute; top: 14px; left: 50%; transform: translateX(-50%); width: 64px; height: 64px; border-radius: 50%; z-index: 10; border: 3px solid ${isPremium ? '#d4af37' : isStandard ? '#0d9488' : '#94a3b8'}; background: #fff; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
-                ${hasPhoto
-                  ? `<img src="${normalizedTrainer.profilePic}" alt="${normalizedTrainer.name}" style="width:100%; height:100%; object-fit:cover; display:block;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-                     <div style="display:none; width:100%; height:100%; align-items:center; justify-content:center; font-weight:bold; font-size:24px; color:#fff; background:linear-gradient(135deg, #3b82f6, #8b5cf6);">${initials}</div>`
-                  : `<div style="display:flex; width:100%; height:100%; align-items:center; justify-content:center; font-weight:bold; font-size:24px; color:#fff; background:linear-gradient(135deg, #3b82f6, #8b5cf6);">${initials}</div>`
-                }
-              </div>
-
-              <!-- CONTENT WRAPPER -->
-              <div style="position: relative; z-index: 5; padding: 86px 18px 16px 18px; display: flex; flex-direction: column; flex: 1; justify-content: space-between; gap: 12px;">
-                
-                <!-- TOP ROW: Name & Title -->
-                <div>
-                  <h3 style="margin: 0; font-size: 18px; font-weight: 700; color: #0f172a; display: flex; align-items: center; gap: 6px;">
-                    ${normalizedTrainer.name} <span style="color: #fbbf24; font-size: 16px;">${isPremium ? '&#9733;' : ''}</span>
+              <!-- AVATAR + NAME ROW (in normal document flow, no overlap possible) -->
+              <div style="display: flex; align-items: center; gap: 14px; padding: 14px 16px 10px 16px; flex-shrink: 0;">
+                <!-- Avatar circle -->
+                <div style="flex-shrink: 0; width: 60px; height: 60px; border-radius: 50%; border: 3px solid ${isPremium ? '#d4af37' : isStandard ? '#0d9488' : '#94a3b8'}; background: #e2e8f0; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.15); margin-top: -30px; position: relative; z-index: 5;">
+                  ${hasPhoto
+                    ? `<img src="${normalizedTrainer.profilePic}" alt="${normalizedTrainer.name}" style="width:100%; height:100%; object-fit:cover; display:block;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                       <div style="display:none; width:100%; height:100%; align-items:center; justify-content:center; font-weight:bold; font-size:22px; color:#fff; background:linear-gradient(135deg, #3b82f6, #8b5cf6);">${initials}</div>`
+                    : `<div style="display:flex; width:100%; height:100%; align-items:center; justify-content:center; font-weight:bold; font-size:22px; color:#fff; background:linear-gradient(135deg, #3b82f6, #8b5cf6);">${initials}</div>`
+                  }
+                </div>
+                <!-- Name & specialization — always to the RIGHT of avatar, never underneath -->
+                <div style="flex: 1; min-width: 0; padding-top: 4px;">
+                  <h3 style="margin: 0; font-size: 15px; font-weight: 700; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 4px;">
+                    ${normalizedTrainer.name} <span style="color: #fbbf24; font-size: 13px;">${isPremium ? '&#9733;' : ''}</span>
                   </h3>
-                  <p style="margin: 4px 0 0 0; font-size: 14px; color: #334155; font-weight: 500;">
-                    | ${normalizedTrainer.specialization || normalizedTrainer.category || 'Professional Trainer'}
+                  <p style="margin: 2px 0 0 0; font-size: 12px; color: #64748b; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                    ${normalizedTrainer.specialization || normalizedTrainer.category || 'Professional Trainer'}
                   </p>
                 </div>
+              </div>
+
+              <!-- CARD BODY -->
+              <div style="padding: 4px 16px 16px 16px; display: flex; flex-direction: column; flex: 1; gap: 10px;">
 
                 <!-- PILLS -->
-                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                  <span style="background: #fff; border-radius: 12px; padding: 4px 12px; font-size: 12px; font-weight: 600; color: #475569; box-shadow: 0 1px 3px rgba(0,0,0,0.05); display: flex; align-items: center; gap: 4px;">
-                    <span style="color: #e11d48; font-size: 14px;">&#128205;</span> ${normalizedTrainer.location || 'Remote'}
+                <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                  <span style="background: #f1f5f9; border-radius: 10px; padding: 3px 10px; font-size: 11px; font-weight: 600; color: #475569; display: flex; align-items: center; gap: 3px;">
+                    <span style="color: #e11d48; font-size: 12px;">&#128205;</span> ${normalizedTrainer.location || 'Remote'}
                   </span>
-                  <span style="background: #fff; border-radius: 12px; padding: 4px 12px; font-size: 12px; font-weight: 600; color: #475569; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                  <span style="background: #f1f5f9; border-radius: 10px; padding: 3px 10px; font-size: 11px; font-weight: 600; color: #475569;">
                     ${normalizedTrainer.deliveryMode || normalizedTrainer.mode || 'Online'}
                   </span>
-                  <span style="background: #fff; border-radius: 12px; padding: 4px 12px; font-size: 12px; font-weight: 600; color: #475569; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
-                    ${parseInt(normalizedTrainer.experience || '0') || 0}+ years
+                  <span style="background: #f1f5f9; border-radius: 10px; padding: 3px 10px; font-size: 11px; font-weight: 600; color: #475569;">
+                    ${parseInt(normalizedTrainer.experience || '0') || 0}+ yrs
                   </span>
                 </div>
 
                 <!-- RATING & PRICE -->
-                <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 8px;">
-                  <div style="font-size: 14px; font-weight: 700; color: #fbbf24; display: flex; align-items: center; gap: 4px;">
-                    &#9733; ${(parseFloat(normalizedTrainer.rating) || 5.0).toFixed(1)} <span style="font-weight: 400; color: #64748b; font-size: 13px;">(${parseInt(normalizedTrainer.sessions || '0') || 0} sessions)</span>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <div style="font-size: 13px; font-weight: 700; color: #f59e0b; display: flex; align-items: center; gap: 3px;">
+                    &#9733; ${(parseFloat(normalizedTrainer.rating) || 5.0).toFixed(1)}
+                    <span style="font-weight: 400; color: #94a3b8; font-size: 11px;">(${parseInt(normalizedTrainer.sessions || '0') || 0} sessions)</span>
                   </div>
-                  <div style="font-size: 20px; font-weight: 800; color: #0f172a;">
+                  <div style="font-size: 17px; font-weight: 800; color: #0f172a;">
                     ${rateDisplay}
                   </div>
                 </div>
 
                 <!-- DIVIDER -->
-                <div style="width: 100%; height: 1px; background: #e2e8f0; margin: 4px 0;"></div>
+                <div style="height: 1px; background: #e8edf2;"></div>
 
-                <!-- BOTTOM FOOTER (Socials + Button) -->
+                <!-- FOOTER: socials + Book Now -->
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                   <div>
-                    <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 4px;">
-                      <a href="${waHref}" onclick="event.stopPropagation()" style="color: #64748b; background: #f1f5f9; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: background 0.2s;" onmouseover="this.style.background='#e2e8f0';" onmouseout="this.style.background='#f1f5f9';">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+                    <div style="display: flex; gap: 6px; align-items: center; margin-bottom: 3px;">
+                      <a href="${waHref}" onclick="event.stopPropagation()" style="color: #64748b; background: #f1f5f9; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
                       </a>
-                      <a href="${liHref}" onclick="event.stopPropagation()" style="color: #64748b; background: #f1f5f9; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: background 0.2s;" onmouseover="this.style.background='#e2e8f0';" onmouseout="this.style.background='#f1f5f9';">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+                      <a href="${liHref}" onclick="event.stopPropagation()" style="color: #64748b; background: #f1f5f9; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
                       </a>
-                      <a href="${webHref}" onclick="event.stopPropagation()" style="color: #64748b; background: #f1f5f9; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: background 0.2s;" onmouseover="this.style.background='#e2e8f0';" onmouseout="this.style.background='#f1f5f9';">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                      <a href="${webHref}" onclick="event.stopPropagation()" style="color: #64748b; background: #f1f5f9; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
                       </a>
-                      <span style="font-size: 13px; font-weight: 600; color: #0f172a; margin-left: 4px;">View Profile</span>
+                      <span style="font-size: 12px; font-weight: 600; color: #334155; margin-left: 2px;">View Profile</span>
                     </div>
-                    <div style="font-size: 12px; color: #64748b;">
-                      ${normalizedTrainer.website ? normalizedTrainer.website.replace(/^https?:\/\//i, '').replace(/\/$/, '') : 'www.reallygreatsite.com'}
+                    <div style="font-size: 11px; color: #94a3b8;">
+                      ${normalizedTrainer.website ? normalizedTrainer.website.replace(/^https?:\/\//i, '').replace(/\/$/, '') : ''}
                     </div>
                   </div>
-                  
-                  <button onclick="event.stopPropagation(); openTrainerModal('${normalizedTrainer.id}')" style="background: linear-gradient(to right, #bca15b, #cbb577); color: #fff; border: none; padding: 10px 24px; border-radius: 12px; font-weight: 700; font-size: 14px; cursor: pointer; box-shadow: 0 4px 12px rgba(188, 161, 91, 0.3); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)';" onmouseout="this.style.transform='scale(1)';">
+                  <button onclick="event.stopPropagation(); openTrainerModal('${normalizedTrainer.id}')" style="background: linear-gradient(135deg, #c5a059, #e8c97a); color: #fff; border: none; padding: 9px 18px; border-radius: 10px; font-weight: 700; font-size: 13px; cursor: pointer; box-shadow: 0 3px 10px rgba(197,160,89,0.35); transition: transform 0.2s; white-space: nowrap;" onmouseover="this.style.transform='scale(1.05)';" onmouseout="this.style.transform='scale(1)';">
                     Book Now
                   </button>
                 </div>
