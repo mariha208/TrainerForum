@@ -70,13 +70,17 @@ function showToast(msg, duration = 3500) {
   }, duration);
 }
 
-window.showToast = showToast;
-window.toast = showToast;
+if (typeof window !== 'undefined') {
+  window.showToast = showToast;
+  window.toast = showToast;
+}
 
 // ── BOOT ─────────────────────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', () => {
-  loadTrainers();
-});
+if (typeof document !== 'undefined') {
+  document.addEventListener('DOMContentLoaded', () => {
+    loadTrainers();
+  });
+}
 
 // ── FETCH ALL TRAINERS FROM API ───────────────────────────────────────────────
 async function loadTrainers() {
@@ -314,47 +318,47 @@ function exportCSV() {
 let selectedImageFile = null;
 
 // ── TAB SWITCHING ─────────────────────────────────────────────────────────────
-window.switchAdminTab = function(tab) {
-  const btnTrainers = document.getElementById('tab-btn-trainers');
-  const btnPublishing = document.getElementById('tab-btn-publishing');
-  const secTrainers = document.getElementById('tab-section-trainers');
-  const secPublishing = document.getElementById('tab-section-publishing');
+if (typeof window !== 'undefined') {
+  window.switchAdminTab = function(tab) {
+    const btnTrainers = document.getElementById('tab-btn-trainers');
+    const btnPublishing = document.getElementById('tab-btn-publishing');
+    const secTrainers = document.getElementById('tab-section-trainers');
+    const secPublishing = document.getElementById('tab-section-publishing');
 
-  if (tab === 'publishing') {
-    btnTrainers.className = 'btn-sm btn-dark';
-    btnPublishing.className = 'btn-sm btn-gold';
-    secTrainers.style.display = 'none';
-    secPublishing.style.display = 'block';
-    loadPublishedPosts();
-  } else {
-    btnTrainers.className = 'btn-sm btn-gold';
-    btnPublishing.className = 'btn-sm btn-dark';
-    secTrainers.style.display = 'block';
-    secPublishing.style.display = 'none';
-  }
-};
+    if (tab === 'publishing') {
+      if (btnTrainers) btnTrainers.className = 'btn-sm btn-dark';
+      if (btnPublishing) btnPublishing.className = 'btn-sm btn-gold';
+      if (secTrainers) secTrainers.style.display = 'none';
+      if (secPublishing) secPublishing.style.display = 'block';
+      loadPublishedPosts();
+    } else {
+      if (btnTrainers) btnTrainers.className = 'btn-sm btn-gold';
+      if (btnPublishing) btnPublishing.className = 'btn-sm btn-dark';
+      if (secTrainers) secTrainers.style.display = 'block';
+      if (secPublishing) secPublishing.style.display = 'none';
+    }
+  };
 
-// ── IMAGE FILE SELECTION ──────────────────────────────────────────────────────
-window.handleImageFileSelect = function(e) {
-  const file = e.target.files[0];
-  const fileNameSpan = document.getElementById('pub-file-name');
-  if (file) {
-    selectedImageFile = file;
-    if (fileNameSpan) fileNameSpan.textContent = `📁 ${file.name}`;
-  } else {
+  window.handleImageFileSelect = function(e) {
+    const file = e.target.files[0];
+    const fileNameSpan = document.getElementById('pub-file-name');
+    if (file) {
+      selectedImageFile = file;
+      if (fileNameSpan) fileNameSpan.textContent = `📁 ${file.name}`;
+    } else {
+      selectedImageFile = null;
+      if (fileNameSpan) fileNameSpan.textContent = '';
+    }
+  };
+
+  window.resetPublishForm = function() {
+    const form = document.getElementById('publish-form');
+    if (form) form.reset();
     selectedImageFile = null;
+    const fileNameSpan = document.getElementById('pub-file-name');
     if (fileNameSpan) fileNameSpan.textContent = '';
-  }
-};
-
-// ── RESET PUBLISH FORM ────────────────────────────────────────────────────────
-window.resetPublishForm = function() {
-  const form = document.getElementById('publish-form');
-  if (form) form.reset();
-  selectedImageFile = null;
-  const fileNameSpan = document.getElementById('pub-file-name');
-  if (fileNameSpan) fileNameSpan.textContent = '';
-};
+  };
+}
 
 // ── SUBMIT PUBLISH FORM ───────────────────────────────────────────────────────
 window.handlePublishSubmit = async function(e) {

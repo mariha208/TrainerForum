@@ -4,20 +4,21 @@ require('dotenv').config();
 
 const MONGO_URI = process.env.MONGO_URI;
 
-if (!MONGO_URI) {
-  console.error('❌ MONGO_URI is not defined in your .env file.');
-  process.exit(1);
-}
-
 const connectDB = async () => {
+  if (!MONGO_URI) {
+    console.warn('⚠️ MONGO_URI is not defined in environment. Running with local JSON file fallback persistence.');
+    return null;
+  }
+
   try {
     const conn = await mongoose.connect(MONGO_URI, {
-      dbName: 'worldtrainersforum', // your database name
+      dbName: 'worldtrainersforum',
     });
     console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
+    return conn;
   } catch (err) {
-    console.error(`❌ MongoDB Connection Error: ${err.message}`);
-    process.exit(1);
+    console.warn(`⚠️ MongoDB Connection Error: ${err.message}. Falling back to local JSON persistence.`);
+    return null;
   }
 };
 

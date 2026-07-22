@@ -2,35 +2,37 @@
 
 // ── DATA ──────────────────────────────────────────────────────────────────────
 const TRAINERS = [];
-window.TRAINERS = TRAINERS;
+if (typeof window !== 'undefined') {
+  window.TRAINERS = TRAINERS;
+}
 
 // ── MODAL BRIDGE ─────────────────────────────────────────────────────────────
-window.openModal = function (mode) {
-  const resolvedMode = (mode === 'login') ? 'login' : 'register';
-  if (typeof openAuthModal === 'function') {
-    openAuthModal(resolvedMode);
-  } else {
-    const authModal = document.getElementById('auth-modal');
-    if (authModal) authModal.style.display = 'flex';
-  }
-};
+if (typeof window !== 'undefined') {
+  window.openModal = function (mode) {
+    const resolvedMode = (mode === 'login') ? 'login' : 'register';
+    if (typeof openAuthModal === 'function') {
+      openAuthModal(resolvedMode);
+    } else {
+      const authModal = document.getElementById('auth-modal');
+      if (authModal) authModal.style.display = 'flex';
+    }
+  };
 
-window.closeModal = function () {
-  if (typeof closeAuthModal === 'function') closeAuthModal();
-  const authModal = document.getElementById('auth-modal');
-  if (authModal) authModal.style.display = 'none';
-};
+  window.closeModal = function () {
+    if (typeof closeAuthModal === 'function') closeAuthModal();
+    const authModal = document.getElementById('auth-modal');
+    if (authModal) authModal.style.display = 'none';
+  };
+}
 
 // ── DOM CONTENT LOADED ───────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', () => {
-  console.log("Premium dark-theme application initialization routine running...");
-  subscribeToTrainers();
-  setupGlobalSearchEngine();
-  setupFilterToggles();
-  setupModalDismissals();
-  verifyUserSessionToken();
-  applyConditionalHeaderLogic();
-});
+if (typeof document !== 'undefined') {
+  document.addEventListener('DOMContentLoaded', () => {
+    setupModalDismissals();
+    verifyUserSessionToken();
+    applyConditionalHeaderLogic();
+  });
+}
 
 // ── GLOBAL HEADER COMPONENT LOGIC ──────────────────────────────────────────
 function applyConditionalHeaderLogic() {
@@ -1388,20 +1390,22 @@ window.toggleNotif = async function(e) {
     }
 };
 
-document.addEventListener('DOMContentLoaded', () => {
-    evaluateUnreadState();
-});
+if (typeof document !== 'undefined') {
+  document.addEventListener('DOMContentLoaded', () => {
+      evaluateUnreadState();
+  });
 
-// Close when clicking outside
-document.addEventListener('click', (e) => {
-    const panel = document.getElementById('notif-panel') || document.getElementById('notif-dropdown');
-    const btn = document.getElementById('notif-btn') || document.getElementById('notif-trigger');
-    
-    if (panel && btn && !panel.contains(e.target) && !btn.contains(e.target)) {
-        if (panel.id === 'notif-panel') {
-            panel.classList.remove('open');
-        } else {
-            panel.style.display = 'none';
-        }
-    }
-});
+  // Close when clicking outside
+  document.addEventListener('click', (e) => {
+      const panel = document.getElementById('notif-panel') || document.getElementById('notif-dropdown');
+      const btn = document.getElementById('notif-btn') || document.getElementById('notif-trigger');
+      
+      if (panel && btn && !panel.contains(e.target) && !btn.contains(e.target)) {
+          if (panel.id === 'notif-panel') {
+              panel.classList.remove('open');
+          } else {
+              panel.style.display = 'none';
+          }
+      }
+  });
+}

@@ -52,6 +52,24 @@ router.get('/', async (req, res) => {
   }
 });
 
+// ── PATCH /api/notifications/read-all ───────────────────────────────────────
+// Must be defined BEFORE /:id/read so Express router does not catch 'read-all' as :id
+router.patch('/read-all', async (req, res) => {
+  try {
+    try {
+      await Notification.updateMany({}, { isRead: true });
+    } catch (e) { }
+
+    const localNotifs = readJsonFallback(NOTIFS_FILE);
+    localNotifs.forEach(n => n.isRead = true);
+    writeJsonFallback(NOTIFS_FILE, localNotifs);
+
+    return res.json({ success: true, message: 'All notifications marked as read.' });
+  } catch (err) {
+    return res.status(500).json({ error: 'Failed to mark all as read: ' + err.message });
+  }
+});
+
 // ── PATCH /api/notifications/:id/read ───────────────────────────────────────
 router.patch('/:id/read', async (req, res) => {
   const { id } = req.params;
@@ -84,23 +102,6 @@ router.patch('/:id/read', async (req, res) => {
     return res.json({ success: true, notification: updatedNotif });
   } catch (err) {
     return res.status(500).json({ error: 'Failed to mark notification as read: ' + err.message });
-  }
-});
-
-// ── PATCH /api/notifications/read-all ───────────────────────────────────────
-router.patch('/read-all', async (req, res) => {
-  try {
-    try {
-      await Notification.updateMany({}, { isRead: true });
-    } catch (e) { }
-
-    const localNotifs = readJsonFallback(NOTIFS_FILE);
-    localNotifs.forEach(n => n.isRead = true);
-    writeJsonFallback(NOTIFS_FILE, localNotifs);
-
-    return res.json({ success: true, message: 'All notifications marked as read.' });
-  } catch (err) {
-    return res.status(500).json({ error: 'Failed to mark all as read: ' + err.message });
   }
 });
 

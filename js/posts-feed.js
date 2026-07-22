@@ -9,9 +9,11 @@ const POSTS_BACKEND_API = 'https://trainerforum.onrender.com/api/posts';
 
 let cachedPosts = [];
 
-document.addEventListener('DOMContentLoaded', () => {
-  initPostsFeed();
-});
+if (typeof document !== 'undefined') {
+  document.addEventListener('DOMContentLoaded', () => {
+    initPostsFeed();
+  });
+}
 
 async function initPostsFeed() {
   const newsContainer = document.getElementById('dynamic-news-feed');
