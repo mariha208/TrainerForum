@@ -1412,6 +1412,9 @@ async function evaluateUnreadState() {
     });
 }
 
+window.renderNotifications = renderNotifications;
+window.evaluateUnreadState = evaluateUnreadState;
+
 window.toggleNotif = async function(e) {
     if (e) e.stopPropagation();
     

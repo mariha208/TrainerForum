@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -40,78 +40,6 @@
       <button class="btn btn-gold btn-sm" id="btn-login" onclick="openModal('login')">Log In</button>
       <button class="btn btn-dark btn-sm" id="btn-logout" onclick="handleLogout()" style="display:none;">Log
         Out</button>
-      <button class="ham-btn" id="ham-btn" onclick="toggleMobileMenu()" aria-label="Toggle Menu">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
-      </button>
-    </div>
-  </nav>
-
-  <!-- Mobile Nav Drawer -->
-  <div class="mobile-nav" id="mobile-nav">
-    <div style="display:flex; justify-content:flex-end; margin-bottom: 20px;">
-      <button onclick="toggleMobileMenu()"
-        style="background:none; border:none; color:#fff; font-size:2rem; cursor:pointer;"
-        aria-label="Close Menu">&times;</button>
-    </div>
-    <a href="index.html">Home</a>
-    <a href="about.html">About</a>
-    <a href="find-trainers.html">Find Trainers</a>
-    <a href="certificates.html">Certificates</a>
-    <a href="news-events.html">News & Events</a>
-    <a href="blog.html">Blog</a>
-    <a href="dashboard.html" id="mn-dash" style="display:none; color:var(--gold);">Dashboard</a>
-
-    <div class="mn-actions" style="margin-top:30px; display:flex; flex-direction:column; gap:12px;">
-      <button class="btn btn-ghost" id="mn-btn-signup" onclick="toggleMobileMenu(); openModal('register')">Sign
-        Up</button>
-      <button class="btn btn-gold" id="mn-btn-login" onclick="toggleMobileMenu(); openModal('login')">Log In</button>
-      <button class="btn btn-dark" id="mn-btn-logout" onclick="handleLogout()" style="display:none;">Log Out</button>
-    </div>
-  </div>
-
-  <!-- Notification Panel -->
-  <div class="notif-panel" id="notif-panel">
-    <div class="notif-header">
-      <h4>Notifications</h4><a href="#" style="font-size:.78rem;color:var(--gold-dk)">Mark all read</a>
-    </div>
-    <div class="notif-item unread">
-      <div class="notif-ico" style="background:rgba(201,168,76,.12)">ðŸ“…</div>
-      <div class="notif-text">
-        <p><strong>Rajesh Kumar</strong> accepted your booking for May 20.</p><span>2 hours ago</span>
-      </div>
-    </div>
-    <div class="notif-item unread">
-      <div class="notif-ico" style="background:rgba(39,103,73,.12)">â­</div>
-      <div class="notif-text">
-        <p>Your session with <strong>Priya Mehta</strong> is in 2 days.</p><span>5 hours ago</span>
-      </div>
-    </div>
-    <div class="notif-item">
-      <div class="notif-ico" style="background:rgba(42,108,176,.12)">ðŸ’¬</div>
-      <div class="notif-text">
-        <p>New message from <strong>Arun Kapoor</strong>.</p><span>Yesterday</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- Toast -->
-  <div class="toast" id="toast"></div>
-
-  <!-- Modal -->
-  <div class="modal-bg" id="modal-bg">
-    <div class="modal-box">
-      <button class="modal-close" onclick="closeModal()">âœ•</button>
-      <div id="modal-body"></div>
-    </div>
-  </div>
-
-  <!-- Auth Modal -->
-  <div id="auth-modal" aria-modal="true" role="dialog" aria-label="Authentication"></div>
-
-  <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-       PRICING PAGE
-  â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
-  <div id="p-pricing" class="page active">
     <div class="page-hero" style="text-align:center"><span class="section-label">Trainer Membership Plans</span>
       <h1 style="font-size:3rem">Choose the Right Membership <span style="color:var(--gold)">for Your Growth</span></h1>
       <p>Increase visibility and connect with organizations worldwide.</p>

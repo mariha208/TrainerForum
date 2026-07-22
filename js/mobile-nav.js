@@ -25,11 +25,29 @@ window.toggleMobileMenu = function () {
 };
 
 /* -- Notification Bell Toggle ----------------------------------------------- */
-window.toggleNotif = function (e) {
+window.toggleNotif = async function (e) {
   if (e) e.stopPropagation();
-  const panel = document.getElementById('notif-panel');
+  const panel = document.getElementById('notif-panel') || document.getElementById('notif-dropdown');
   if (!panel) return;
-  panel.classList.toggle('open');
+
+  const isPanelOpen = panel.classList.contains('open') || panel.style.display === 'block';
+
+  if (!isPanelOpen) {
+    if (panel.id === 'notif-panel') {
+      panel.classList.add('open');
+    } else {
+      panel.style.display = 'block';
+    }
+    if (typeof window.renderNotifications === 'function') {
+      await window.renderNotifications(panel);
+    }
+  } else {
+    if (panel.id === 'notif-panel') {
+      panel.classList.remove('open');
+    } else {
+      panel.style.display = 'none';
+    }
+  }
 };
 
 // Close notification panel when clicking outside
