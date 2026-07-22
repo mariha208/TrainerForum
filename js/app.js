@@ -31,6 +31,9 @@ if (typeof document !== 'undefined') {
     setupModalDismissals();
     verifyUserSessionToken();
     applyConditionalHeaderLogic();
+    if (document.getElementById('home-grid') || document.getElementById('browse-grid') || document.querySelector('.trainers-grid')) {
+      subscribeToTrainers();
+    }
   });
 }
 
@@ -723,23 +726,34 @@ function subscribeToTrainers() {
                     Book Now
                   </button>
                 </div>
-
               </div>
             </div>`;
-          
-          if (isHomeGrid) {
-            // Front page: ONLY show PREMIUM (Featured) trainers
-            if (normalizedTrainer.membershipType === 'PREMIUM') {
-              grid.insertAdjacentHTML('beforeend', cardHtml);
-            }
-          } else {
-            // find-trainers.html: show all trainers
-            grid.insertAdjacentHTML('beforeend', cardHtml);
-          }
+
+          normalizedTrainer._cardHtml = cardHtml;
         }); // end TRAINERS.forEach
 
-        // ── RENDER DYNAMIC CATEGORIES ─────────────────────────────────────
-        // Removed dynamic population so the hardcoded index.html categories are shown instead.
+        if (isHomeGrid) {
+          // Front page: show PREMIUM/Featured trainers first
+          let featuredCount = 0;
+          TRAINERS.forEach(normalizedTrainer => {
+            if (normalizedTrainer.membershipType === 'PREMIUM' || normalizedTrainer.isFeatured) {
+              grid.insertAdjacentHTML('beforeend', normalizedTrainer._cardHtml);
+              featuredCount++;
+            }
+          });
+          // Fallback: If no trainers are marked as featured/premium, display first 4 available trainers
+          if (featuredCount === 0 && TRAINERS.length > 0) {
+            const fallbackList = TRAINERS.slice(0, 4);
+            fallbackList.forEach(normalizedTrainer => {
+              grid.insertAdjacentHTML('beforeend', normalizedTrainer._cardHtml);
+            });
+          }
+        } else {
+          // find-trainers.html / browse page: show all trainers
+          TRAINERS.forEach(normalizedTrainer => {
+            grid.insertAdjacentHTML('beforeend', normalizedTrainer._cardHtml);
+          });
+        }
 
         // Setup filter mechanics mapping newly generated .trainer-card elements
         setupFilterToggles();
@@ -749,6 +763,12 @@ function subscribeToTrainers() {
       }
     })
     .catch(err => console.error("❌ Data sync fault:", err));
+}
+
+if (typeof window !== 'undefined') {
+  window.subscribeToTrainers = subscribeToTrainers;
+  window.renderFeaturedTrainers = subscribeToTrainers;
+  window.renderTrainers = subscribeToTrainers;
 }
 
 // ── EXTRACTOR UTILITY FOR YOUTUBE VIDEOS ──────────────────────────────────────

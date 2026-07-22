@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -2290,8 +2290,15 @@
   <script src="js/trainer-modal.js?v=4"></script>
   <script src="js/auth-modal.js"></script>
   <script src="js/theme.js"></script>
-  <script>applyTheme();</script>
-  <!-- page-nav not loaded on index â€” SPA nav() stays active here -->
+  <script>
+    applyTheme();
+    document.addEventListener('DOMContentLoaded', function () {
+      if (typeof subscribeToTrainers === 'function') {
+        subscribeToTrainers();
+      }
+    });
+  </script>
+  <!-- page-nav not loaded on index — SPA nav() stays active here -->
   <script src="js/mobile-nav.js"></script>
   <script src="js/footer.js"></script>
 </body>
