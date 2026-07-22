@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -352,7 +352,7 @@
     }
 
     .event-body a::after {
-      content: " â†’";
+      content: " Ã¢â€ â€™";
     }
 
     /* ---------- NEWS GRID ---------- */
@@ -592,10 +592,10 @@
       }
     }
 
-    /* â•â•â• MOBILE LAYOUT FIX â•â•â•
+    /* Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â MOBILE LAYOUT FIX Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
        Root cause: wrappers use fixed padding:0 32px on desktop.
        On mobile this creates a left-gap and right-clip bug.
-    â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+    Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â */
     @media (max-width: 600px) {
 
       /* 1. All section wrappers: symmetric 16px padding */
@@ -654,12 +654,14 @@
         -webkit-overflow-scrolling: touch;
         scrollbar-width: none !important;
       }
+
       .news-grid::-webkit-scrollbar,
       .events-scroll::-webkit-scrollbar {
         display: none !important;
       }
-      .news-grid > *,
-      .events-scroll > *,
+
+      .news-grid>*,
+      .events-scroll>*,
       .event-card,
       .news-card {
         flex: 0 0 85vw !important;
@@ -670,7 +672,6 @@
         box-sizing: border-box !important;
       }
     }
-
   </style>
 
   <link rel="icon" type="image/svg+xml" href="img/logo.svg">
@@ -678,7 +679,7 @@
   <link rel="apple-touch-icon" sizes="180x180" href="img/logo.svg">
 </head>
 
-<body> <!-- â•â•â• NAVBAR â•â•â• -->
+<body> <!-- Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â NAVBAR Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â -->
   <nav id="nav">
     <a class="logo" href="index.html">
       <img src="img/logo.svg" alt="World Trainer Forum Logo" style="height:42px; margin-right:10px;">World Trainer <span
@@ -694,7 +695,12 @@
       <li><a id="nl-dash" href="dashboard.html" target="_blank" style="display:none;">Dashboard</a></li>
     </ul>
     <div class="nav-r">
-      <button class="notif-btn" id="notif-btn" onclick="toggleNotif()"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg><span class="notif-dot"></span></button>
+      <button class="notif-btn" id="notif-btn" onclick="toggleNotif()"><svg xmlns="http://www.w3.org/2000/svg"
+          width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+        </svg><span class="notif-dot"></span></button>
       <button class="btn btn-ghost btn-sm" id="btn-signup" onclick="openModal('register')">Sign Up</button>
       <button class="btn btn-gold btn-sm" id="btn-login" onclick="openModal('login')">Log In</button>
       <div class="user-avatar-wrap" id="user-avatar-wrap">
@@ -716,19 +722,29 @@
         </div>
       </div>
       <button class="ham-btn" id="ham-btn" onclick="toggleMobileMenu()" aria-label="Toggle Menu">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="4" x2="20" y1="12" y2="12" />
+          <line x1="4" x2="20" y1="6" y2="6" />
+          <line x1="4" x2="20" y1="18" y2="18" />
+        </svg>
       </button>
     </div>
   </nav>
 
   <!-- Mobile Nav Drawer -->
   <div class="mobile-nav" id="mobile-nav">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:12px;">
-      <a href="index.html" onclick="toggleMobileMenu()" style="display:flex; align-items:center; text-decoration:none; gap:8px;">
+    <div
+      style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:12px;">
+      <a href="index.html" onclick="toggleMobileMenu()"
+        style="display:flex; align-items:center; text-decoration:none; gap:8px;">
         <img src="img/logo.svg" alt="Logo" style="height:30px;">
-        <span style="color:#fff; font-weight:700; font-size:1rem;">World Trainer <span style="color:#C5A059;">Forum</span></span>
+        <span style="color:#fff; font-weight:700; font-size:1rem;">World Trainer <span
+            style="color:#C5A059;">Forum</span></span>
       </a>
-      <button onclick="toggleMobileMenu()" style="background:none; border:none; color:#fff; font-size:1.8rem; cursor:pointer; line-height:1; padding:4px;" aria-label="Close Menu">&times;</button>
+      <button onclick="toggleMobileMenu()"
+        style="background:none; border:none; color:#fff; font-size:1.8rem; cursor:pointer; line-height:1; padding:4px;"
+        aria-label="Close Menu">&times;</button>
     </div>
     <a href="index.html">Home</a>
     <a href="about.html">About</a>
@@ -739,7 +755,8 @@
     <a href="dashboard.html" id="mn-dash" style="display:none; color:var(--gold);">Dashboard</a>
 
     <div class="mn-actions" style="margin-top:30px; display:flex; flex-direction:column; gap:12px;">
-      <button class="btn btn-ghost" id="mn-btn-signup" onclick="toggleMobileMenu(); openModal('register')">Sign Up</button>
+      <button class="btn btn-ghost" id="mn-btn-signup" onclick="toggleMobileMenu(); openModal('register')">Sign
+        Up</button>
       <button class="btn btn-gold" id="mn-btn-login" onclick="toggleMobileMenu(); openModal('login')">Log In</button>
       <button class="btn btn-dark" id="mn-btn-logout" onclick="handleLogout()" style="display:none;">Log Out</button>
     </div>
@@ -751,25 +768,25 @@
       <h4>Notifications</h4><a href="#" style="font-size:.78rem;color:var(--gold-dk)">Mark all read</a>
     </div>
     <div class="notif-item unread">
-      <div class="notif-ico" style="background:rgba(201,168,76,.12)">ðŸ“…</div>
+      <div class="notif-ico" style="background:rgba(201,168,76,.12)">Ã°Å¸â€œâ€¦</div>
       <div class="notif-text">
         <p><strong>Rajesh Kumar</strong> accepted your booking for May 20.</p><span>2 hours ago</span>
       </div>
     </div>
     <div class="notif-item unread">
-      <div class="notif-ico" style="background:rgba(39,103,73,.12)">â­</div>
+      <div class="notif-ico" style="background:rgba(39,103,73,.12)">Ã¢Â­Â</div>
       <div class="notif-text">
         <p>Your session with <strong>Priya Mehta</strong> is in 2 days.</p><span>5 hours ago</span>
       </div>
     </div>
     <div class="notif-item">
-      <div class="notif-ico" style="background:rgba(42,108,176,.12)">ðŸ’¬</div>
+      <div class="notif-ico" style="background:rgba(42,108,176,.12)">Ã°Å¸â€™Â¬</div>
       <div class="notif-text">
         <p>New message from <strong>Arun Kapoor</strong>.</p><span>Yesterday</span>
       </div>
     </div>
     <div class="notif-item">
-      <div class="notif-ico" style="background:rgba(201,168,76,.12)">ðŸŽ‰</div>
+      <div class="notif-ico" style="background:rgba(201,168,76,.12)">Ã°Å¸Å½â€°</div>
       <div class="notif-text">
         <p>Welcome to World Trainer Forum! Complete your profile.</p><span>2 days ago</span>
       </div>
@@ -779,16 +796,21 @@
 
 
 
-  <section class="hero hero-split" style="min-height: 70vh; display: flex; align-items: center; justify-content: center;">
-    <video src="video2.mp4" autoplay muted playsinline loop class="hero-bg-video"></video>
+  <section class="hero hero-split"
+    style="min-height: 70vh; display: flex; align-items: center; justify-content: center;">
+    <video src="" autoplay muted playsinline loop class="hero-bg-video"></video>
     <div class="hero-orb h-orb1"></div>
     <div class="hero-orb h-orb2"></div>
     <div class="hero-grid"></div>
     <div class="hero-inner fade-in" style="position:relative;z-index:1; width: 100%;">
       <div class="hero-lower" style="text-align: center;">
-        <span class="eyebrow" style="display:inline-block; margin-bottom:18px; font-size:0.85rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--gold); font-weight:600; border:1px solid rgba(197,160,89,0.4); padding:5px 16px; border-radius:99px;">&#9679; Community Calendar</span>
-        <h1 style="color: #fff; font-size: clamp(2.4rem, 5vw, 4rem); font-weight: 600; margin-bottom: 22px;">What's happening across <span class="gld">140+ disciplines</span>, this month.</h1>
-        <p style="color: rgba(250, 246, 236, 0.75); font-size: 1.1rem; max-width: 620px; margin: 0 auto;">Live workshops, trainer meetups and platform announcements &mdash; all in one place, updated weekly.</p>
+        <span class="eyebrow"
+          style="display:inline-block; margin-bottom:18px; font-size:0.85rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--gold); font-weight:600; border:1px solid rgba(197,160,89,0.4); padding:5px 16px; border-radius:99px;">&#9679;
+          Community Calendar</span>
+        <h1 style="color: #fff; font-size: clamp(2.4rem, 5vw, 4rem); font-weight: 600; margin-bottom: 22px;">What's
+          happening across <span class="gld">140+ disciplines</span>, this month.</h1>
+        <p style="color: rgba(250, 246, 236, 0.75); font-size: 1.1rem; max-width: 620px; margin: 0 auto;">Live
+          workshops, trainer meetups and platform announcements &mdash; all in one place, updated weekly.</p>
       </div>
     </div>
   </section>
@@ -802,7 +824,7 @@
           <div class="event-body">
             <span class="event-tag live">Live Webinar</span>
             <h3>Building a 6-Figure Coaching Roster</h3>
-            <div class="event-meta">6:00 PM EST Â· Online</div>
+            <div class="event-meta">6:00 PM EST Ã‚Â· Online</div>
             <a href="#">Reserve a seat</a>
           </div>
         </div>
@@ -814,7 +836,7 @@
           <div class="event-body">
             <span class="event-tag">Workshop</span>
             <h3>Nutrition Coaching Certification Prep</h3>
-            <div class="event-meta">10:00 AM EST Â· Online</div>
+            <div class="event-meta">10:00 AM EST Ã‚Â· Online</div>
             <a href="#">Reserve a seat</a>
           </div>
         </div>
@@ -826,7 +848,7 @@
           <div class="event-body">
             <span class="event-tag">Meetup</span>
             <h3>NYC Trainer Community Mixer</h3>
-            <div class="event-meta">7:00 PM EST Â· Brooklyn, NY</div>
+            <div class="event-meta">7:00 PM EST Ã‚Â· Brooklyn, NY</div>
             <a href="#">RSVP</a>
           </div>
         </div>
@@ -838,7 +860,7 @@
           <div class="event-body">
             <span class="event-tag live">Live Panel</span>
             <h3>Executive Coaching: Pricing Your Sessions</h3>
-            <div class="event-meta">1:00 PM EST Â· Online</div>
+            <div class="event-meta">1:00 PM EST Ã‚Â· Online</div>
             <a href="#">Reserve a seat</a>
           </div>
         </div>
@@ -850,7 +872,7 @@
           <div class="event-body">
             <span class="event-tag">Workshop</span>
             <h3>Marketing Yourself as a Mentor</h3>
-            <div class="event-meta">11:00 AM EST Â· Online</div>
+            <div class="event-meta">11:00 AM EST Ã‚Â· Online</div>
             <a href="#">Reserve a seat</a>
           </div>
         </div>
@@ -879,7 +901,7 @@
         <div class="news-content">
           <span class="news-cat">Platform Update</span>
           <h3>Elite tier now includes verified client outcomes</h3>
-          <p>Ratings alone no longer tell the full story â€” outcome reviews are rolling out to every Elite-tier trainer
+          <p>Ratings alone no longer tell the full story Ã¢â‚¬â€ outcome reviews are rolling out to every Elite-tier trainer
             profile.</p>
           <div class="news-foot"><span>Jul 10, 2026</span><span>4 min read</span></div>
         </div>
@@ -890,7 +912,7 @@
         <div class="news-content">
           <span class="news-cat">Community</span>
           <h3>Meet the first cohort of Master-tier trainers</h3>
-          <p>Twelve coaches across seven disciplines cleared panel review this quarter â€” here's who they are.</p>
+          <p>Twelve coaches across seven disciplines cleared panel review this quarter Ã¢â‚¬â€ here's who they are.</p>
           <div class="news-foot"><span>Jul 3, 2026</span><span>3 min read</span></div>
         </div>
       </article>
@@ -940,7 +962,7 @@
 
   <section class="newsletter">
     <h2>Never miss an event.</h2>
-    <p>One email a week â€” new workshops, meetups and platform updates.</p>
+    <p>One email a week Ã¢â‚¬â€ new workshops, meetups and platform updates.</p>
     <form class="sub-form" onsubmit="return false;">
       <input type="email" placeholder="you@email.com" required>
       <button type="submit">Subscribe</button>
@@ -955,7 +977,8 @@
             <img src="img/logo.svg" alt="World Trainer Forum Logo">
             <span>World Trainer <span class="g">Forum</span></span>
           </a>
-          <p class="footer-tagline">Connecting organizations with world-class trainers, coaches, mentors and speakers worldwide.</p>
+          <p class="footer-tagline">Connecting organizations with world-class trainers, coaches, mentors and speakers
+            worldwide.</p>
           <ul class="footer-trust-list">
             <li><i class="fa-solid fa-circle-check"></i> Verified Trainers</li>
             <li><i class="fa-solid fa-globe"></i> Global Community</li>
@@ -986,11 +1009,15 @@
             </div>
           </div>
           <div class="footer-social">
-            <a href="#" class="fsoc-btn" aria-label="LinkedIn" title="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
-            <a href="#" class="fsoc-btn" aria-label="Facebook" title="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
-            <a href="#" class="fsoc-btn" aria-label="Instagram" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
+            <a href="#" class="fsoc-btn" aria-label="LinkedIn" title="LinkedIn"><i
+                class="fa-brands fa-linkedin-in"></i></a>
+            <a href="#" class="fsoc-btn" aria-label="Facebook" title="Facebook"><i
+                class="fa-brands fa-facebook-f"></i></a>
+            <a href="#" class="fsoc-btn" aria-label="Instagram" title="Instagram"><i
+                class="fa-brands fa-instagram"></i></a>
             <a href="#" class="fsoc-btn" aria-label="YouTube" title="YouTube"><i class="fa-brands fa-youtube"></i></a>
-            <a href="#" class="fsoc-btn" aria-label="X / Twitter" title="X / Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+            <a href="#" class="fsoc-btn" aria-label="X / Twitter" title="X / Twitter"><i
+                class="fa-brands fa-x-twitter"></i></a>
           </div>
         </div>
 
@@ -1057,7 +1084,8 @@
             <form class="fnl-form" onsubmit="return false;">
               <div class="fnl-input-wrap">
                 <i class="fa-regular fa-envelope fnl-input-ico"></i>
-                <input type="email" class="fnl-input" placeholder="Your email address" aria-label="Email for newsletter">
+                <input type="email" class="fnl-input" placeholder="Your email address"
+                  aria-label="Email for newsletter">
                 <button type="submit" class="fnl-btn">Subscribe</button>
               </div>
             </form>
@@ -1103,19 +1131,19 @@
 
     <div class="footer-legal">
       <div class="footer-legal-inner">
-        <span class="fl-copy">© 2026 World Trainer Forum Technologies Pvt. Ltd. All rights reserved.</span>
+        <span class="fl-copy">Â© 2026 World Trainer Forum Technologies Pvt. Ltd. All rights reserved.</span>
         <nav class="fl-links" aria-label="Legal links">
           <a href="privacy-policy.html">Privacy Policy</a>
-          <span class="fl-dot">·</span>
+          <span class="fl-dot">Â·</span>
           <a href="terms-conditions.html">Terms</a>
-          <span class="fl-dot">·</span>
+          <span class="fl-dot">Â·</span>
           <a href="#">Cookies</a>
-          <span class="fl-dot">·</span>
+          <span class="fl-dot">Â·</span>
           <a href="#">Accessibility</a>
-          <span class="fl-dot">·</span>
+          <span class="fl-dot">Â·</span>
           <a href="sitemap.html">Sitemap</a>
         </nav>
-        <span class="fl-tagline">Made for Global Learning &amp; Growth 🌍</span>
+        <span class="fl-tagline">Made for Global Learning &amp; Growth ðŸŒ</span>
       </div>
     </div>
   </footer>
@@ -1144,6 +1172,7 @@
   <script src="js/auth-modal.js"></script>
   <script src="js/mobile-nav.js"></script>
 
+  <script src="js/footer.js"></script>
 </body>
 
 </html>

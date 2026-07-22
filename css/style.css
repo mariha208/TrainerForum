@@ -3995,4 +3995,29 @@ nav {
     width: 22px !important;
     height: 22px !important;
   }
+
+  /* ── User dropdown: anchor properly to avatar on mobile ── */
+  .user-avatar-wrap {
+    position: relative !important;
+  }
+
+  .user-dropdown {
+    /* Fixed positioning so it always stays within viewport on mobile */
+    position: fixed !important;
+    top: 66px !important;       /* just below the nav bar height */
+    right: 8px !important;
+    left: auto !important;
+    width: calc(100vw - 16px) !important;
+    max-width: 320px !important;
+    border-radius: 16px !important;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.25) !important;
+    z-index: 20000 !important;
+    transform-origin: top right !important;
+  }
+
+  .user-dropdown.show {
+    transform: translateY(0) scale(1) !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
 }

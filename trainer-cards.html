@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Trainer Cards — World Trainer Forum</title>
+  <title>Trainer Cards â€” World Trainer Forum</title>
   <meta name="description"
     content="Browse verified trainers on World Trainer Forum. Filter by category, specialization, and rate." />
   <script src="https://cdn.tailwindcss.com"></script>
@@ -164,7 +164,7 @@
 
 <body class="bg-gray-950 min-h-screen">
 
-  <!-- ── HEADER ─────────────────────────────────────────────────────────────── -->
+  <!-- â”€â”€ HEADER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <header class="sticky top-0 z-50 bg-gray-950/90 backdrop-blur-md border-b border-gray-800 px-6 py-4">
     <div class="max-w-7xl mx-auto flex items-center justify-between">
       <div class="flex items-center gap-3">
@@ -177,18 +177,18 @@
       <!-- Search bar -->
       <div class="hidden md:flex items-center gap-3 bg-gray-900 border border-gray-700 rounded-xl px-4 py-2.5 w-72">
         <i class="fas fa-search text-gray-500 text-sm"></i>
-        <input id="search-input" type="text" placeholder="Search trainers…"
+        <input id="search-input" type="text" placeholder="Search trainersâ€¦"
           class="bg-transparent text-sm text-white placeholder-gray-500 outline-none w-full" />
       </div>
 
       <div class="flex items-center gap-2">
         <span id="trainer-count"
-          class="text-xs text-gray-400 bg-gray-800 px-3 py-1.5 rounded-full font-medium">Loading…</span>
+          class="text-xs text-gray-400 bg-gray-800 px-3 py-1.5 rounded-full font-medium">Loadingâ€¦</span>
       </div>
     </div>
   </header>
 
-  <!-- ── CATEGORY FILTER PILLS ──────────────────────────────────────────────── -->
+  <!-- â”€â”€ CATEGORY FILTER PILLS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <section class="max-w-7xl mx-auto px-6 pt-8 pb-2">
     <div id="filter-pills" class="flex flex-wrap gap-2">
       <button data-cat="all"
@@ -198,7 +198,7 @@
     </div>
   </section>
 
-  <!-- ── GRID ───────────────────────────────────────────────────────────────── -->
+  <!-- â”€â”€ GRID â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <main class="max-w-7xl mx-auto px-6 py-8">
     <div id="trainers-grid">
       <!-- Skeleton placeholders while loading -->
@@ -219,7 +219,7 @@
 
     <!-- Error state (hidden by default) -->
     <div id="error-state" class="hidden text-center py-20">
-      <div class="text-5xl mb-4">🔌</div>
+      <div class="text-5xl mb-4">ðŸ”Œ</div>
       <h3 class="text-white text-xl font-semibold mb-2">Could not load trainers</h3>
       <p class="text-gray-400 text-sm mb-6">The data source may be temporarily unavailable.</p>
       <button onclick="loadTrainers()"
@@ -230,19 +230,19 @@
 
     <!-- Empty state (hidden by default) -->
     <div id="empty-state" class="hidden text-center py-20">
-      <div class="text-5xl mb-4">🔍</div>
+      <div class="text-5xl mb-4">ðŸ”</div>
       <h3 class="text-white text-xl font-semibold mb-2">No results found</h3>
       <p class="text-gray-400 text-sm">Try a different search or category.</p>
     </div>
   </main>
 
   <script>
-    // ─────────────────────────────────────────────────────
+    // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     // CONFIG
-    // ─────────────────────────────────────────────────────
+    // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     const API_URL = 'https://script.google.com/macros/s/AKfycbz9GGVlaEDMX92__cQZbFb3YfG5NjhtO3SNcxejsRNVv_CjmC_qAM098pmArwKakJ6V/exec';
 
-    // Gradient pool — cycles through categories
+    // Gradient pool â€” cycles through categories
     const GRADIENTS = [
       'card-gradient-blue',
       'card-gradient-teal',
@@ -270,9 +270,9 @@
     let likedIds = new Set(JSON.parse(localStorage.getItem('wtf-liked') || '[]'));
     let gradientIdx = 0;
 
-    // ─────────────────────────────────────────────────────
+    // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     // HELPERS
-    // ─────────────────────────────────────────────────────
+    // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     function getInitials(name) {
       return String(name || 'TR')
         .trim()
@@ -286,7 +286,7 @@
     function formatRate(rate) {
       const n = parseFloat(String(rate).replace(/[^\d.]/g, '')) || 0;
       if (!n) return 'On request<span class="text-gray-400 font-normal text-xs">/hr</span>';
-      return '₹' + n.toLocaleString('en-IN') + '<span class="text-gray-400 font-normal text-xs">/hr</span>';
+      return 'â‚¹' + n.toLocaleString('en-IN') + '<span class="text-gray-400 font-normal text-xs">/hr</span>';
     }
 
     function pickGradient(category, idx) {
@@ -297,9 +297,9 @@
       localStorage.setItem('wtf-liked', JSON.stringify([...likedIds]));
     }
 
-    // ─────────────────────────────────────────────────────
+    // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     // CARD BUILDER
-    // ─────────────────────────────────────────────────────
+    // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     function buildCard(trainer, idx) {
       const {
         trainerId,
@@ -346,7 +346,7 @@
           tabindex="0"
           aria-label="View profile of ${fullName}"
         >
-          <!-- ── TOP GRADIENT BANNER (40%) ─────────────────── -->
+          <!-- â”€â”€ TOP GRADIENT BANNER (40%) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
           <div class="relative ${gradient} flex-shrink-0" style="height:120px;">
 
             <!-- Heart button -->
@@ -361,7 +361,7 @@
             </button>
           </div>
 
-          <!-- ── OVERLAPPING AVATAR (centered on seam) ──────── -->
+          <!-- â”€â”€ OVERLAPPING AVATAR (centered on seam) â”€â”€â”€â”€â”€â”€â”€â”€ -->
           <div class="absolute left-0 right-0 flex justify-center" style="top:80px; z-index:10;">
             <div class="avatar-ring w-20 h-20 rounded-full overflow-hidden border-4 border-card-dark flex items-center justify-center flex-shrink-0"
                  style="background:#0d3535;">
@@ -382,7 +382,7 @@
             </div>
           </div>
 
-          <!-- ── CARD BODY (bottom 60%) ─────────────────────── -->
+          <!-- â”€â”€ CARD BODY (bottom 60%) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
           <div class="flex flex-col flex-1 pt-14 pb-5 px-5 text-center">
 
             <!-- Name + verified badge -->
@@ -427,7 +427,7 @@
               <!-- Left: Stars + sessions -->
               <div class="flex flex-col items-start gap-0.5">
                 <div class="flex items-center gap-1">
-                  <span class="star-gold text-xs">★★★★★</span>
+                  <span class="star-gold text-xs">â˜…â˜…â˜…â˜…â˜…</span>
                   <span class="text-white text-xs font-semibold">5.0</span>
                 </div>
                 <span class="text-gray-400 text-[10px]">${expLabel}</span>
@@ -442,9 +442,9 @@
         </article>`;
     }
 
-    // ─────────────────────────────────────────────────────
+    // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     // RENDER
-    // ─────────────────────────────────────────────────────
+    // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     function renderCards(list) {
       const grid = document.getElementById('trainers-grid');
       const empty = document.getElementById('empty-state');
@@ -491,9 +491,9 @@
       renderCards(filtered);
     }
 
-    // ─────────────────────────────────────────────────────
+    // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     // LIKE TOGGLE
-    // ─────────────────────────────────────────────────────
+    // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     function toggleLike(e, id) {
       e.stopPropagation();
       const btn = document.getElementById(`heart-${id}`);
@@ -512,9 +512,9 @@
       saveLikes();
     }
 
-    // ─────────────────────────────────────────────────────
+    // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     // SEARCH
-    // ─────────────────────────────────────────────────────
+    // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     document.getElementById('search-input').addEventListener('input', function () {
       const q = this.value.toLowerCase().trim();
       if (!q) { renderCards(ALL_TRAINERS); return; }
@@ -528,9 +528,9 @@
       renderCards(filtered);
     });
 
-    // ─────────────────────────────────────────────────────
+    // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     // OPEN TRAINER PROFILE (hook into app.js if available)
-    // ─────────────────────────────────────────────────────
+    // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     function openTrainer(id) {
       if (typeof viewTrainerProfileModal === 'function') {
         viewTrainerProfileModal(id);
@@ -541,9 +541,9 @@
       }
     }
 
-    // ─────────────────────────────────────────────────────
+    // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     // FETCH & BOOTSTRAP
-    // ─────────────────────────────────────────────────────
+    // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     async function loadTrainers() {
       const grid = document.getElementById('trainers-grid');
       const error = document.getElementById('error-state');
@@ -582,6 +582,7 @@
     document.addEventListener('DOMContentLoaded', loadTrainers);
   </script>
 <script src="js/mobile-nav.js"></script>
+  <script src="js/footer.js"></script>
 </body>
 
 </html>
