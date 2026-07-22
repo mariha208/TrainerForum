@@ -32,12 +32,30 @@ function writeJsonFallback(filePath, data) {
 // ── GET /api/notifications ───────────────────────────────────────────────────
 router.get('/', async (req, res) => {
   try {
-    const notifs = await Notification.find().sort({ createdAt: -1 }).limit(50).lean();
+    let notifs = await Notification.find().sort({ createdAt: -1 }).limit(50).lean();
+    
+    // If no explicit notification records exist yet in DB, dynamically construct notifications from latest published posts
+    if (!notifs || notifs.length === 0) {
+      try {
+        const Post = require('../models/Post');
+        const posts = await Post.find().sort({ createdAt: -1 }).limit(15).lean();
+        notifs = posts.map(p => ({
+          _id: p._id,
+          title: `New ${p.category || 'Announcement'}: ${p.title}`,
+          message: p.description && p.description.length > 100 ? p.description.substring(0, 97) + '...' : (p.description || ''),
+          type: (p.category || 'news').toLowerCase(),
+          targetUrl: (p.category || '').toLowerCase() === 'blog' ? 'blog.html' : 'news-events.html',
+          isRead: false,
+          createdAt: p.createdAt
+        }));
+      } catch (postErr) { }
+    }
+
     const formatted = notifs.map(n => ({
-      id: n._id.toString(),
+      id: (n._id || n.id).toString(),
       title: n.title,
       message: n.message,
-      type: (n.type || 'general').toLowerCase(),
+      type: (n.type || 'news').toLowerCase(),
       targetUrl: n.targetUrl || '#',
       isRead: !!n.isRead,
       createdAt: n.createdAt
@@ -52,9 +70,8 @@ router.get('/', async (req, res) => {
   }
 });
 
-// ── PATCH /api/notifications/read-all ───────────────────────────────────────
-// Must be defined BEFORE /:id/read so Express router does not catch 'read-all' as :id
-router.patch('/read-all', async (req, res) => {
+// ── PATCH /api/notifications/mark-read & /read-all ───────────────────────────
+router.patch(['/mark-read', '/read-all'], async (req, res) => {
   try {
     try {
       await Notification.updateMany({}, { isRead: true });

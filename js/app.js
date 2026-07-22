@@ -1350,12 +1350,6 @@ async function renderNotifications(panel) {
     const feed = await fetchNotifications();
     const readIds = getReadIds();
     
-    // Unread items
-    const unreadFeed = feed.filter(item => {
-        const id = item.id || item._id;
-        return !item.isRead && !readIds.includes(id);
-    });
-    
     const headerHtml = `
       <div class="notif-header" style="display:flex; justify-content:space-between; align-items:center; padding:16px 18px; border-bottom:1px solid rgba(255,255,255,0.1);">
         <h4 style="margin:0; font-size:1rem; color:#ffffff; font-weight:600;">Notifications</h4>
@@ -1363,14 +1357,16 @@ async function renderNotifications(panel) {
       </div>
     `;
     
-    if (unreadFeed.length === 0) {
-        panel.innerHTML = headerHtml + '<div style="padding: 24px; text-align: center; color: #8899a6; font-size: 0.9rem;">You\'re all caught up!</div>';
+    if (!feed || feed.length === 0) {
+        panel.innerHTML = headerHtml + '<div style="padding: 28px; text-align: center; color: #8899a6; font-size: 0.9rem;">You\'re all caught up! 🔔</div>';
         return;
     }
     
-    let html = headerHtml;
-    unreadFeed.forEach(item => {
+    let html = headerHtml + '<div class="notif-list-body" style="max-height: 380px; overflow-y: auto;">';
+    
+    feed.slice(0, 15).forEach(item => {
         const id = item.id || item._id;
+        const isRead = !!item.isRead || readIds.includes(id);
         const typeStr = (item.type || 'news').toLowerCase();
         const isBlog = typeStr === 'blog';
         const isEvent = typeStr === 'event';
@@ -1380,22 +1376,26 @@ async function renderNotifications(panel) {
         const icon = isBlog ? '📝' : isEvent ? '📅' : '📰';
         const targetUrl = item.targetUrl || (isBlog ? 'blog.html' : 'news-events.html');
         const relativeTime = getRelativeTimeString(item.createdAt || item.date);
+        const itemBg = isRead ? 'transparent' : 'rgba(255, 255, 255, 0.04)';
+        const titleWeight = isRead ? '500' : '700';
 
         html += `
-          <div class="notif-item unread" onclick="window.handleNotificationClick('${id}', '${targetUrl}')" style="display:flex; gap:12px; padding:14px 18px; border-bottom:1px solid rgba(255,255,255,0.05); cursor:pointer; transition:background 0.2s ease;">
+          <div class="notif-item ${isRead ? 'read' : 'unread'}" onclick="window.handleNotificationClick('${id}', '${targetUrl}')" style="display:flex; gap:12px; padding:14px 18px; border-bottom:1px solid rgba(255,255,255,0.05); background:${itemBg}; cursor:pointer; transition:background 0.2s ease;">
             <div class="notif-ico" style="width:36px; height:36px; border-radius:50%; background:${bg}; color:${color}; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:1.1rem;">${icon}</div>
             <div class="notif-text" style="flex:1;">
               <div style="display:flex; justify-content:space-between; margin-bottom:4px; align-items:center;">
                 <span style="font-size:0.7rem; font-weight:700; color:${color}; text-transform:uppercase; letter-spacing:0.5px; padding: 2px 6px; border-radius: 4px; background: ${bg};">${typeStr}</span>
                 <span style="font-size:0.75rem; color:#888888; font-weight: 500;">${relativeTime}</span>
               </div>
-              <h5 style="margin:0 0 4px; font-size:0.88rem; color:#ffffff; font-weight:600; line-height:1.3;">${item.title || item.text}</h5>
+              <h5 style="margin:0 0 4px; font-size:0.88rem; color:#ffffff; font-weight:${titleWeight}; line-height:1.3;">${item.title || item.text}</h5>
               <p style="margin:0; font-size:0.8rem; color:#a0aec0; line-height:1.35;">${item.message || item.description || ''}</p>
             </div>
+            ${!isRead ? '<div style="width:8px; height:8px; border-radius:50%; background:#e11d48; margin-top:6px; flex-shrink:0;"></div>' : ''}
           </div>
         `;
     });
     
+    html += '</div>';
     panel.innerHTML = html;
 }
 
