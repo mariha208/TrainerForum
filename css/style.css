@@ -1925,7 +1925,7 @@ section {
   background: rgba(11, 27, 50, 0.85);
   backdrop-filter: blur(8px);
   z-index: 9999;
-  display: flex;
+  display: none;
   align-items: flex-start;
   justify-content: center;
   padding: 20px;
@@ -1933,7 +1933,13 @@ section {
   overflow-y: auto;
 }
 
-.modal-close, .close-btn {
+.modal-overlay.open,
+.modal-overlay.active {
+  display: flex !important;
+}
+
+#post-detail-modal .modal-close,
+.modal-overlay .modal-close {
   position: absolute;
   top: 16px;
   right: 16px;
@@ -1954,7 +1960,8 @@ section {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.modal-close:hover, .close-btn:hover {
+#post-detail-modal .modal-close:hover,
+.modal-overlay .modal-close:hover {
   background: #e2e8f0;
   transform: scale(1.08);
 }

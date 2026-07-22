@@ -215,7 +215,7 @@ window.openPostModal = function(id) {
     modal = document.createElement('div');
     modal.id = 'post-detail-modal';
     modal.className = 'modal-overlay';
-    modal.style.cssText = 'position:fixed; inset:0; background:rgba(11,27,50,0.85); backdrop-filter:blur(8px); z-index:9999; display:flex; align-items:flex-start; justify-content:center; padding:20px; overflow-y:auto; box-sizing:border-box;';
+    modal.style.cssText = 'position:fixed; inset:0; background:rgba(11,27,50,0.85); backdrop-filter:blur(8px); z-index:9999; display:none; align-items:flex-start; justify-content:center; padding:20px; overflow-y:auto; box-sizing:border-box;';
     document.body.appendChild(modal);
   }
 

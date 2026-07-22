@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,172 +14,531 @@
       --gold: #F5C842;
       --bg: #0D1117;
       --bg2: #161B22;
-      --border: rgba(255,255,255,0.08);
+      --border: rgba(255, 255, 255, 0.08);
       --ts: #e6edf3;
       --tm: #8b949e;
       --green: #2ecc71;
       --red: #e74c3c;
       --blue: #3498db;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background: var(--bg); color: var(--ts); font-family: 'Inter', sans-serif; min-height: 100vh; }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--ts);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+    }
 
     /* TOP NAV */
     .admin-topnav {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 0 24px; height: 60px;
-      background: var(--bg2); border-bottom: 1px solid var(--border);
-      position: sticky; top: 0; z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      height: 60px;
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
     }
-    .admin-logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 1.1rem; }
-    .admin-logo span { color: var(--gold); }
-    .admin-nav-links { display: flex; gap: 6px; }
+
+    .admin-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 1.1rem;
+    }
+
+    .admin-logo span {
+      color: var(--gold);
+    }
+
+    .admin-nav-links {
+      display: flex;
+      gap: 6px;
+    }
+
     .admin-nav-links a {
-      padding: 6px 14px; border-radius: 8px; text-decoration: none;
-      color: var(--tm); font-size: .85rem; transition: .2s;
+      padding: 6px 14px;
+      border-radius: 8px;
+      text-decoration: none;
+      color: var(--tm);
+      font-size: .85rem;
+      transition: .2s;
     }
-    .admin-nav-links a:hover, .admin-nav-links a.active { background: rgba(255,255,255,.05); color: var(--ts); }
+
+    .admin-nav-links a:hover,
+    .admin-nav-links a.active {
+      background: rgba(255, 255, 255, .05);
+      color: var(--ts);
+    }
 
     /* MAIN */
-    .admin-main { max-width: 1300px; margin: 0 auto; padding: 30px 24px; }
-    .admin-title { font-size: 1.6rem; font-weight: 800; margin-bottom: 4px; }
-    .admin-subtitle { color: var(--tm); font-size: .9rem; margin-bottom: 28px; }
+    .admin-main {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 30px 24px;
+    }
+
+    .admin-title {
+      font-size: 1.6rem;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+
+    .admin-subtitle {
+      color: var(--tm);
+      font-size: .9rem;
+      margin-bottom: 28px;
+    }
 
     /* STATS ROW */
-    .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 28px; }
-    .stat-card {
-      background: var(--bg2); border: 1px solid var(--border); border-radius: 14px;
-      padding: 20px; display: flex; align-items: center; gap: 16px;
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 28px;
     }
-    .stat-ico { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0; }
-    .stat-ico.gold { background: rgba(245,200,66,.15); }
-    .stat-ico.green { background: rgba(46,204,113,.15); }
-    .stat-ico.blue { background: rgba(52,152,219,.15); }
-    .stat-ico.purple { background: rgba(142,68,173,.15); }
-    .stat-label { font-size: .8rem; color: var(--tm); margin-bottom: 4px; }
-    .stat-value { font-size: 1.5rem; font-weight: 800; }
+
+    .stat-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .stat-ico {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      flex-shrink: 0;
+    }
+
+    .stat-ico.gold {
+      background: rgba(245, 200, 66, .15);
+    }
+
+    .stat-ico.green {
+      background: rgba(46, 204, 113, .15);
+    }
+
+    .stat-ico.blue {
+      background: rgba(52, 152, 219, .15);
+    }
+
+    .stat-ico.purple {
+      background: rgba(142, 68, 173, .15);
+    }
+
+    .stat-label {
+      font-size: .8rem;
+      color: var(--tm);
+      margin-bottom: 4px;
+    }
+
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 800;
+    }
 
     /* FILTER BAR */
     .filter-bar {
-      display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
-      background: var(--bg2); border: 1px solid var(--border); border-radius: 12px;
-      padding: 14px 18px; margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 18px;
+      margin-bottom: 20px;
     }
-    .filter-bar select, .filter-bar input {
-      background: rgba(255,255,255,.04); border: 1px solid var(--border); color: var(--ts);
-      border-radius: 8px; padding: 7px 12px; font-size: .85rem; outline: none;
+
+    .filter-bar select,
+    .filter-bar input {
+      background: rgba(255, 255, 255, .04);
+      border: 1px solid var(--border);
+      color: var(--ts);
+      border-radius: 8px;
+      padding: 7px 12px;
+      font-size: .85rem;
+      outline: none;
     }
-    .filter-bar select:focus, .filter-bar input:focus { border-color: var(--gold); }
-    .filter-bar label { font-size: .8rem; color: var(--tm); margin-right: -4px; }
-    .filter-bar .spacer { flex: 1; }
+
+    .filter-bar select:focus,
+    .filter-bar input:focus {
+      border-color: var(--gold);
+    }
+
+    .filter-bar label {
+      font-size: .8rem;
+      color: var(--tm);
+      margin-right: -4px;
+    }
+
+    .filter-bar .spacer {
+      flex: 1;
+    }
+
     .btn-sm {
-      padding: 7px 14px; border-radius: 8px; border: none; font-size: .82rem;
-      cursor: pointer; font-weight: 600; transition: .2s;
+      padding: 7px 14px;
+      border-radius: 8px;
+      border: none;
+      font-size: .82rem;
+      cursor: pointer;
+      font-weight: 600;
+      transition: .2s;
     }
-    .btn-gold { background: var(--gold); color: #000; }
-    .btn-gold:hover { background: #e2b63a; }
-    .btn-dark { background: rgba(255,255,255,.06); color: var(--ts); }
-    .btn-dark:hover { background: rgba(255,255,255,.1); }
-    .btn-danger { background: rgba(231,76,60,.15); color: #e74c3c; border: 1px solid rgba(231,76,60,.3); }
-    .btn-danger:hover { background: rgba(231,76,60,.25); }
+
+    .btn-gold {
+      background: var(--gold);
+      color: #000;
+    }
+
+    .btn-gold:hover {
+      background: #e2b63a;
+    }
+
+    .btn-dark {
+      background: rgba(255, 255, 255, .06);
+      color: var(--ts);
+    }
+
+    .btn-dark:hover {
+      background: rgba(255, 255, 255, .1);
+    }
+
+    .btn-danger {
+      background: rgba(231, 76, 60, .15);
+      color: #e74c3c;
+      border: 1px solid rgba(231, 76, 60, .3);
+    }
+
+    .btn-danger:hover {
+      background: rgba(231, 76, 60, .25);
+    }
 
     /* TABLE */
     .table-wrap {
-      background: var(--bg2); border: 1px solid var(--border); border-radius: 14px;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
       overflow: hidden;
     }
-    .admin-table { width: 100%; border-collapse: collapse; font-size: .85rem; }
-    .admin-table thead tr { background: rgba(0,0,0,.25); }
+
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .85rem;
+    }
+
+    .admin-table thead tr {
+      background: rgba(0, 0, 0, .25);
+    }
+
     .admin-table th {
-      padding: 13px 16px; text-align: left; font-weight: 700; font-size: .78rem;
-      text-transform: uppercase; letter-spacing: .06em; color: var(--tm);
+      padding: 13px 16px;
+      text-align: left;
+      font-weight: 700;
+      font-size: .78rem;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--tm);
       border-bottom: 1px solid var(--border);
     }
-    .admin-table td { padding: 13px 16px; border-bottom: 1px solid var(--border); vertical-align: middle; }
-    .admin-table tbody tr:last-child td { border-bottom: none; }
-    .admin-table tbody tr:hover { background: rgba(255,255,255,.02); }
+
+    .admin-table td {
+      padding: 13px 16px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+
+    .admin-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .admin-table tbody tr:hover {
+      background: rgba(255, 255, 255, .02);
+    }
 
     /* BADGES */
     .badge {
-      display: inline-block; padding: 3px 10px; border-radius: 99px;
-      font-size: .72rem; font-weight: 700; letter-spacing: .04em;
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 99px;
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .04em;
     }
-    .badge-premium { background: linear-gradient(90deg,#C5A059,#F5C842); color: #000; }
-    .badge-standard { background: rgba(52,152,219,.15); color: #5dade2; border: 1px solid rgba(52,152,219,.3); }
-    .badge-free { background: rgba(255,255,255,.06); color: var(--tm); border: 1px solid var(--border); }
-    .badge-active { background: rgba(46,204,113,.12); color: #4ade80; border: 1px solid rgba(46,204,113,.25); }
-    .badge-suspended { background: rgba(231,76,60,.12); color: #f87171; border: 1px solid rgba(231,76,60,.25); }
+
+    .badge-premium {
+      background: linear-gradient(90deg, #C5A059, #F5C842);
+      color: #000;
+    }
+
+    .badge-standard {
+      background: rgba(52, 152, 219, .15);
+      color: #5dade2;
+      border: 1px solid rgba(52, 152, 219, .3);
+    }
+
+    .badge-free {
+      background: rgba(255, 255, 255, .06);
+      color: var(--tm);
+      border: 1px solid var(--border);
+    }
+
+    .badge-active {
+      background: rgba(46, 204, 113, .12);
+      color: #4ade80;
+      border: 1px solid rgba(46, 204, 113, .25);
+    }
+
+    .badge-suspended {
+      background: rgba(231, 76, 60, .12);
+      color: #f87171;
+      border: 1px solid rgba(231, 76, 60, .25);
+    }
 
     /* AVATAR */
     .admin-av {
-      width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg,#0f2c6b,#0e7490);
-      display: flex; align-items: center; justify-content: center;
-      font-weight: 700; font-size: .8rem; color: #fff; flex-shrink: 0;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #0f2c6b, #0e7490);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: .8rem;
+      color: #fff;
+      flex-shrink: 0;
     }
-    .trainer-info { display: flex; align-items: center; gap: 10px; }
-    .trainer-info-text .name { font-weight: 600; font-size: .88rem; }
-    .trainer-info-text .email { font-size: .76rem; color: var(--tm); }
+
+    .trainer-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .trainer-info-text .name {
+      font-weight: 600;
+      font-size: .88rem;
+    }
+
+    .trainer-info-text .email {
+      font-size: .76rem;
+      color: var(--tm);
+    }
 
     /* ACTION DROPDOWN */
-    .action-wrap { position: relative; display: inline-block; }
+    .action-wrap {
+      position: relative;
+      display: inline-block;
+    }
+
     .action-btn {
-      background: rgba(255,255,255,.05); border: 1px solid var(--border); color: var(--ts);
-      border-radius: 8px; padding: 6px 10px; cursor: pointer; font-size: .78rem;
-      transition: .2s; display: flex; align-items: center; gap: 5px;
+      background: rgba(255, 255, 255, .05);
+      border: 1px solid var(--border);
+      color: var(--ts);
+      border-radius: 8px;
+      padding: 6px 10px;
+      cursor: pointer;
+      font-size: .78rem;
+      transition: .2s;
+      display: flex;
+      align-items: center;
+      gap: 5px;
     }
-    .action-btn:hover { background: rgba(255,255,255,.1); }
+
+    .action-btn:hover {
+      background: rgba(255, 255, 255, .1);
+    }
+
     .action-menu {
-      display: none; position: absolute; right: 0; top: 110%; background: var(--bg2);
-      border: 1px solid var(--border); border-radius: 10px; min-width: 160px;
-      z-index: 50; box-shadow: 0 8px 32px rgba(0,0,0,.4); overflow: hidden;
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 110%;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      min-width: 160px;
+      z-index: 50;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, .4);
+      overflow: hidden;
     }
-    .action-wrap:hover .action-menu { display: block; }
+
+    .action-wrap:hover .action-menu {
+      display: block;
+    }
+
     .action-menu button {
-      display: block; width: 100%; padding: 9px 14px; background: none;
-      border: none; color: var(--ts); text-align: left; cursor: pointer;
-      font-size: .82rem; transition: .2s;
+      display: block;
+      width: 100%;
+      padding: 9px 14px;
+      background: none;
+      border: none;
+      color: var(--ts);
+      text-align: left;
+      cursor: pointer;
+      font-size: .82rem;
+      transition: .2s;
     }
-    .action-menu button:hover { background: rgba(255,255,255,.05); }
-    .action-menu button.danger { color: #f87171; }
-    .action-menu .separator { height: 1px; background: var(--border); margin: 4px 0; }
+
+    .action-menu button:hover {
+      background: rgba(255, 255, 255, .05);
+    }
+
+    .action-menu button.danger {
+      color: #f87171;
+    }
+
+    .action-menu .separator {
+      height: 1px;
+      background: var(--border);
+      margin: 4px 0;
+    }
 
     /* PAGINATION */
-    .pagination { display: flex; align-items: center; justify-content: space-between; padding: 16px 18px; }
-    .page-info { font-size: .82rem; color: var(--tm); }
-    .page-btns { display: flex; gap: 6px; }
-    .page-btns button {
-      width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--border);
-      background: none; color: var(--ts); cursor: pointer; font-size: .82rem; transition: .2s;
+    .pagination {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 18px;
     }
-    .page-btns button:hover, .page-btns button.active { background: var(--gold); color: #000; border-color: var(--gold); }
+
+    .page-info {
+      font-size: .82rem;
+      color: var(--tm);
+    }
+
+    .page-btns {
+      display: flex;
+      gap: 6px;
+    }
+
+    .page-btns button {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: none;
+      color: var(--ts);
+      cursor: pointer;
+      font-size: .82rem;
+      transition: .2s;
+    }
+
+    .page-btns button:hover,
+    .page-btns button.active {
+      background: var(--gold);
+      color: #000;
+      border-color: var(--gold);
+    }
 
     /* MODAL */
     .modal-overlay {
-      display: none; position: fixed; inset: 0; background: rgba(0,0,0,.7);
-      z-index: 200; align-items: center; justify-content: center;
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .7);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
     }
-    .modal-overlay.open { display: flex; }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
     .modal-box {
-      background: var(--bg2); border: 1px solid var(--border); border-radius: 16px;
-      padding: 28px; min-width: 380px; max-width: 480px; width: 90%;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      min-width: 380px;
+      max-width: 480px;
+      width: 90%;
     }
-    .modal-box h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 6px; }
-    .modal-box p { color: var(--tm); font-size: .88rem; margin-bottom: 20px; }
-    .modal-box label { display: block; font-size: .82rem; color: var(--tm); margin-bottom: 6px; margin-top: 14px; }
-    .modal-box select, .modal-box input {
-      width: 100%; background: rgba(255,255,255,.04); border: 1px solid var(--border);
-      color: var(--ts); border-radius: 8px; padding: 9px 12px; font-size: .88rem; outline: none;
+
+    .modal-box h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 6px;
     }
-    .modal-box select:focus, .modal-box input:focus { border-color: var(--gold); }
-    .modal-footer { display: flex; gap: 8px; justify-content: flex-end; margin-top: 22px; }
-    .empty-row td { text-align: center; padding: 50px; color: var(--tm); }
+
+    .modal-box p {
+      color: var(--tm);
+      font-size: .88rem;
+      margin-bottom: 20px;
+    }
+
+    .modal-box label {
+      display: block;
+      font-size: .82rem;
+      color: var(--tm);
+      margin-bottom: 6px;
+      margin-top: 14px;
+    }
+
+    .modal-box select,
+    .modal-box input {
+      width: 100%;
+      background: rgba(255, 255, 255, .04);
+      border: 1px solid var(--border);
+      color: var(--ts);
+      border-radius: 8px;
+      padding: 9px 12px;
+      font-size: .88rem;
+      outline: none;
+    }
+
+    .modal-box select:focus,
+    .modal-box input:focus {
+      border-color: var(--gold);
+    }
+
+    .modal-footer {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+      margin-top: 22px;
+    }
+
+    .empty-row td {
+      text-align: center;
+      padding: 50px;
+      color: var(--tm);
+    }
 
     @media (max-width: 768px) {
-      .stats-row { grid-template-columns: repeat(2, 1fr); }
-      .admin-table { font-size: .78rem; }
+      .stats-row {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .admin-table {
+        font-size: .78rem;
+      }
     }
   </style>
 </head>
+
 <body>
 
   <!-- TOP NAV -->
@@ -186,7 +546,8 @@
     <div class="admin-logo">
       <img src="bglogo.png" alt="Logo" style="height:28px">
       World Trainer <span>Forum</span>
-      <span style="font-size:.7rem;background:rgba(245,200,66,.15);color:var(--gold);padding:2px 8px;border-radius:99px;margin-left:8px;">Admin</span>
+      <span
+        style="font-size:.7rem;background:rgba(245,200,66,.15);color:var(--gold);padding:2px 8px;border-radius:99px;margin-left:8px;">Admin</span>
     </div>
     <div class="admin-nav-links">
       <a href="index.html">🌐 Site</a>
@@ -200,9 +561,12 @@
     <div class="admin-subtitle">Manage all trainer accounts, memberships, and platform activity.</div>
 
     <!-- ADMIN TABS -->
-    <div style="display:flex; gap:12px; margin-bottom:24px; border-bottom:1px solid var(--border); padding-bottom:12px;">
-      <button class="btn-sm btn-gold" id="tab-btn-trainers" onclick="switchAdminTab('trainers')">👥 Trainer Accounts</button>
-      <button class="btn-sm btn-dark" id="tab-btn-publishing" onclick="switchAdminTab('publishing')">📢 Content Publishing (News, Events & Blogs)</button>
+    <div
+      style="display:flex; gap:12px; margin-bottom:24px; border-bottom:1px solid var(--border); padding-bottom:12px;">
+      <button class="btn-sm btn-gold" id="tab-btn-trainers" onclick="switchAdminTab('trainers')">👥 Trainer
+        Accounts</button>
+      <button class="btn-sm btn-dark" id="tab-btn-publishing" onclick="switchAdminTab('publishing')">📢 Content
+        Publishing</button>
     </div>
 
     <!-- TRAINERS TAB SECTION -->
@@ -258,7 +622,8 @@
           <option value="suspended">Suspended ⏸️</option>
         </select>
 
-        <input type="text" id="filter-search" placeholder="🔍 Search by name or email…" oninput="applyFilters()" style="min-width:220px;">
+        <input type="text" id="filter-search" placeholder="🔍 Search by name or email…" oninput="applyFilters()"
+          style="min-width:220px;">
         <div class="spacer"></div>
         <button class="btn-sm btn-gold" onclick="exportCSV()">📥 Export CSV</button>
         <button class="btn-sm btn-dark" onclick="loadTrainers()">🔄 Refresh</button>
@@ -278,7 +643,9 @@
             </tr>
           </thead>
           <tbody id="admin-table-body">
-            <tr><td colspan="6" style="text-align:center;padding:40px;color:var(--tm);">Loading…</td></tr>
+            <tr>
+              <td colspan="6" style="text-align:center;padding:40px;color:var(--tm);">Loading…</td>
+            </tr>
           </tbody>
         </table>
         <div class="pagination">
@@ -291,20 +658,27 @@
     <!-- PUBLISHING TAB SECTION -->
     <div id="tab-section-publishing" style="display:none;">
       <!-- PUBLISH FORM CARD -->
-      <div style="background:var(--bg2); border:1px solid var(--border); border-radius:16px; padding:28px; margin-bottom:30px;">
+      <div
+        style="background:var(--bg2); border:1px solid var(--border); border-radius:16px; padding:28px; margin-bottom:30px;">
         <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px;">
           <div>
-            <h2 style="font-size:1.3rem; font-weight:700; color:var(--ts); margin-bottom:4px;">✨ Create & Publish Content</h2>
-            <p style="color:var(--tm); font-size:.88rem;">Publish News, Events, or Blogs. Publishing automatically triggers an In-App Notification across the platform.</p>
+            <h2 style="font-size:1.3rem; font-weight:700; color:var(--ts); margin-bottom:4px;">✨ Create & Publish
+              Content</h2>
+            <p style="color:var(--tm); font-size:.88rem;">Publish News, Events, or Blogs. Publishing automatically
+              triggers an In-App Notification across the platform.</p>
           </div>
         </div>
 
-        <form id="publish-form" onsubmit="handlePublishSubmit(event)" style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
-          
+        <form id="publish-form" onsubmit="handlePublishSubmit(event)"
+          style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+
           <!-- Category -->
           <div style="grid-column: span 1;">
-            <label style="display:block; font-size:.82rem; font-weight:600; color:var(--tm); margin-bottom:6px;">Category <span style="color:var(--red);">*</span></label>
-            <select id="pub-category" required style="width:100%; background:rgba(255,255,255,.04); border:1px solid var(--border); color:var(--ts); border-radius:8px; padding:10px 14px; font-size:.9rem; outline:none;">
+            <label
+              style="display:block; font-size:.82rem; font-weight:600; color:var(--tm); margin-bottom:6px;">Category
+              <span style="color:var(--red);">*</span></label>
+            <select id="pub-category" required
+              style="width:100%; background:rgba(255,255,255,.04); border:1px solid var(--border); color:var(--ts); border-radius:8px; padding:10px 14px; font-size:.9rem; outline:none;">
               <option value="News">📰 News & Announcements</option>
               <option value="Event">📅 Upcoming Event / Workshop</option>
               <option value="Blog">📝 Blog Post</option>
@@ -313,31 +687,42 @@
 
           <!-- Title -->
           <div style="grid-column: span 1;">
-            <label style="display:block; font-size:.82rem; font-weight:600; color:var(--tm); margin-bottom:6px;">Post Title <span style="color:var(--red);">*</span></label>
-            <input type="text" id="pub-title" required placeholder="e.g. Annual Global Trainers Summit 2026" style="width:100%; background:rgba(255,255,255,.04); border:1px solid var(--border); color:var(--ts); border-radius:8px; padding:10px 14px; font-size:.9rem; outline:none;">
+            <label style="display:block; font-size:.82rem; font-weight:600; color:var(--tm); margin-bottom:6px;">Post
+              Title <span style="color:var(--red);">*</span></label>
+            <input type="text" id="pub-title" required placeholder="e.g. Annual Global Trainers Summit 2026"
+              style="width:100%; background:rgba(255,255,255,.04); border:1px solid var(--border); color:var(--ts); border-radius:8px; padding:10px 14px; font-size:.9rem; outline:none;">
           </div>
 
           <!-- Short Description -->
           <div style="grid-column: span 2;">
-            <label style="display:block; font-size:.82rem; font-weight:600; color:var(--tm); margin-bottom:6px;">Short Description / Excerpt <span style="color:var(--red);">*</span></label>
-            <textarea id="pub-description" required rows="2" placeholder="Brief summary displayed on cards and notification preview..." style="width:100%; background:rgba(255,255,255,.04); border:1px solid var(--border); color:var(--ts); border-radius:8px; padding:10px 14px; font-size:.9rem; outline:none; resize:vertical;"></textarea>
+            <label style="display:block; font-size:.82rem; font-weight:600; color:var(--tm); margin-bottom:6px;">Short
+              Description / Excerpt <span style="color:var(--red);">*</span></label>
+            <textarea id="pub-description" required rows="2"
+              placeholder="Brief summary displayed on cards and notification preview..."
+              style="width:100%; background:rgba(255,255,255,.04); border:1px solid var(--border); color:var(--ts); border-radius:8px; padding:10px 14px; font-size:.9rem; outline:none; resize:vertical;"></textarea>
           </div>
 
           <!-- Full Content -->
           <div style="grid-column: span 2;">
-            <label style="display:block; font-size:.82rem; font-weight:600; color:var(--tm); margin-bottom:6px;">Full Content Body <span style="color:var(--red);">*</span></label>
-            <textarea id="pub-content" required rows="6" placeholder="Complete post article content..." style="width:100%; background:rgba(255,255,255,.04); border:1px solid var(--border); color:var(--ts); border-radius:8px; padding:10px 14px; font-size:.9rem; outline:none; resize:vertical;"></textarea>
+            <label style="display:block; font-size:.82rem; font-weight:600; color:var(--tm); margin-bottom:6px;">Full
+              Content Body <span style="color:var(--red);">*</span></label>
+            <textarea id="pub-content" required rows="6" placeholder="Complete post article content..."
+              style="width:100%; background:rgba(255,255,255,.04); border:1px solid var(--border); color:var(--ts); border-radius:8px; padding:10px 14px; font-size:.9rem; outline:none; resize:vertical;"></textarea>
           </div>
 
           <!-- Image Field: URL or File Upload -->
           <div style="grid-column: span 2;">
-            <label style="display:block; font-size:.82rem; font-weight:600; color:var(--tm); margin-bottom:6px;">Cover Image (URL or Upload)</label>
+            <label style="display:block; font-size:.82rem; font-weight:600; color:var(--tm); margin-bottom:6px;">Cover
+              Image (URL or Upload)</label>
             <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
-              <input type="url" id="pub-image-url" placeholder="https://example.com/image.jpg" style="flex:1; min-width:240px; background:rgba(255,255,255,.04); border:1px solid var(--border); color:var(--ts); border-radius:8px; padding:10px 14px; font-size:.9rem; outline:none;">
+              <input type="url" id="pub-image-url" placeholder="https://example.com/image.jpg"
+                style="flex:1; min-width:240px; background:rgba(255,255,255,.04); border:1px solid var(--border); color:var(--ts); border-radius:8px; padding:10px 14px; font-size:.9rem; outline:none;">
               <span style="color:var(--tm); font-size:.82rem;">OR</span>
-              <label style="background:rgba(255,255,255,.08); border:1px dashed var(--border); color:var(--ts); padding:9px 16px; border-radius:8px; font-size:.85rem; cursor:pointer; display:flex; align-items:center; gap:6px; transition:.2s;">
+              <label
+                style="background:rgba(255,255,255,.08); border:1px dashed var(--border); color:var(--ts); padding:9px 16px; border-radius:8px; font-size:.85rem; cursor:pointer; display:flex; align-items:center; gap:6px; transition:.2s;">
                 📁 Choose File
-                <input type="file" id="pub-image-file" accept="image/*" onchange="handleImageFileSelect(event)" style="display:none;">
+                <input type="file" id="pub-image-file" accept="image/*" onchange="handleImageFileSelect(event)"
+                  style="display:none;">
               </label>
               <span id="pub-file-name" style="font-size:.8rem; color:var(--gold);"></span>
             </div>
@@ -346,7 +731,8 @@
           <!-- Submit Button -->
           <div style="grid-column: span 2; display:flex; justify-content:flex-end; gap:12px; margin-top:10px;">
             <button type="button" class="btn-sm btn-dark" onclick="resetPublishForm()">Reset Form</button>
-            <button type="submit" id="btn-publish-submit" class="btn-sm btn-gold" style="padding:10px 24px; font-size:.9rem; display:flex; align-items:center; gap:8px;">
+            <button type="submit" id="btn-publish-submit" class="btn-sm btn-gold"
+              style="padding:10px 24px; font-size:.9rem; display:flex; align-items:center; gap:8px;">
               🚀 Publish & Send Notification
             </button>
           </div>
@@ -356,7 +742,8 @@
 
       <!-- PUBLISHED CONTENT MANAGEMENT TABLE -->
       <div class="table-wrap">
-        <div style="padding:18px 24px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center;">
+        <div
+          style="padding:18px 24px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center;">
           <h3 style="font-size:1.1rem; font-weight:700; color:var(--ts);">📚 Manage Published Posts</h3>
           <button class="btn-sm btn-dark" onclick="loadPublishedPosts()">🔄 Refresh Posts</button>
         </div>
@@ -371,7 +758,9 @@
             </tr>
           </thead>
           <tbody id="published-posts-tbody">
-            <tr><td colspan="5" style="text-align:center; padding:40px; color:var(--tm);">Loading published posts…</td></tr>
+            <tr>
+              <td colspan="5" style="text-align:center; padding:40px; color:var(--tm);">Loading published posts…</td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -399,4 +788,5 @@
 
   <script src="js/admin.js"></script>
 </body>
+
 </html>
