@@ -38,13 +38,18 @@ router.post('/register', async (req, res) => {
       assignedMembershipType = 'FREE'; // ensure fallback
     }
 
+    const targetRole = role || 'trainer';
+    const isTrainer = targetRole === 'trainer';
+    const initialStatus = isTrainer ? 'pending' : 'approved';
+    const initialApproved = !isTrainer;
+
     // Create new user
     const newUser = new User({
       email: email.toLowerCase(),
       passwordHash,
       firstName,
       lastName,
-      role: role || 'trainer',
+      role: targetRole,
       professionalTitle,
       expertiseCategory,
       expertiseCategory1,
@@ -62,15 +67,17 @@ router.post('/register', async (req, res) => {
       reviews: 0,
       rating: 5.0,
       
-      // Membership Controls
+      // Membership & Approval Controls
       membershipType: assignedMembershipType,
       membershipStatus: 'ACTIVE',
       paymentStatus,
       isFeatured,
       displayPriority,
       profileVisibility: 'PUBLIC',
+      status: initialStatus,
+      isApproved: initialApproved,
       
-      verified: true // Automatically verified for this demo
+      verified: true // Automatically verified for demo
     });
 
     await newUser.save();
@@ -82,7 +89,11 @@ router.post('/register', async (req, res) => {
     const userResponse = newUser.toObject();
     delete userResponse.passwordHash;
 
-    res.status(201).json({ message: 'Registration successful', token, user: userResponse });
+    const message = isTrainer
+      ? 'Registration submitted! Your profile is pending admin approval.'
+      : 'Registration successful';
+
+    res.status(201).json({ message, token, user: userResponse });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -103,6 +114,13 @@ router.post('/login', async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.passwordHash);
     if (!isMatch) {
       return res.status(401).json({ error: 'Invalid email or password' });
+    }
+
+    // Access Control: Block pending or rejected trainers
+    if (user.role === 'trainer' && user.status && user.status !== 'approved') {
+      return res.status(403).json({
+        error: 'Your profile is under review. You will receive an email/WhatsApp notification once approved.'
+      });
     }
 
     // Generate token

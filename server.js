@@ -54,7 +54,7 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'World Trainer Forum API is running.' });
 });
 
-// ── Trainers Route — Returns all users with role 'trainer' ───────────────────
+// ── Trainers Route — Returns users with role 'trainer' ───────────────────────
 app.get('/api/trainers', async (req, res) => {
   try {
     const mongoose = require('mongoose');
@@ -64,7 +64,21 @@ app.get('/api/trainers', async (req, res) => {
       return res.json([]);
     }
     const User = require('./models/User');
-    const trainers = await User.find({ role: 'trainer' }).select('-passwordHash');
+
+    const filter = { role: 'trainer' };
+    
+    // For public requests, show only approved trainers (or legacy profiles without status)
+    if (req.query.includeHidden !== 'true') {
+      filter.profileVisibility = { $ne: 'HIDDEN' };
+      filter.status = { $ne: 'rejected' };
+      filter.$or = [
+        { status: 'approved' },
+        { status: { $exists: false } },
+        { isApproved: true }
+      ];
+    }
+
+    const trainers = await User.find(filter).sort({ displayPriority: 1 }).select('-passwordHash');
     res.json(trainers);
   } catch (err) {
     console.error('[Trainers API] Error:', err.message);

@@ -82,14 +82,32 @@ if (typeof document !== 'undefined') {
   });
 }
 
+// Helper to get JWT auth headers for admin requests
+function getAdminAuthHeaders() {
+  const token = localStorage.getItem('wtf_admin_token') || localStorage.getItem('token') || localStorage.getItem('wtf_auth_token') || '';
+  const headers = { 'Content-Type': 'application/json' };
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+  return headers;
+}
+
 // ── FETCH ALL TRAINERS FROM API ───────────────────────────────────────────────
 async function loadTrainers() {
   const tbody = document.getElementById('admin-table-body');
   tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--tm);">Loading trainers…</td></tr>`;
 
   try {
-    const res = await fetch(`${API_BASE}?role=trainer`);
+    const headers = getAdminAuthHeaders();
+    const primaryUrl = `${API_BASE}?role=trainer&includeHidden=true`;
+    const fallbackUrl = `https://trainerforum.onrender.com/api/trainers?includeHidden=true`;
+    
+    let res = await fetch(primaryUrl, { headers });
+    if (!res.ok) {
+      res = await fetch(fallbackUrl, { headers });
+    }
     if (!res.ok) throw new Error('HTTP ' + res.status);
+
     const data = await res.json();
     allTrainers = Array.isArray(data) ? data : (data.data || []);
 
@@ -129,7 +147,8 @@ function applyFilters() {
   filteredTrainers = allTrainers.filter(t => {
     const mt = (t.membershipType || 'FREE').toUpperCase();
     const isSuspended = t.suspended === true;
-    const statusStr = isSuspended ? 'suspended' : 'active';
+    const approvalStatus = (t.status || (t.isApproved === false ? 'pending' : 'approved')).toLowerCase();
+    const statusStr = isSuspended ? 'suspended' : approvalStatus;
     const name = ([t.fullName, t.firstName, t.lastName].filter(Boolean).join(' ')).toLowerCase();
     const email = (t.email || '').toLowerCase();
 
@@ -176,9 +195,25 @@ function renderTable() {
       ? `<span class="badge badge-standard">🚀 Pro</span>`
       : `<span class="badge badge-free">Starter</span>`;
 
-    const statusBadge = isSuspended
-      ? `<span class="badge badge-suspended">Suspended</span>`
-      : `<span class="badge badge-active">Active</span>`;
+    const approvalStatus = (t.status || (t.isApproved === false ? 'pending' : 'approved')).toLowerCase();
+    const isPending = approvalStatus === 'pending';
+    const isRejected = approvalStatus === 'rejected';
+    const isApproved = approvalStatus === 'approved';
+
+    let statusBadge = '';
+    if (isSuspended) {
+      statusBadge = `<span class="badge badge-suspended">Suspended</span>`;
+    } else if (isPending) {
+      statusBadge = `<span class="badge" style="background:#fef3c7;color:#d97706;border:1px solid #fcd34d;">⏳ Pending</span>`;
+    } else if (isRejected) {
+      statusBadge = `<span class="badge" style="background:#fee2e2;color:#dc2626;border:1px solid #fca5a5;">❌ Rejected</span>`;
+    } else {
+      statusBadge = `<span class="badge badge-active">✅ Approved</span>`;
+    }
+
+    const quickApproveBtn = isPending
+      ? `<button style="background:linear-gradient(135deg, #10b981, #059669);color:#fff;border:none;padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;margin-right:8px;box-shadow:0 2px 6px rgba(16,185,129,0.3);" onclick="approveTrainer('${id}', '${escHtml(name)}')">Approve</button>`
+      : '';
 
     return `<tr>
       <td>
@@ -195,13 +230,18 @@ function renderTable() {
       <td>${statusBadge}</td>
       <td style="color:var(--tm);font-size:.82rem;">${joined}</td>
       <td>
-        <div class="action-wrap">
-          <button class="action-btn">Actions ▾</button>
-          <div class="action-menu">
-            <button onclick="openPlanModal('${id}', '${escHtml(name)}', '${mt}')">✏️ Change Plan</button>
-            <button onclick="toggleSuspend('${id}', ${isSuspended})">${isSuspended ? '✅ Reactivate' : '⏸️ Suspend'}</button>
-            <div class="separator"></div>
-            <button class="danger" onclick="deleteTrainer('${id}', '${escHtml(name)}')">🗑️ Delete Account</button>
+        <div style="display:flex;align-items:center;">
+          ${quickApproveBtn}
+          <div class="action-wrap">
+            <button class="action-btn">Actions ▾</button>
+            <div class="action-menu">
+              ${!isApproved ? `<button onclick="approveTrainer('${id}', '${escHtml(name)}')">✅ Approve Trainer</button>` : ''}
+              ${!isRejected ? `<button onclick="rejectTrainer('${id}', '${escHtml(name)}')">❌ Reject Trainer</button>` : ''}
+              <button onclick="openPlanModal('${id}', '${escHtml(name)}', '${mt}')">✏️ Change Plan</button>
+              <button onclick="toggleSuspend('${id}', ${isSuspended})">${isSuspended ? '✅ Reactivate' : '⏸️ Suspend'}</button>
+              <div class="separator"></div>
+              <button class="danger" onclick="deleteTrainer('${id}', '${escHtml(name)}')">🗑️ Delete Account</button>
+            </div>
           </div>
         </div>
       </td>
@@ -285,6 +325,58 @@ async function toggleSuspend(id, isSuspended) {
   } catch (err) {
     alert('❌ Failed to update status: ' + err.message);
   }
+}
+
+// ── APPROVE / REJECT TRAINER WORKFLOW ──────────────────────────────────────────
+async function approveTrainer(id, name) {
+  if (!confirm(`Are you sure you want to approve trainer profile for "${name}"?`)) return;
+  try {
+    const headers = getAdminAuthHeaders();
+    const res = await fetch(`https://trainerforum.onrender.com/api/users/${id}/approve`, {
+      method: 'PATCH',
+      headers
+    });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+
+    const trainer = allTrainers.find(t => t._id === id);
+    if (trainer) {
+      trainer.status = 'approved';
+      trainer.isApproved = true;
+    }
+
+    applyFilters();
+    showToast(`🎉 Approved "${name}"! Automated notification sent.`);
+  } catch (err) {
+    alert('❌ Failed to approve trainer: ' + err.message);
+  }
+}
+
+async function rejectTrainer(id, name) {
+  if (!confirm(`Are you sure you want to reject trainer profile for "${name}"?`)) return;
+  try {
+    const headers = getAdminAuthHeaders();
+    const res = await fetch(`https://trainerforum.onrender.com/api/users/${id}/reject`, {
+      method: 'PATCH',
+      headers
+    });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+
+    const trainer = allTrainers.find(t => t._id === id);
+    if (trainer) {
+      trainer.status = 'rejected';
+      trainer.isApproved = false;
+    }
+
+    applyFilters();
+    showToast(`Rejected trainer profile for "${name}".`);
+  } catch (err) {
+    alert('❌ Failed to reject trainer: ' + err.message);
+  }
+}
+
+if (typeof window !== 'undefined') {
+  window.approveTrainer = approveTrainer;
+  window.rejectTrainer = rejectTrainer;
 }
 
 // ── DELETE ────────────────────────────────────────────────────────────────────

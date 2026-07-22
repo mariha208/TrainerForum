@@ -35,9 +35,17 @@ router.get('/', async (req, res) => {
     const filter = {};
     if (req.query.role) filter.role = req.query.role;
     
-    // Default: don't show hidden profiles
+    // Default: don't show hidden or unapproved profiles on public requests
     if (!req.query.includeHidden) {
       filter.profileVisibility = { $ne: 'HIDDEN' };
+      if (req.query.role === 'trainer') {
+        filter.status = { $ne: 'rejected' };
+        filter.$or = [
+          { status: 'approved' },
+          { status: { $exists: false } },
+          { isApproved: true }
+        ];
+      }
     }
 
     // Always sort by displayPriority (ascending) to show Premium (1), Professional (50), Starter (100)
@@ -66,6 +74,94 @@ router.get('/', async (req, res) => {
     console.error('[Users API] GET / error:', err.message);
     // Return empty array instead of crashing the admin panel
     res.json([]);
+  }
+});
+
+// Helper: Automated email & WhatsApp notification dispatch
+async function sendApprovalNotification(trainer) {
+  const email = trainer.email;
+  const name = [trainer.firstName, trainer.lastName].filter(Boolean).join(' ') || trainer.fullName || 'Trainer';
+  const phone = trainer.phoneNumber || trainer.whatsapp || '';
+
+  const subject = "Congratulations! Your Trainer Profile is Approved 🎉";
+  const body = `Hello ${name}, your trainer account on World Trainer Forum has been approved! You can now log in to your dashboard and manage your profile.`;
+
+  console.log(`\n📧 [APPROVAL EMAIL DISPATCH] To: ${email}\nSubject: ${subject}\nBody: ${body}\n`);
+  console.log(`💬 [WHATSAPP DISPATCH LOG] To: ${phone}\nMessage: ${body}\n`);
+
+  if (process.env.SMTP_HOST && process.env.SMTP_USER) {
+    try {
+      const nodemailer = require('nodemailer');
+      const transporter = nodemailer.createTransport({
+        host: process.env.SMTP_HOST,
+        port: parseInt(process.env.SMTP_PORT || '587'),
+        secure: process.env.SMTP_SECURE === 'true',
+        auth: {
+          user: process.env.SMTP_USER,
+          pass: process.env.SMTP_PASS
+        }
+      });
+      await transporter.sendMail({
+        from: `"World Trainer Forum" <${process.env.SMTP_FROM || process.env.SMTP_USER}>`,
+        to: email,
+        subject: subject,
+        text: body,
+        html: `<div style="font-family: Arial, sans-serif; padding: 24px; color: #1e293b; max-width: 600px; border: 1px solid #e2e8f0; border-radius: 12px;">
+          <h2 style="color: #c5a059; margin-top: 0;">Congratulations! Your Trainer Profile is Approved 🎉</h2>
+          <p>Hello <strong>${name}</strong>,</p>
+          <p>Your trainer account on <strong>World Trainer Forum</strong> has been approved!</p>
+          <p>You can now log in to your dashboard to complete your profile, manage services, and receive booking requests from clients worldwide.</p>
+          <p style="margin-top: 28px;">
+            <a href="https://www.worldtrainerforum.com" style="background: linear-gradient(135deg, #c5a059, #e8c97a); color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">Log In to Dashboard</a>
+          </p>
+        </div>`
+      });
+      console.log(`✅ [Nodemailer] Approval email successfully sent to ${email}`);
+    } catch (mailErr) {
+      console.warn(`[Nodemailer] Mail send warning:`, mailErr.message);
+    }
+  }
+}
+
+// PATCH approve a trainer
+router.patch('/:id/approve', async (req, res) => {
+  try {
+    const isObjectId = mongoose.Types.ObjectId.isValid(req.params.id);
+    const query = isObjectId ? { _id: req.params.id } : { email: req.params.id.toLowerCase() };
+
+    const user = await User.findOneAndUpdate(
+      query,
+      { $set: { status: 'approved', isApproved: true } },
+      { new: true }
+    ).select('-passwordHash');
+
+    if (!user) return res.status(404).json({ error: 'Trainer not found' });
+
+    await sendApprovalNotification(user);
+
+    res.json({ message: 'Trainer approved successfully', user });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// PATCH reject a trainer
+router.patch('/:id/reject', async (req, res) => {
+  try {
+    const isObjectId = mongoose.Types.ObjectId.isValid(req.params.id);
+    const query = isObjectId ? { _id: req.params.id } : { email: req.params.id.toLowerCase() };
+
+    const user = await User.findOneAndUpdate(
+      query,
+      { $set: { status: 'rejected', isApproved: false } },
+      { new: true }
+    ).select('-passwordHash');
+
+    if (!user) return res.status(404).json({ error: 'Trainer not found' });
+
+    res.json({ message: 'Trainer profile rejected', user });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 });
 

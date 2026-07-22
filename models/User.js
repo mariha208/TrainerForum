@@ -43,6 +43,10 @@ const userSchema = new mongoose.Schema(
     displayPriority:   { type: Number, default: 100 },
     profileVisibility: { type: String, enum: ['PUBLIC', 'PRIVATE', 'HIDDEN'], default: 'PUBLIC' },
 
+    // ── Trainer Approval Workflow Status ───────────────────────
+    status:            { type: String, enum: ['pending', 'approved', 'rejected'], default: 'pending' },
+    isApproved:        { type: Boolean, default: false },
+
     // ── Profile Images ─────────────────────────────────────────
     profilePictureUrl: { type: String, default: '' },
     coverBannerUrl:    { type: String, default: '' },
@@ -102,6 +106,8 @@ userSchema.methods.toPublicCard = function () {
     id: this._id,
     membershipType: this.membershipType,
     isFeatured: this.isFeatured,
+    status: this.status || 'approved',
+    isApproved: this.isApproved ?? true,
     name: `${this.firstName} ${this.lastName}`.trim(),
     role: this.professionalTitle,
     cat: [this.expertiseCategory1 || this.expertiseCategory, this.expertiseCategory2, this.expertiseCategory3].filter(Boolean).join(' • '),
