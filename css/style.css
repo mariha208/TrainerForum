@@ -3238,7 +3238,7 @@ textarea {
     padding-right: 16px !important;
     width: 100% !important;
     box-sizing: border-box !important;
-    overflow-x: hidden !important;
+    overflow: visible !important;
   }
 
   .nav-r {
@@ -3999,19 +3999,20 @@ nav {
   /* ── User dropdown: anchor properly to avatar on mobile ── */
   .user-avatar-wrap {
     position: relative !important;
+    overflow: visible !important;
   }
 
   .user-dropdown {
     /* Fixed positioning so it always stays within viewport on mobile */
     position: fixed !important;
-    top: 66px !important;       /* just below the nav bar height */
-    right: 8px !important;
+    top: calc(var(--nav, 64px) + 8px) !important;       /* just below the nav bar height */
+    right: 12px !important;
     left: auto !important;
-    width: calc(100vw - 16px) !important;
+    width: calc(100vw - 24px) !important;
     max-width: 320px !important;
     border-radius: 16px !important;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.25) !important;
-    z-index: 20000 !important;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3) !important;
+    z-index: 99999 !important;
     transform-origin: top right !important;
   }
 
@@ -4019,5 +4020,53 @@ nav {
     transform: translateY(0) scale(1) !important;
     opacity: 1 !important;
     visibility: visible !important;
+    pointer-events: auto !important;
   }
 }
+
+/* ════════════════════════════════════════════════════════════════
+   GLOBAL HERO HEADER OVERLAP & PROFILE MENU Z-INDEX OVERRIDES
+   ════════════════════════════════════════════════════════════════ */
+
+/* 1. Hero Text Cutoff & Header Overlap Fix */
+.hero,
+.hero-split,
+.page-hero,
+.browse-hero,
+.sp-hero,
+section.hero,
+#nav + .hero,
+#nav + main .hero {
+  padding-top: calc(var(--nav, 70px) + 40px) !important;
+  box-sizing: border-box !important;
+}
+
+@media (max-width: 768px) {
+  .hero,
+  .hero-split,
+  .page-hero,
+  .browse-hero,
+  .sp-hero,
+  section.hero,
+  #nav + .hero,
+  #nav + main .hero {
+    padding-top: calc(var(--nav, 64px) + 44px) !important;
+    box-sizing: border-box !important;
+  }
+}
+
+/* 2. Container Overflow Fix (ensures dropdown is never clipped by nav bar) */
+#nav,
+.nav-r,
+.user-avatar-wrap {
+  overflow: visible !important;
+  overflow-x: visible !important;
+  overflow-y: visible !important;
+  z-index: 10000 !important;
+}
+
+/* 3. High Z-Index for Profile Menu Dropdown */
+.user-dropdown {
+  z-index: 99999 !important;
+}
+
