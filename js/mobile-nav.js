@@ -108,6 +108,15 @@ document.addEventListener('DOMContentLoaded', function () {
       <button class="btn btn-dark" id="mn-btn-logout" onclick="handleLogout()" style="display:none;">Log Out</button>
     </div>`;
     document.body.appendChild(mn);
+    var mnNavLinks = document.querySelectorAll('#mobile-nav a');
+    mnNavLinks.forEach(function(link) {
+      link.addEventListener('click', function() {
+        var mn = document.getElementById('mobile-nav');
+        if (mn && mn.classList.contains('open')) {
+          window.toggleMobileMenu();
+        }
+      });
+    });
   }
 
   // Always hide the dashboard link in the nav

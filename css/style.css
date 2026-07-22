@@ -3836,4 +3836,102 @@ nav {
     padding-left: 0 !important;
     padding-right: 0 !important;
   }
+
+  .browse-results {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    overflow: visible !important;
+  }
+}
+
+/* ── Trainer Card Avatar & Image Clipping Fix ── */
+.tc {
+  overflow: visible !important;
+}
+
+.tc-banner {
+  border-radius: 16px 16px 0 0;
+  overflow: hidden !important;
+  position: relative;
+}
+
+.tc-avatar {
+  position: absolute !important;
+  top: -35px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  width: 72px !important;
+  height: 72px !important;
+  border-radius: 50% !important;
+  border: 4px solid #ffffff !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2) !important;
+  background: var(--navy, #0B1B32) !important;
+  z-index: 10 !important;
+  overflow: hidden !important;
+}
+
+.tc-avatar img,
+.tc-av img,
+.prof-av img,
+.ud-avatar img,
+.user-av-btn img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  object-position: center !important;
+  border-radius: 50% !important;
+}
+
+/* ── Mobile Nav Drawer & Overlay Perfect Guarantee ── */
+.mobile-nav {
+  display: flex !important;
+  position: fixed !important;
+  top: 0 !important;
+  right: 0 !important;
+  left: auto !important;
+  width: 290px !important;
+  max-width: 85vw !important;
+  height: 100vh !important;
+  height: 100dvh !important;
+  background: #0B1B32 !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  z-index: 10000 !important;
+  flex-direction: column !important;
+  padding: 24px 20px !important;
+  transform: translateX(100%) !important;
+  transition: transform .35s cubic-bezier(.4,0,.2,1) !important;
+  box-shadow: -6px 0 25px rgba(0,0,0,0.5) !important;
+  overflow-y: auto !important;
+}
+
+.mobile-nav.open {
+  transform: translateX(0) !important;
+}
+
+.nav-overlay {
+  display: none;
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 9999 !important;
+  background: rgba(0, 0, 0, 0.65) !important;
+  backdrop-filter: blur(3px) !important;
+  -webkit-backdrop-filter: blur(3px) !important;
+  transition: opacity .3s ease !important;
+}
+
+.nav-overlay.open {
+  display: block !important;
+}
+
+@media (max-width: 768px) {
+  .ham-btn {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 10001 !important;
+    pointer-events: auto !important;
+    cursor: pointer !important;
+  }
 }
