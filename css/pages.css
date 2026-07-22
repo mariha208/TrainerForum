@@ -378,14 +378,15 @@
   .sp-stats { grid-template-columns: repeat(2, 1fr); }
   .sp-price-grid { grid-template-columns: 1fr 1fr; }
 }
+
 @media (max-width: 768px) {
-  .sp-hero { padding: 60px 5% 50px; }
-  .sp-section { padding: 56px 5%; }
+  html, body, .sp-page { max-width: 100vw !important; overflow-x: hidden !important; }
+  .sp-hero { padding: 48px 16px 36px !important; box-sizing: border-box !important; }
+  .sp-section { padding: 36px 16px !important; box-sizing: border-box !important; }
   .sp-grid-2, .sp-grid-3, .sp-grid-4 { grid-template-columns: 1fr; }
-  .sp-split { grid-template-columns: 1fr; gap: 36px; }
+  .sp-split { grid-template-columns: 1fr; gap: 24px; }
   .sp-split.sp-split--3-2, .sp-split.sp-split--2-3 { grid-template-columns: 1fr; }
-  .sp-steps { grid-template-columns: 1fr; }
-  .sp-stats { grid-template-columns: 1fr 1fr; }
+  .sp-stats { grid-template-columns: 1fr 1fr; gap: 12px; }
   .sp-price-grid { grid-template-columns: 1fr; }
   .sp-form-grid { grid-template-columns: 1fr; }
 }

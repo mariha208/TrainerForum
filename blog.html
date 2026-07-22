@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -877,10 +877,29 @@
         grid-template-columns: 1fr 1fr !important;
       }
 
-      /* 5. Blog cards: single column, no overflow */
+      /* 5. Blog cards: horizontal swipe carousel slider on mobile */
       .blog-grid {
-        grid-template-columns: 1fr !important;
-        gap: 20px !important;
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        overflow-x: auto !important;
+        scroll-snap-type: x mandatory !important;
+        gap: 16px !important;
+        padding-bottom: 16px !important;
+        align-items: stretch !important;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none !important;
+      }
+      .blog-grid::-webkit-scrollbar {
+        display: none !important;
+      }
+      .blog-grid > * {
+        flex: 0 0 85vw !important;
+        min-width: 270px !important;
+        max-width: 320px !important;
+        scroll-snap-align: start !important;
+        scroll-snap-stop: always !important;
+        box-sizing: border-box !important;
       }
 
       /* 6. Featured body padding tightened */
