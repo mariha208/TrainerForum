@@ -1143,18 +1143,24 @@ window.heroSearch = function () {
   window.location.href = url;
 };
 
-// ── LIVE SERVERLESS NOTIFICATIONS SYSTEM ────────────────────────────────────
+// ── LIVE SERVERLESS & BACKEND NOTIFICATIONS SYSTEM ─────────────────────────
 const STORAGE_KEY = 'read_notification_ids';
 
 async function fetchNotifications() {
     try {
+        const response = await fetch('/api/notifications');
+        if (response.ok) {
+            const data = await response.json();
+            if (Array.isArray(data) && data.length > 0) return data;
+        }
+    } catch (e) { }
+
+    try {
         const response = await fetch('/feed.json');
-        if (!response.ok) return [];
-        return await response.json();
-    } catch (e) {
-        console.error('Failed to fetch notifications:', e);
-        return [];
-    }
+        if (response.ok) return await response.json();
+    } catch (e) { }
+
+    return [];
 }
 
 function getReadIds() {
@@ -1165,14 +1171,36 @@ function getReadIds() {
     }
 }
 
+function getRelativeTimeString(dateInput) {
+    if (!dateInput) return '';
+    const date = new Date(dateInput);
+    if (isNaN(date.getTime())) return String(dateInput);
+    const now = new Date();
+    const diffSeconds = Math.floor((now - date) / 1000);
+    if (diffSeconds < 60) return 'Just now';
+    const diffMinutes = Math.floor(diffSeconds / 60);
+    if (diffMinutes < 60) return `${diffMinutes} min${diffMinutes > 1 ? 's' : ''} ago`;
+    const diffHours = Math.floor(diffMinutes / 60);
+    if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+    const diffDays = Math.floor(diffHours / 24);
+    if (diffDays === 1) return 'Yesterday';
+    if (diffDays < 30) return `${diffDays} days ago`;
+    return date.toLocaleDateString();
+}
+
 window.markAllNotificationsRead = async function(e) {
     if (e) {
         e.preventDefault();
         e.stopPropagation();
     }
+
+    try {
+        await fetch('/api/notifications/read-all', { method: 'PATCH' });
+    } catch (err) { }
+
     const feed = await fetchNotifications();
     const readIds = getReadIds();
-    const newReadIds = [...new Set([...readIds, ...feed.map(item => item.id)])];
+    const newReadIds = [...new Set([...readIds, ...feed.map(item => item.id || item._id)])];
     localStorage.setItem(STORAGE_KEY, JSON.stringify(newReadIds));
     
     // Update UI instantly
@@ -1186,7 +1214,25 @@ window.markAllNotificationsRead = async function(e) {
             <a href="javascript:void(0)" onclick="window.markAllNotificationsRead(event)" style="font-size:.78rem; color:#B49164; text-decoration:none; font-weight:600;">Mark all read</a>
           </div>
         `;
-        panel.innerHTML = headerHtml + '<div style="padding: 24px; text-align: center; color: var(--ts); font-size: 0.9rem;">You\'re all caught up!</div>';
+        panel.innerHTML = headerHtml + '<div style="padding: 24px; text-align: center; color: #8899a6; font-size: 0.9rem;">You\'re all caught up!</div>';
+    }
+};
+
+window.handleNotificationClick = async function(id, targetUrl) {
+    const readIds = getReadIds();
+    if (!readIds.includes(id)) {
+        readIds.push(id);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(readIds));
+    }
+
+    try {
+        await fetch(`/api/notifications/${id}/read`, { method: 'PATCH' });
+    } catch (e) { }
+
+    evaluateUnreadState();
+
+    if (targetUrl && targetUrl !== '#') {
+        window.location.href = targetUrl;
     }
 };
 
@@ -1194,8 +1240,11 @@ async function renderNotifications(panel) {
     const feed = await fetchNotifications();
     const readIds = getReadIds();
     
-    // Filter out read notifications
-    const unreadFeed = feed.filter(item => !readIds.includes(item.id));
+    // Unread items
+    const unreadFeed = feed.filter(item => {
+        const id = item.id || item._id;
+        return !item.isRead && !readIds.includes(id);
+    });
     
     const headerHtml = `
       <div class="notif-header" style="display:flex; justify-content:space-between; align-items:center; padding:16px 18px; border-bottom:1px solid rgba(255,255,255,0.1);">
@@ -1205,26 +1254,33 @@ async function renderNotifications(panel) {
     `;
     
     if (unreadFeed.length === 0) {
-        panel.innerHTML = headerHtml + '<div style="padding: 24px; text-align: center; color: var(--ts); font-size: 0.9rem;">You\'re all caught up!</div>';
+        panel.innerHTML = headerHtml + '<div style="padding: 24px; text-align: center; color: #8899a6; font-size: 0.9rem;">You\'re all caught up!</div>';
         return;
     }
     
     let html = headerHtml;
     unreadFeed.forEach(item => {
-        const isBlog = item.type && item.type.toUpperCase() === 'BLOG';
-        const bg = isBlog ? 'rgba(3, 218, 198, 0.15)' : 'rgba(255, 183, 77, 0.15)';
-        const color = isBlog ? '#03dac6' : '#ffb74d';
-        const icon = isBlog ? '📝' : '📅';
+        const id = item.id || item._id;
+        const typeStr = (item.type || 'news').toLowerCase();
+        const isBlog = typeStr === 'blog';
+        const isEvent = typeStr === 'event';
         
+        const bg = isBlog ? 'rgba(3, 218, 198, 0.15)' : isEvent ? 'rgba(255, 183, 77, 0.15)' : 'rgba(52, 152, 219, 0.15)';
+        const color = isBlog ? '#03dac6' : isEvent ? '#ffb74d' : '#5dade2';
+        const icon = isBlog ? '📝' : isEvent ? '📅' : '📰';
+        const targetUrl = item.targetUrl || (isBlog ? 'blog.html' : 'news-events.html');
+        const relativeTime = getRelativeTimeString(item.createdAt || item.date);
+
         html += `
-          <div class="notif-item unread" style="display:flex; gap:12px; padding:16px 18px; border-bottom:1px solid rgba(255,255,255,0.05);">
-            <div class="notif-ico" style="width:36px; height:36px; border-radius:50%; background:${bg}; color:${color}; display:flex; align-items:center; justify-content:center; flex-shrink:0;">${icon}</div>
+          <div class="notif-item unread" onclick="window.handleNotificationClick('${id}', '${targetUrl}')" style="display:flex; gap:12px; padding:14px 18px; border-bottom:1px solid rgba(255,255,255,0.05); cursor:pointer; transition:background 0.2s ease;">
+            <div class="notif-ico" style="width:36px; height:36px; border-radius:50%; background:${bg}; color:${color}; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:1.1rem;">${icon}</div>
             <div class="notif-text" style="flex:1;">
-              <div style="display:flex; justify-content:space-between; margin-bottom:6px; align-items:center;">
-                <span style="font-size:0.7rem; font-weight:700; color:${color}; text-transform:uppercase; letter-spacing:0.5px; padding: 2px 6px; border-radius: 4px; background: ${bg};">${item.type}</span>
-                <span style="font-size:0.75rem; color:#888888; font-weight: 500;">${item.date || ''}</span>
+              <div style="display:flex; justify-content:space-between; margin-bottom:4px; align-items:center;">
+                <span style="font-size:0.7rem; font-weight:700; color:${color}; text-transform:uppercase; letter-spacing:0.5px; padding: 2px 6px; border-radius: 4px; background: ${bg};">${typeStr}</span>
+                <span style="font-size:0.75rem; color:#888888; font-weight: 500;">${relativeTime}</span>
               </div>
-              <p style="margin:0; font-size:0.9rem; color:#ffffff; line-height: 1.4;">${item.text || item.title}</p>
+              <h5 style="margin:0 0 4px; font-size:0.88rem; color:#ffffff; font-weight:600; line-height:1.3;">${item.title || item.text}</h5>
+              <p style="margin:0; font-size:0.8rem; color:#a0aec0; line-height:1.35;">${item.message || item.description || ''}</p>
             </div>
           </div>
         `;
@@ -1236,7 +1292,10 @@ async function renderNotifications(panel) {
 async function evaluateUnreadState() {
     const feed = await fetchNotifications();
     const readIds = getReadIds();
-    const hasUnread = feed.some(item => !readIds.includes(item.id));
+    const hasUnread = feed.some(item => {
+        const id = item.id || item._id;
+        return !item.isRead && !readIds.includes(id);
+    });
     
     document.querySelectorAll('.notif-dot').forEach(dot => {
         dot.style.display = hasUnread ? 'block' : 'none';

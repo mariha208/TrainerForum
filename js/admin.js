@@ -249,27 +249,181 @@ function exportCSV() {
   URL.revokeObjectURL(url);
 }
 
-// ── UTILITIES ─────────────────────────────────────────────────────────────────
-function setText(id, val) {
-  const el = document.getElementById(id);
-  if (el) el.textContent = val;
-}
+let selectedImageFile = null;
 
-function escHtml(str) {
-  return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-}
+// ── TAB SWITCHING ─────────────────────────────────────────────────────────────
+window.switchAdminTab = function(tab) {
+  const btnTrainers = document.getElementById('tab-btn-trainers');
+  const btnPublishing = document.getElementById('tab-btn-publishing');
+  const secTrainers = document.getElementById('tab-section-trainers');
+  const secPublishing = document.getElementById('tab-section-publishing');
 
-let toastTimer;
-function showToast(msg) {
-  let toast = document.getElementById('admin-toast');
-  if (!toast) {
-    toast = document.createElement('div');
-    toast.id = 'admin-toast';
-    toast.style.cssText = 'position:fixed;bottom:24px;right:24px;background:#1e1e1e;border:1px solid rgba(245,200,66,.4);color:#fff;padding:12px 20px;border-radius:10px;font-size:.88rem;z-index:999;box-shadow:0 8px 32px rgba(0,0,0,.4);transition:opacity .3s;';
-    document.body.appendChild(toast);
+  if (tab === 'publishing') {
+    btnTrainers.className = 'btn-sm btn-dark';
+    btnPublishing.className = 'btn-sm btn-gold';
+    secTrainers.style.display = 'none';
+    secPublishing.style.display = 'block';
+    loadPublishedPosts();
+  } else {
+    btnTrainers.className = 'btn-sm btn-gold';
+    btnPublishing.className = 'btn-sm btn-dark';
+    secTrainers.style.display = 'block';
+    secPublishing.style.display = 'none';
   }
-  toast.textContent = '✓ ' + msg;
-  toast.style.opacity = '1';
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => { toast.style.opacity = '0'; }, 3000);
-}
+};
+
+// ── IMAGE FILE SELECTION ──────────────────────────────────────────────────────
+window.handleImageFileSelect = function(e) {
+  const file = e.target.files[0];
+  const fileNameSpan = document.getElementById('pub-file-name');
+  if (file) {
+    selectedImageFile = file;
+    if (fileNameSpan) fileNameSpan.textContent = `📁 ${file.name}`;
+  } else {
+    selectedImageFile = null;
+    if (fileNameSpan) fileNameSpan.textContent = '';
+  }
+};
+
+// ── RESET PUBLISH FORM ────────────────────────────────────────────────────────
+window.resetPublishForm = function() {
+  const form = document.getElementById('publish-form');
+  if (form) form.reset();
+  selectedImageFile = null;
+  const fileNameSpan = document.getElementById('pub-file-name');
+  if (fileNameSpan) fileNameSpan.textContent = '';
+};
+
+// ── SUBMIT PUBLISH FORM ───────────────────────────────────────────────────────
+window.handlePublishSubmit = async function(e) {
+  e.preventDefault();
+  
+  const submitBtn = document.getElementById('btn-publish-submit');
+  const category = document.getElementById('pub-category').value;
+  const title = document.getElementById('pub-title').value.trim();
+  const description = document.getElementById('pub-description').value.trim();
+  const content = document.getElementById('pub-content').value.trim();
+  let imageUrl = (document.getElementById('pub-image-url').value || '').trim();
+
+  if (!title || !description || !content) {
+    alert('Please fill in all required fields (Title, Description, and Content).');
+    return;
+  }
+
+  try {
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '⏳ Publishing...';
+    }
+
+    // 1. Upload image file if provided
+    if (selectedImageFile) {
+      const formData = new FormData();
+      formData.append('image', selectedImageFile);
+      formData.append('type', 'post');
+
+      const uploadRes = await fetch('/api/upload-image', {
+        method: 'POST',
+        body: formData
+      });
+
+      if (uploadRes.ok) {
+        const uploadData = await uploadRes.json();
+        if (uploadData.url) imageUrl = uploadData.url;
+      } else {
+        console.warn('[Publish] Image upload failed, proceeding with URL fallback');
+      }
+    }
+
+    // 2. Submit Post payload
+    const postPayload = { category, title, description, content, imageUrl };
+    const res = await fetch('/api/posts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(postPayload)
+    });
+
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData.error || ('HTTP ' + res.status));
+    }
+
+    const responseData = await res.json();
+
+    showToast(`${category} post published & notification sent!`);
+    resetPublishForm();
+    loadPublishedPosts();
+
+  } catch (err) {
+    console.error('[Publish] Error:', err);
+    alert('❌ Failed to publish post: ' + err.message);
+  } finally {
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = '🚀 Publish & Send Notification';
+    }
+  }
+};
+
+// ── LOAD PUBLISHED POSTS TABLE ────────────────────────────────────────────────
+window.loadPublishedPosts = async function() {
+  const tbody = document.getElementById('published-posts-tbody');
+  if (!tbody) return;
+
+  tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:40px; color:var(--tm);">Loading published posts...</td></tr>`;
+
+  try {
+    const res = await fetch('/api/posts');
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const posts = await res.json();
+
+    if (!Array.isArray(posts) || posts.length === 0) {
+      tbody.innerHTML = `<tr class="empty-row"><td colspan="5">No published posts yet. Use the form above to publish news, events, or blogs.</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = posts.map(p => {
+      const cat = p.category || 'News';
+      const title = p.title || 'Untitled';
+      const desc = p.description || '—';
+      const id = p.id || p._id;
+      const dateStr = p.createdAt ? new Date(p.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '—';
+      const excerpt = desc.length > 80 ? desc.substring(0, 77) + '...' : desc;
+
+      const catBadge = cat === 'Blog' 
+        ? `<span class="badge" style="background:rgba(3,218,198,0.15); color:#03dac6; border:1px solid rgba(3,218,198,0.3);">📝 Blog</span>`
+        : cat === 'Event'
+        ? `<span class="badge" style="background:rgba(255,183,77,0.15); color:#ffb74d; border:1px solid rgba(255,183,77,0.3);">📅 Event</span>`
+        : `<span class="badge" style="background:rgba(52,152,219,0.15); color:#5dade2; border:1px solid rgba(52,152,219,0.3);">📰 News</span>`;
+
+      return `<tr>
+        <td>${catBadge}</td>
+        <td style="font-weight:600; color:var(--ts);">${escHtml(title)}</td>
+        <td style="color:var(--tm); font-size:.82rem;">${escHtml(excerpt)}</td>
+        <td style="color:var(--tm); font-size:.82rem;">${dateStr}</td>
+        <td>
+          <button class="btn-sm btn-danger" onclick="deletePost('${id}', '${escHtml(title)}')">🗑️ Delete</button>
+        </td>
+      </tr>`;
+    }).join('');
+
+  } catch (err) {
+    console.error('[Admin] Load published posts error:', err);
+    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:40px; color:#f87171;">❌ Failed to load published posts.</td></tr>`;
+  }
+};
+
+// ── DELETE POST ───────────────────────────────────────────────────────────────
+window.deletePost = async function(id, title) {
+  if (!confirm(`Are you sure you want to delete post "${title}"?`)) return;
+
+  try {
+    const res = await fetch(`/api/posts/${id}`, { method: 'DELETE' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+
+    showToast(`Post deleted successfully.`);
+    loadPublishedPosts();
+  } catch (err) {
+    alert('❌ Failed to delete post: ' + err.message);
+  }
+};

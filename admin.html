@@ -199,81 +199,179 @@
     <div class="admin-title">Admin Panel</div>
     <div class="admin-subtitle">Manage all trainer accounts, memberships, and platform activity.</div>
 
-    <!-- STATS -->
-    <div class="stats-row">
-      <div class="stat-card">
-        <div class="stat-ico gold">👤</div>
-        <div>
-          <div class="stat-label">Total Trainers</div>
-          <div class="stat-value" id="stat-total">—</div>
+    <!-- ADMIN TABS -->
+    <div style="display:flex; gap:12px; margin-bottom:24px; border-bottom:1px solid var(--border); padding-bottom:12px;">
+      <button class="btn-sm btn-gold" id="tab-btn-trainers" onclick="switchAdminTab('trainers')">👥 Trainer Accounts</button>
+      <button class="btn-sm btn-dark" id="tab-btn-publishing" onclick="switchAdminTab('publishing')">📢 Content Publishing (News, Events & Blogs)</button>
+    </div>
+
+    <!-- TRAINERS TAB SECTION -->
+    <div id="tab-section-trainers">
+      <!-- STATS -->
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-ico gold">👤</div>
+          <div>
+            <div class="stat-label">Total Trainers</div>
+            <div class="stat-value" id="stat-total">—</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-ico gold">⭐</div>
+          <div>
+            <div class="stat-label">Premium (Elite)</div>
+            <div class="stat-value" id="stat-premium">—</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-ico blue">🚀</div>
+          <div>
+            <div class="stat-label">Professional</div>
+            <div class="stat-value" id="stat-standard">—</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-ico purple">🆓</div>
+          <div>
+            <div class="stat-label">Free (Starter)</div>
+            <div class="stat-value" id="stat-free">—</div>
+          </div>
         </div>
       </div>
-      <div class="stat-card">
-        <div class="stat-ico gold">⭐</div>
-        <div>
-          <div class="stat-label">Premium (Elite)</div>
-          <div class="stat-value" id="stat-premium">—</div>
-        </div>
+
+      <!-- FILTERS -->
+      <div class="filter-bar">
+        <label>Membership:</label>
+        <select id="filter-membership" onchange="applyFilters()">
+          <option value="">All Plans</option>
+          <option value="PREMIUM">Elite Featured</option>
+          <option value="STANDARD">Professional</option>
+          <option value="FREE">Free Starter</option>
+        </select>
+
+        <label>Status:</label>
+        <select id="filter-status" onchange="applyFilters()">
+          <option value="">All Status</option>
+          <option value="active">Active</option>
+          <option value="suspended">Suspended</option>
+        </select>
+
+        <input type="text" id="filter-search" placeholder="🔍 Search by name or email…" oninput="applyFilters()" style="min-width:220px;">
+        <div class="spacer"></div>
+        <button class="btn-sm btn-gold" onclick="exportCSV()">📥 Export CSV</button>
+        <button class="btn-sm btn-dark" onclick="loadTrainers()">🔄 Refresh</button>
       </div>
-      <div class="stat-card">
-        <div class="stat-ico blue">🚀</div>
-        <div>
-          <div class="stat-label">Professional</div>
-          <div class="stat-value" id="stat-standard">—</div>
-        </div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-ico purple">🆓</div>
-        <div>
-          <div class="stat-label">Free (Starter)</div>
-          <div class="stat-value" id="stat-free">—</div>
+
+      <!-- TABLE -->
+      <div class="table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Trainer</th>
+              <th>Category</th>
+              <th>Membership</th>
+              <th>Status</th>
+              <th>Joined</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="admin-table-body">
+            <tr><td colspan="6" style="text-align:center;padding:40px;color:var(--tm);">Loading…</td></tr>
+          </tbody>
+        </table>
+        <div class="pagination">
+          <div class="page-info" id="page-info">Showing 0 of 0 trainers</div>
+          <div class="page-btns" id="page-btns"></div>
         </div>
       </div>
     </div>
 
-    <!-- FILTERS -->
-    <div class="filter-bar">
-      <label>Membership:</label>
-      <select id="filter-membership" onchange="applyFilters()">
-        <option value="">All Plans</option>
-        <option value="PREMIUM">Elite Featured</option>
-        <option value="STANDARD">Professional</option>
-        <option value="FREE">Free Starter</option>
-      </select>
+    <!-- PUBLISHING TAB SECTION -->
+    <div id="tab-section-publishing" style="display:none;">
+      <!-- PUBLISH FORM CARD -->
+      <div style="background:var(--bg2); border:1px solid var(--border); border-radius:16px; padding:28px; margin-bottom:30px;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px;">
+          <div>
+            <h2 style="font-size:1.3rem; font-weight:700; color:var(--ts); margin-bottom:4px;">✨ Create & Publish Content</h2>
+            <p style="color:var(--tm); font-size:.88rem;">Publish News, Events, or Blogs. Publishing automatically triggers an In-App Notification across the platform.</p>
+          </div>
+        </div>
 
-      <label>Status:</label>
-      <select id="filter-status" onchange="applyFilters()">
-        <option value="">All Status</option>
-        <option value="active">Active</option>
-        <option value="suspended">Suspended</option>
-      </select>
+        <form id="publish-form" onsubmit="handlePublishSubmit(event)" style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+          
+          <!-- Category -->
+          <div style="grid-column: span 1;">
+            <label style="display:block; font-size:.82rem; font-weight:600; color:var(--tm); margin-bottom:6px;">Category <span style="color:var(--red);">*</span></label>
+            <select id="pub-category" required style="width:100%; background:rgba(255,255,255,.04); border:1px solid var(--border); color:var(--ts); border-radius:8px; padding:10px 14px; font-size:.9rem; outline:none;">
+              <option value="News">📰 News & Announcements</option>
+              <option value="Event">📅 Upcoming Event / Workshop</option>
+              <option value="Blog">📝 Blog Post</option>
+            </select>
+          </div>
 
-      <input type="text" id="filter-search" placeholder="🔍 Search by name or email…" oninput="applyFilters()" style="min-width:220px;">
-      <div class="spacer"></div>
-      <button class="btn-sm btn-gold" onclick="exportCSV()">📥 Export CSV</button>
-      <button class="btn-sm btn-dark" onclick="loadTrainers()">🔄 Refresh</button>
-    </div>
+          <!-- Title -->
+          <div style="grid-column: span 1;">
+            <label style="display:block; font-size:.82rem; font-weight:600; color:var(--tm); margin-bottom:6px;">Post Title <span style="color:var(--red);">*</span></label>
+            <input type="text" id="pub-title" required placeholder="e.g. Annual Global Trainers Summit 2026" style="width:100%; background:rgba(255,255,255,.04); border:1px solid var(--border); color:var(--ts); border-radius:8px; padding:10px 14px; font-size:.9rem; outline:none;">
+          </div>
 
-    <!-- TABLE -->
-    <div class="table-wrap">
-      <table class="admin-table">
-        <thead>
-          <tr>
-            <th>Trainer</th>
-            <th>Category</th>
-            <th>Membership</th>
-            <th>Status</th>
-            <th>Joined</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody id="admin-table-body">
-          <tr><td colspan="6" style="text-align:center;padding:40px;color:var(--tm);">Loading…</td></tr>
-        </tbody>
-      </table>
-      <div class="pagination">
-        <div class="page-info" id="page-info">Showing 0 of 0 trainers</div>
-        <div class="page-btns" id="page-btns"></div>
+          <!-- Short Description -->
+          <div style="grid-column: span 2;">
+            <label style="display:block; font-size:.82rem; font-weight:600; color:var(--tm); margin-bottom:6px;">Short Description / Excerpt <span style="color:var(--red);">*</span></label>
+            <textarea id="pub-description" required rows="2" placeholder="Brief summary displayed on cards and notification preview..." style="width:100%; background:rgba(255,255,255,.04); border:1px solid var(--border); color:var(--ts); border-radius:8px; padding:10px 14px; font-size:.9rem; outline:none; resize:vertical;"></textarea>
+          </div>
+
+          <!-- Full Content -->
+          <div style="grid-column: span 2;">
+            <label style="display:block; font-size:.82rem; font-weight:600; color:var(--tm); margin-bottom:6px;">Full Content Body <span style="color:var(--red);">*</span></label>
+            <textarea id="pub-content" required rows="6" placeholder="Complete post article content..." style="width:100%; background:rgba(255,255,255,.04); border:1px solid var(--border); color:var(--ts); border-radius:8px; padding:10px 14px; font-size:.9rem; outline:none; resize:vertical;"></textarea>
+          </div>
+
+          <!-- Image Field: URL or File Upload -->
+          <div style="grid-column: span 2;">
+            <label style="display:block; font-size:.82rem; font-weight:600; color:var(--tm); margin-bottom:6px;">Cover Image (URL or Upload)</label>
+            <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+              <input type="url" id="pub-image-url" placeholder="https://example.com/image.jpg" style="flex:1; min-width:240px; background:rgba(255,255,255,.04); border:1px solid var(--border); color:var(--ts); border-radius:8px; padding:10px 14px; font-size:.9rem; outline:none;">
+              <span style="color:var(--tm); font-size:.82rem;">OR</span>
+              <label style="background:rgba(255,255,255,.08); border:1px dashed var(--border); color:var(--ts); padding:9px 16px; border-radius:8px; font-size:.85rem; cursor:pointer; display:flex; align-items:center; gap:6px; transition:.2s;">
+                📁 Choose File
+                <input type="file" id="pub-image-file" accept="image/*" onchange="handleImageFileSelect(event)" style="display:none;">
+              </label>
+              <span id="pub-file-name" style="font-size:.8rem; color:var(--gold);"></span>
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <div style="grid-column: span 2; display:flex; justify-content:flex-end; gap:12px; margin-top:10px;">
+            <button type="button" class="btn-sm btn-dark" onclick="resetPublishForm()">Reset Form</button>
+            <button type="submit" id="btn-publish-submit" class="btn-sm btn-gold" style="padding:10px 24px; font-size:.9rem; display:flex; align-items:center; gap:8px;">
+              🚀 Publish & Send Notification
+            </button>
+          </div>
+
+        </form>
+      </div>
+
+      <!-- PUBLISHED CONTENT MANAGEMENT TABLE -->
+      <div class="table-wrap">
+        <div style="padding:18px 24px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center;">
+          <h3 style="font-size:1.1rem; font-weight:700; color:var(--ts);">📚 Manage Published Posts</h3>
+          <button class="btn-sm btn-dark" onclick="loadPublishedPosts()">🔄 Refresh Posts</button>
+        </div>
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Category</th>
+              <th>Title</th>
+              <th>Description Excerpt</th>
+              <th>Published Date</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="published-posts-tbody">
+            <tr><td colspan="5" style="text-align:center; padding:40px; color:var(--tm);">Loading published posts…</td></tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </main>

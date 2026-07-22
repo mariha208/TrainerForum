@@ -205,6 +205,8 @@ app.use('/api/users', require('./routes/users'));
 app.use('/api/payments', require('./routes/payment.routes'));
 app.use('/api/images', require('./routes/images'));
 app.use('/api/reviews', require('./routes/reviews'));
+app.use('/api/posts', require('./routes/posts'));
+app.use('/api/notifications', require('./routes/notifications'));
 
 // ── Catch-all: serve index.html (Express 5 syntax) ───────────────────────────
 app.get('/{*path}', (req, res) => {
