@@ -155,7 +155,7 @@ function renderCategoryFeed(container, category) {
 
     if (pCat === 'blog' || pCat.includes('blog') || targetCat.includes('blog')) {
       return `
-        <article class="blog-card" style="background:#fff; border-radius:18px; overflow:hidden; box-shadow:0 15px 35px rgba(11,27,50,0.08); display:flex; flex-direction:column; justify-content:space-between; transition:transform 0.3s ease;">
+        <article class="blog-card in-view" style="background:#fff; border-radius:18px; overflow:hidden; box-shadow:0 15px 35px rgba(11,27,50,0.08); display:flex; flex-direction:column; justify-content:space-between; transition:transform 0.3s ease; opacity:1; transform:none;">
           <div>
             <div style="height:200px; overflow:hidden; background:#0B1B32; position:relative;">
               <img src="${img}" alt="${title}" style="width:100%; height:100%; object-fit:cover;" onerror="this.src='bglogo.png';">
@@ -180,7 +180,7 @@ function renderCategoryFeed(container, category) {
 
     // Default: News Card
     return `
-      <div class="news-card" style="background:#fff; border-radius:18px; padding:26px; box-shadow:0 15px 35px rgba(11,27,50,0.08); display:flex; flex-direction:column; justify-content:space-between;">
+      <div class="news-card in-view" style="background:#fff; border-radius:18px; padding:26px; box-shadow:0 15px 35px rgba(11,27,50,0.08); display:flex; flex-direction:column; justify-content:space-between; opacity:1; transform:none;">
         <div>
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
             <span style="background:rgba(36,85,201,0.1); color:#2455C9; font-size:0.75rem; font-weight:700; padding:4px 12px; border-radius:99px; text-transform:uppercase; letter-spacing:0.06em;">📰 News & Announcements</span>
