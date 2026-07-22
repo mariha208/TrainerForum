@@ -4026,4 +4026,33 @@ html, body {
   }
 }
 
+/* ════════════════════════════════════════════════════════════════
+   FORM LABELS & INPUT INTERACTION FIX
+   ════════════════════════════════════════════════════════════════ */
+.form-group label,
+label,
+.toggle-label,
+.cb-label,
+.sidebar-section-label,
+.nav-label {
+  cursor: pointer !important;
+  user-select: none;
+  pointer-events: auto !important;
+}
+
+.input-icon-wrap .i-ico {
+  pointer-events: none !important;
+}
+
+.form-control,
+input,
+select,
+textarea {
+  pointer-events: auto !important;
+  cursor: text;
+}
+
+select.form-control {
+  cursor: pointer !important;
+}
 

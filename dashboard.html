@@ -323,11 +323,11 @@
 
             <div class="form-row">
               <div class="form-group">
-                <label>Full Name <span>*</span></label>
+                <label for="p-name">Full Name <span>*</span></label>
                 <input class="form-control" id="p-name" type="text" value="">
               </div>
               <div class="form-group">
-                <label>Tagline <span class="hint">— shown below your name</span></label>
+                <label for="p-tagline">Tagline <span class="hint">— shown below your name</span></label>
                 <input class="form-control" id="p-tagline" type="text" value="" maxlength="100">
                 <div class="form-footer">
                   <div></div>
@@ -338,7 +338,7 @@
 
             <div class="form-row">
               <div class="form-group">
-                <label>Expertise Category 1 <span style="color:var(--red)">*</span></label>
+                <label for="p-category1">Expertise Category 1 <span style="color:var(--red)">*</span></label>
                 <select class="form-control" id="p-category1"
                   onchange="var t=document.getElementById('p-categoryOther1');t.style.display=this.value==='Other'?'block':'none';">
                   <option value="" disabled>Select Category 1...</option>
@@ -1197,6 +1197,31 @@
 
   <script src="js/dashboard.js"></script>
   <script>
+    // ─────────────────────────────────────────────────
+    // GLOBAL FORM LABEL CLICK INTERACTION ENGINE
+    // ─────────────────────────────────────────────────
+    document.addEventListener('click', function (e) {
+      var label = e.target.closest('label, .form-group label, .toggle-label');
+      if (!label) return;
+
+      var forId = label.getAttribute('for');
+      if (forId) {
+        var target = document.getElementById(forId);
+        if (target && typeof target.focus === 'function') {
+          target.focus();
+          return;
+        }
+      }
+
+      var group = label.closest('.form-group, .photo-fields, div');
+      if (group) {
+        var input = group.querySelector('input:not([type="hidden"]), select, textarea');
+        if (input && typeof input.focus === 'function') {
+          input.focus();
+        }
+      }
+    });
+
     // ─────────────────────────────────────────────────
     // SECTION ROUTING
     // ─────────────────────────────────────────────────
