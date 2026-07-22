@@ -25,6 +25,13 @@ const uploadAvatar = multer({
 // GET all users
 router.get('/', async (req, res) => {
   try {
+    // Guard: if MongoDB is not connected, return empty array gracefully
+    const mongoose = require('mongoose');
+    if (mongoose.connection.readyState !== 1) {
+      console.warn('[Users API] MongoDB not connected — returning empty list');
+      return res.json([]);
+    }
+
     const filter = {};
     if (req.query.role) filter.role = req.query.role;
     
@@ -56,7 +63,9 @@ router.get('/', async (req, res) => {
       };
     }));
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error('[Users API] GET / error:', err.message);
+    // Return empty array instead of crashing the admin panel
+    res.json([]);
   }
 });
 

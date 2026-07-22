@@ -57,11 +57,18 @@ app.get('/api/health', (req, res) => {
 // ── Trainers Route — Returns all users with role 'trainer' ───────────────────
 app.get('/api/trainers', async (req, res) => {
   try {
+    const mongoose = require('mongoose');
+    // Guard: if MongoDB is not connected, return empty array gracefully
+    if (mongoose.connection.readyState !== 1) {
+      console.warn('[Trainers API] MongoDB not connected — returning empty list');
+      return res.json([]);
+    }
     const User = require('./models/User');
     const trainers = await User.find({ role: 'trainer' }).select('-passwordHash');
     res.json(trainers);
   } catch (err) {
-    res.status(500).json({ error: 'Failed to fetch trainers: ' + err.message });
+    console.error('[Trainers API] Error:', err.message);
+    res.json([]);
   }
 });
 

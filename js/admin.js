@@ -92,6 +92,13 @@ async function loadTrainers() {
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const data = await res.json();
     allTrainers = Array.isArray(data) ? data : (data.data || []);
+
+    if (allTrainers.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--tm);">No trainer accounts found. Registered trainers will appear here.</td></tr>`;
+      updateStats();
+      return;
+    }
+
     applyFilters();
     updateStats();
   } catch (err) {
