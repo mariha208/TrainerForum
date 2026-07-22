@@ -4,8 +4,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Browse and filter 2,800+ verified trainers across 140+ specialisations on World Trainer Forum. Find your perfect expert by skill, category, price and rating.">
-  <title>Find Trainers â€” World Trainer Forum</title>
+  <meta name="description"
+    content="Browse and filter 2,800+ verified trainers across 140+ specialisations on World Trainer Forum. Find your perfect expert by skill, category, price and rating.">
+  <title>Find Trainers | World Trainer Forum</title>
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/trainer-modal.css">
   <link rel="stylesheet" href="css/auth-modal.css">
@@ -21,7 +22,8 @@
   <!-- â•â•â• NAVBAR â•â•â• -->
   <nav id="nav">
     <a class="logo" href="index.html">
-      <img src="img/logo.svg" alt="World Trainer Forum Logo" style="height:42px; margin-right:10px;">World Trainer <span class="g">Forum</span>
+      <img src="img/logo.svg" alt="World Trainer Forum Logo" style="height:42px; margin-right:10px;">World Trainer <span
+        class="g">Forum</span>
     </a>
     <ul class="nav-links">
       <li><a id="nl-home" href="index.html">Home</a></li>
@@ -33,11 +35,17 @@
       <li><a id="nl-dash" href="dashboard.html" target="_blank" style="display:none;">Dashboard</a></li>
     </ul>
     <div class="nav-r">
-      <button class="notif-btn" id="notif-btn" onclick="toggleNotif()"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg><span class="notif-dot"></span></button>
+      <button class="notif-btn" id="notif-btn" onclick="toggleNotif()"><svg xmlns="http://www.w3.org/2000/svg"
+          width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+        </svg><span class="notif-dot"></span></button>
       <button class="btn btn-ghost btn-sm" id="btn-signup" onclick="openModal('register')">Sign Up</button>
       <button class="btn btn-gold btn-sm" id="btn-login" onclick="openModal('login')">Log In</button>
       <div class="user-avatar-wrap" id="user-avatar-wrap">
-        <button class="user-av-btn" id="user-av-btn" onclick="toggleUserMenu(event)" aria-label="User menu" aria-haspopup="true">MK</button>
+        <button class="user-av-btn" id="user-av-btn" onclick="toggleUserMenu(event)" aria-label="User menu"
+          aria-haspopup="true">MK</button>
         <div class="user-dropdown" id="user-dropdown" role="menu">
           <div class="ud-header">
             <div class="ud-avatar">MK</div>
@@ -47,12 +55,19 @@
             </div>
           </div>
           <hr>
-          <a href="dashboard.html" class="ud-link" role="menuitem"><i class="fa-solid fa-pen-to-square"></i> Edit Profile</a>
-          <a href="#" class="ud-link ud-logout" role="menuitem" onclick="handleLogout(); return false;"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
+          <a href="dashboard.html" class="ud-link" role="menuitem"><i class="fa-solid fa-pen-to-square"></i> Edit
+            Profile</a>
+          <a href="#" class="ud-link ud-logout" role="menuitem" onclick="handleLogout(); return false;"><i
+              class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
         </div>
       </div>
       <button class="ham-btn" id="ham-btn" onclick="toggleMobileMenu()" aria-label="Toggle Menu">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="4" x2="20" y1="12" y2="12" />
+          <line x1="4" x2="20" y1="6" y2="6" />
+          <line x1="4" x2="20" y1="18" y2="18" />
+        </svg>
       </button>
     </div>
   </nav>
@@ -60,7 +75,9 @@
   <!-- Mobile Nav Drawer -->
   <div class="mobile-nav" id="mobile-nav">
     <div style="display:flex; justify-content:flex-end; margin-bottom: 20px;">
-      <button onclick="toggleMobileMenu()" style="background:none; border:none; color:#fff; font-size:2rem; cursor:pointer;" aria-label="Close Menu">&times;</button>
+      <button onclick="toggleMobileMenu()"
+        style="background:none; border:none; color:#fff; font-size:2rem; cursor:pointer;"
+        aria-label="Close Menu">&times;</button>
     </div>
     <a href="index.html">Home</a>
     <a href="about.html">About</a>
@@ -69,9 +86,10 @@
     <a href="news-events.html">News & Events</a>
     <a href="blog.html">Blog</a>
     <a href="dashboard.html" id="mn-dash" style="display:none; color:var(--gold);">Dashboard</a>
-    
+
     <div class="mn-actions" style="margin-top:30px; display:flex; flex-direction:column; gap:12px;">
-      <button class="btn btn-ghost" id="mn-btn-signup" onclick="toggleMobileMenu(); openModal('register')">Sign Up</button>
+      <button class="btn btn-ghost" id="mn-btn-signup" onclick="toggleMobileMenu(); openModal('register')">Sign
+        Up</button>
       <button class="btn btn-gold" id="mn-btn-login" onclick="toggleMobileMenu(); openModal('login')">Log In</button>
       <button class="btn btn-dark" id="mn-btn-logout" onclick="handleLogout()" style="display:none;">Log Out</button>
     </div>
@@ -133,7 +151,11 @@
       <p>2,800+ verified professionals across 140+ specialisations</p>
       <div class="browse-bar">
         <span style="color:#999;padding:0 6px; display:flex; align-items:center;">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" x2="16.65" y1="21" y2="16.65"></line></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" x2="16.65" y1="21" y2="16.65"></line>
+          </svg>
         </span>
         <input type="text" id="browse-search" placeholder="Search name, skill, topic…" oninput="applyFilters()">
         <div class="h-sep"></div>
@@ -203,7 +225,8 @@
               <img src="img/logo.svg" alt="World Trainer Forum Logo">
               <span>World Trainer <span class="g">Forum</span></span>
             </a>
-            <p class="footer-tagline">Connecting organizations with world-class trainers, coaches, mentors, and speakers worldwide.</p>
+            <p class="footer-tagline">Connecting organizations with world-class trainers, coaches, mentors, and speakers
+              worldwide.</p>
 
             <!-- Trust Indicators -->
             <ul class="footer-trust-list">
@@ -258,7 +281,7 @@
             </div>
           </div>
 
-                    <!-- SECTION 2: For Clients -->
+          <!-- SECTION 2: For Clients -->
           <div class="footer-col">
             <h4 class="footer-col-hd">For Clients</h4>
             <ul class="footer-links">
@@ -326,7 +349,8 @@
               <form class="fnl-form" onsubmit="return false;">
                 <div class="fnl-input-wrap">
                   <i class="fa-regular fa-envelope fnl-input-ico"></i>
-                  <input type="email" class="fnl-input" placeholder="Your email address" aria-label="Email for newsletter">
+                  <input type="email" class="fnl-input" placeholder="Your email address"
+                    aria-label="Email for newsletter">
                   <button type="submit" class="fnl-btn">Subscribe</button>
                 </div>
               </form>
@@ -440,8 +464,7 @@
       if (window.applyFilters) window.applyFilters();
     });
   </script>
-<script src="js/mobile-nav.js"></script>
+  <script src="js/mobile-nav.js"></script>
 </body>
 
 </html>
-

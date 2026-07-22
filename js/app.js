@@ -637,7 +637,7 @@ function subscribeToTrainers() {
                  data-id="${normalizedTrainer.id}"
                  data-membership="${normalizedTrainer.membershipType}"
                  onclick="openTrainerModal('${normalizedTrainer.id}')"
-                 style="background: linear-gradient(135deg, #f8fafc, #f1f5f9); border-radius: 20px; overflow: visible; position: relative; cursor: pointer; display: flex; flex-direction: column; min-height: 180px; font-family: 'Inter', sans-serif; box-shadow: 0 10px 30px rgba(0,0,0,0.08); margin-top: 24px; border: 1px solid #e2e8f0; text-align: left; transition: all 0.3s ease;"
+                 style="background: linear-gradient(135deg, #f8fafc, #f1f5f9); border-radius: 20px; overflow: hidden; position: relative; cursor: pointer; display: flex; flex-direction: column; min-height: 180px; font-family: 'Inter', sans-serif; box-shadow: 0 10px 30px rgba(0,0,0,0.08); margin-top: 12px; border: 1px solid #e2e8f0; text-align: left; transition: all 0.3s ease;"
                  onmouseover="this.style.transform='translateY(-6px)'; this.style.boxShadow='0 20px 40px rgba(0,0,0,0.12)';"
                  onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 30px rgba(0,0,0,0.08)';">
                  
@@ -655,8 +655,7 @@ function subscribeToTrainers() {
                 }
               </div>
 
-              <!-- PROTRUDING AVATAR -->
-              <div style="position: absolute; top: -24px; left: 50%; transform: translateX(-50%); width: 64px; height: 64px; border-radius: 50%; z-index: 10; border: 3px solid ${isPremium ? '#d4af37' : isStandard ? '#0d9488' : '#94a3b8'}; background: #fff; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+              <div style="position: absolute; top: 14px; left: 50%; transform: translateX(-50%); width: 64px; height: 64px; border-radius: 50%; z-index: 10; border: 3px solid ${isPremium ? '#d4af37' : isStandard ? '#0d9488' : '#94a3b8'}; background: #fff; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
                 ${hasPhoto
                   ? `<img src="${normalizedTrainer.profilePic}" alt="${normalizedTrainer.name}" style="width:100%; height:100%; object-fit:cover; display:block;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
                      <div style="display:none; width:100%; height:100%; align-items:center; justify-content:center; font-weight:bold; font-size:24px; color:#fff; background:linear-gradient(135deg, #3b82f6, #8b5cf6);">${initials}</div>`
@@ -665,7 +664,7 @@ function subscribeToTrainers() {
               </div>
 
               <!-- CONTENT WRAPPER -->
-              <div style="position: relative; z-index: 5; padding: 16px 20px; display: flex; flex-direction: column; flex: 1; justify-content: space-between; gap: 12px;">
+              <div style="position: relative; z-index: 5; padding: 52px 20px 16px 20px; display: flex; flex-direction: column; flex: 1; justify-content: space-between; gap: 12px;">
                 
                 <!-- TOP ROW: Name & Title -->
                 <div>
