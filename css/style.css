@@ -3856,6 +3856,10 @@ nav {
   position: relative;
 }
 
+.tc-body {
+  padding-top: 86px !important;
+}
+
 .tc-avatar {
   position: absolute !important;
   top: 14px !important;

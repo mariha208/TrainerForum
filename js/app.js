@@ -664,7 +664,7 @@ function subscribeToTrainers() {
               </div>
 
               <!-- CONTENT WRAPPER -->
-              <div style="position: relative; z-index: 5; padding: 52px 20px 16px 20px; display: flex; flex-direction: column; flex: 1; justify-content: space-between; gap: 12px;">
+              <div style="position: relative; z-index: 5; padding: 86px 18px 16px 18px; display: flex; flex-direction: column; flex: 1; justify-content: space-between; gap: 12px;">
                 
                 <!-- TOP ROW: Name & Title -->
                 <div>
