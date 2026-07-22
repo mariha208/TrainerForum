@@ -1032,6 +1032,58 @@ function verifyUserSessionToken() {
 
 window.updateNavbarAuthUI = verifyUserSessionToken;
 
+// ── GLOBAL TOAST NOTIFICATION SYSTEM ─────────────────────────────────────────
+window.toast = window.showToast = function (msg, duration = 3500) {
+  let container = document.getElementById('global-toast-container');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'global-toast-container';
+    container.style.cssText = `
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 99999;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      pointer-events: none;
+    `;
+    document.body.appendChild(container);
+  }
+
+  const toastEl = document.createElement('div');
+  toastEl.style.cssText = `
+    background: #1e293b;
+    color: #f8fafc;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-left: 4px solid #d4af37;
+    padding: 14px 20px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0;
+    transform: translateY(20px);
+    pointer-events: auto;
+    max-width: 380px;
+    font-family: inherit;
+  `;
+  toastEl.textContent = msg;
+  container.appendChild(toastEl);
+
+  requestAnimationFrame(() => {
+    toastEl.style.opacity = '1';
+    toastEl.style.transform = 'translateY(0)';
+  });
+
+  setTimeout(() => {
+    toastEl.style.opacity = '0';
+    toastEl.style.transform = 'translateY(-10px)';
+    setTimeout(() => toastEl.remove(), 300);
+  }, duration);
+};
+
 // ── GLOBAL LOGOUT HANDLER ────────────────────────────────────────────────────
 window.handleLogout = function () {
   // Instantly hide the avatar so it disappears without delay
