@@ -4,7 +4,14 @@
 ═══════════════════════════════════════════════════ */
 'use strict';
 
+// ── API Endpoints ─────────────────────────────────────────────────────────────
+// The site frontend is hosted on GitHub Pages (static only).
+// All backend API calls MUST use the full Render server URL.
+// Relative paths like /api/posts will 404/405 on GitHub Pages.
 const API_BASE = 'https://trainerforum.onrender.com/api/users';
+const POSTS_API_BASE = 'https://trainerforum.onrender.com/api/posts';
+const NOTIFS_API_BASE = 'https://trainerforum.onrender.com/api/notifications';
+const UPLOAD_API_BASE = 'https://trainerforum.onrender.com/api/upload-image';
 
 let allTrainers = [];      // All fetched trainers (raw)
 let filteredTrainers = []; // After filters applied
@@ -322,7 +329,7 @@ window.handlePublishSubmit = async function(e) {
       formData.append('image', selectedImageFile);
       formData.append('type', 'post');
 
-      const uploadRes = await fetch('/api/upload-image', {
+      const uploadRes = await fetch(UPLOAD_API_BASE, {
         method: 'POST',
         body: formData
       });
@@ -337,15 +344,16 @@ window.handlePublishSubmit = async function(e) {
 
     // 2. Submit Post payload
     const postPayload = { category, title, description, content, imageUrl };
-    const res = await fetch('/api/posts', {
+    const res = await fetch(POSTS_API_BASE, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(postPayload)
     });
 
     if (!res.ok) {
-      const errData = await res.json().catch(() => ({}));
-      throw new Error(errData.error || ('HTTP ' + res.status));
+      let errMsg = 'HTTP ' + res.status;
+      try { const errData = await res.json(); errMsg = errData.error || errMsg; } catch (e) {}
+      throw new Error(errMsg);
     }
 
     const responseData = await res.json();
@@ -373,7 +381,7 @@ window.loadPublishedPosts = async function() {
   tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:40px; color:var(--tm);">Loading published posts...</td></tr>`;
 
   try {
-    const res = await fetch('/api/posts');
+    const res = await fetch(POSTS_API_BASE);
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const posts = await res.json();
 
@@ -418,7 +426,7 @@ window.deletePost = async function(id, title) {
   if (!confirm(`Are you sure you want to delete post "${title}"?`)) return;
 
   try {
-    const res = await fetch(`/api/posts/${id}`, { method: 'DELETE' });
+    const res = await fetch(`${POSTS_API_BASE}/${id}`, { method: 'DELETE' });
     if (!res.ok) throw new Error('HTTP ' + res.status);
 
     showToast(`Post deleted successfully.`);

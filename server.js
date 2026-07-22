@@ -18,22 +18,29 @@ connectDB();
 const allowedOrigins = [
   'https://worldtrainerforum.com',
   'https://www.worldtrainerforum.com',
+  'http://localhost:3000',
   'http://localhost:5000',
-  'http://127.0.0.1:5000'
+  'http://127.0.0.1:3000',
+  'http://127.0.0.1:5000',
+  // Render self-origin (server-to-server or preview)
+  'https://trainerforum.onrender.com'
 ];
 
-app.use(cors({
+const corsOptions = {
   origin: function (origin, callback) {
-    // allow requests with no origin (like mobile apps or curl requests)
+    // Allow requests with no Origin header (curl, Postman, mobile apps, SSR)
     if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(origin) === -1) {
-      const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
-      return callback(new Error(msg), false);
-    }
-    return callback(null, true);
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    return callback(new Error('CORS: Origin not allowed — ' + origin), false);
   },
-  credentials: true
-}));
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+};
+
+// Handle OPTIONS preflight for all API routes
+app.options('/api/*', cors(corsOptions));
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

@@ -1146,9 +1146,12 @@ window.heroSearch = function () {
 // ── LIVE SERVERLESS & BACKEND NOTIFICATIONS SYSTEM ─────────────────────────
 const STORAGE_KEY = 'read_notification_ids';
 
+// GitHub Pages is a static host — API calls must use the full backend URL.
+const BACKEND_API = 'https://trainerforum.onrender.com';
+
 async function fetchNotifications() {
     try {
-        const response = await fetch('/api/notifications');
+        const response = await fetch(`${BACKEND_API}/api/notifications`);
         if (response.ok) {
             const data = await response.json();
             if (Array.isArray(data) && data.length > 0) return data;
@@ -1195,7 +1198,7 @@ window.markAllNotificationsRead = async function(e) {
     }
 
     try {
-        await fetch('/api/notifications/read-all', { method: 'PATCH' });
+        await fetch(`${BACKEND_API}/api/notifications/read-all`, { method: 'PATCH' });
     } catch (err) { }
 
     const feed = await fetchNotifications();
@@ -1226,7 +1229,7 @@ window.handleNotificationClick = async function(id, targetUrl) {
     }
 
     try {
-        await fetch(`/api/notifications/${id}/read`, { method: 'PATCH' });
+        await fetch(`${BACKEND_API}/api/notifications/${id}/read`, { method: 'PATCH' });
     } catch (e) { }
 
     evaluateUnreadState();

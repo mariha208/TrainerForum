@@ -4,6 +4,9 @@
 ═══════════════════════════════════════════════════════════════════════════ */
 'use strict';
 
+// GitHub Pages is a static host — all API calls must use the full backend URL.
+const POSTS_BACKEND_API = 'https://trainerforum.onrender.com/api/posts';
+
 let cachedPosts = [];
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -23,7 +26,7 @@ async function initPostsFeed() {
   if (blogContainer) renderSkeletonLoaders(blogContainer, 3);
 
   try {
-    const res = await fetch('/api/posts');
+    const res = await fetch(POSTS_BACKEND_API);
     if (res.ok) {
       const data = await res.json();
       if (Array.isArray(data) && data.length > 0) {
@@ -31,7 +34,7 @@ async function initPostsFeed() {
       }
     }
   } catch (err) {
-    console.warn('[PostsFeed] Failed to fetch /api/posts, using fallback:', err.message);
+    console.warn('[PostsFeed] Failed to fetch posts API, using fallback:', err.message);
   }
 
   // Render categories
