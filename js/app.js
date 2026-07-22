@@ -232,9 +232,13 @@ function subscribeToTrainers() {
             pn: parseFloat(_rateStr.replace(/[^\d.]/g, '')) || 0,
             rate: _rateStr,
 
-            // ── Membership ─────────────────────────────────────────────────
-            membershipType: String(row.membershipType || 'FREE').toUpperCase(),
-            isFeatured: row.isFeatured === true,
+            // ── Membership & Tier Properties ───────────────────────────────
+            membershipType: String(row.membershipType || row.tier || row.plan || 'FREE').toUpperCase(),
+            isFeatured: row.isFeatured === true || row.featured === true || row.badge === 'FEATURED' || String(row.plan || '').toLowerCase() === 'featured' || String(row.tier || '').toLowerCase() === 'premium' || String(row.membershipType || '').toUpperCase() === 'PREMIUM',
+            featured: row.featured === true || row.isFeatured === true || String(row.membershipType || '').toUpperCase() === 'PREMIUM',
+            badge: row.badge || (String(row.membershipType || '').toUpperCase() === 'PREMIUM' || row.isFeatured === true || row.featured === true ? 'FEATURED' : (String(row.membershipType || '').toUpperCase() === 'STANDARD' ? 'PRO' : 'FREE')),
+            plan: row.plan || (String(row.membershipType || '').toUpperCase() === 'PREMIUM' || row.isFeatured === true ? 'Featured' : (String(row.membershipType || '').toUpperCase() === 'STANDARD' ? 'Standard' : 'Free')),
+            tier: row.tier || (String(row.membershipType || '').toUpperCase() === 'PREMIUM' || row.isFeatured === true ? 'Premium' : (String(row.membershipType || '').toUpperCase() === 'STANDARD' ? 'Standard' : 'Free')),
 
             // ── Experience ────────────────────────────────────────────────
             experience: _experience,
@@ -733,18 +737,30 @@ function subscribeToTrainers() {
         }); // end TRAINERS.forEach
 
         if (isHomeGrid) {
-          // Front page: show PREMIUM/Featured trainers first
-          let featuredCount = 0;
-          TRAINERS.forEach(normalizedTrainer => {
-            if (normalizedTrainer.membershipType === 'PREMIUM' || normalizedTrainer.isFeatured) {
+          // 1. Strict Tier Filtering: Filter BEFORE slicing or rendering
+          const featuredTrainers = TRAINERS.filter(trainer => 
+            trainer.badge === 'FEATURED' || 
+            trainer.plan === 'Featured' || 
+            trainer.tier === 'Premium' || 
+            trainer.isFeatured === true ||
+            trainer.membershipType === 'PREMIUM' ||
+            trainer.featured === true
+          );
+
+          if (featuredTrainers.length > 0) {
+            // Render ONLY featuredTrainers.slice(0, 4) in the home page container
+            featuredTrainers.slice(0, 4).forEach(normalizedTrainer => {
               grid.insertAdjacentHTML('beforeend', normalizedTrainer._cardHtml);
-              featuredCount++;
-            }
-          });
-          // Fallback: If no trainers are marked as featured/premium, display first 4 available trainers
-          if (featuredCount === 0 && TRAINERS.length > 0) {
-            const fallbackList = TRAINERS.slice(0, 4);
-            fallbackList.forEach(normalizedTrainer => {
+            });
+          } else if (TRAINERS.length > 0) {
+            // 2. Fallback Mechanism: Only if featuredTrainers.length === 0, fallback to top-rated trainers
+            const topRatedTrainers = [...TRAINERS].sort((a, b) => {
+              const rA = parseFloat(a.rating) || 0;
+              const rB = parseFloat(b.rating) || 0;
+              return rB - rA;
+            }).slice(0, 4);
+
+            topRatedTrainers.forEach(normalizedTrainer => {
               grid.insertAdjacentHTML('beforeend', normalizedTrainer._cardHtml);
             });
           }
