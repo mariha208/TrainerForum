@@ -64,7 +64,21 @@ function renderSkeletonLoaders(container, count = 3) {
 
 // ── RENDER CATEGORY FEED ──────────────────────────────────────────────────────
 function renderCategoryFeed(container, category) {
-  const filtered = cachedPosts.filter(p => (p.category || '').toLowerCase() === category.toLowerCase());
+  const targetCat = (category || '').toLowerCase();
+  
+  const filtered = cachedPosts.filter(p => {
+    const pCat = (p.category || '').toLowerCase();
+    if (targetCat === 'news' || targetCat.includes('news')) {
+      return pCat === 'news' || pCat === 'news & announcements' || pCat.includes('news') || pCat.includes('announcement');
+    }
+    if (targetCat === 'event' || targetCat.includes('event')) {
+      return pCat === 'event' || pCat === 'events' || pCat.includes('event');
+    }
+    if (targetCat === 'blog' || targetCat.includes('blog')) {
+      return pCat === 'blog' || pCat === 'blogs' || pCat.includes('blog');
+    }
+    return pCat === targetCat;
+  });
 
   if (filtered.length === 0) {
     container.innerHTML = `
@@ -84,7 +98,9 @@ function renderCategoryFeed(container, category) {
     const dateStr = post.createdAt ? new Date(post.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '';
     const id = post.id || post._id;
 
-    if (category === 'Event') {
+    const pCat = (post.category || '').toLowerCase();
+
+    if (pCat === 'event' || pCat.includes('event') || targetCat.includes('event')) {
       const eventDate = post.createdAt ? new Date(post.createdAt) : new Date();
       const day = eventDate.getDate();
       const month = eventDate.toLocaleString('en-US', { month: 'short' }).toUpperCase();
@@ -112,7 +128,7 @@ function renderCategoryFeed(container, category) {
       `;
     }
 
-    if (category === 'Blog') {
+    if (pCat === 'blog' || pCat.includes('blog') || targetCat.includes('blog')) {
       return `
         <article class="blog-card" style="background:#fff; border-radius:18px; overflow:hidden; box-shadow:0 15px 35px rgba(11,27,50,0.08); display:flex; flex-direction:column; justify-content:space-between; transition:transform 0.3s ease;">
           <div>
@@ -142,7 +158,7 @@ function renderCategoryFeed(container, category) {
       <div class="news-card" style="background:#fff; border-radius:18px; padding:26px; box-shadow:0 15px 35px rgba(11,27,50,0.08); display:flex; flex-direction:column; justify-content:space-between;">
         <div>
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
-            <span style="background:rgba(36,85,201,0.1); color:#2455C9; font-size:0.75rem; font-weight:700; padding:4px 12px; border-radius:99px; text-transform:uppercase; letter-spacing:0.06em;">📰 News</span>
+            <span style="background:rgba(36,85,201,0.1); color:#2455C9; font-size:0.75rem; font-weight:700; padding:4px 12px; border-radius:99px; text-transform:uppercase; letter-spacing:0.06em;">📰 News & Announcements</span>
             <span style="font-size:0.78rem; color:#8899a6; font-weight:600;">${dateStr}</span>
           </div>
           <h3 style="font-size:1.2rem; font-weight:700; color:#101826; margin-bottom:10px; line-height:1.35; font-family:'Fraunces',serif;">${title}</h3>
@@ -164,6 +180,7 @@ function getCategoryFallbackImage(category) {
 }
 
 // ── POST DETAIL MODAL ─────────────────────────────────────────────────────────
+// ── POST DETAIL MODAL ─────────────────────────────────────────────────────────
 window.openPostModal = function(id) {
   const post = cachedPosts.find(p => p.id === id || p._id === id);
   if (!post) return;
@@ -172,26 +189,37 @@ window.openPostModal = function(id) {
   if (!modal) {
     modal = document.createElement('div');
     modal.id = 'post-detail-modal';
-    modal.style.cssText = 'position:fixed; inset:0; background:rgba(11,27,50,0.85); backdrop-filter:blur(8px); z-index:9999; display:flex; align-items:center; justify-content:center; padding:20px;';
+    modal.className = 'modal-overlay';
+    modal.style.cssText = 'position:fixed; inset:0; background:rgba(11,27,50,0.85); backdrop-filter:blur(8px); z-index:9999; display:flex; align-items:flex-start; justify-content:center; padding:20px; overflow-y:auto; box-sizing:border-box;';
     document.body.appendChild(modal);
   }
+
+  // Backdrop click handler
+  modal.onclick = function(e) {
+    if (e.target === modal) {
+      closePostModal();
+    }
+  };
 
   const category = escHtml(post.category || 'Post');
   const title = escHtml(post.title || '');
   const content = escHtml(post.content || post.description || '').replace(/\n/g, '<br>');
   const dateStr = post.createdAt ? new Date(post.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : '';
-  const imgHtml = post.imageUrl ? `<div style="max-height:300px; overflow:hidden; border-radius:14px; margin-bottom:20px;"><img src="${post.imageUrl}" alt="${title}" style="width:100%; height:100%; object-fit:cover;"></div>` : '';
+  const imgHtml = post.imageUrl ? `<div style="max-height:320px; overflow:hidden; border-radius:14px; margin-bottom:20px;"><img src="${post.imageUrl}" alt="${title}" style="width:100%; height:100%; object-fit:cover;"></div>` : '';
+
+  const isDesktop = typeof window !== 'undefined' && window.innerWidth >= 1024;
+  const marginTopVal = isDesktop ? '80px' : '30px';
 
   modal.innerHTML = `
-    <div style="background:#fff; border-radius:24px; max-width:700px; width:100%; max-height:90vh; overflow-y:auto; padding:36px; position:relative; box-shadow:0 25px 60px rgba(0,0,0,0.4); animation: modalFadeIn 0.3s ease;">
-      <button onclick="closePostModal()" style="position:absolute; top:20px; right:20px; background:rgba(0,0,0,0.06); border:none; width:36px; height:36px; border-radius:50%; font-size:1.3rem; cursor:pointer; color:#101826; display:flex; align-items:center; justify-content:center;">&times;</button>
+    <div class="modal-content-box" style="background:#fff; border-radius:24px; max-width:720px; width:100%; max-height:calc(90vh - 60px); overflow-y:auto; padding:36px 32px 32px 32px; position:relative; box-shadow:0 25px 60px rgba(0,0,0,0.4); margin-top:${marginTopVal}; margin-bottom:30px; animation: modalFadeIn 0.3s ease;">
+      <button class="modal-close close-btn" onclick="closePostModal(); event.stopPropagation();" aria-label="Close modal" style="position:absolute; top:16px; right:16px; z-index:10000; width:38px; height:38px; border-radius:50%; background:#f1f5f9; color:#0f172a; border:1px solid #cbd5e1; font-size:1.4rem; font-weight:bold; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.2s ease; box-shadow:0 2px 8px rgba(0,0,0,0.1);" onmouseover="this.style.background='#e2e8f0'; this.style.transform='scale(1.08)';" onmouseout="this.style.background='#f1f5f9'; this.style.transform='scale(1)';">&times;</button>
       
-      <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px; padding-right:45px;">
         <span style="background:rgba(201,162,75,0.15); color:#C9A24B; font-size:0.75rem; font-weight:700; padding:4px 14px; border-radius:99px; text-transform:uppercase; letter-spacing:0.08em;">${category}</span>
         <span style="font-size:0.82rem; color:#8899a6; font-weight:600;">${dateStr}</span>
       </div>
 
-      <h2 style="font-family:'Fraunces',serif; font-size:1.8rem; font-weight:700; color:#101826; margin-bottom:20px; line-height:1.3;">${title}</h2>
+      <h2 style="font-family:'Fraunces',serif; font-size:1.8rem; font-weight:700; color:#101826; margin-bottom:20px; line-height:1.3; padding-right:30px;">${title}</h2>
       
       ${imgHtml}
 
@@ -199,19 +227,35 @@ window.openPostModal = function(id) {
         ${content}
       </div>
 
-      <div style="margin-top:30px; pt-20; border-top:1px solid rgba(0,0,0,0.08); display:flex; justify-content:flex-end;">
+      <div style="margin-top:30px; padding-top:20px; border-top:1px solid rgba(0,0,0,0.08); display:flex; justify-content:flex-end;">
         <button onclick="closePostModal()" style="background:#0B1B32; color:#FAF6EC; border:none; padding:10px 24px; border-radius:99px; font-weight:700; font-size:0.9rem; cursor:pointer;">Close Article</button>
       </div>
     </div>
   `;
 
   modal.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
 };
 
 window.closePostModal = function() {
   const modal = document.getElementById('post-detail-modal');
-  if (modal) modal.style.display = 'none';
+  if (modal) {
+    modal.style.display = 'none';
+  }
+  document.body.style.overflow = '';
 };
+
+// Keyboard Accessibility: Close modal on Escape key
+if (typeof document !== 'undefined') {
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' || e.key === 'Esc') {
+      const modal = document.getElementById('post-detail-modal');
+      if (modal && modal.style.display !== 'none') {
+        closePostModal();
+      }
+    }
+  });
+}
 
 function escHtml(str) {
   return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');

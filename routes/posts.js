@@ -32,14 +32,23 @@ function writeJsonFallback(filePath, data) {
 }
 
 // ── GET /api/posts ─────────────────────────────────────────────────────────────
-// Query params: category (optional: 'News', 'Event', 'Blog')
+// Query params: category (optional: 'news', 'event', 'blog' or legacy names)
 router.get('/', async (req, res) => {
   const { category } = req.query;
   
   try {
     const filter = {};
     if (category) {
-      filter.category = new RegExp(`^${category}$`, 'i');
+      const cat = String(category).toLowerCase();
+      if (cat === 'news' || cat.includes('news')) {
+        filter.category = { $regex: /news|announcement/i };
+      } else if (cat === 'event' || cat.includes('event')) {
+        filter.category = { $regex: /event/i };
+      } else if (cat === 'blog' || cat.includes('blog')) {
+        filter.category = { $regex: /blog/i };
+      } else {
+        filter.category = new RegExp(category, 'i');
+      }
     }
 
     const posts = await Post.find(filter).sort({ createdAt: -1 }).lean();
@@ -60,7 +69,14 @@ router.get('/', async (req, res) => {
     console.warn('[Posts API] DB fetch failed, falling back to local JSON:', err.message);
     let posts = readJsonFallback(POSTS_FILE);
     if (category) {
-      posts = posts.filter(p => (p.category || '').toLowerCase() === category.toLowerCase());
+      const cat = String(category).toLowerCase();
+      posts = posts.filter(p => {
+        const pCat = (p.category || '').toLowerCase();
+        if (cat === 'news' || cat.includes('news')) return pCat.includes('news') || pCat.includes('announcement');
+        if (cat === 'event' || cat.includes('event')) return pCat.includes('event');
+        if (cat === 'blog' || cat.includes('blog')) return pCat.includes('blog');
+        return pCat === cat;
+      });
     }
     posts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     return res.json(posts);

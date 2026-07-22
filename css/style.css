@@ -1918,13 +1918,61 @@ section {
   border-bottom: 1px solid var(--line);
 }
 
+/* ══ GLOBAL MODAL OVERLAY & CLOSE BUTTON ══ */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(11, 27, 50, 0.85);
+  backdrop-filter: blur(8px);
+  z-index: 9999;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 20px;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+.modal-close, .close-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 10000;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #f1f5f9;
+  color: #0f172a;
+  border: 1px solid #cbd5e1;
+  font-size: 1.4rem;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.modal-close:hover, .close-btn:hover {
+  background: #e2e8f0;
+  transform: scale(1.08);
+}
+
+@media (min-width: 1024px) {
+  #post-detail-modal .modal-content-box,
+  .modal-overlay > div {
+    margin-top: 80px !important;
+  }
+}
+
 /* ══ BOOKING MODAL ══ */
 .bmodal-overlay {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.7);
   backdrop-filter: blur(6px);
-  z-index: 1000;
+  z-index: 9999;
   display: none;
   align-items: center;
   justify-content: center;
