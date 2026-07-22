@@ -4027,8 +4027,50 @@ html, body {
 }
 
 /* ════════════════════════════════════════════════════════════════
-   FORM LABELS & INPUT INTERACTION FIX
+   DESKTOP DASHBOARD UNCLICKABLE ELEMENTS & POINTER-EVENTS FIX
    ════════════════════════════════════════════════════════════════ */
+@media (min-width: 901px) {
+  /* Prevent mobile sidebar backdrop from capturing clicks on desktop */
+  .sidebar-backdrop {
+    display: none !important;
+    pointer-events: none !important;
+    opacity: 0 !important;
+    z-index: -1 !important;
+  }
+}
+
+/* Ensure global modal backdrop passes clicks through when inactive */
+.modal-backdrop:not(.active),
+#modal-backdrop:not(.active),
+.sidebar-backdrop:not(.show) {
+  pointer-events: none !important;
+}
+
+/* Explicit high z-index layer & pointer interactivity for main content and editing controls */
+.db-main {
+  position: relative !important;
+  z-index: 1 !important;
+  pointer-events: auto !important;
+}
+
+.db-section {
+  position: relative !important;
+  z-index: 5 !important;
+  pointer-events: auto !important;
+}
+
+.db-card,
+.profile-layout,
+.profile-main,
+.profile-preview-panel,
+form,
+.form-group,
+.form-row {
+  position: relative !important;
+  z-index: 10 !important;
+  pointer-events: auto !important;
+}
+
 .form-group label,
 label,
 .toggle-label,
@@ -4036,8 +4078,10 @@ label,
 .sidebar-section-label,
 .nav-label {
   cursor: pointer !important;
-  user-select: none;
+  user-select: auto;
   pointer-events: auto !important;
+  position: relative !important;
+  z-index: 15 !important;
 }
 
 .input-icon-wrap .i-ico {
@@ -4047,12 +4091,19 @@ label,
 .form-control,
 input,
 select,
-textarea {
+textarea,
+button,
+.btn,
+.editable-field {
   pointer-events: auto !important;
   cursor: text;
+  position: relative !important;
+  z-index: 15 !important;
 }
 
-select.form-control {
+select.form-control,
+button,
+.btn {
   cursor: pointer !important;
 }
 

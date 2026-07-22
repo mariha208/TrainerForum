@@ -157,6 +157,7 @@
   border: 2px solid transparent;
   background: linear-gradient(135deg, rgba(197,160,89,0.6), transparent) border-box;
   -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
 }
@@ -424,7 +425,6 @@
   background: linear-gradient(135deg, #0D2040 0%, #042828 100%);
   aspect-ratio: 16/9;
   cursor: pointer;
-  group: true;
   margin-bottom: 20px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -505,7 +505,7 @@
   line-height: 1.95;
   color: rgba(237, 242, 247, 0.78);
 }
-.tpm-bio.collapsed { display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; overflow: hidden; }
+.tpm-bio.collapsed { display: -webkit-box; -webkit-line-clamp: 5; line-clamp: 5; -webkit-box-orient: vertical; overflow: hidden; }
 .tpm-expand-btn {
   background: none;
   border: none;
@@ -1693,12 +1693,13 @@
 }
 
 @media (max-width: 768px) {
-  #trainer-modal { padding: 0; }
+  #trainer-modal { padding: 0 !important; z-index: 99999 !important; }
   .tpm-box {
-    width: 100vw;
-    min-height: 100vh;
-    border-radius: 0;
-    margin: 0;
+    width: 100vw !important;
+    min-height: 100vh !important;
+    border-radius: 0 !important;
+    margin: 0 !important;
+    overflow: visible !important;
   }
   .tpm-header { padding: 0 20px 20px; }
   .tpm-tabs { padding: 0 20px; }
@@ -1714,10 +1715,38 @@
   #booking-modal { padding: 0; align-items: flex-end; }
   .bpm-box { width: 100vw; max-height: 95vh; border-radius: 24px 24px 0 0; }
   .bpm-body { grid-template-columns: 1fr; }
+
+  /* Fixed close button for mobile */
+  .tpm-close {
+    position: fixed !important;
+    top: 14px !important;
+    right: 14px !important;
+    z-index: 100000 !important;
+    width: 44px !important;
+    height: 44px !important;
+    border-radius: 50% !important;
+    background: #0B1B32 !important;
+    border: 1.5px solid #C5A059 !important;
+    color: #FFFFFF !important;
+    font-size: 1.3rem !important;
+    font-weight: 700 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7) !important;
+    pointer-events: auto !important;
+    line-height: 1 !important;
+  }
 }
 
 @media (max-width: 480px) {
   .tpm-social-grid { grid-template-columns: repeat(4, 1fr); }
   .tpm-exp-grid { grid-template-columns: 1fr 1fr; }
   .tpm-gallery-grid { grid-template-columns: repeat(2, 1fr); }
+  .tpm-close {
+    top: 12px !important;
+    right: 12px !important;
+    width: 42px !important;
+    height: 42px !important;
+  }
 }
