@@ -89,9 +89,13 @@ document.addEventListener('DOMContentLoaded', function () {
     mn.className = 'mobile-nav';
     mn.id = 'mobile-nav';
     mn.innerHTML = `
-    <div style="display:flex; justify-content:flex-end; margin-bottom: 20px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:12px;">
+      <a href="index.html" onclick="toggleMobileMenu()" style="display:flex; align-items:center; text-decoration:none;">
+        <img src="img/logo.svg" alt="World Trainer Forum Logo" style="height:32px; margin-right:8px;">
+        <span style="color:#fff; font-weight:700; font-size:1.05rem;">World Trainer <span style="color:#C5A059;">Forum</span></span>
+      </a>
       <button onclick="toggleMobileMenu()"
-        style="background:none; border:none; color:#fff; font-size:2rem; cursor:pointer;"
+        style="background:none; border:none; color:#fff; font-size:1.8rem; cursor:pointer; padding:4px;"
         aria-label="Close Menu">&times;</button>
     </div>
     <a href="index.html">Home</a>

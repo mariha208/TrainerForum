@@ -3930,12 +3930,69 @@ nav {
 }
 
 @media (max-width: 768px) {
+  #nav {
+    padding: 0 10px !important;
+    width: 100% !important;
+    max-width: 100vw !important;
+    box-sizing: border-box !important;
+    justify-content: space-between !important;
+  }
+
+  #nav .logo {
+    font-size: 0.88rem !important;
+    gap: 4px !important;
+    flex-shrink: 1 !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+    white-space: nowrap !important;
+  }
+
+  #nav .logo img {
+    height: 30px !important;
+    margin-right: 4px !important;
+  }
+
+  .nav-r {
+    display: flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    margin-left: auto !important;
+    flex-shrink: 0 !important;
+  }
+
+  .notif-btn {
+    width: 32px !important;
+    height: 32px !important;
+    padding: 2px !important;
+    flex-shrink: 0 !important;
+  }
+
+  .user-avatar-wrap,
+  .user-av-btn {
+    width: 32px !important;
+    height: 32px !important;
+    font-size: 0.75rem !important;
+    flex-shrink: 0 !important;
+  }
+
   .ham-btn {
     display: flex !important;
     visibility: visible !important;
     opacity: 1 !important;
+    width: 36px !important;
+    height: 36px !important;
+    padding: 4px !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-shrink: 0 !important;
+    margin-left: 2px !important;
     z-index: 10001 !important;
     pointer-events: auto !important;
     cursor: pointer !important;
+  }
+
+  .ham-btn svg {
+    width: 22px !important;
+    height: 22px !important;
   }
 }
