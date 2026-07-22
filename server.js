@@ -38,8 +38,7 @@ const corsOptions = {
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 };
 
-// Handle OPTIONS preflight for all API routes
-app.options('/api/*', cors(corsOptions));
+// Handle CORS and OPTIONS preflight for all routes
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -215,8 +214,8 @@ app.use('/api/reviews', require('./routes/reviews'));
 app.use('/api/posts', require('./routes/posts'));
 app.use('/api/notifications', require('./routes/notifications'));
 
-// ── Catch-all: serve index.html (Express 5 syntax) ───────────────────────────
-app.get('/{*path}', (req, res) => {
+// ── Catch-all: serve index.html ───────────────────────────────────────────────
+app.use((req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
