@@ -59,27 +59,51 @@ function applyConditionalHeaderLogic() {
 }
 
 // ── SYNC ENGINE: STREAM MONGODB LIVE DATA ROWS ──────────────────────────
-function subscribeToTrainers() {
-  const API_BASE_URL = 'https://trainerforum.onrender.com/api/trainers';
+async function fetchTrainerData() {
+  const endpoints = [
+    'https://trainerforum.onrender.com/api/trainers',
+    '/api/trainers',
+    'data.json'
+  ];
+  for (const url of endpoints) {
+    try {
+      const res = await fetch(url, { headers: { 'Content-Type': 'application/json' } });
+      if (res.ok) {
+        const data = await res.json();
+        if (data && (Array.isArray(data) ? data.length > 0 : (data.data && data.data.length > 0))) {
+          return data;
+        }
+        // If empty array, keep data if last fallback, otherwise try next
+        if (url === endpoints[endpoints.length - 1] || Array.isArray(data)) return data;
+      }
+    } catch (e) {
+      console.warn(`[App] Fetch failed for ${url}:`, e.message);
+    }
+  }
+  return null;
+}
 
+function subscribeToTrainers() {
   console.log("📡 Connecting live database arrays to original card matrix...");
 
-  fetch(API_BASE_URL, {
-    method: "GET",
-    mode: "cors",
-    headers: { 'Content-Type': 'application/json' }
-  })
-    .then(res => {
-      if (!res.ok) throw new Error("Database handshake failed: HTTP " + res.status);
-      return res.json();
-    })
+  fetchTrainerData()
     .then(data => {
-      console.log('[App] Raw API response type:', typeof data, Array.isArray(data) ? ('Array[' + data.length + ']') : JSON.stringify(data).slice(0, 200));
+      console.log('[App] Raw API response type:', typeof data, Array.isArray(data) ? ('Array[' + data.length + ']') : (data ? JSON.stringify(data).slice(0, 200) : 'null'));
       const grid = document.getElementById('home-grid') || document.querySelector('.trainers-grid');
       if (!grid) return;
 
       grid.innerHTML = '';
       TRAINERS.length = 0;
+
+      if (!data) {
+        grid.innerHTML = `
+          <div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:#94a3b8;">
+            <div style="font-size:2rem;margin-bottom:12px;">⚠️</div>
+            <p style="font-size:1rem;font-weight:600;margin:0;color:#e2e8f0;">No trainers available right now</p>
+            <p style="font-size:0.82rem;margin:6px 0 0;opacity:0.75;">Unable to fetch trainer catalog. Please check back shortly.</p>
+          </div>`;
+        return;
+      }
 
       // Handle both array and {data: [...]} wrapper formats
       const rows = Array.isArray(data) ? data : (Array.isArray(data?.data) ? data.data : []);

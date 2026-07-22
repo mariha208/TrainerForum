@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -439,7 +439,21 @@
   <div id="trainer-modal"></div>
   <div id="auth-modal"></div>
 
-  <script src="js/data.js"></script>
+  <!-- Trainer data is loaded dynamically via API — no static data.js file needed -->
+  <script>
+    // Show loading skeleton immediately before app.js runs
+    document.addEventListener('DOMContentLoaded', function () {
+      const grid = document.getElementById('browse-grid');
+      if (grid && grid.children.length === 0) {
+        grid.innerHTML = `
+          <div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:#94a3b8;">
+            <div style="font-size:2rem;margin-bottom:12px;animation:pulse 1.5s ease-in-out infinite;">⏳</div>
+            <p style="font-size:1rem;font-weight:500;margin:0;">Loading trainers…</p>
+            <p style="font-size:0.82rem;margin:6px 0 0;opacity:0.6;">Connecting to the database</p>
+          </div>`;
+      }
+    });
+  </script>
   <script src="js/app.js?v=4"></script>
   <script src="js/trainer-modal.js?v=4"></script>
   <script src="js/auth-modal.js"></script>
@@ -447,11 +461,34 @@
   <script src="js/page-nav.js"></script>
   <script>
     applyTheme();
-    // Read URL params to pre-fill filters (from category/hero search links)
+
     document.addEventListener('DOMContentLoaded', function () {
+      // ── 1. Kick off the API fetch that populates window.TRAINERS and renders cards ──
+      if (typeof subscribeToTrainers === 'function') {
+        // Patch the catch so errors show a friendly UI message instead of blank grid
+        try {
+          subscribeToTrainers();
+        } catch (err) {
+          console.error('[Find Trainers] subscribeToTrainers threw:', err);
+          const grid = document.getElementById('browse-grid');
+          if (grid) {
+            grid.innerHTML = `
+              <div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:#94a3b8;">
+                <div style="font-size:2rem;margin-bottom:12px;">😕</div>
+                <p style="font-size:1rem;font-weight:600;margin:0;color:#f87171;">Could not load trainers</p>
+                <p style="font-size:0.82rem;margin:8px 0 0;opacity:0.65;">The server may be starting up — please refresh in a moment.</p>
+                <button onclick="location.reload()" style="margin-top:16px;padding:8px 20px;background:#c5a059;color:#fff;border:none;border-radius:8px;font-weight:600;cursor:pointer;">Try Again</button>
+              </div>`;
+          }
+        }
+      } else {
+        console.warn('[Find Trainers] subscribeToTrainers not found — check app.js load order');
+      }
+
+      // ── 2. Read URL params to pre-fill search/category filters ──
       const params = new URLSearchParams(window.location.search);
       const cat = params.get('cat');
-      const q = params.get('q');
+      const q   = params.get('q');
       if (cat) {
         const sel = document.getElementById('f-cat');
         if (sel) sel.value = cat;
@@ -460,8 +497,19 @@
         const inp = document.getElementById('browse-search');
         if (inp) inp.value = q;
       }
-      // Apply filters after setting the values from URL
-      if (window.applyFilters) window.applyFilters();
+
+      // ── 3. Apply filters once cards are available (small delay for API response) ──
+      if (cat || q) {
+        // Retry applyFilters after cards have had time to render from the async fetch
+        const applyWhenReady = () => {
+          if (document.querySelector('#browse-grid .trainer-card')) {
+            if (window.applyFilters) window.applyFilters();
+          } else {
+            setTimeout(applyWhenReady, 300);
+          }
+        };
+        setTimeout(applyWhenReady, 500);
+      }
     });
   </script>
   <script src="js/mobile-nav.js"></script>
