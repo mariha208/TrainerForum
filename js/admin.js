@@ -18,6 +18,27 @@ let filteredTrainers = []; // After filters applied
 const PAGE_SIZE = 15;
 let currentPage = 1;
 
+// ── UTILITY HELPERS ──────────────────────────────────────────────────────────
+function escHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+function setText(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = val;
+}
+
+if (typeof window !== 'undefined') {
+  window.escHtml = escHtml;
+  window.setText = setText;
+}
+
 // ── TOAST NOTIFICATION HELPER ────────────────────────────────────────────────
 function showToast(msg, duration = 3500) {
   let container = document.getElementById('admin-toast-container');
@@ -165,13 +186,18 @@ function applyFilters() {
 // ── RENDER TABLE PAGE ─────────────────────────────────────────────────────────
 function renderTable() {
   const tbody = document.getElementById('admin-table-body');
+  if (!tbody) return;
+
   const total = filteredTrainers.length;
   const start = (currentPage - 1) * PAGE_SIZE;
   const end = Math.min(start + PAGE_SIZE, total);
   const page = filteredTrainers.slice(start, end);
 
   // Update info
-  document.getElementById('page-info').textContent = `Showing ${start + 1}–${end} of ${total} trainers`;
+  const pageInfo = document.getElementById('page-info');
+  if (pageInfo) {
+    pageInfo.textContent = total > 0 ? `Showing ${start + 1}–${end} of ${total} trainers` : 'Showing 0 trainers';
+  }
 
   if (page.length === 0) {
     tbody.innerHTML = `<tr class="empty-row"><td colspan="6">No trainers match your filters.</td></tr>`;
@@ -180,72 +206,79 @@ function renderTable() {
   }
 
   tbody.innerHTML = page.map(t => {
-    const name = [t.firstName, t.lastName].filter(Boolean).join(' ') || t.fullName || 'Unnamed';
-    const email = t.email || '—';
-    const cat = t.expertiseCategory || t.category || '—';
-    const mt = (t.membershipType || 'FREE').toUpperCase();
-    const isSuspended = t.suspended === true;
-    const id = t._id;
-    const joined = t.createdAt ? new Date(t.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '—';
-    const initials = name.split(' ').map(p => p[0] || '').join('').substring(0, 2).toUpperCase();
+    try {
+      const name = [t.firstName, t.lastName].filter(Boolean).join(' ') || t.fullName || t.name || 'Unnamed';
+      const email = t.email || '—';
+      const cat = t.expertiseCategory || t.category || '—';
+      const mt = (t.membershipType || 'FREE').toUpperCase();
+      const isSuspended = t.suspended === true;
+      const id = t._id || t.id || '';
+      const joined = t.createdAt ? new Date(t.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '—';
+      const initials = name.split(' ').map(p => p[0] || '').join('').substring(0, 2).toUpperCase() || 'TR';
 
-    const memberBadge = mt === 'PREMIUM'
-      ? `<span class="badge badge-premium">⭐ Elite</span>`
-      : mt === 'STANDARD'
-      ? `<span class="badge badge-standard">🚀 Pro</span>`
-      : `<span class="badge badge-free">Starter</span>`;
+      const memberBadge = mt === 'PREMIUM'
+        ? `<span class="badge badge-premium">⭐ Elite</span>`
+        : mt === 'STANDARD'
+        ? `<span class="badge badge-standard">🚀 Pro</span>`
+        : `<span class="badge badge-free">Starter</span>`;
 
-    const approvalStatus = (t.status || (t.isApproved === false ? 'pending' : 'approved')).toLowerCase();
-    const isPending = approvalStatus === 'pending';
-    const isRejected = approvalStatus === 'rejected';
-    const isApproved = approvalStatus === 'approved';
+      const approvalStatus = (t.status || (t.isApproved === false ? 'pending' : 'approved')).toLowerCase();
+      const isPending = approvalStatus === 'pending';
+      const isRejected = approvalStatus === 'rejected';
+      const isApproved = approvalStatus === 'approved';
 
-    let statusBadge = '';
-    if (isSuspended) {
-      statusBadge = `<span class="badge badge-suspended">Suspended</span>`;
-    } else if (isPending) {
-      statusBadge = `<span class="badge" style="background:#fef3c7;color:#d97706;border:1px solid #fcd34d;">⏳ Pending</span>`;
-    } else if (isRejected) {
-      statusBadge = `<span class="badge" style="background:#fee2e2;color:#dc2626;border:1px solid #fca5a5;">❌ Rejected</span>`;
-    } else {
-      statusBadge = `<span class="badge badge-active">✅ Approved</span>`;
-    }
+      let statusBadge = '';
+      if (isSuspended) {
+        statusBadge = `<span class="badge badge-suspended">Suspended</span>`;
+      } else if (isPending) {
+        statusBadge = `<span class="badge" style="background:#fef3c7;color:#d97706;border:1px solid #fcd34d;">⏳ Pending</span>`;
+      } else if (isRejected) {
+        statusBadge = `<span class="badge" style="background:#fee2e2;color:#dc2626;border:1px solid #fca5a5;">❌ Rejected</span>`;
+      } else {
+        statusBadge = `<span class="badge badge-active">✅ Approved</span>`;
+      }
 
-    const quickApproveBtn = isPending
-      ? `<button style="background:linear-gradient(135deg, #10b981, #059669);color:#fff;border:none;padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;margin-right:8px;box-shadow:0 2px 6px rgba(16,185,129,0.3);" onclick="approveTrainer('${id}', '${escHtml(name)}')">Approve</button>`
-      : '';
+      const safeName = escHtml(name).replace(/'/g, "\\'");
 
-    return `<tr>
-      <td>
-        <div class="trainer-info">
-          <div class="admin-av">${initials}</div>
-          <div class="trainer-info-text">
-            <div class="name">${escHtml(name)}</div>
-            <div class="email">${escHtml(email)}</div>
-          </div>
-        </div>
-      </td>
-      <td style="color:var(--tm);font-size:.82rem;">${escHtml(cat)}</td>
-      <td>${memberBadge}</td>
-      <td>${statusBadge}</td>
-      <td style="color:var(--tm);font-size:.82rem;">${joined}</td>
-      <td>
-        <div style="display:flex;align-items:center;">
-          ${quickApproveBtn}
-          <div class="action-wrap">
-            <button class="action-btn">Actions ▾</button>
-            <div class="action-menu">
-              ${!isApproved ? `<button onclick="approveTrainer('${id}', '${escHtml(name)}')">✅ Approve Trainer</button>` : ''}
-              ${!isRejected ? `<button onclick="rejectTrainer('${id}', '${escHtml(name)}')">❌ Reject Trainer</button>` : ''}
-              <button onclick="openPlanModal('${id}', '${escHtml(name)}', '${mt}')">✏️ Change Plan</button>
-              <button onclick="toggleSuspend('${id}', ${isSuspended})">${isSuspended ? '✅ Reactivate' : '⏸️ Suspend'}</button>
-              <div class="separator"></div>
-              <button class="danger" onclick="deleteTrainer('${id}', '${escHtml(name)}')">🗑️ Delete Account</button>
+      const quickApproveBtn = isPending
+        ? `<button style="background:linear-gradient(135deg, #10b981, #059669);color:#fff;border:none;padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;margin-right:8px;box-shadow:0 2px 6px rgba(16,185,129,0.3);" onclick="approveTrainer('${id}', '${safeName}')">Approve</button>`
+        : '';
+
+      return `<tr>
+        <td>
+          <div class="trainer-info">
+            <div class="admin-av">${initials}</div>
+            <div class="trainer-info-text">
+              <div class="name">${escHtml(name)}</div>
+              <div class="email">${escHtml(email)}</div>
             </div>
           </div>
-        </div>
-      </td>
-    </tr>`;
+        </td>
+        <td style="color:var(--tm);font-size:.82rem;">${escHtml(cat)}</td>
+        <td>${memberBadge}</td>
+        <td>${statusBadge}</td>
+        <td style="color:var(--tm);font-size:.82rem;">${joined}</td>
+        <td>
+          <div style="display:flex;align-items:center;">
+            ${quickApproveBtn}
+            <div class="action-wrap">
+              <button class="action-btn">Actions ▾</button>
+              <div class="action-menu">
+                ${!isApproved ? `<button onclick="approveTrainer('${id}', '${safeName}')">✅ Approve Trainer</button>` : ''}
+                ${!isRejected ? `<button onclick="rejectTrainer('${id}', '${safeName}')">❌ Reject Trainer</button>` : ''}
+                <button onclick="openPlanModal('${id}', '${safeName}', '${mt}')">✏️ Change Plan</button>
+                <button onclick="toggleSuspend('${id}', ${isSuspended})">${isSuspended ? '✅ Reactivate' : '⏸️ Suspend'}</button>
+                <div class="separator"></div>
+                <button class="danger" onclick="deleteTrainer('${id}', '${safeName}')">🗑️ Delete Account</button>
+              </div>
+            </div>
+          </div>
+        </td>
+      </tr>`;
+    } catch (rowErr) {
+      console.error('[Admin] Table row render fault:', rowErr, t);
+      return `<tr><td colspan="6" style="color:#f87171;font-size:0.8rem;">⚠️ Invalid profile record (${escHtml(t ? (t.email || t.id) : 'unknown')})</td></tr>`;
+    }
   }).join('');
 
   renderPagination(total);
