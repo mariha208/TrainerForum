@@ -27,16 +27,41 @@ async function initPostsFeed() {
   if (eventsContainer) renderSkeletonLoaders(eventsContainer, 3);
   if (blogContainer) renderSkeletonLoaders(blogContainer, 3);
 
-  try {
-    const res = await fetch(POSTS_BACKEND_API);
-    if (res.ok) {
-      const data = await res.json();
-      if (Array.isArray(data) && data.length > 0) {
-        cachedPosts = data;
+  // Fetch with retry (Render free tier can be slow to wake up)
+  let attempts = 0;
+  const maxAttempts = 3;
+
+  while (attempts < maxAttempts) {
+    attempts++;
+    try {
+      console.log(`[PostsFeed] Fetching posts... attempt ${attempts}`);
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 15000); // 15s timeout per attempt
+
+      const res = await fetch(POSTS_BACKEND_API, { signal: controller.signal });
+      clearTimeout(timeoutId);
+
+      if (res.ok) {
+        const data = await res.json();
+        console.log(`[PostsFeed] API returned ${data.length} posts`);
+        if (Array.isArray(data) && data.length > 0) {
+          cachedPosts = data;
+          // Log unique categories found for debugging
+          const cats = [...new Set(data.map(p => p.category))];
+          console.log('[PostsFeed] Categories in response:', cats);
+        }
+        break; // success — stop retrying
+      } else {
+        console.warn(`[PostsFeed] API responded with HTTP ${res.status}`);
+      }
+    } catch (err) {
+      if (err.name === 'AbortError') {
+        console.warn(`[PostsFeed] Attempt ${attempts} timed out. ${attempts < maxAttempts ? 'Retrying...' : 'Giving up.'}`);
+      } else {
+        console.warn(`[PostsFeed] Attempt ${attempts} failed: ${err.message}`);
+        break; // non-timeout error — don't retry
       }
     }
-  } catch (err) {
-    console.warn('[PostsFeed] Failed to fetch posts API, using fallback:', err.message);
   }
 
   // Render categories
