@@ -33,7 +33,7 @@
       <li><a id="nl-dash" href="dashboard.html" target="_blank" style="display:none;">Dashboard</a></li>
     </ul>
     <div class="nav-r">
-      <button class="notif-btn" id="notif-btn" onclick="toggleNotif()">ðŸ””<span class="notif-dot"></span></button>
+      <button class="notif-btn" id="notif-btn" onclick="toggleNotif()"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg><span class="notif-dot"></span></button>
       <button class="btn btn-ghost btn-sm" id="btn-signup" onclick="openModal('register')">Sign Up</button>
       <button class="btn btn-gold btn-sm" id="btn-login" onclick="openModal('login')">Log In</button>
       <div class="user-avatar-wrap" id="user-avatar-wrap">
@@ -126,16 +126,16 @@
   <!-- Booking Modal -->
   <div id="booking-modal" aria-modal="true" role="dialog" aria-label="Book a Session"></div>
 
-  <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-       FIND TRAINERS PAGE
-  â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+  <!-- FIND TRAINERS PAGE -->
   <div id="p-browse" class="page active">
     <div class="browse-hero">
       <h1>Browse Expert Trainers</h1>
       <p>2,800+ verified professionals across 140+ specialisations</p>
       <div class="browse-bar">
-        <span style="color:#999">ðŸ”</span>
-        <input type="text" id="browse-search" placeholder="Search name, skill, topicâ€¦" oninput="applyFilters()">
+        <span style="color:#999;padding:0 6px; display:flex; align-items:center;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" x2="16.65" y1="21" y2="16.65"></line></svg>
+        </span>
+        <input type="text" id="browse-search" placeholder="Search name, skill, topic…" oninput="applyFilters()">
         <div class="h-sep"></div>
         <select id="f-cat" onchange="applyFilters()">
           <option value="">All Categories</option>
@@ -159,7 +159,7 @@
           <option value="In-Person">In-Person</option>
           <option value="Hybrid">Hybrid</option>
         </select>
-        <button class="btn btn-gold btn-sm" onclick="applyFilters()">Search</button>
+        <button class="btn btn-gold" onclick="applyFilters()">Search</button>
       </div>
     </div>
     <div class="browse-layout">

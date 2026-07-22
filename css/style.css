@@ -3246,26 +3246,31 @@ textarea {
     flex-shrink: 0;
   }
 
-  /* Ensure ham-btn is always clickable  nothing should sit above z-index 1001 except modals */
+  /* Ensure ham-btn is always clickable and visible on mobile */
   .ham-btn {
+    display: flex !important;
     z-index: 1001 !important;
     pointer-events: auto !important;
   }
 
-  .hero-search {
+  .hero-search,
+  .browse-bar {
     flex-direction: column !important;
     padding: 16px !important;
     gap: 12px !important;
     width: 100% !important;
+    box-sizing: border-box !important;
   }
 
-  .hero-search input, .hero-search select, .hero-search button {
+  .hero-search input, .hero-search select, .hero-search button,
+  .browse-bar input, .browse-bar select, .browse-bar button {
     width: 100% !important;
     max-width: 100% !important;
     box-sizing: border-box !important;
   }
 
-  .hero-search .h-sep {
+  .hero-search .h-sep,
+  .browse-bar .h-sep {
     display: none !important;
   }
 
