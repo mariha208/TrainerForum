@@ -1,9 +1,15 @@
 'use strict';
 
-// ── DATA ──────────────────────────────────────────────────────────────────────
-const TRAINERS = [];
-if (typeof window !== 'undefined') {
-  window.TRAINERS = TRAINERS;
+// ── API ENDPOINT CONFIGURATION ─────────────────────────────────────────────
+const API_BASE_URL = (typeof process !== 'undefined' && process.env && process.env.NEXT_PUBLIC_API_URL)
+  ? process.env.NEXT_PUBLIC_API_URL
+  : (typeof window !== 'undefined' && window.location && window.location.hostname === 'localhost' && window.location.port === '5000'
+      ? `${window.location.origin}/api`
+      : 'https://trainerforum.onrender.com/api');
+
+// ── DATA GLOBAL ─────────────────────────────────────────────────────────────
+if (typeof window !== 'undefined' && typeof window.TRAINERS === 'undefined') {
+  window.TRAINERS = [];
 }
 
 // ── MODAL BRIDGE ─────────────────────────────────────────────────────────────
@@ -63,11 +69,9 @@ function applyConditionalHeaderLogic() {
 
 // ── SYNC ENGINE: STREAM MONGODB LIVE DATA ROWS ──────────────────────────
 async function fetchTrainerData() {
-  const SERVER_ORIGIN = (typeof process !== 'undefined' && process.env && process.env.NEXT_PUBLIC_API_URL)
-    ? process.env.NEXT_PUBLIC_API_URL
-    : (typeof window !== 'undefined' && window.location && window.location.origin ? window.location.origin : '');
   const endpoints = [
-    `${SERVER_ORIGIN}/api/trainers`,
+    `${API_BASE_URL}/trainers`,
+    'https://trainerforum.onrender.com/api/trainers',
     '/api/trainers',
     'data.json'
   ];
@@ -99,7 +103,7 @@ function subscribeToTrainers() {
       if (!grid) return;
 
       grid.innerHTML = '';
-      TRAINERS.length = 0;
+      if (typeof window.TRAINERS !== 'undefined') window.TRAINERS.length = 0;
 
       if (!data) {
         grid.innerHTML = `

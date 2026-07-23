@@ -4,14 +4,17 @@
 ═══════════════════════════════════════════════════ */
 'use strict';
 
-const SERVER_ORIGIN = (typeof process !== 'undefined' && process.env && process.env.NEXT_PUBLIC_API_URL)
+const API_BASE_URL = (typeof process !== 'undefined' && process.env && process.env.NEXT_PUBLIC_API_URL)
   ? process.env.NEXT_PUBLIC_API_URL
-  : (typeof window !== 'undefined' && window.location && window.location.origin ? window.location.origin : '');
+  : (typeof window !== 'undefined' && window.location && window.location.hostname === 'localhost' && window.location.port === '5000'
+      ? `${window.location.origin}/api`
+      : 'https://trainerforum.onrender.com/api');
 
-const API_BASE = `${SERVER_ORIGIN}/api/users`;
-const POSTS_API_BASE = `${SERVER_ORIGIN}/api/posts`;
-const NOTIFS_API_BASE = `${SERVER_ORIGIN}/api/notifications`;
-const UPLOAD_API_BASE = `${SERVER_ORIGIN}/api/upload-image`;
+const SERVER_ORIGIN = API_BASE_URL.replace(/\/api\/?$/, '');
+const API_BASE = `${API_BASE_URL}/users`;
+const POSTS_API_BASE = `${API_BASE_URL}/posts`;
+const NOTIFS_API_BASE = `${API_BASE_URL}/notifications`;
+const UPLOAD_API_BASE = `${API_BASE_URL}/upload-image`;
 
 let allTrainers = [];      // All fetched trainers (raw)
 let filteredTrainers = []; // After filters applied
@@ -121,7 +124,7 @@ async function loadTrainers() {
   try {
     const headers = getAdminAuthHeaders();
     const primaryUrl = `${API_BASE}?role=trainer&includeHidden=true`;
-    const fallbackUrl = `${SERVER_ORIGIN}/api/trainers?includeHidden=true`;
+    const fallbackUrl = `${API_BASE_URL}/trainers?includeHidden=true`;
     
     let res = await fetch(primaryUrl, { headers });
     if (!res.ok) {
