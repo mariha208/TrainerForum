@@ -2109,7 +2109,7 @@ section {
 }
 
 /* ══ TRAINER MODAL ══ */
-/* ── 1. MODAL Z-INDEX & OVERLAY STACKING ── */
+/* ── 1. MODAL OVERLAY BACKDROP ── */
 #booking-modal,
 #book-session-modal,
 .booking-modal-overlay,
@@ -2124,12 +2124,16 @@ section {
   left: 0 !important;
   width: 100vw !important;
   height: 100vh !important;
-  z-index: 999999 !important; /* Higher than sticky header */
-  background: rgba(0, 0, 0, 0.75) !important;
+  z-index: 999999 !important;
+  background: rgba(0, 0, 0, 0.8) !important;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   display: none;
-  align-items: center !important;
   justify-content: center !important;
-  padding-top: 60px !important; /* Ensures clearance from top header area */
+  align-items: flex-start !important; /* Starts content at the top so it scrolls downwards */
+  padding: 40px 16px !important;
+  overflow-y: auto !important; /* Enables vertical scrolling when content exceeds viewport */
+  -webkit-overflow-scrolling: touch !important; /* Smooth scroll on mobile safari */
   box-sizing: border-box !important;
 }
 
@@ -2145,19 +2149,21 @@ section {
   display: flex !important;
 }
 
-/* ── 2. MODAL CARD CONTAINER ── */
+/* ── 2. INNER MODAL CARD CONTAINER ── */
 .modal-content,
 .modal-card,
+.trainer-profile-modal,
 .booking-modal,
 .bpm-box,
 .tmodal-box,
 .modal-box,
 .tpm-box {
   position: relative !important;
+  width: 100% !important;
+  max-width: 900px !important;
+  max-height: none !important; /* Remove fixed height restrictions */
+  overflow: visible !important;
   margin: auto !important;
-  max-height: 90vh !important;
-  overflow-y: auto !important;
-  padding-top: 24px !important;
   box-sizing: border-box !important;
 }
 
