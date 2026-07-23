@@ -194,7 +194,8 @@
     .staircase-container {
       position: relative;
       margin-top: 40px;
-      padding-top: 180px; /* Provides room for 5-step desktop ascension */
+      padding-top: 200px; /* Headroom for 5-step ascension */
+      padding-bottom: 60px; /* Space below baseline line */
     }
 
     .stair-line-bg {
@@ -205,15 +206,16 @@
       .stair-line-bg {
         display: block;
         position: absolute;
-        bottom: 50px;
-        left: 4%;
-        right: 4%;
+        /* Line sits just below the bottom of Card 01 (stair-lvl-1) */
+        bottom: 24px;
+        left: 2%;
+        right: 2%;
         height: 3px;
         background: linear-gradient(90deg, 
-          rgba(203, 213, 225, 0.4) 0%, 
-          rgba(58, 107, 224, 0.5) 25%, 
-          rgba(11, 27, 50, 0.6) 50%, 
-          rgba(201, 162, 75, 0.8) 75%, 
+          rgba(203, 213, 225, 0.5) 0%, 
+          rgba(58, 107, 224, 0.6) 25%, 
+          rgba(11, 27, 50, 0.7) 50%, 
+          rgba(201, 162, 75, 0.85) 75%, 
           rgba(201, 162, 75, 1) 100%);
         border-radius: 4px;
         z-index: 0;
@@ -225,6 +227,7 @@
       grid-template-columns: repeat(5, 1fr);
       gap: 1.5rem;
       align-items: flex-end;
+      padding-bottom: 24px; /* Keeps Card 01 bottom edge above baseline line */
       position: relative;
       z-index: 2;
     }
@@ -232,12 +235,13 @@
     .stair-card {
       background: #FFFFFF;
       border-radius: 20px;
-      padding: 24px 20px 28px;
+      padding: 24px 20px 24px;
       position: relative;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      min-height: 480px;
+      min-height: 520px;  /* tall enough so bullets never clip out */
+      padding-bottom: 20px;
       z-index: 1;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
       border: 1px solid var(--line-dark, rgba(11, 27, 50, 0.1));
@@ -307,12 +311,18 @@
       gap: 3px;
       padding: 8px;
       transition: transform 0.3s ease;
+      position: relative;
+      z-index: 5;
     }
 
+    /* Stars inside badges – default high-contrast white fill */
     .stair-icon svg {
-      width: 16px;
-      height: 16px;
+      width: 14px;
+      height: 14px;
       flex-shrink: 0;
+      fill: currentColor;
+      z-index: 5;
+      position: relative;
     }
 
     /* Level-Specific Themes */
@@ -325,9 +335,11 @@
       color: #64748B;
       box-shadow: 0 4px 14px rgba(100, 116, 139, 0.15);
     }
+    /* Level 1 single star – slightly larger for lone star */
     .stair-lvl-1 .stair-icon svg {
-      width: 24px;
-      height: 24px;
+      width: 22px;
+      height: 22px;
+      color: #64748B;
     }
 
     /* Level 2: Blue circle / 2 stars */
@@ -340,6 +352,7 @@
       color: #FFFFFF;
       box-shadow: 0 6px 18px rgba(36, 85, 201, 0.28);
     }
+    .stair-lvl-2 .stair-icon svg { fill: #FFFFFF; color: #FFFFFF; }
     .stair-lvl-2 .step-lvl-tag {
       background: rgba(36, 85, 201, 0.1);
       color: var(--royal);
@@ -355,6 +368,7 @@
       color: #FFFFFF;
       box-shadow: 0 6px 20px rgba(11, 27, 50, 0.32);
     }
+    .stair-lvl-3 .stair-icon svg { fill: #FFFFFF; color: #FFFFFF; }
     .stair-lvl-3 .step-lvl-tag {
       background: rgba(11, 27, 50, 0.12);
       color: var(--navy);
@@ -370,6 +384,8 @@
       color: var(--navy);
       box-shadow: 0 6px 22px rgba(201, 162, 75, 0.38);
     }
+    /* Level 4 stars: deep navy for contrast on gold badge */
+    .stair-lvl-4 .stair-icon svg { fill: #0B1B32; color: #0B1B32; }
     .stair-lvl-4 .step-lvl-tag {
       background: rgba(201, 162, 75, 0.15);
       color: #B45309;
@@ -395,6 +411,8 @@
       color: var(--navy);
       box-shadow: 0 0 28px rgba(234, 179, 8, 0.7);
     }
+    /* Level 5 stars: deep navy on yellow-gold badge for maximum contrast */
+    .stair-lvl-5 .stair-icon svg { fill: #0B1B32; color: #0B1B32; }
 
     /* Typography & Text */
     .stair-title {
@@ -995,6 +1013,7 @@
       <li><a id="nl-cats" href="certificates.html" class="active">Certificates</a></li>
       <li><a id="nl-pricing" href="news-events.html">News & Events</a></li>
       <li><a id="nl-blog" href="blog.html">Blog</a></li>
+      <li><a id="nl-contact" href="contact.html">Contact</a></li>
       <li><a id="nl-dash" href="dashboard.html" target="_blank" style="display:none;">Dashboard</a></li>
     </ul>
     <div class="nav-r">

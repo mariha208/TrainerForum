@@ -22,6 +22,7 @@
     <li><a href="categories.html" ${currentPage==='categories.html'?'class="active"':''}>Categories</a></li>
     <li><a href="pricing.html" ${currentPage==='pricing.html'?'class="active"':''}>Pricing</a></li>
     <li><a href="blog.html" ${currentPage==='blog.html'?'class="active"':''}>Blog</a></li>
+    <li><a href="contact.html" ${currentPage==='contact.html'?'class="active"':''}>Contact</a></li>
   </ul>
   <div class="nav-r">
     <button class="btn btn-ghost btn-sm" onclick="window.location.href='index.html'">Sign Up</button>
@@ -40,6 +41,7 @@
   <a href="categories.html">Categories</a>
   <a href="pricing.html">Pricing</a>
   <a href="blog.html">Blog</a>
+  <a href="contact.html">Contact</a>
   <div style="margin-top:30px;display:flex;flex-direction:column;gap:12px;">
     <button class="btn btn-ghost" onclick="toggleMobileMenu();window.location.href='index.html'">Sign Up</button>
     <button class="btn btn-gold" onclick="toggleMobileMenu();window.location.href='index.html'">Log In</button>
@@ -162,6 +164,7 @@
             <ul class="footer-links">
               <li><a href="about.html">About Us</a></li>
               <li><a href="blog.html">Blog</a></li>
+              <li><a href="contact.html">Contact</a></li>
               <li><a href="press.html">Press</a></li>
               <li><a href="careers.html">Careers</a></li>
               <li><a href="privacy-policy.html">Privacy Policy</a></li>
