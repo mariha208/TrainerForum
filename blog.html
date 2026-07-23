@@ -937,6 +937,7 @@
       <li><a id="nl-cats" href="certificates.html">Certificates</a></li>
       <li><a id="nl-pricing" href="news-events.html">News & Events</a></li>
       <li><a id="nl-blog" href="blog.html" class="active">Blog</a></li>
+      <li><a id="nl-contact" href="contact.html">Contact</a></li>
       <li><a id="nl-dash" href="dashboard.html" target="_blank" style="display:none;">Dashboard</a></li>
     </ul>
     <div class="nav-r">
@@ -997,6 +998,7 @@
     <a href="certificates.html">Certificates</a>
     <a href="news-events.html">News & Events</a>
     <a href="blog.html">Blog</a>
+    <a href="contact.html">Contact</a>
     <a href="dashboard.html" id="mn-dash" style="display:none; color:var(--gold);">Dashboard</a>
 
     <div class="mn-actions" style="margin-top:30px; display:flex; flex-direction:column; gap:12px;">
@@ -1009,9 +1011,11 @@
 
   <!-- Notification Panel -->
   <div class="notif-panel" id="notif-panel">
-    <div class="notif-header" style="display:flex; justify-content:space-between; align-items:center; padding:16px 18px; border-bottom:1px solid rgba(255,255,255,0.1);">
+    <div class="notif-header"
+      style="display:flex; justify-content:space-between; align-items:center; padding:16px 18px; border-bottom:1px solid rgba(255,255,255,0.1);">
       <h4 style="margin:0; font-size:1rem; color:#ffffff; font-weight:600;">Notifications</h4>
-      <a href="javascript:void(0)" onclick="window.markAllNotificationsRead(event)" style="font-size:.85rem; color:#B49164; text-decoration:none; font-weight:600;">Mark all read</a>
+      <a href="javascript:void(0)" onclick="window.markAllNotificationsRead(event)"
+        style="font-size:.85rem; color:#B49164; text-decoration:none; font-weight:600;">Mark all read</a>
     </div>
     <div style="padding: 24px; text-align: center; color: #8899a6; font-size: 0.9rem;">Loading notifications...</div>
   </div>
@@ -1032,18 +1036,23 @@
           The Forum Journal</span>
         <h1 style="color: #fff; font-size: clamp(2.4rem, 5vw, 4rem); font-weight: 600; margin-bottom: 22px;">Ideas on
           coaching, worth <span class="gld">showing up</span> for.</h1>
-        <p style="color: rgba(250, 246, 236, 0.75); font-size: 1.1rem; max-width: 620px; margin: 0 auto;">Practical guidance for trainers building a practice and clients choosing who to trust with their goals.</p>
+        <p style="color: rgba(250, 246, 236, 0.75); font-size: 1.1rem; max-width: 620px; margin: 0 auto;">Practical
+          guidance for trainers building a practice and clients choosing who to trust with their goals.</p>
       </div>
     </div>
   </section>
 
   <main class="blog-main" style="max-width:1240px; margin:0 auto; padding:60px 32px;">
     <div class="section-head" style="margin-bottom:28px;">
-      <span class="kicker" style="color:var(--gold); font-size:0.8rem; font-weight:700; text-transform:uppercase; letter-spacing:0.1em;">The Forum Journal</span>
-      <h2 style="font-family:'Fraunces',serif; font-size:2rem; color:#101826; font-weight:700;">Latest Articles &amp; Blog Posts</h2>
+      <span class="kicker"
+        style="color:var(--gold); font-size:0.8rem; font-weight:700; text-transform:uppercase; letter-spacing:0.1em;">The
+        Forum Journal</span>
+      <h2 style="font-family:'Fraunces',serif; font-size:2rem; color:#101826; font-weight:700;">Latest Articles &amp;
+        Blog Posts</h2>
     </div>
 
-    <div class="blog-grid" id="dynamic-blog-feed" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(320px, 1fr)); gap:24px;">
+    <div class="blog-grid" id="dynamic-blog-feed"
+      style="display:grid; grid-template-columns:repeat(auto-fill, minmax(320px, 1fr)); gap:24px;">
       <!-- Dynamic Blog Posts Rendered Here by js/posts-feed.js -->
     </div>
   </main>

@@ -1011,6 +1011,20 @@ window.openBookingModal = async function (tid) {
   modalEl.style.display = 'flex';
   document.body.style.overflow = 'hidden';
 
+  // Automatically close mobile menu drawer if open
+  const mn = document.getElementById('mobile-nav');
+  if (mn && mn.classList.contains('open')) {
+    if (typeof window.toggleMobileMenu === 'function') {
+      window.toggleMobileMenu();
+    } else {
+      mn.classList.remove('open');
+      const ham = document.getElementById('ham-btn');
+      const overlay = document.getElementById('nav-overlay');
+      if (ham) ham.classList.remove('open');
+      if (overlay) overlay.classList.remove('open');
+    }
+  }
+
   // 2. Show a clean, centered loading spinner/skeleton loader inside the modal body immediately
   modalEl.innerHTML = `
   <div class="bpm-box" style="min-height: 380px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative;">

@@ -52,33 +52,31 @@
 .modal-close,
 .close-btn,
 .popup-close-button {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  z-index: 1050;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #FFFFFF !important;
-  font-size: 1.1rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.25s ease;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
-  line-height: 1;
+  position: absolute !important;
+  top: 12px !important;
+  right: 12px !important;
+  z-index: 100000 !important;
+  width: 36px !important;
+  height: 36px !important;
+  background: #1E293B !important; /* Dark slate background */
+  color: #FFFFFF !important; /* Bright white icon */
+  border: 1px solid #334155 !important;
+  border-radius: 50% !important;
+  font-size: 20px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  line-height: 1 !important;
+  transition: all 0.2s ease;
 }
 .tpm-close:hover,
 .modal-close:hover,
 .close-btn:hover,
 .popup-close-button:hover {
-  background: rgba(239, 68, 68, 0.8) !important;
+  background: rgba(239, 68, 68, 0.85) !important;
+  border-color: rgba(239, 68, 68, 0.9) !important;
   color: #FFFFFF !important;
-  border-color: rgba(239, 68, 68, 0.9);
   transform: rotate(90deg) scale(1.08);
   box-shadow: 0 4px 20px rgba(239, 68, 68, 0.4);
 }
@@ -1495,21 +1493,29 @@
   max-width: 500px;
 }
 
-/* ── BOOKING MODAL ── */
-#booking-modal {
-  position: fixed;
-  inset: 0;
-  z-index: 1200;
-  background: rgba(2, 8, 20, 0.94);
+/* ── BOOKING MODAL (STACKING & FOREGROUND DISPLAY) ── */
+#booking-modal,
+#book-session-modal,
+.booking-modal-overlay {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 99999 !important; /* Ensures it opens on top of everything */
+  background: rgba(0, 0, 0, 0.75) !important;
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   display: none;
-  align-items: center;
-  justify-content: center;
+  align-items: center !important;
+  justify-content: center !important;
   padding: 20px;
   animation: tmodalFadeIn 0.3s ease;
+  box-sizing: border-box !important;
 }
-#booking-modal.open { display: flex; }
+#booking-modal.open,
+#book-session-modal.open,
+.booking-modal-overlay.open { display: flex !important; }
 .bpm-box {
   width: 90vw;
   max-width: 900px;
