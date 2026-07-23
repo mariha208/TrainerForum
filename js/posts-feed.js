@@ -4,11 +4,11 @@
 ═══════════════════════════════════════════════════════════════════════════ */
 'use strict';
 
-// SERVER_ORIGIN: set once on window so multiple scripts sharing the global scope
-// never cause a "already declared" SyntaxError.
+// Set the backend origin ONCE on window — safe when auth-modal.js or other
+// scripts have already set it. NO local const alias here (avoids duplicate
+// const declaration crash when multiple scripts share the global scope).
 window.SERVER_ORIGIN = window.SERVER_ORIGIN || 'https://trainerforum.onrender.com';
-const SERVER_ORIGIN    = window.SERVER_ORIGIN;
-const POSTS_BACKEND_API = `${SERVER_ORIGIN}/api/posts`;
+const POSTS_BACKEND_API = `${window.SERVER_ORIGIN}/api/posts`;
 
 let cachedPosts = [];
 

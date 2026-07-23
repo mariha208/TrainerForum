@@ -8,12 +8,11 @@
  * @param {number} amount - Amount to charge the user (in INR)
  */
 window.SERVER_ORIGIN = window.SERVER_ORIGIN || 'https://trainerforum.onrender.com';
-const SERVER_ORIGIN = window.SERVER_ORIGIN;
 
 async function handlePayment(amount) {
     try {
         // 1. Call your backend API to create an order
-        const response = await fetch(`${SERVER_ORIGIN}/api/payments/create-order`, {
+        const response = await fetch(`${window.SERVER_ORIGIN}/api/payments/create-order`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -72,7 +71,7 @@ async function handlePayment(amount) {
  */
 async function verifyPaymentSignature(paymentResponse) {
     try {
-        const response = await fetch(`${SERVER_ORIGIN}/api/payments/verify`, {
+        const response = await fetch(`${window.SERVER_ORIGIN}/api/payments/verify`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
