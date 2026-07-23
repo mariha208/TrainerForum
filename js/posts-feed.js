@@ -4,14 +4,10 @@
 ═══════════════════════════════════════════════════════════════════════════ */
 'use strict';
 
-// Safely resolve SERVER_ORIGIN — guard against re-declaration when auth-modal.js
-// or another script has already defined it in the same global scope.
-if (typeof SERVER_ORIGIN === 'undefined') {
-  // eslint-disable-next-line no-var
-  var SERVER_ORIGIN = (typeof process !== 'undefined' && process.env && process.env.NEXT_PUBLIC_API_URL)
-    ? process.env.NEXT_PUBLIC_API_URL
-    : (typeof window !== 'undefined' && window.location && window.location.origin ? window.location.origin : '');
-}
+// SERVER_ORIGIN: set once on window so multiple scripts sharing the global scope
+// never cause a "already declared" SyntaxError.
+window.SERVER_ORIGIN = window.SERVER_ORIGIN || 'https://trainerforum.onrender.com';
+const SERVER_ORIGIN    = window.SERVER_ORIGIN;
 const POSTS_BACKEND_API = `${SERVER_ORIGIN}/api/posts`;
 
 let cachedPosts = [];

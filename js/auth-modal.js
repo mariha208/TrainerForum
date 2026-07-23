@@ -5,9 +5,8 @@
 
 'use strict';
 
-const SERVER_ORIGIN = (typeof process !== 'undefined' && process.env && process.env.NEXT_PUBLIC_API_URL)
-  ? process.env.NEXT_PUBLIC_API_URL
-  : (typeof window !== 'undefined' && window.location && window.location.origin ? window.location.origin : '');
+window.SERVER_ORIGIN = window.SERVER_ORIGIN || 'https://trainerforum.onrender.com';
+const SERVER_ORIGIN = window.SERVER_ORIGIN;
 
 function openAuthModal(mode) {
   let modal = document.getElementById('auth-modal');

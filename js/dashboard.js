@@ -8,9 +8,8 @@
 // ═══════════════════════════════════════════════════
 // MONGODB BACKEND CONFIGURATION
 // ═══════════════════════════════════════════════════
-const SERVER_ORIGIN = (typeof process !== 'undefined' && process.env && process.env.NEXT_PUBLIC_API_URL)
-  ? process.env.NEXT_PUBLIC_API_URL
-  : (typeof window !== 'undefined' && window.location && window.location.origin ? window.location.origin : '');
+window.SERVER_ORIGIN = window.SERVER_ORIGIN || 'https://trainerforum.onrender.com';
+const SERVER_ORIGIN = window.SERVER_ORIGIN;
 const API_BASE_URL = `${SERVER_ORIGIN}/api/users`;
 
 // Get the logged-in user's real MongoDB _id from localStorage
