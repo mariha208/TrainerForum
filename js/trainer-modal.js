@@ -1002,15 +1002,63 @@ window.closeTPMLightbox = function () {
 // ══════════════════════════════════════════════════════════════════════════════
 // PREMIUM BOOKING MODAL
 // ══════════════════════════════════════════════════════════════════════════════
-window.openBookingModal = function (tid) {
-  const TRAINERS = window.TRAINERS || [];
-  const t = TRAINERS.find(x => x.id === tid) || window.currentTrainer;
-  if (!t) return;
+window.openBookingModal = async function (tid) {
+  const modalEl = document.getElementById('booking-modal') || document.getElementById('book-session-modal');
+  if (!modalEl) return;
 
+  // 1. Instantly display modal container
+  modalEl.classList.add('open');
+  modalEl.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+
+  // 2. Show a clean, centered loading spinner/skeleton loader inside the modal body immediately
+  modalEl.innerHTML = `
+  <div class="bpm-box" style="min-height: 380px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative;">
+    <button class="tpm-close" onclick="closeBookingModal()" aria-label="Close modal">&times;</button>
+    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px; text-align: center;">
+      <div style="width: 50px; height: 50px; border: 4px solid rgba(197, 160, 89, 0.2); border-top-color: #C5A059; border-radius: 50%; animation: bpmSpin 0.8s linear infinite;"></div>
+      <p style="margin-top: 20px; color: rgba(237, 242, 247, 0.85); font-size: 0.95rem; font-family: 'Poppins', sans-serif; font-weight: 500;">Loading Session Details...</p>
+    </div>
+  </div>
+  <style>
+    @keyframes bpmSpin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>`;
+
+  // 3. Execute fetch or async trainer resolution
+  let t = null;
+  try {
+    const res = await fetch(`/api/trainers/${tid}`);
+    if (res.ok) {
+      const data = await res.json();
+      t = data.trainer || data;
+    }
+  } catch (e) {
+    // API fetch fallback to local store
+  }
+
+  if (!t) {
+    const TRAINERS = window.TRAINERS || [];
+    t = TRAINERS.find(x => x.id === tid) || window.currentTrainer;
+  }
+
+  if (!t) {
+    modalEl.innerHTML = `
+    <div class="bpm-box" style="padding: 40px; text-align: center; color: #fff; position: relative;">
+      <button class="tpm-close" onclick="closeBookingModal()">&times;</button>
+      <h3 style="color:#C5A059; margin-bottom:12px;">Trainer Not Found</h3>
+      <p>Could not load session details. Please try again later.</p>
+    </div>`;
+    return;
+  }
+
+  // 4. Once fetched, replace spinner content with active booking form data smoothly
   window.bookingState.trainerId = tid;
   window.bookingState.selectedDay = null;
   window.bookingState.selectedTime = null;
-  window.bookingState.selectedPkg = t.pn;
+  window.bookingState.selectedPkg = t.pn || 5000;
   window.bookingState.selectedPkgName = 'Introductory Session';
 
   // ── Resolve the booked trainer's availability ──
@@ -1028,9 +1076,9 @@ window.openBookingModal = function (tid) {
   window.bookingState.trainerAvailability = _trainerAvailability;
 
   const basePkgs = t.packages && t.packages.length > 0 ? t.packages : [
-    { name: 'Introductory Session', desc: '60-min 1-on-1', price: t.pn },
-    { name: 'Deep Dive Programme', desc: '4 weeks · 8 sessions', price: t.pn * 12 },
-    { name: 'Monthly Retainer', desc: '8 sessions/month', price: t.pn * 20 },
+    { name: 'Introductory Session', desc: '60-min 1-on-1', price: t.pn || 5000 },
+    { name: 'Deep Dive Programme', desc: '4 weeks · 8 sessions', price: (t.pn || 5000) * 12 },
+    { name: 'Monthly Retainer', desc: '8 sessions/month', price: (t.pn || 5000) * 20 },
   ];
   const services = t.services && t.services.length > 0 ? t.services.map(s => ({
     name: s.name,
@@ -1043,7 +1091,7 @@ window.openBookingModal = function (tid) {
     ? `<img src="${t.photoUrl}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`
     : t.av;
 
-  document.getElementById('booking-modal').innerHTML = `
+  modalEl.innerHTML = `
   <div class="bpm-box">
     <!-- Header -->
     <div class="bpm-header">
@@ -1052,10 +1100,10 @@ window.openBookingModal = function (tid) {
         <div class="bpm-trainer-mini">
           <div>
             <div style="font-weight:700;font-size:0.9rem;color:rgba(237,242,247,0.95)">${t.name}</div>
-            <div style="font-size:0.74rem;color:rgba(237,242,247,0.45)">${fmtINR(t.pn)}/hr</div>
+            <div style="font-size:0.74rem;color:rgba(237,242,247,0.45)">${fmtINR(t.pn || 5000)}/hr</div>
           </div>
         </div>
-        <button class="tpm-close" style="position:static;flex-shrink:0" onclick="closeBookingModal()">✕</button>
+        <button class="tpm-close" style="position:static;flex-shrink:0" onclick="closeBookingModal()">&times;</button>
       </div>
     </div>
 
@@ -1146,7 +1194,7 @@ window.openBookingModal = function (tid) {
         </div>
         <div class="bpm-total">
           <div class="bpm-total-label">Total Amount</div>
-          <div class="bpm-total-amt" id="bpm-total-amt">${fmtINR(t.pn)}</div>
+          <div class="bpm-total-amt" id="bpm-total-amt">${fmtINR(t.pn || 5000)}</div>
         </div>
         <button class="tpm-btn tpm-btn-gold"
           style="width:100%;justify-content:center;margin-top:16px;padding:14px;font-size:0.95rem"
@@ -1166,13 +1214,15 @@ window.openBookingModal = function (tid) {
   </div><!-- /bpm-box -->
   `;
 
-  document.getElementById('booking-modal').classList.add('open');
-  document.body.style.overflow = 'hidden';
   renderBPMCalendar();
 };
 
 window.closeBookingModal = function () {
-  document.getElementById('booking-modal').classList.remove('open');
+  const modalEl = document.getElementById('booking-modal') || document.getElementById('book-session-modal');
+  if (modalEl) {
+    modalEl.classList.remove('open');
+    modalEl.style.display = 'none';
+  }
   document.body.style.overflow = '';
 };
 

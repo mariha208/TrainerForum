@@ -119,9 +119,10 @@ document.addEventListener('DOMContentLoaded', function () {
     <a href="index.html">Home</a>
     <a href="about.html">About</a>
     <a href="find-trainers.html">Find Trainers</a>
-    <a href="certificates.html">Certificates</a>
-    <a href="news-events.html">News & Events</a>
+    <a href="certificate.html">Certificates</a>
+    <a href="news-events.html">News &amp; Events</a>
     <a href="blog.html">Blog</a>
+    <a href="contact.html">Contact</a>
     <a href="dashboard.html" id="mn-dash" style="display:none; color:var(--gold);">Dashboard</a>
 
     <div class="mn-actions" style="margin-top:30px; display:flex; flex-direction:column; gap:12px;">

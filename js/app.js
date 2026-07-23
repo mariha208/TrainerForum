@@ -1472,3 +1472,11 @@ if (typeof document !== 'undefined') {
       }
   });
 }
+
+/* -- Book Session Trigger Handler -- */
+window.handleBookSession = function (trainerId) {
+  if (typeof window.openBookingModal === 'function') {
+    return window.openBookingModal(trainerId);
+  }
+};
+

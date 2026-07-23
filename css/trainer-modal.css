@@ -50,29 +50,31 @@
 /* ── CLOSE BUTTON ── */
 .tpm-close {
   position: absolute;
-  top: 20px;
-  right: 20px;
-  z-index: 100;
-  width: 44px;
-  height: 44px;
+  top: 16px;
+  right: 16px;
+  z-index: 1050;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
-  background: rgba(11, 27, 50, 0.85);
+  background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  color: rgba(237, 242, 247, 0.8);
-  font-size: 1.2rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #FFFFFF !important;
+  font-size: 1.1rem;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: all 0.25s ease;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  line-height: 1;
 }
 .tpm-close:hover {
-  background: rgba(252, 129, 129, 0.2);
-  color: #FC8181;
-  border-color: rgba(252, 129, 129, 0.4);
-  transform: rotate(90deg) scale(1.1);
+  background: rgba(239, 68, 68, 0.8);
+  color: #FFFFFF !important;
+  border-color: rgba(239, 68, 68, 0.9);
+  transform: rotate(90deg) scale(1.08);
+  box-shadow: 0 4px 20px rgba(239, 68, 68, 0.4);
 }
 
 /* ── COVER BANNER ── */
@@ -1722,20 +1724,25 @@
     top: 14px !important;
     right: 14px !important;
     z-index: 100000 !important;
-    width: 44px !important;
-    height: 44px !important;
+    width: 40px !important;
+    height: 40px !important;
     border-radius: 50% !important;
-    background: #0B1B32 !important;
-    border: 1.5px solid #C5A059 !important;
+    background: rgba(255, 255, 255, 0.12) !important;
+    border: 1.5px solid rgba(255, 255, 255, 0.25) !important;
     color: #FFFFFF !important;
-    font-size: 1.3rem !important;
+    font-size: 1.2rem !important;
     font-weight: 700 !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5) !important;
     pointer-events: auto !important;
     line-height: 1 !important;
+  }
+  .tpm-close:hover {
+    background: rgba(239, 68, 68, 0.85) !important;
+    border-color: rgba(239, 68, 68, 0.9) !important;
+    color: #FFFFFF !important;
   }
 }
 
