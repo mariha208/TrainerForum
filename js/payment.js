@@ -7,9 +7,12 @@
  * Handle the payment flow
  * @param {number} amount - Amount to charge the user (in INR)
  */
-const SERVER_ORIGIN = (typeof process !== 'undefined' && process.env && process.env.NEXT_PUBLIC_API_URL)
-  ? process.env.NEXT_PUBLIC_API_URL
-  : (typeof window !== 'undefined' && window.location && window.location.origin ? window.location.origin : '');
+if (typeof SERVER_ORIGIN === 'undefined') {
+  // eslint-disable-next-line no-var
+  var SERVER_ORIGIN = (typeof process !== 'undefined' && process.env && process.env.NEXT_PUBLIC_API_URL)
+    ? process.env.NEXT_PUBLIC_API_URL
+    : (typeof window !== 'undefined' && window.location && window.location.origin ? window.location.origin : '');
+}
 
 async function handlePayment(amount) {
     try {
