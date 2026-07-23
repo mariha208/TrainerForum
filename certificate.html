@@ -991,6 +991,105 @@
         gap: 30px;
       }
     }
+
+    /* ============================================================
+       CRITICAL STAIRCASE OVERRIDES — applied last to win cascade
+       ============================================================ */
+
+    /* 1. GRID → FLEX SO align-items:flex-end WORKS FOR BASELINE */
+    @media (min-width: 992px) {
+      .staircase-grid {
+        display: flex !important;
+        align-items: flex-end !important;
+        justify-content: center !important;
+        gap: 1.25rem !important;
+        padding-bottom: 44px !important; /* gap between cards bottom and baseline line */
+      }
+
+      /* Each card gets an explicit width inside flex so they stay equal */
+      .staircase-grid .stair-card {
+        flex: 1 1 0;
+        min-width: 0;
+      }
+
+      /* 2. STEP ELEVATIONS — Card 01 at baseline, ascending up-right */
+      .staircase-grid .stair-card:nth-child(1) { transform: translateY(0px)    !important; }
+      .staircase-grid .stair-card:nth-child(2) { transform: translateY(-40px)  !important; }
+      .staircase-grid .stair-card:nth-child(3) { transform: translateY(-80px)  !important; }
+      .staircase-grid .stair-card:nth-child(4) { transform: translateY(-120px) !important; }
+      .staircase-grid .stair-card:nth-child(5) { transform: translateY(-160px) !important; }
+
+      /* Keep hover offsets correct relative to resting position */
+      .staircase-grid .stair-card:nth-child(1):hover { transform: translateY(-8px)   scale(1.02) !important; }
+      .staircase-grid .stair-card:nth-child(2):hover { transform: translateY(-48px)  scale(1.02) !important; }
+      .staircase-grid .stair-card:nth-child(3):hover { transform: translateY(-88px)  scale(1.02) !important; }
+      .staircase-grid .stair-card:nth-child(4):hover { transform: translateY(-128px) scale(1.02) !important; }
+      .staircase-grid .stair-card:nth-child(5):hover { transform: translateY(-168px) scale(1.02) !important; }
+    }
+
+    /* 3. ICON CIRCLE — fixed 64×64, clips overflow so stars stay inside */
+    .stair-icon {
+      width: 64px  !important;
+      height: 64px !important;
+      border-radius: 50% !important;
+      overflow: hidden !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      flex-wrap: nowrap !important;
+      gap: 2px !important;
+      padding: 6px !important;
+      position: relative !important;
+      z-index: 5 !important;
+    }
+
+    /* Stars — uniform size, inherit badge color */
+    .stair-icon svg {
+      width: 12px  !important;
+      height: 12px !important;
+      flex-shrink: 0 !important;
+      display: block !important;
+      overflow: visible !important;
+    }
+
+    /* Level 1 lone star — scale up to fill the circle */
+    .stair-lvl-1 .stair-icon svg {
+      width: 20px !important;
+      height: 20px !important;
+    }
+
+    /* Level 2 & 3: white stars on coloured background */
+    .stair-lvl-2 .stair-icon svg,
+    .stair-lvl-3 .stair-icon svg {
+      fill: #FFFFFF !important;
+      color: #FFFFFF !important;
+    }
+
+    /* Level 4: navy stars on gold badge */
+    .stair-lvl-4 .stair-icon {
+      background: linear-gradient(135deg, #E7C878, #C9A24B) !important;
+    }
+    .stair-lvl-4 .stair-icon svg {
+      fill: #0B1B32 !important;
+      color: #0B1B32 !important;
+    }
+
+    /* Level 5: bright amber glow badge, navy stars */
+    .stair-lvl-5 .stair-icon {
+      background: linear-gradient(135deg, #FEF08A, #EAB308) !important;
+      box-shadow: 0 0 20px rgba(234, 179, 8, 0.6) !important;
+    }
+    .stair-lvl-5 .stair-icon svg {
+      fill: #0B1B32 !important;
+      color: #0B1B32 !important;
+    }
+
+    /* Also apply in-view animation correctly when cards are visible */
+    .staircase-grid .stair-card.in-view:nth-child(1) { opacity: 1 !important; transform: translateY(0px)    !important; }
+    .staircase-grid .stair-card.in-view:nth-child(2) { opacity: 1 !important; transform: translateY(-40px)  !important; }
+    .staircase-grid .stair-card.in-view:nth-child(3) { opacity: 1 !important; transform: translateY(-80px)  !important; }
+    .staircase-grid .stair-card.in-view:nth-child(4) { opacity: 1 !important; transform: translateY(-120px) !important; }
+    .staircase-grid .stair-card.in-view:nth-child(5) { opacity: 1 !important; transform: translateY(-160px) !important; }
   </style>
 
   <link rel="icon" type="image/svg+xml" href="img/logo.svg">
