@@ -4,14 +4,14 @@
 ═══════════════════════════════════════════════════ */
 'use strict';
 
-// ── API Endpoints ─────────────────────────────────────────────────────────────
-// The site frontend is hosted on GitHub Pages (static only).
-// All backend API calls MUST use the full Render server URL.
-// Relative paths like /api/posts will 404/405 on GitHub Pages.
-const API_BASE = 'https://trainerforum.onrender.com/api/users';
-const POSTS_API_BASE = 'https://trainerforum.onrender.com/api/posts';
-const NOTIFS_API_BASE = 'https://trainerforum.onrender.com/api/notifications';
-const UPLOAD_API_BASE = 'https://trainerforum.onrender.com/api/upload-image';
+const SERVER_ORIGIN = (typeof process !== 'undefined' && process.env && process.env.NEXT_PUBLIC_API_URL)
+  ? process.env.NEXT_PUBLIC_API_URL
+  : (typeof window !== 'undefined' && window.location && window.location.origin ? window.location.origin : '');
+
+const API_BASE = `${SERVER_ORIGIN}/api/users`;
+const POSTS_API_BASE = `${SERVER_ORIGIN}/api/posts`;
+const NOTIFS_API_BASE = `${SERVER_ORIGIN}/api/notifications`;
+const UPLOAD_API_BASE = `${SERVER_ORIGIN}/api/upload-image`;
 
 let allTrainers = [];      // All fetched trainers (raw)
 let filteredTrainers = []; // After filters applied
@@ -121,7 +121,7 @@ async function loadTrainers() {
   try {
     const headers = getAdminAuthHeaders();
     const primaryUrl = `${API_BASE}?role=trainer&includeHidden=true`;
-    const fallbackUrl = `https://trainerforum.onrender.com/api/trainers?includeHidden=true`;
+    const fallbackUrl = `${SERVER_ORIGIN}/api/trainers?includeHidden=true`;
     
     let res = await fetch(primaryUrl, { headers });
     if (!res.ok) {
@@ -365,7 +365,7 @@ async function approveTrainer(id, name) {
   if (!confirm(`Are you sure you want to approve trainer profile for "${name}"?`)) return;
   try {
     const headers = getAdminAuthHeaders();
-    const res = await fetch(`https://trainerforum.onrender.com/api/users/${id}/approve`, {
+    const res = await fetch(`${SERVER_ORIGIN}/api/users/${id}/approve`, {
       method: 'PATCH',
       headers
     });
@@ -388,7 +388,7 @@ async function rejectTrainer(id, name) {
   if (!confirm(`Are you sure you want to reject trainer profile for "${name}"?`)) return;
   try {
     const headers = getAdminAuthHeaders();
-    const res = await fetch(`https://trainerforum.onrender.com/api/users/${id}/reject`, {
+    const res = await fetch(`${SERVER_ORIGIN}/api/users/${id}/reject`, {
       method: 'PATCH',
       headers
     });

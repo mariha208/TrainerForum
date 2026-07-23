@@ -5,6 +5,11 @@
 
 'use strict';
 
+// ── API ORIGIN (relative on deploy, window.origin in browser) ─────────────
+const TDB_SERVER_ORIGIN = (typeof process !== 'undefined' && process.env && process.env.NEXT_PUBLIC_API_URL)
+  ? process.env.NEXT_PUBLIC_API_URL
+  : (typeof window !== 'undefined' && window.location && window.location.origin ? window.location.origin : '');
+
 // ── UNIFIED STATE (mirrors TrainerProfile document) ────────────────────────
 window.TDB_STATE = { achievements: [], events: [], skills: [], languages: [] };
 
@@ -29,7 +34,7 @@ async function loadTrainerProfile() {
   if (!session || !session._id) return;
 
   try {
-    const res = await fetch(`https://trainerforum.onrender.com/api/users/${session._id}`, {
+    const res = await fetch(`${TDB_SERVER_ORIGIN}/api/users/${session._id}`, {
       headers: token ? { Authorization: `Bearer ${token}` } : {}
     });
     if (res.ok) window.TDB_STATE = await res.json();
@@ -120,7 +125,7 @@ async function handleAvatarUpload(event) {
   fd.append('avatar', file);
 
   try {
-    const res = await fetch('https://trainerforum.onrender.com/api/users/profile/upload-avatar', {
+    const res = await fetch(`${TDB_SERVER_ORIGIN}/api/users/profile/upload-avatar`, {
       method: 'POST',
       headers: token ? { Authorization: `Bearer ${token}` } : {},
       body: fd
@@ -410,7 +415,7 @@ async function saveTrainerProfile() {
     certificationsBy: certsByStr
   };
 
-  fetch('https://trainerforum.onrender.com/api/gsheet', {
+  fetch(`${TDB_SERVER_ORIGIN}/api/gsheet`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json"

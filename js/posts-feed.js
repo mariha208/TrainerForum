@@ -4,8 +4,11 @@
 ═══════════════════════════════════════════════════════════════════════════ */
 'use strict';
 
-// GitHub Pages is a static host — all API calls must use the full backend URL.
-const POSTS_BACKEND_API = 'https://trainerforum.onrender.com/api/posts';
+// API origin resolves from window.location at runtime so it works on any host.
+const SERVER_ORIGIN = (typeof process !== 'undefined' && process.env && process.env.NEXT_PUBLIC_API_URL)
+  ? process.env.NEXT_PUBLIC_API_URL
+  : (typeof window !== 'undefined' && window.location && window.location.origin ? window.location.origin : '');
+const POSTS_BACKEND_API = `${SERVER_ORIGIN}/api/posts`;
 
 let cachedPosts = [];
 

@@ -63,8 +63,11 @@ function applyConditionalHeaderLogic() {
 
 // ── SYNC ENGINE: STREAM MONGODB LIVE DATA ROWS ──────────────────────────
 async function fetchTrainerData() {
+  const SERVER_ORIGIN = (typeof process !== 'undefined' && process.env && process.env.NEXT_PUBLIC_API_URL)
+    ? process.env.NEXT_PUBLIC_API_URL
+    : (typeof window !== 'undefined' && window.location && window.location.origin ? window.location.origin : '');
   const endpoints = [
-    'https://trainerforum.onrender.com/api/trainers',
+    `${SERVER_ORIGIN}/api/trainers`,
     '/api/trainers',
     'data.json'
   ];

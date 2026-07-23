@@ -8,7 +8,10 @@
 // ═══════════════════════════════════════════════════
 // MONGODB BACKEND CONFIGURATION
 // ═══════════════════════════════════════════════════
-const API_BASE_URL = 'https://trainerforum.onrender.com/api/users';
+const SERVER_ORIGIN = (typeof process !== 'undefined' && process.env && process.env.NEXT_PUBLIC_API_URL)
+  ? process.env.NEXT_PUBLIC_API_URL
+  : (typeof window !== 'undefined' && window.location && window.location.origin ? window.location.origin : '');
+const API_BASE_URL = `${SERVER_ORIGIN}/api/users`;
 
 // Get the logged-in user's real MongoDB _id from localStorage
 function getLoggedInUserId() {
@@ -424,7 +427,7 @@ window.commitLocalProfileChanges = function commitLocalProfileChanges() {
       formData.append('image', file);
       formData.append('type', type);
 
-      const res = await fetch('https://trainerforum.onrender.com/api/upload-image', {
+      const res = await fetch(`${SERVER_ORIGIN}/api/upload-image`, {
         method: 'POST',
         body: formData  // No Content-Type header — browser sets it automatically with boundary
       });
@@ -449,7 +452,7 @@ window.commitLocalProfileChanges = function commitLocalProfileChanges() {
   // Run uploads then PATCH MongoDB
   _uploadStagedImages()
     .then(() => {
-      return fetch(`https://trainerforum.onrender.com/api/users/${userId}`, {
+      return fetch(`${SERVER_ORIGIN}/api/users/${userId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)

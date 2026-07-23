@@ -5,6 +5,10 @@
 
 'use strict';
 
+const SERVER_ORIGIN = (typeof process !== 'undefined' && process.env && process.env.NEXT_PUBLIC_API_URL)
+  ? process.env.NEXT_PUBLIC_API_URL
+  : (typeof window !== 'undefined' && window.location && window.location.origin ? window.location.origin : '');
+
 function openAuthModal(mode) {
   let modal = document.getElementById('auth-modal');
   if (!modal) return;
@@ -395,7 +399,7 @@ window.processMockPayment = function() {
 async function completeRegistration() {
   const payload = window._registrationPayload;
   try {
-    const res = await fetch('https://trainerforum.onrender.com/api/auth/register', {
+    const res = await fetch(`${SERVER_ORIGIN}/api/auth/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
@@ -469,7 +473,7 @@ window.handleLogin = async function (role) {
   }
 
   try {
-    const res = await fetch('https://trainerforum.onrender.com/api/auth/login', {
+    const res = await fetch(`${SERVER_ORIGIN}/api/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password })

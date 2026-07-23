@@ -1,5 +1,9 @@
 'use strict';
 
+const SERVER_ORIGIN = (typeof process !== 'undefined' && process.env && process.env.NEXT_PUBLIC_API_URL)
+  ? process.env.NEXT_PUBLIC_API_URL
+  : (typeof window !== 'undefined' && window.location && window.location.origin ? window.location.origin : '');
+
 document.addEventListener('DOMContentLoaded', () => {
     const urlParams = new URLSearchParams(window.location.search);
     const trainerEmail = urlParams.get('email');
@@ -10,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Uses the existing /api/users/:email route (handles email lookup natively)
-    fetch(`https://trainerforum.onrender.com/api/users/${encodeURIComponent(trainerEmail)}`)
+    fetch(`${SERVER_ORIGIN}/api/users/${encodeURIComponent(trainerEmail)}`)
         .then(res => {
             if (!res.ok) throw new Error('Trainer not found');
             return res.json();
