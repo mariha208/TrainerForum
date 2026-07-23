@@ -259,9 +259,14 @@
   align-self: flex-end;
   padding-bottom: 6px;
 }
-.tpm-btn {
-  display: inline-flex;
-  align-items: center;
+.tpm-btn,
+.book-session-btn,
+#bookSessionBtn,
+.tpm-book-cta {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
   gap: 7px;
   padding: 10px 20px;
   border-radius: 10px;
@@ -1744,18 +1749,58 @@
   display: block;
 }
 
-/* ── RESPONSIVE ── */
-@media (max-width: 1100px) {
-  .tpm-packages-grid { grid-template-columns: 1fr 1fr; }
-  .tpm-body { grid-template-columns: 1fr; }
-  .tpm-sidebar {
-    border-left: none;
-    border-top: 1px solid rgba(255, 255, 255, 0.07);
-    display: none;
+/* ── RESPONSIVE & DESKTOP SIDEBAR GRID ── */
+@media screen and (min-width: 992px) {
+  .tpm-body,
+  .profile-body,
+  .modal-body,
+  .tmodal-body {
+    display: grid !important;
+    grid-template-columns: 2fr 1fr !important;
+    gap: 32px !important;
+    align-items: start !important;
+    flex: 1;
+    overflow: visible;
   }
-  .tpm-sticky-footer { display: flex; }
-  .bpm-body { grid-template-columns: 1fr; }
-  .bpm-right { border-left: none; border-top: 1px solid rgba(255, 255, 255, 0.07); }
+  .tpm-sidebar,
+  .profile-sidebar,
+  .modal-sidebar {
+    display: block !important;
+    border-left: 1px solid rgba(255, 255, 255, 0.07) !important;
+    border-top: none !important;
+    padding: 24px !important;
+    background: rgba(4, 15, 40, 0.5) !important;
+    overflow-y: visible;
+  }
+  .tpm-sticky-footer {
+    display: none !important;
+  }
+  .bpm-body {
+    display: grid !important;
+    grid-template-columns: 1fr 380px !important;
+  }
+}
+
+@media screen and (max-width: 991px) {
+  .tpm-packages-grid { grid-template-columns: 1fr 1fr; }
+  .tpm-body,
+  .profile-body,
+  .modal-body,
+  .tmodal-body {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 24px !important;
+  }
+  .tpm-sidebar,
+  .profile-sidebar,
+  .modal-sidebar {
+    border-left: none !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.07) !important;
+    display: none !important;
+  }
+  .tpm-sticky-footer { display: flex !important; }
+  .bpm-body { grid-template-columns: 1fr !important; }
+  .bpm-right { border-left: none !important; border-top: 1px solid rgba(255, 255, 255, 0.07) !important; }
 }
 
 @media (max-width: 768px) {
