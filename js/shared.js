@@ -36,10 +36,11 @@
   <div style="display:flex;justify-content:flex-end;margin-bottom:20px;">
     <button onclick="toggleMobileMenu()" style="background:none;border:none;color:#fff;font-size:2rem;cursor:pointer;" aria-label="Close">×</button>
   </div>
+  <a href="index.html">Home</a>
   <a href="about.html">About</a>
   <a href="find-trainers.html">Find Trainers</a>
-  <a href="categories.html">Categories</a>
-  <a href="pricing.html">Pricing</a>
+  <a href="certificate.html">Certificates</a>
+  <a href="news-events.html">News &amp; Events</a>
   <a href="blog.html">Blog</a>
   <a href="contact.html">Contact</a>
   <div style="margin-top:30px;display:flex;flex-direction:column;gap:12px;">

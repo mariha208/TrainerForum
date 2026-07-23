@@ -48,7 +48,10 @@
 }
 
 /* ── CLOSE BUTTON ── */
-.tpm-close {
+.tpm-close,
+.modal-close,
+.close-btn,
+.popup-close-button {
   position: absolute;
   top: 16px;
   right: 16px;
@@ -69,8 +72,11 @@
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
   line-height: 1;
 }
-.tpm-close:hover {
-  background: rgba(239, 68, 68, 0.8);
+.tpm-close:hover,
+.modal-close:hover,
+.close-btn:hover,
+.popup-close-button:hover {
+  background: rgba(239, 68, 68, 0.8) !important;
   color: #FFFFFF !important;
   border-color: rgba(239, 68, 68, 0.9);
   transform: rotate(90deg) scale(1.08);
