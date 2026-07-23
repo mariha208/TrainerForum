@@ -401,39 +401,52 @@
   <script src="js/footer.js"></script>
 
   <script>
+    // ── Google Apps Script endpoint ──
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzptrIr9bSRDXHSzSIPF1HG1BLbVnOOymZQ94ujujj9NxY6rXWTscTdFLEhWAGEtZG2/exec';
+
     // Contact form submit handler
     document.getElementById('contact-form').addEventListener('submit', async function(e) {
       e.preventDefault();
       const form = this;
-      const btn = document.getElementById('submit-btn');
-      const label = document.getElementById('btn-label');
-      const icon = document.getElementById('btn-icon');
+      const btn    = document.getElementById('submit-btn');
+      const label  = document.getElementById('btn-label');
+      const icon   = document.getElementById('btn-icon');
       const success = document.getElementById('form-success');
+
+      // Collect field values by their IDs
+      const fullName = document.getElementById('contact-name').value.trim();
+      const email    = document.getElementById('contact-email').value.trim();
+      const subject  = document.getElementById('contact-subject').value || 'Contact Form Inquiry';
+      const message  = document.getElementById('contact-message').value.trim();
 
       // Loading state
       btn.disabled = true;
       label.textContent = 'Sending…';
       icon.className = 'fa-solid fa-circle-notch fa-spin';
 
-      const data = Object.fromEntries(new FormData(form).entries());
-
       try {
-        await fetch('/api/contact', {
+        // Use no-cors + text/plain to avoid CORS pre-flight blocks on Apps Script
+        await fetch(APPS_SCRIPT_URL, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data)
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ fullName, email, subject, message })
         });
       } catch (_) {
-        // swallow network error — show success anyway (demo mode)
+        // swallow network error — still show success confirmation to user
       } finally {
         setTimeout(() => {
           form.reset();
+          // Show success banner
+          success.style.display = 'flex';
           success.classList.add('show');
           btn.disabled = false;
           label.textContent = 'Send Message';
           icon.className = 'fa-solid fa-paper-plane';
           success.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }, 700);
+          // Auto-hide success banner after 6s
+          setTimeout(() => success.classList.remove('show'), 6000);
+        }, 800);
       }
     });
   </script>
