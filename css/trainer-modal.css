@@ -47,33 +47,33 @@
   to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-/* ── CLOSE BUTTON ── */
-.tpm-close,
+/* ── 3. CLOSE / CROSS BUTTON POSITIONING ── */
 .modal-close,
 .close-btn,
-.popup-close-button {
+.popup-close-button,
+.tpm-close {
   position: absolute !important;
-  top: 12px !important;
-  right: 12px !important;
-  z-index: 100000 !important;
+  top: 16px !important;
+  right: 16px !important;
+  z-index: 1000000 !important;
   width: 36px !important;
   height: 36px !important;
-  background: #1E293B !important; /* Dark slate background */
-  color: #FFFFFF !important; /* Bright white icon */
-  border: 1px solid #334155 !important;
+  background: #1E293B !important; /* Dark slate background for visibility */
+  color: #FFFFFF !important;
+  border: 1px solid #475569 !important;
   border-radius: 50% !important;
-  font-size: 20px !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  cursor: pointer !important;
+  font-size: 22px !important;
   line-height: 1 !important;
+  cursor: pointer !important;
   transition: all 0.2s ease;
 }
-.tpm-close:hover,
 .modal-close:hover,
 .close-btn:hover,
-.popup-close-button:hover {
+.popup-close-button:hover,
+.tpm-close:hover {
   background: rgba(239, 68, 68, 0.85) !important;
   border-color: rgba(239, 68, 68, 0.9) !important;
   color: #FFFFFF !important;
@@ -1493,38 +1493,62 @@
   max-width: 500px;
 }
 
-/* ── BOOKING MODAL (STACKING & FOREGROUND DISPLAY) ── */
+/* ── 1. MODAL Z-INDEX & OVERLAY STACKING ── */
 #booking-modal,
 #book-session-modal,
-.booking-modal-overlay {
+.booking-modal-overlay,
+.modal-overlay,
+.modal-bg,
+.modal,
+#trainer-modal,
+#auth-modal {
   position: fixed !important;
   top: 0 !important;
   left: 0 !important;
   width: 100vw !important;
   height: 100vh !important;
-  z-index: 99999 !important; /* Ensures it opens on top of everything */
+  z-index: 999999 !important; /* Higher than sticky header */
   background: rgba(0, 0, 0, 0.75) !important;
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   display: none;
   align-items: center !important;
   justify-content: center !important;
-  padding: 20px;
-  animation: tmodalFadeIn 0.3s ease;
+  padding-top: 60px !important; /* Ensures clearance from the top header area */
   box-sizing: border-box !important;
+  animation: tmodalFadeIn 0.3s ease;
 }
 #booking-modal.open,
 #book-session-modal.open,
-.booking-modal-overlay.open { display: flex !important; }
+.booking-modal-overlay.open,
+.modal-overlay.open,
+.modal-bg.open,
+.modal.open,
+#trainer-modal.open,
+#auth-modal.open { display: flex !important; }
+
+/* ── 2. MODAL CARD CONTAINER ── */
+.modal-content,
+.modal-card,
+.booking-modal,
+.bpm-box,
+.tmodal-box,
+.modal-box,
+.tpm-box {
+  position: relative !important;
+  margin: auto !important;
+  max-height: 90vh !important;
+  overflow-y: auto !important;
+  padding-top: 24px !important;
+  box-sizing: border-box !important;
+}
 .bpm-box {
   width: 90vw;
   max-width: 900px;
-  max-height: 90vh;
   background: linear-gradient(145deg, rgba(8, 25, 60, 0.98), rgba(4, 40, 40, 0.98));
   border: 1px solid rgba(197, 160, 89, 0.25);
   border-radius: 24px;
   box-shadow: 0 30px 100px rgba(0, 0, 0, 0.7);
-  overflow: hidden;
   animation: tmodalSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   display: flex;
   flex-direction: column;
@@ -1726,46 +1750,13 @@
   .tpm-banner { height: 180px; }
   .tpm-avatar { width: 90px; height: 90px; font-size: 1.6rem; }
   .tpm-header-info h2 { font-size: 1.5rem; }
-  #booking-modal { padding: 0; align-items: flex-end; }
-  .bpm-box { width: 100vw; max-height: 95vh; border-radius: 24px 24px 0 0; }
+  #booking-modal { padding-top: 60px !important; }
+  .bpm-box { width: 95vw; max-height: 90vh; border-radius: 20px; }
   .bpm-body { grid-template-columns: 1fr; }
-
-  /* Fixed close button for mobile */
-  .tpm-close {
-    position: fixed !important;
-    top: 14px !important;
-    right: 14px !important;
-    z-index: 100000 !important;
-    width: 40px !important;
-    height: 40px !important;
-    border-radius: 50% !important;
-    background: rgba(255, 255, 255, 0.12) !important;
-    border: 1.5px solid rgba(255, 255, 255, 0.25) !important;
-    color: #FFFFFF !important;
-    font-size: 1.2rem !important;
-    font-weight: 700 !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5) !important;
-    pointer-events: auto !important;
-    line-height: 1 !important;
-  }
-  .tpm-close:hover {
-    background: rgba(239, 68, 68, 0.85) !important;
-    border-color: rgba(239, 68, 68, 0.9) !important;
-    color: #FFFFFF !important;
-  }
 }
 
 @media (max-width: 480px) {
   .tpm-social-grid { grid-template-columns: repeat(4, 1fr); }
   .tpm-exp-grid { grid-template-columns: 1fr 1fr; }
   .tpm-gallery-grid { grid-template-columns: repeat(2, 1fr); }
-  .tpm-close {
-    top: 12px !important;
-    right: 12px !important;
-    width: 42px !important;
-    height: 42px !important;
-  }
 }

@@ -1106,7 +1106,8 @@ window.openBookingModal = async function (tid) {
     : t.av;
 
   modalEl.innerHTML = `
-  <div class="bpm-box">
+  <div class="bpm-box" style="position:relative !important;">
+    <button class="modal-close close-btn tpm-close" onclick="closeBookingModal()" aria-label="Close modal">&times;</button>
     <!-- Header -->
     <div class="bpm-header">
       <h2>📅 Book a Session</h2>
@@ -1117,7 +1118,6 @@ window.openBookingModal = async function (tid) {
             <div style="font-size:0.74rem;color:rgba(237,242,247,0.45)">${fmtINR(t.pn || 5000)}/hr</div>
           </div>
         </div>
-        <button class="tpm-close" style="position:static;flex-shrink:0" onclick="closeBookingModal()">&times;</button>
       </div>
     </div>
 
