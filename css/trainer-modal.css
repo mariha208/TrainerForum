@@ -316,14 +316,19 @@
   color: #FC8181;
 }
 
-/* ── TAB NAVIGATION ── */
-.tpm-tabs-wrap {
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  background: rgba(8, 25, 60, 0.95);
-  backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+/* ── TAB NAVIGATION (IN-FLOW & RELATIVE POSITIONING) ── */
+.modal-tabs,
+.profile-nav-tabs,
+.tab-header,
+.tpm-tabs-wrap,
+.tmodal-tabs {
+  position: relative !important; /* Change from fixed/sticky to relative */
+  width: 100% !important;
+  background: #0B132B !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  margin-bottom: 24px !important; /* Space out tabs from cards below */
+  z-index: 10 !important;
+  box-sizing: border-box !important;
 }
 .tpm-tabs {
   display: flex;
@@ -358,16 +363,32 @@
 }
 .tpm-tab-icon { font-size: 0.9rem; }
 
-/* ── BODY LAYOUT ── */
+/* ── BODY LAYOUT & PREVENT OVERLAPPING CARDS ── */
+.modal-tab-content,
+.profile-body,
+.tab-pane,
+.tpm-main,
+.tmodal-main,
+.tpm-body,
+.tpm-pane,
+.tmodal-pane {
+  padding-top: 16px !important;
+  display: block !important;
+  clear: both !important;
+  box-sizing: border-box !important;
+}
+
 .tpm-body {
   display: grid;
   grid-template-columns: 1fr 360px;
   flex: 1;
-  overflow: hidden;
+  overflow: visible;
+  position: relative !important;
+  clear: both !important;
 }
 .tpm-main {
-  overflow-y: auto;
-  padding: 32px 36px;
+  overflow-y: visible;
+  padding: 24px 36px;
   scrollbar-width: thin;
   scrollbar-color: rgba(197, 160, 89, 0.3) transparent;
 }
@@ -375,8 +396,8 @@
 .tpm-main::-webkit-scrollbar-thumb { background: rgba(197, 160, 89, 0.3); border-radius: 3px; }
 .tpm-sidebar {
   border-left: 1px solid rgba(255, 255, 255, 0.07);
-  overflow-y: auto;
-  padding: 28px 24px;
+  overflow-y: visible;
+  padding: 24px 24px;
   background: rgba(4, 15, 40, 0.5);
   scrollbar-width: thin;
   scrollbar-color: rgba(197, 160, 89, 0.2) transparent;

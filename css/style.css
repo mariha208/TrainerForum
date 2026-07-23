@@ -2233,11 +2233,21 @@ section {
   gap: 16px;
 }
 
+/* ── TAB NAVIGATION (IN-FLOW & RELATIVE POSITIONING) ── */
+.modal-tabs,
+.profile-nav-tabs,
+.tab-header,
 .tmodal-tabs {
+  position: relative !important; /* Change from fixed/sticky to relative */
+  width: 100% !important;
+  background: #0B132B !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  margin-bottom: 24px !important; /* Space out tabs from cards below */
+  z-index: 10 !important;
+  box-sizing: border-box !important;
   display: flex;
   gap: 4px;
   padding: 0 32px;
-  border-bottom: 1px solid var(--bd);
 }
 
 .tmodal-tab {
@@ -2256,6 +2266,18 @@ section {
 .tmodal-tab.active {
   color: var(--royal);
   border-bottom-color: var(--royal);
+}
+
+/* ── BODY LAYOUT & PREVENT OVERLAPPING CARDS ── */
+.modal-tab-content,
+.profile-body,
+.tab-pane,
+.tmodal-main,
+.tmodal-pane {
+  padding-top: 16px !important;
+  display: block !important;
+  clear: both !important;
+  box-sizing: border-box !important;
 }
 
 .tmodal-main {
