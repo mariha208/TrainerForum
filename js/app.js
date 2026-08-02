@@ -1094,10 +1094,14 @@ function verifyUserSessionToken() {
 
 window.getDashboardUrl = function() {
   try {
+    const role = (localStorage.getItem('userRole') || '').toLowerCase();
+    if (role === 'organization' || role === 'client') {
+      return 'dashboard-org.html';
+    }
     const session = JSON.parse(localStorage.getItem('userSession') || '{}');
     const trainer = JSON.parse(localStorage.getItem('currentTrainer') || '{}');
-    const role = session.role || trainer.role || 'trainer';
-    if (role === 'client' || role === 'organization' || role === 'ORGANIZATION') {
+    const sRole = (session.role || trainer.role || '').toLowerCase();
+    if (sRole === 'client' || sRole === 'organization') {
       return 'dashboard-org.html';
     }
   } catch (e) {}
@@ -1107,17 +1111,19 @@ window.getDashboardUrl = function() {
 // ── ROLE-BASED DASHBOARD ROUTE GUARD ──────────────────────────────────────────
 (function checkRoleBasedDashboardAccess() {
   try {
+    const role = (localStorage.getItem('userRole') || '').toLowerCase();
     const session = JSON.parse(localStorage.getItem('userSession') || 'null');
-    if (!session) return;
-    const role = session.role || 'trainer';
+    const userRole = role || (session ? (session.role || '').toLowerCase() : '');
+    if (!userRole) return;
+
     const path = window.location.pathname;
 
     if (path.includes('dashboard.html') && !path.includes('dashboard-org.html')) {
-      if (role === 'client' || role === 'organization' || role === 'ORGANIZATION') {
+      if (userRole === 'client' || userRole === 'organization') {
         window.location.href = 'dashboard-org.html';
       }
     } else if (path.includes('dashboard-org.html')) {
-      if (role === 'trainer' || role === 'TRAINER') {
+      if (userRole === 'trainer') {
         window.location.href = 'dashboard.html';
       }
     }

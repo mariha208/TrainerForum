@@ -611,11 +611,18 @@ window.handleLogin = async function (role) {
     const data = await res.json();
     
     if (res.ok) {
+      const rawRole = (data.user && data.user.role) ? data.user.role : (role || 'trainer');
+      const userRole = String(rawRole).toLowerCase();
+
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('userRole', userRole); // 'organization' or 'trainer'
+
       // Keep frontend session shape consistent
       const sessionUser = {
         ...data.user,
+        role: userRole,
         trainerEmail: data.user.email,
-        name: data.user.firstName + ' ' + data.user.lastName,
+        name: data.user.name || ((data.user.firstName || '') + ' ' + (data.user.lastName || '')).trim() || 'User',
         cat: data.user.expertiseCategory,
         pn: data.user.hourlyRate || 0,
         rate: data.user.hourlyRate || 0
@@ -626,7 +633,7 @@ window.handleLogin = async function (role) {
       localStorage.setItem("authToken", data.token);
 
       // ── Persist trainer data to fallback keys so card survives logout ──────
-      if (sessionUser.role === 'trainer') {
+      if (userRole === 'trainer') {
         const snap = JSON.stringify({
           name: sessionUser.name,
           tagline: sessionUser.professionalTitle || '',
@@ -648,17 +655,19 @@ window.handleLogin = async function (role) {
         localStorage.setItem('tv-primary-trainer-id', sessionUser._id || '');
       }
 
-      alert("Login successful!");
-      closeAuthModal();
-
       if (typeof window.updateNavbarAuthUI === "function") {
         window.updateNavbarAuthUI();
       }
-      const targetDash = (sessionUser.role === 'client' || sessionUser.role === 'organization') ? 'dashboard-org.html' : 'dashboard.html';
-      if (!window.location.pathname.includes(targetDash)) {
-        window.location.href = targetDash;
+
+      if (window.closeAuthModal) closeAuthModal();
+
+      // Redirect based on role:
+      if (userRole === 'organization' || userRole === 'client') {
+        window.location.href = 'dashboard-org.html';
+      } else if (userRole === 'trainer') {
+        window.location.href = 'dashboard.html';
       } else {
-        window.location.reload();
+        window.location.href = 'index.html';
       }
     } else {
       alert(data.error || "Login failed.");
