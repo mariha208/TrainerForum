@@ -1132,6 +1132,42 @@ window.getDashboardUrl = function() {
 
 window.updateNavbarAuthUI = verifyUserSessionToken;
 
+// ── ROLE-BASED EDIT PROFILE LINK REWRITER ────────────────────────────────────
+// Fixes the navbar "Edit Profile" dropdown link on every page at runtime.
+// MongoDB stores org accounts as role:"client" — we match both 'client' and 'organization'.
+document.addEventListener('DOMContentLoaded', function () {
+  try {
+    const userRole = (
+      localStorage.getItem('userRole') ||
+      (JSON.parse(localStorage.getItem('userSession') || '{}').role) ||
+      ''
+    ).toLowerCase();
+
+    const targetDash = (userRole === 'client' || userRole === 'organization')
+      ? 'dashboard-org.html'
+      : 'dashboard.html';
+
+    // Rewire all navbar dropdown "Edit Profile" links
+    document.querySelectorAll('.ud-link[href*="dashboard"]').forEach(function (link) {
+      link.href = targetDash;
+    });
+
+    // Also intercept any remaining click to be safe
+    document.querySelectorAll('.ud-link[href*="dashboard"], a[href*="dashboard.html"][class*="ud"]').forEach(function (link) {
+      link.addEventListener('click', function (e) {
+        e.preventDefault();
+        if (userRole === 'client' || userRole === 'organization') {
+          window.location.href = 'dashboard-org.html';
+        } else if (userRole === 'trainer') {
+          window.location.href = 'dashboard.html';
+        } else {
+          window.location.href = 'index.html';
+        }
+      });
+    });
+  } catch (e) {}
+});
+
 // ── GLOBAL TOAST NOTIFICATION SYSTEM ─────────────────────────────────────────
 window.toast = window.showToast = function (msg, duration = 3500) {
   let container = document.getElementById('global-toast-container');
