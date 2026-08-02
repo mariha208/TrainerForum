@@ -87,34 +87,25 @@
       <!-- INNER DASHBOARD WORKSPACE (SIDEBAR + CONTENT) -->
       <div class="org-layout">
         
-        <!-- INNER SIDEBAR NAVIGATION -->
+        <!-- INNER SIDEBAR NAVIGATION (SIMPLIFIED TO 3 OPTIONS) -->
         <aside class="org-sidebar" id="orgSidebar">
           <div class="sidebar-mobile-header">
             <span class="sidebar-title">Portal Navigation</span>
             <button type="button" class="sidebar-close-btn" onclick="closeOrgSidebar()">✕</button>
           </div>
           <nav class="org-nav-menu">
-            <button type="button" class="org-nav-item active" onclick="switchOrgTab('overview', this)">
+            <button type="button" class="org-nav-item active" id="nav-item-overview" onclick="switchOrgTab('overview', this)">
               <span class="nav-ico">📊</span>
               <span>Overview</span>
             </button>
-            <button type="button" class="org-nav-item" onclick="switchOrgTab('marketplace', this)">
+            <a href="find-trainers.html" class="org-nav-item">
               <span class="nav-ico">👥</span>
               <span>Find & Hire Trainers</span>
-            </button>
-            <button type="button" class="org-nav-item" onclick="switchOrgTab('rfps', this)">
+            </a>
+            <button type="button" class="org-nav-item" id="nav-item-requirements" onclick="switchOrgTab('requirements', this)">
               <span class="nav-ico">📋</span>
-              <span>Active RFPs & Bids</span>
-              <span class="org-nav-count" id="count-rfps">4</span>
-            </button>
-            <button type="button" class="org-nav-item" onclick="switchOrgTab('reviews', this)">
-              <span class="nav-ico">⭐</span>
-              <span>Reviews & Ratings</span>
-              <span class="org-nav-count badge-amber" id="count-reviews">1</span>
-            </button>
-            <button type="button" class="org-nav-item" onclick="switchOrgTab('settings', this)">
-              <span class="nav-ico">⚙️</span>
-              <span>Settings & Billing</span>
+              <span>Requirements</span>
+              <span class="org-nav-count" id="count-reqs">3</span>
             </button>
           </nav>
         </aside>
@@ -123,157 +114,145 @@
         <section class="org-content">
 
           <!-- ═════════════════════════════════════════════════════════════════
-               VIEW A: OVERVIEW TAB
+               SECTION A: OVERVIEW TAB (#overview-section)
           ═════════════════════════════════════════════════════════════════ -->
-          <div id="org-tab-overview" class="org-tab-panel active">
-            <!-- 4 KEY KPI SUMMARY CARDS -->
+          <div id="overview-section" class="org-tab-panel active">
+            <!-- 4 SUMMARY STAT CARDS -->
             <div class="org-kpi-grid">
               <div class="org-kpi-card">
-                <div class="kpi-ico ico-blue">📄</div>
+                <div class="kpi-ico ico-amber">📄</div>
                 <div>
-                  <div class="kpi-label">Active RFPs Posted</div>
-                  <div class="kpi-val" id="kpi-rfps">4</div>
+                  <div class="kpi-label">Total Submitted</div>
+                  <div class="kpi-val" id="kpi-total-reqs">3</div>
+                </div>
+              </div>
+
+              <div class="org-kpi-card">
+                <div class="kpi-ico ico-blue">⏱️</div>
+                <div>
+                  <div class="kpi-label">Pending Review</div>
+                  <div class="kpi-val" id="kpi-pending-reqs">1</div>
                 </div>
               </div>
 
               <div class="org-kpi-card">
                 <div class="kpi-ico ico-green">🤝</div>
                 <div>
-                  <div class="kpi-label">Total Hired Trainers</div>
-                  <div class="kpi-val" id="kpi-hired">18</div>
+                  <div class="kpi-label">Accepted Requirements</div>
+                  <div class="kpi-val" id="kpi-accepted-reqs">1</div>
                 </div>
               </div>
 
               <div class="org-kpi-card">
-                <div class="kpi-ico ico-purple">⏱️</div>
+                <div class="kpi-ico ico-purple">✕</div>
                 <div>
-                  <div class="kpi-label">Hours Delivered</div>
-                  <div class="kpi-val" id="kpi-hours">340h</div>
-                </div>
-              </div>
-
-              <div class="org-kpi-card">
-                <div class="kpi-ico ico-amber">⭐</div>
-                <div>
-                  <div class="kpi-label">Avg Given Rating</div>
-                  <div class="kpi-val" id="kpi-rating">4.9 / 5</div>
+                  <div class="kpi-label">Rejected Requirements</div>
+                  <div class="kpi-val" id="kpi-rejected-reqs">1</div>
                 </div>
               </div>
             </div>
 
-            <!-- TOP RECOMMENDED TRAINERS GRID -->
+            <!-- REQUIREMENTS TRACKER TABLE -->
             <div class="org-card mb-24">
-              <div class="card-header-flex">
+              <div class="card-header-flex mb-16">
                 <div>
-                  <h2 className="card-title-text">Top Recommended Trainers</h2>
-                  <p className="card-sub-text">Handpicked experts matching your AI & Engineering focus</p>
+                  <h2 class="card-title-text">Organization Requirements Tracker</h2>
+                  <p class="card-sub-text">Monitor, review, and track real-time status of your submitted training requests</p>
                 </div>
-                <button type="button" class="org-link-btn" onclick="switchOrgTab('marketplace')">View All Marketplace →</button>
+                <button type="button" class="btn btn-org-primary" onclick="switchOrgTab('requirements')">+ Submit New Requirement</button>
               </div>
 
-              <div class="trainer-rec-grid" id="rec-trainers-container">
-                <!-- Dynamically Rendered by js/org-dashboard.js -->
-              </div>
-            </div>
-
-            <!-- RECENT BIDS & PROPOSALS LIST -->
-            <div class="org-card">
-              <h2 class="card-title-text mb-16">Recent Bids & Proposals</h2>
               <div class="table-responsive">
-                <div class="bids-list" id="recent-bids-container">
-                  <!-- Dynamically Rendered by js/org-dashboard.js -->
-                </div>
+                <table class="org-table">
+                  <thead>
+                    <tr>
+                      <th>Requirement / Topic</th>
+                      <th>Location & Target Date</th>
+                      <th>Budget</th>
+                      <th>Submitted Date</th>
+                      <th>Status</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="requirements-table-body">
+                    <!-- Dynamically Rendered by js/org-dashboard.js -->
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
 
           <!-- ═════════════════════════════════════════════════════════════════
-               VIEW B: FIND & HIRE TRAINERS (TALENT MARKETPLACE)
+               SECTION B: REQUIREMENTS SECTION (#requirements-section)
           ═════════════════════════════════════════════════════════════════ -->
-          <div id="org-tab-marketplace" class="org-tab-panel">
-            <!-- ADVANCED FILTER BAR -->
-            <div class="org-card mb-24">
-              <div class="filter-header">
-                <h3 class="card-title-text">🎛️ Filter Talent Marketplace</h3>
-                <span class="filter-count-text" id="marketplace-count-label">Showing Expert Trainers</span>
+          <div id="requirements-section" class="org-tab-panel">
+            <div class="org-card">
+              <div class="card-header-flex mb-24">
+                <div>
+                  <h2 class="card-title-text">📋 Submit Training Requirement</h2>
+                  <p class="card-sub-text">Fill out your corporate L&D needs to receive proposal bids from verified trainers</p>
+                </div>
+                <button type="button" class="btn btn-ghost" onclick="switchOrgTab('overview')">← Back to Overview</button>
               </div>
 
-              <div class="filter-grid">
-                <div>
-                  <label class="filter-label">Domain / Skill</label>
-                  <select id="filter-domain" class="org-select" onchange="applyMarketplaceFilters()">
-                    <option value="All">All Domains</option>
-                    <option value="AI">AI & Machine Learning</option>
-                    <option value="Leadership">Leadership & EQ</option>
-                    <option value="Security">Cloud & Cybersecurity</option>
-                    <option value="Agile">Agile & Product</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label class="filter-label">Delivery Format</label>
-                  <select id="filter-format" class="org-select" onchange="applyMarketplaceFilters()">
-                    <option value="All">All Formats</option>
-                    <option value="Virtual">Virtual Only</option>
-                    <option value="Onsite">Onsite Only</option>
-                    <option value="Hybrid">Hybrid</option>
-                  </select>
-                </div>
-
-                <div>
-                  <div class="flex-between">
-                    <label class="filter-label">Max Daily Rate</label>
-                    <span class="rate-val-label" id="max-price-display">$2000</span>
+              <form id="org-requirement-form" onsubmit="handleOrgRequirementSubmit(event)">
+                <div class="form-grid-2 mb-16">
+                  <div class="form-group">
+                    <label class="filter-label">Organization / Contact Name <span class="text-gold">*</span></label>
+                    <input type="text" id="req-org-name" class="org-input" placeholder="e.g. Acme Global Technologies" required>
                   </div>
-                  <input type="range" id="filter-price" min="500" max="3000" step="100" value="2000" class="org-slider" oninput="document.getElementById('max-price-display').textContent = '$' + this.value; applyMarketplaceFilters();">
+
+                  <div class="form-group">
+                    <label class="filter-label">Training Topic / Subject <span class="text-gold">*</span></label>
+                    <input type="text" id="req-topic" class="org-input" placeholder="e.g. Executive Generative AI Workshop" required>
+                  </div>
                 </div>
 
-                <div>
-                  <label class="filter-label">Min Rating</label>
-                  <select id="filter-rating" class="org-select" onchange="applyMarketplaceFilters()">
-                    <option value="4.0">4.0+ Stars</option>
-                    <option value="4.5">4.5+ Stars</option>
-                    <option value="4.8">4.8+ Stars</option>
-                  </select>
+                <div class="form-grid-3 mb-16">
+                  <div class="form-group">
+                    <label class="filter-label">Budget ($ USD) <span class="text-gold">*</span></label>
+                    <input type="number" id="req-budget" class="org-input" placeholder="e.g. 5000" min="100" step="100" required>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="filter-label">Location / Place <span class="text-gold">*</span></label>
+                    <select id="req-location-type" class="org-select" required>
+                      <option value="In City">In City (Onsite)</option>
+                      <option value="Out City">Out City (Travel Required)</option>
+                      <option value="Remote">Remote (Virtual)</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="filter-label">City / Address Details <span class="text-gold">*</span></label>
+                    <input type="text" id="req-city-details" class="org-input" placeholder="e.g. Bangalore, HQ Indiranagar" required>
+                  </div>
                 </div>
-              </div>
-            </div>
 
-            <!-- TRAINER CARD GRID -->
-            <div class="trainer-card-grid" id="marketplace-grid-container">
-              <!-- Dynamically Rendered by js/org-dashboard.js -->
-            </div>
-          </div>
+                <div class="form-grid-2 mb-16">
+                  <div class="form-group">
+                    <label class="filter-label">Target Dates <span class="text-gold">*</span></label>
+                    <input type="date" id="req-dates" class="org-input" required>
+                  </div>
 
-          <!-- ═════════════════════════════════════════════════════════════════
-               VIEW C: ACTIVE RFPS & BIDS MANAGEMENT
-          ═════════════════════════════════════════════════════════════════ -->
-          <div id="org-tab-rfps" class="org-tab-panel">
-            <div class="card-header-flex mb-16">
-              <h2 class="card-title-text">Corporate RFPs & Bids Management</h2>
-              <button type="button" class="btn btn-org-primary" onclick="openPostRFPModal()">+ Post New RFP</button>
-            </div>
-
-            <div class="table-responsive">
-              <div class="rfp-list-container" id="rfp-list-container">
-                <!-- Dynamically Rendered by js/org-dashboard.js -->
-              </div>
-            </div>
-          </div>
-
-          <!-- ═════════════════════════════════════════════════════════════════
-               VIEW D: REVIEWS & RATINGS MODULE
-          ═════════════════════════════════════════════════════════════════ -->
-          <div id="org-tab-reviews" class="org-tab-panel">
-            <div class="org-card">
-              <h2 class="card-title-text">Post-Session Reviews & Quality Evaluations</h2>
-              <p class="card-sub-text mb-24">Rate completed sessions across 4 key parameters to maintain platform quality standards.</p>
-
-              <div class="table-responsive">
-                <div class="session-reviews-list" id="reviews-list-container">
-                  <!-- Dynamically Rendered by js/org-dashboard.js -->
+                  <div class="form-group">
+                    <label class="filter-label">Time & Duration <span class="text-gold">*</span></label>
+                    <input type="text" id="req-duration" class="org-input" placeholder="e.g. 10:00 AM - 4:00 PM / 2 Days" required>
+                  </div>
                 </div>
-              </div>
+
+                <div class="form-group mb-24">
+                  <label class="filter-label">Special Notes / Additional Instructions</label>
+                  <textarea id="req-notes" rows="4" class="org-textarea" placeholder="Detail target audience size, required skill prerequisites, specific customization requests..."></textarea>
+                </div>
+
+                <div class="form-actions-end">
+                  <button type="button" class="btn btn-ghost" onclick="switchOrgTab('overview')">Cancel</button>
+                  <button type="submit" class="btn btn-org-primary">
+                    <span>🚀 Submit Requirement</span>
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
 
@@ -311,8 +290,16 @@
   </main>
 
   <!-- ═════════════════════════════════════════════════════════════════════
-       MODAL 1: POST RFP MODAL
+       REQUIREMENT DETAILS MODAL
   ═════════════════════════════════════════════════════════════════════ -->
+  <div id="modal-req-details" class="org-modal-overlay">
+    <div class="org-modal-card">
+      <button type="button" class="modal-close-btn" onclick="closeReqDetailsModal()">✕</button>
+      <div id="req-details-content">
+        <!-- Rendered dynamically by js/org-dashboard.js -->
+      </div>
+    </div>
+  </div>
   <div id="modal-post-rfp" class="org-modal-overlay">
     <div class="org-modal-card">
       <button type="button" class="modal-close-btn" onclick="closePostRFPModal()">✕</button>

@@ -846,3 +846,94 @@
   padding-top: 16px;
   border-top: 1px solid #1f293d;
 }
+
+/* ── REQUIREMENTS TRACKER TABLE STYLES ───────────────────────────────────────── */
+.org-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 13px;
+  min-width: 650px;
+}
+
+.org-table th {
+  background: #0a0f1d;
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 14px 16px;
+  border-bottom: 1px solid #1f293d;
+}
+
+.org-table td {
+  padding: 16px;
+  border-bottom: 1px solid #1f293d;
+  color: #f8fafc;
+  vertical-align: middle;
+}
+
+.org-table tr:hover td {
+  background: rgba(31, 41, 61, 0.4);
+}
+
+.badge-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 11.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.badge-pending {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.badge-accepted {
+  background: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+  border: 1px solid rgba(52, 211, 153, 0.3);
+}
+
+.badge-rejected {
+  background: rgba(244, 63, 94, 0.15);
+  color: #fb7185;
+  border: 1px solid rgba(244, 63, 94, 0.3);
+}
+
+.form-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+@media (max-width: 768px) {
+  .form-grid-3, .form-grid-2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+.text-gold {
+  color: #c5a57b;
+}
+
+.form-actions-end {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 16px;
+  border-top: 1px solid #1f293d;
+}
+
+.btn-sm {
+  padding: 6px 12px !important;
+  font-size: 11.5px !important;
+}
+
