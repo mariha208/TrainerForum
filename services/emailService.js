@@ -1,67 +1,46 @@
 // services/emailService.js — Automated Email Service for World Trainer Forum
-const nodemailer = require('nodemailer');
+// Uses Resend HTTP API — bypasses Render's SMTP port blocks (465/587) entirely.
+//
+// Required Render Environment Variables:
+//   RESEND_API_KEY  — Your Resend API key from https://resend.com/api-keys
+//   RESEND_FROM     — (Optional) Verified sender address e.g. noreply@yourdomain.com
+//                     Defaults to 'onboarding@resend.dev' (works without domain verification)
+//   FRONTEND_URL    — Your deployed frontend URL e.g. https://worldtrainerforum.com
+//
+// Free Resend plan: 3,000 emails/month, 100/day. No credit card required.
+// Docs: https://resend.com/docs/send-with-nodejs
 
-/**
- * Creates a Nodemailer Transporter.
- *
- * Priority order for configuration:
- *   1. Gmail via EMAIL_USER + EMAIL_PASS (Gmail App Password — recommended for Render)
- *   2. Custom SMTP via SMTP_HOST + SMTP_USER + SMTP_PASS (generic SMTP server)
- *
- * ⚠️  Gmail requires an App Password (NOT your regular Gmail password).
- *     Generate one at: https://myaccount.google.com/apppasswords
- *
- * Required Render Environment Variables:
- *   EMAIL_USER     — Gmail address, e.g. yourname@gmail.com
- *   EMAIL_PASS     — Gmail App Password (16-character code, no spaces)
- *   FRONTEND_URL   — Your deployed frontend URL, e.g. https://worldtrainerforum.com
- *
- * Optional (alternative SMTP):
- *   SMTP_HOST, SMTP_PORT, SMTP_SECURE, SMTP_USER, SMTP_PASS, SMTP_FROM
- */
-function createTransporter() {
-  // Option 1: Gmail with App Password
-  if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
-    console.log('[EmailService] Using Gmail transporter (EMAIL_USER).');
-    return nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS // Must be a Gmail App Password, NOT your regular password
-      }
-    });
+const { Resend } = require('resend');
+
+// Lazy-initialise so missing key shows a clear error at send-time, not at boot
+let _resend = null;
+function getResend() {
+  if (!_resend) {
+    if (!process.env.RESEND_API_KEY) {
+      throw new Error(
+        '[EmailService] RESEND_API_KEY is not set. ' +
+        'Add it to your Render environment variables.'
+      );
+    }
+    _resend = new Resend(process.env.RESEND_API_KEY);
   }
-
-  // Option 2: Generic SMTP server
-  if (process.env.SMTP_HOST && process.env.SMTP_USER) {
-    console.log('[EmailService] Using custom SMTP transporter (SMTP_HOST).');
-    return nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: parseInt(process.env.SMTP_PORT || '587', 10),
-      secure: process.env.SMTP_SECURE === 'true',
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS
-      }
-    });
-  }
-
-  console.warn('[EmailService] ⚠️  No email credentials configured. Set EMAIL_USER + EMAIL_PASS in Render environment variables.');
-  return null;
+  return _resend;
 }
 
 /**
- * Send Password Reset Email
- * @param {Object} opts - { email, name, resetUrl }
+ * Send Password Reset Email via Resend
+ * @param {Object} opts
+ * @param {string} opts.email    — Recipient email address
+ * @param {string} opts.name     — Recipient display name
+ * @param {string} opts.resetUrl — Full password reset URL with token
  */
 async function sendPasswordResetEmail({ email, name, resetUrl }) {
   const recipientName = name || 'Valued User';
-  const fromEmail = process.env.EMAIL_FROM ||
-                    process.env.EMAIL_USER ||
-                    process.env.SMTP_FROM  ||
-                    process.env.SMTP_USER  ||
-                    'no-reply@worldtrainerforum.com';
-  
+
+  // Use verified custom domain sender when available, else use Resend test sender
+  const fromAddress = process.env.RESEND_FROM || 'onboarding@resend.dev';
+  const fromFormatted = `World Trainer Forum <${fromAddress}>`;
+
   const subject = 'Reset Your Password — World Trainer Forum';
 
   const htmlContent = `
@@ -109,12 +88,8 @@ async function sendPasswordResetEmail({ email, name, resetUrl }) {
       margin: 0;
       text-transform: uppercase;
     }
-    .brand-gold {
-      color: #C5A059;
-    }
-    .content {
-      padding: 36px 40px;
-    }
+    .brand-gold { color: #C5A059; }
+    .content { padding: 36px 40px; }
     .greeting {
       font-size: 18px;
       font-weight: 600;
@@ -172,10 +147,7 @@ async function sendPasswordResetEmail({ email, name, resetUrl }) {
       margin-top: 24px;
       line-height: 1.5;
     }
-    .link-fallback a {
-      color: #C5A059;
-      text-decoration: underline;
-    }
+    .link-fallback a { color: #C5A059; text-decoration: underline; }
     .footer {
       padding: 24px 40px;
       background: rgba(0, 0, 0, 0.3);
@@ -217,7 +189,8 @@ async function sendPasswordResetEmail({ email, name, resetUrl }) {
         <div class="notice-card">
           <p class="notice-title">⏱️ Security Notice</p>
           <p class="notice-text">
-            This password reset link will expire in <strong>15 minutes</strong>. If you did not initiate this request, you can safely ignore this email — your password will remain unchanged.
+            This password reset link will expire in <strong>15 minutes</strong>. If you did not initiate
+            this request, you can safely ignore this email — your password will remain unchanged.
           </p>
         </div>
 
@@ -236,33 +209,40 @@ async function sendPasswordResetEmail({ email, name, resetUrl }) {
 </html>
   `;
 
-  const textContent = `Hello ${recipientName},\n\nWe received a request to reset your password on World Trainer Forum.\n\nPlease use the following link to reset your password:\n${resetUrl}\n\nThis link will expire in 15 minutes.\nIf you did not request a password reset, please ignore this email.\n\nRegards,\nWorld Trainer Forum Team`;
+  const textContent = [
+    `Hello ${recipientName},`,
+    '',
+    'We received a request to reset your password on World Trainer Forum.',
+    '',
+    `Reset your password here:\n${resetUrl}`,
+    '',
+    'This link will expire in 15 minutes.',
+    'If you did not request a password reset, please ignore this email.',
+    '',
+    'Regards,',
+    'World Trainer Forum Team'
+  ].join('\n');
 
-  console.log(`\n📧 [PASSWORD RESET EMAIL LOG] To: ${email}\nReset URL: ${resetUrl}\n`);
+  console.log(`\n📧 [EmailService] Sending password reset email via Resend to: ${email}`);
+  console.log(`   Reset URL: ${resetUrl}`);
 
-  const transporter = createTransporter();
-  if (transporter) {
-    try {
-      await transporter.sendMail({
-        from: `"World Trainer Forum" <${fromEmail}>`,
-        to: email,
-        subject,
-        text: textContent,
-        html: htmlContent
-      });
-      console.log(`✅ [EmailService] Password reset email sent to ${email}`);
-      return { success: true };
-    } catch (err) {
-      console.error(`❌ [EmailService] Nodemailer error sending to ${email}:`, err.message);
-      console.error('[EmailService] Full error stack:', err.stack || err);
-      return { success: false, error: err.message };
-    }
-  } else {
-    console.log(`ℹ️ [EmailService] SMTP not configured. Logged reset link for dev mode.`);
-    return { success: true, simulated: true };
+  try {
+    const resend = getResend();
+    const response = await resend.emails.send({
+      from: fromFormatted,
+      to: email,
+      subject,
+      html: htmlContent,
+      text: textContent
+    });
+
+    console.log(`✅ [EmailService] Resend accepted email for ${email}. ID: ${response?.data?.id || 'n/a'}`);
+    return { success: true, id: response?.data?.id };
+  } catch (err) {
+    console.error(`❌ [EmailService] Resend error sending to ${email}:`, err.message);
+    console.error('[EmailService] Full error:', err);
+    throw err; // Re-throw so auth.js .catch() logs it properly
   }
 }
 
-module.exports = {
-  sendPasswordResetEmail
-};
+module.exports = { sendPasswordResetEmail };
