@@ -6,7 +6,7 @@
 let ORG_REQUIREMENTS_DATA = [];
 let ORG_HIRED_TRAINERS_DATA = [];
 
-const SERVER_ORIGIN = window.SERVER_ORIGIN || 'https://trainerforum.onrender.com';
+window.SERVER_ORIGIN = window.SERVER_ORIGIN || 'https://trainerforum.onrender.com';
 
 function getAuthHeaders() {
   const token = localStorage.getItem('token') || localStorage.getItem('wtf_auth_token');
