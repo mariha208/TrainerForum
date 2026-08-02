@@ -89,7 +89,7 @@ window.closeOrgSidebar = function () {
 };
 
 // ── TAB SWITCHING ─────────────────────────────────────────────────────────────
-window.switchOrgTab = function (tabId, btn) {
+window.switchOrgTab = function (tabId, targetParam) {
   const panels = document.querySelectorAll('.org-tab-panel');
   panels.forEach(p => p.classList.remove('active'));
 
@@ -103,11 +103,15 @@ window.switchOrgTab = function (tabId, btn) {
   const targetPanel = document.getElementById(targetId);
   if (targetPanel) targetPanel.classList.add('active');
 
-  if (btn) {
-    btn.classList.add('active');
-  } else {
-    const activeBtn = document.getElementById(`nav-item-${tabId}`);
-    if (activeBtn) activeBtn.classList.add('active');
+  let activeItem = document.getElementById(`nav-item-${tabId}`);
+  if (targetParam && targetParam.currentTarget) {
+    activeItem = targetParam.currentTarget.closest('.org-nav-item') || targetParam.currentTarget;
+  } else if (targetParam && targetParam.classList) {
+    activeItem = targetParam;
+  }
+
+  if (activeItem) {
+    activeItem.classList.add('active');
   }
 
   closeOrgSidebar();

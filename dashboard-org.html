@@ -55,7 +55,7 @@
   <main class="org-workspace">
     <div class="org-container">
 
-      <!-- TOP INNER ACTIONS BAR -->
+      <!-- TOP INNER ACTIONS BAR (CLEAN BRAND HEADER) -->
       <div class="org-top-bar">
         <div class="org-brand-box">
           <button type="button" class="org-mobile-menu-trigger" onclick="toggleOrgSidebar()" aria-label="Open Sidebar Menu">
@@ -71,17 +71,6 @@
             <p class="org-user-sub" id="org-user-text">Welcome back, Corporate L&D Lead</p>
           </div>
         </div>
-
-        <div class="org-top-actions">
-          <div class="org-search-wrap">
-            <span class="search-icon">🔍</span>
-            <input type="text" id="org-quick-search" placeholder="Search trainers, skills, domain..." oninput="handleOrgSearch(this.value)">
-          </div>
-
-          <button type="button" class="btn btn-org-primary" onclick="openPostRFPModal()">
-            <span>+ Post Requirement (RFP)</span>
-          </button>
-        </div>
       </div>
 
       <!-- INNER DASHBOARD WORKSPACE (SIDEBAR + CONTENT) -->
@@ -94,7 +83,7 @@
             <button type="button" class="sidebar-close-btn" onclick="closeOrgSidebar()">✕</button>
           </div>
           <nav class="org-nav-menu">
-            <button type="button" class="org-nav-item active" id="nav-item-overview" onclick="switchOrgTab('overview', this)">
+            <button type="button" class="org-nav-item active" id="nav-item-overview" onclick="switchOrgTab('overview', event)">
               <span class="nav-ico">📊</span>
               <span>Overview</span>
             </button>
@@ -102,7 +91,7 @@
               <span class="nav-ico">👥</span>
               <span>Find & Hire Trainers</span>
             </a>
-            <button type="button" class="org-nav-item" id="nav-item-requirements" onclick="switchOrgTab('requirements', this)">
+            <button type="button" class="org-nav-item" id="nav-item-requirements" onclick="switchOrgTab('requirements', event)">
               <span class="nav-ico">📋</span>
               <span>Requirements</span>
               <span class="org-nav-count" id="count-reqs">3</span>
