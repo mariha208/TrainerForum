@@ -92,6 +92,12 @@ const userSchema = new mongoose.Schema(
 
     // ── Firebase UID link (if using Firebase Auth) ────────────
     firebaseUid:   { type: String, default: '' },
+
+    // ── Security & Authentication ─────────────────────────────
+    passwordResetToken:   { type: String },
+    passwordResetExpires: { type: Date },
+    authProvider:         { type: String, enum: ['local', 'google'], default: 'local' },
+    googleId:             { type: String, default: '' },
   },
   {
     timestamps: true,

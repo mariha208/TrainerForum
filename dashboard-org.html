@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Organization Portal — World Trainer Forum</title>
+  <meta name="description" content="Corporate B2B Organization Dashboard for discovering, hiring, managing, and rating expert trainers.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Existing Site Stylesheets (Preserved) -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/auth-modal.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  
+  <!-- Organization Dashboard Custom CSS -->
+  <link rel="stylesheet" href="css/org-dashboard.css">
+</head>
+<body class="db-body">
+
+  <!-- ═════════════════════════════════════════════════════════════════════
+       GLOBAL NAVIGATION HEADER (PRESERVED)
+  ═════════════════════════════════════════════════════════════════════ -->
+  <header class="header">
+    <div class="container nav-container">
+      <a href="index.html" class="logo">
+        <img src="bglogo.png" alt="World Trainer Forum Logo" class="logo-img">
+        <span>WORLD <span class="gold-text">TRAINER</span> FORUM</span>
+      </a>
+
+      <nav class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="find-trainers.html">Find Trainers</a>
+        <a href="categories.html">Categories</a>
+        <a href="dashboard-org.html" class="active">Dashboard</a>
+      </nav>
+
+      <div class="header-actions" id="header-auth-actions">
+        <!-- Dynamic User Session Info rendered by js/app.js -->
+      </div>
+
+      <button class="mobile-toggle" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ═════════════════════════════════════════════════════════════════════
+       MAIN INNER WORKSPACE AREA (ORGANIZATION PORTAL)
+  ═════════════════════════════════════════════════════════════════════ -->
+  <main class="org-workspace">
+    <div class="org-container">
+
+      <!-- TOP INNER ACTIONS BAR -->
+      <div class="org-top-bar">
+        <div class="org-brand-box">
+          <img src="https://images.unsplash.com/photo-1549923746-c502d488b3ea?w=150&auto=format&fit=crop&q=80" alt="Company Logo" class="org-logo">
+          <div>
+            <div class="org-badge-wrap">
+              <span class="org-portal-badge">Organization Portal</span>
+              <span class="org-plan-badge" id="org-plan-text">Enterprise Plan</span>
+            </div>
+            <h1 class="org-company-name" id="org-name-text">Acme Global Technologies</h1>
+            <p class="org-user-sub" id="org-user-text">Welcome back, Corporate L&D Lead</p>
+          </div>
+        </div>
+
+        <div class="org-top-actions">
+          <div class="org-search-wrap">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="org-quick-search" placeholder="Search trainers, skills, domain..." oninput="handleOrgSearch(this.value)">
+          </div>
+
+          <button type="button" class="btn btn-org-primary" onclick="openPostRFPModal()">
+            <span>+ Post Requirement (RFP)</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- INNER DASHBOARD WORKSPACE (SIDEBAR + CONTENT) -->
+      <div class="org-layout">
+        
+        <!-- INNER SIDEBAR NAVIGATION -->
+        <aside class="org-sidebar">
+          <nav class="org-nav-menu">
+            <button type="button" class="org-nav-item active" onclick="switchOrgTab('overview', this)">
+              <span class="nav-ico">📊</span>
+              <span>Overview</span>
+            </button>
+            <button type="button" class="org-nav-item" onclick="switchOrgTab('marketplace', this)">
+              <span class="nav-ico">👥</span>
+              <span>Find & Hire Trainers</span>
+            </button>
+            <button type="button" class="org-nav-item" onclick="switchOrgTab('rfps', this)">
+              <span class="nav-ico">📋</span>
+              <span>Active RFPs & Bids</span>
+              <span class="org-nav-count" id="count-rfps">4</span>
+            </button>
+            <button type="button" class="org-nav-item" onclick="switchOrgTab('reviews', this)">
+              <span class="nav-ico">⭐</span>
+              <span>Reviews & Ratings</span>
+              <span class="org-nav-count badge-amber" id="count-reviews">1</span>
+            </button>
+            <button type="button" class="org-nav-item" onclick="switchOrgTab('settings', this)">
+              <span class="nav-ico">⚙️</span>
+              <span>Settings & Billing</span>
+            </button>
+          </nav>
+        </aside>
+
+        <!-- MAIN CONTENT AREA -->
+        <section class="org-content">
+
+          <!-- ═════════════════════════════════════════════════════════════════
+               VIEW A: OVERVIEW TAB
+          ═════════════════════════════════════════════════════════════════ -->
+          <div id="org-tab-overview" class="org-tab-panel active">
+            <!-- 4 KEY KPI SUMMARY CARDS -->
+            <div class="org-kpi-grid">
+              <div class="org-kpi-card">
+                <div class="kpi-ico ico-blue">📄</div>
+                <div>
+                  <div class="kpi-label">Active RFPs Posted</div>
+                  <div class="kpi-val" id="kpi-rfps">4</div>
+                </div>
+              </div>
+
+              <div class="org-kpi-card">
+                <div class="kpi-ico ico-green">🤝</div>
+                <div>
+                  <div class="kpi-label">Total Hired Trainers</div>
+                  <div class="kpi-val" id="kpi-hired">18</div>
+                </div>
+              </div>
+
+              <div class="org-kpi-card">
+                <div class="kpi-ico ico-purple">⏱️</div>
+                <div>
+                  <div class="kpi-label">Hours Delivered</div>
+                  <div class="kpi-val" id="kpi-hours">340h</div>
+                </div>
+              </div>
+
+              <div class="org-kpi-card">
+                <div class="kpi-ico ico-amber">⭐</div>
+                <div>
+                  <div class="kpi-label">Avg Given Rating</div>
+                  <div class="kpi-val" id="kpi-rating">4.9 / 5</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- TOP RECOMMENDED TRAINERS GRID -->
+            <div class="org-card mb-24">
+              <div class="card-header-flex">
+                <div>
+                  <h2 className="card-title-text">Top Recommended Trainers</h2>
+                  <p className="card-sub-text">Handpicked experts matching your AI & Engineering focus</p>
+                </div>
+                <button type="button" class="org-link-btn" onclick="switchOrgTab('marketplace')">View All Marketplace →</button>
+              </div>
+
+              <div class="trainer-rec-grid" id="rec-trainers-container">
+                <!-- Dynamically Rendered by js/org-dashboard.js -->
+              </div>
+            </div>
+
+            <!-- RECENT BIDS & PROPOSALS LIST -->
+            <div class="org-card">
+              <h2 class="card-title-text mb-16">Recent Bids & Proposals</h2>
+              <div class="bids-list" id="recent-bids-container">
+                <!-- Dynamically Rendered by js/org-dashboard.js -->
+              </div>
+            </div>
+          </div>
+
+          <!-- ═════════════════════════════════════════════════════════════════
+               VIEW B: FIND & HIRE TRAINERS (TALENT MARKETPLACE)
+          ═════════════════════════════════════════════════════════════════ -->
+          <div id="org-tab-marketplace" class="org-tab-panel">
+            <!-- ADVANCED FILTER BAR -->
+            <div class="org-card mb-24">
+              <div class="filter-header">
+                <h3 class="card-title-text">🎛️ Filter Talent Marketplace</h3>
+                <span class="filter-count-text" id="marketplace-count-label">Showing Expert Trainers</span>
+              </div>
+
+              <div class="filter-grid">
+                <div>
+                  <label class="filter-label">Domain / Skill</label>
+                  <select id="filter-domain" class="org-select" onchange="applyMarketplaceFilters()">
+                    <option value="All">All Domains</option>
+                    <option value="AI">AI & Machine Learning</option>
+                    <option value="Leadership">Leadership & EQ</option>
+                    <option value="Security">Cloud & Cybersecurity</option>
+                    <option value="Agile">Agile & Product</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label class="filter-label">Delivery Format</label>
+                  <select id="filter-format" class="org-select" onchange="applyMarketplaceFilters()">
+                    <option value="All">All Formats</option>
+                    <option value="Virtual">Virtual Only</option>
+                    <option value="Onsite">Onsite Only</option>
+                    <option value="Hybrid">Hybrid</option>
+                  </select>
+                </div>
+
+                <div>
+                  <div class="flex-between">
+                    <label class="filter-label">Max Daily Rate</label>
+                    <span class="rate-val-label" id="max-price-display">$2000</span>
+                  </div>
+                  <input type="range" id="filter-price" min="500" max="3000" step="100" value="2000" class="org-slider" oninput="document.getElementById('max-price-display').textContent = '$' + this.value; applyMarketplaceFilters();">
+                </div>
+
+                <div>
+                  <label class="filter-label">Min Rating</label>
+                  <select id="filter-rating" class="org-select" onchange="applyMarketplaceFilters()">
+                    <option value="4.0">4.0+ Stars</option>
+                    <option value="4.5">4.5+ Stars</option>
+                    <option value="4.8">4.8+ Stars</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- TRAINER CARD GRID -->
+            <div class="trainer-card-grid" id="marketplace-grid-container">
+              <!-- Dynamically Rendered by js/org-dashboard.js -->
+            </div>
+          </div>
+
+          <!-- ═════════════════════════════════════════════════════════════════
+               VIEW C: ACTIVE RFPS & BIDS MANAGEMENT
+          ═════════════════════════════════════════════════════════════════ -->
+          <div id="org-tab-rfps" class="org-tab-panel">
+            <div class="card-header-flex mb-16">
+              <h2 class="card-title-text">Corporate RFPs & Bids Management</h2>
+              <button type="button" class="btn btn-org-primary" onclick="openPostRFPModal()">+ Post New RFP</button>
+            </div>
+
+            <div class="rfp-list-container" id="rfp-list-container">
+              <!-- Dynamically Rendered by js/org-dashboard.js -->
+            </div>
+          </div>
+
+          <!-- ═════════════════════════════════════════════════════════════════
+               VIEW D: REVIEWS & RATINGS MODULE
+          ═════════════════════════════════════════════════════════════════ -->
+          <div id="org-tab-reviews" class="org-tab-panel">
+            <div class="org-card">
+              <h2 class="card-title-text">Post-Session Reviews & Quality Evaluations</h2>
+              <p class="card-sub-text mb-24">Rate completed sessions across 4 key parameters to maintain platform quality standards.</p>
+
+              <div class="session-reviews-list" id="reviews-list-container">
+                <!-- Dynamically Rendered by js/org-dashboard.js -->
+              </div>
+            </div>
+          </div>
+
+          <!-- ═════════════════════════════════════════════════════════════════
+               VIEW E: ORGANIZATION SETTINGS & BILLING
+          ═════════════════════════════════════════════════════════════════ -->
+          <div id="org-tab-settings" class="org-tab-panel">
+            <div class="org-card">
+              <h2 class="card-title-text mb-16">Organization Profile & Subscription Settings</h2>
+
+              <div class="form-grid-2">
+                <div class="form-group">
+                  <label class="filter-label">Company Name</label>
+                  <input type="text" id="org-settings-name" value="Acme Global Technologies" class="org-input">
+                </div>
+                <div class="form-group">
+                  <label class="filter-label">L&D Contact Email</label>
+                  <input type="email" id="org-settings-email" value="s.jenkins@acmeglobal.com" class="org-input">
+                </div>
+              </div>
+
+              <div class="plan-card-footer">
+                <div>
+                  <h4 class="font-bold text-slate-900">Active Subscription: Enterprise Tier</h4>
+                  <p class="card-sub-text">Unlimited RFP postings, direct trainer messaging & SLA support</p>
+                </div>
+                <button type="button" class="btn btn-dark">Manage Billing</button>
+              </div>
+            </div>
+          </div>
+
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <!-- ═════════════════════════════════════════════════════════════════════
+       MODAL 1: POST RFP MODAL
+  ═════════════════════════════════════════════════════════════════════ -->
+  <div id="modal-post-rfp" class="org-modal-overlay">
+    <div class="org-modal-card">
+      <button type="button" class="modal-close-btn" onclick="closePostRFPModal()">✕</button>
+      <h2 class="modal-title">+ Post Training Requirement (RFP)</h2>
+      
+      <form onsubmit="handleRFPSubmit(event)">
+        <div class="form-group mb-12">
+          <label class="filter-label">Requirement Title</label>
+          <input type="text" id="rfp-input-title" placeholder="e.g. 3-Day Executive Generative AI Workshop" class="org-input" required>
+        </div>
+
+        <div class="form-grid-2 mb-12">
+          <div class="form-group">
+            <label class="filter-label">Target Domain</label>
+            <select id="rfp-input-domain" class="org-select">
+              <option>AI & Machine Learning</option>
+              <option>Executive Leadership</option>
+              <option>Cloud & Security</option>
+              <option>Agile & Product</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="filter-label">Delivery Format</label>
+            <select id="rfp-input-format" class="org-select">
+              <option>Virtual</option>
+              <option>Onsite</option>
+              <option>Hybrid</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group mb-16">
+          <label class="filter-label">Detailed Description & Objectives</label>
+          <textarea id="rfp-input-desc" rows="3" placeholder="Describe audience size, target outcomes, and specific topics..." class="org-textarea" required></textarea>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-ghost" onclick="closePostRFPModal()">Cancel</button>
+          <button type="submit" class="btn btn-org-primary">Publish RFP</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ═════════════════════════════════════════════════════════════════════
+       MODAL 2: INTERACTIVE 4-PARAMETER RATING EVALUATION MODAL
+  ═════════════════════════════════════════════════════════════════════ -->
+  <div id="modal-rating" class="org-modal-overlay">
+    <div class="org-modal-card">
+      <button type="button" class="modal-close-btn" onclick="closeRatingModal()">✕</button>
+      <h2 class="modal-title">Evaluate Session & Rate Trainer</h2>
+      <p class="card-sub-text mb-16" id="rating-modal-subtitle">Strategic Change Management Workshop</p>
+
+      <form onsubmit="handleRatingSubmit(event)">
+        <div class="rating-params-box mb-16">
+          <div class="param-row">
+            <span class="param-label">1. Subject Matter Expertise</span>
+            <div class="star-rating-picker" data-param="subjectExpertise">
+              <span onclick="setStarRating('subjectExpertise', 1)">★</span>
+              <span onclick="setStarRating('subjectExpertise', 2)">★</span>
+              <span onclick="setStarRating('subjectExpertise', 3)">★</span>
+              <span onclick="setStarRating('subjectExpertise', 4)">★</span>
+              <span onclick="setStarRating('subjectExpertise', 5)" class="active">★</span>
+            </div>
+          </div>
+
+          <div class="param-row">
+            <span class="param-label">2. Audience Engagement & Pedagogy</span>
+            <div class="star-rating-picker" data-param="audienceEngagement">
+              <span onclick="setStarRating('audienceEngagement', 1)">★</span>
+              <span onclick="setStarRating('audienceEngagement', 2)">★</span>
+              <span onclick="setStarRating('audienceEngagement', 3)">★</span>
+              <span onclick="setStarRating('audienceEngagement', 4)">★</span>
+              <span onclick="setStarRating('audienceEngagement', 5)" class="active">★</span>
+            </div>
+          </div>
+
+          <div class="param-row">
+            <span class="param-label">3. Training Material Quality</span>
+            <div class="star-rating-picker" data-param="materialQuality">
+              <span onclick="setStarRating('materialQuality', 1)">★</span>
+              <span onclick="setStarRating('materialQuality', 2)">★</span>
+              <span onclick="setStarRating('materialQuality', 3)">★</span>
+              <span onclick="setStarRating('materialQuality', 4)">★</span>
+              <span onclick="setStarRating('materialQuality', 5)" class="active">★</span>
+            </div>
+          </div>
+
+          <div class="param-row">
+            <span class="param-label">4. Punctuality & Professionalism</span>
+            <div class="star-rating-picker" data-param="punctualityProfessionalism">
+              <span onclick="setStarRating('punctualityProfessionalism', 1)">★</span>
+              <span onclick="setStarRating('punctualityProfessionalism', 2)">★</span>
+              <span onclick="setStarRating('punctualityProfessionalism', 3)">★</span>
+              <span onclick="setStarRating('punctualityProfessionalism', 4)">★</span>
+              <span onclick="setStarRating('punctualityProfessionalism', 5)" class="active">★</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group mb-16">
+          <label class="filter-label">Written Feedback & Testimonial</label>
+          <textarea id="rating-input-feedback" rows="3" placeholder="Share specific feedback regarding trainer impact and session quality..." class="org-textarea" required></textarea>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-ghost" onclick="closeRatingModal()">Cancel</button>
+          <button type="submit" class="btn btn-success">Publish Verified Review ⭐</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Global Toast Notifications -->
+  <div id="global-toast-container"></div>
+
+  <!-- Existing Site Scripts -->
+  <script src="js/auth-modal.js"></script>
+  <script src="js/app.js"></script>
+
+  <!-- Organization Dashboard Controller -->
+  <script src="js/org-dashboard.js"></script>
+</body>
+</html>

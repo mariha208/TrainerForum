@@ -289,3 +289,39 @@
   color: rgba(255, 255, 255, 0.8);
   font-size: 0.95rem;
 }
+
+/* Password Toggle & Responsive Additions */
+.am-password-wrap {
+  position: relative;
+  width: 100%;
+}
+.am-pwd-toggle {
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+.am-pwd-toggle:hover {
+  opacity: 1 !important;
+  transform: translateY(-50%) scale(1.1) !important;
+}
+
+@media (max-width: 767px) {
+  .auth-container {
+    width: 95%;
+    max-width: 100%;
+    margin: 10px;
+    border-radius: 16px;
+  }
+  .auth-content {
+    padding: 24px 16px;
+  }
+  .am-form-group input,
+  .am-form-group select,
+  .am-form-group textarea {
+    min-height: 44px;
+    font-size: 16px; /* Prevents auto-zoom on iOS */
+  }
+  .am-btn-primary {
+    min-height: 48px;
+    width: 100%;
+  }
+}
+

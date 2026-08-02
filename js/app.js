@@ -1092,6 +1092,38 @@ function verifyUserSessionToken() {
   }
 }
 
+window.getDashboardUrl = function() {
+  try {
+    const session = JSON.parse(localStorage.getItem('userSession') || '{}');
+    const trainer = JSON.parse(localStorage.getItem('currentTrainer') || '{}');
+    const role = session.role || trainer.role || 'trainer';
+    if (role === 'client' || role === 'organization' || role === 'ORGANIZATION') {
+      return 'dashboard-org.html';
+    }
+  } catch (e) {}
+  return 'dashboard.html';
+};
+
+// ── ROLE-BASED DASHBOARD ROUTE GUARD ──────────────────────────────────────────
+(function checkRoleBasedDashboardAccess() {
+  try {
+    const session = JSON.parse(localStorage.getItem('userSession') || 'null');
+    if (!session) return;
+    const role = session.role || 'trainer';
+    const path = window.location.pathname;
+
+    if (path.includes('dashboard.html') && !path.includes('dashboard-org.html')) {
+      if (role === 'client' || role === 'organization' || role === 'ORGANIZATION') {
+        window.location.href = 'dashboard-org.html';
+      }
+    } else if (path.includes('dashboard-org.html')) {
+      if (role === 'trainer' || role === 'TRAINER') {
+        window.location.href = 'dashboard.html';
+      }
+    }
+  } catch (e) {}
+})();
+
 window.updateNavbarAuthUI = verifyUserSessionToken;
 
 // ── GLOBAL TOAST NOTIFICATION SYSTEM ─────────────────────────────────────────

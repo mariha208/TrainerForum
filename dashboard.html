@@ -1074,19 +1074,61 @@
       </div>
 
       <div class="grid-2" style="align-items:start">
-        <div class="db-card">
+        <div class="db-card" id="db-security-card">
           <div class="card-title">
             <div class="ct-ico">🔒</div>Security Settings
           </div>
-          <div class="form-group mb-12">
-            <label>Current Password</label>
-            <input type="password" class="form-control" placeholder="••••••••">
+
+          <!-- Google OAuth Managed Password View -->
+          <div id="google-auth-notice" style="display:none;padding:16px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.1);border-radius:12px;margin-bottom:12px;">
+            <p style="margin:0 0 12px 0;font-size:0.95rem;color:#cbd5e1;line-height:1.5;">
+              🔑 Password is managed through your Google account.
+            </p>
+            <a href="https://myaccount.google.com/security" target="_blank" rel="noopener noreferrer" class="btn btn-dark btn-sm" style="display:inline-flex;align-items:center;gap:6px;text-decoration:none;">
+              Manage Password ↗
+            </a>
           </div>
-          <div class="form-group mb-12">
-            <label>New Password</label>
-            <input type="password" class="form-control">
-          </div>
-          <button class="btn btn-dark btn-sm mt-4">Update Password</button>
+
+          <!-- Password Form View -->
+          <form id="db-password-form" onsubmit="handleDashboardPasswordUpdate(event)" novalidate>
+            <div class="form-group mb-12">
+              <label>Current Password</label>
+              <div style="position:relative;">
+                <input type="password" id="dbCurrentPassword" class="form-control" placeholder="••••••••" required style="padding-right:40px;">
+                <button type="button" onclick="togglePasswordVisibility('dbCurrentPassword', this)" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--tm, #a0aec0);cursor:pointer;font-size:1.1rem;" title="Show/Hide Password">👁️</button>
+              </div>
+              <div style="text-align:right;margin-top:4px;">
+                <a href="#" onclick="handleDashboardForgotCurrentPassword(); return false;" style="color:#C5A059;font-size:0.82rem;text-decoration:none;font-weight:600;">Forgot Current Password?</a>
+              </div>
+            </div>
+
+            <div class="form-group mb-12">
+              <label>New Password</label>
+              <div style="position:relative;">
+                <input type="password" id="dbNewPassword" class="form-control" placeholder="Enter new password" required oninput="onDbPasswordInput()" style="padding-right:40px;">
+                <button type="button" onclick="togglePasswordVisibility('dbNewPassword', this)" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--tm, #a0aec0);cursor:pointer;font-size:1.1rem;" title="Show/Hide Password">👁️</button>
+              </div>
+            </div>
+
+            <!-- Password Strength Bar -->
+            <div id="db-strength-wrap" style="margin-bottom:12px;">
+              <div style="width:100%;height:5px;background:rgba(255,255,255,0.1);border-radius:3px;overflow:hidden;margin-bottom:4px;">
+                <div id="db-strength-bar" style="height:100%;width:0%;background:#ef4444;transition:width 0.3s, background 0.3s;"></div>
+              </div>
+              <div id="db-strength-label" style="font-size:0.75rem;color:#94a3b8;font-weight:600;">Password Strength</div>
+            </div>
+
+            <div class="form-group mb-12">
+              <label>Confirm New Password</label>
+              <div style="position:relative;">
+                <input type="password" id="dbConfirmPassword" class="form-control" placeholder="Re-enter new password" required oninput="onDbConfirmPasswordInput()" style="padding-right:40px;">
+                <button type="button" onclick="togglePasswordVisibility('dbConfirmPassword', this)" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--tm, #a0aec0);cursor:pointer;font-size:1.1rem;" title="Show/Hide Password">👁️</button>
+              </div>
+              <div id="db-match-msg" style="font-size:0.8rem;margin-top:4px;display:none;"></div>
+            </div>
+
+            <button type="submit" id="db-update-password-btn" class="btn btn-dark btn-sm mt-4">Update Password</button>
+          </form>
         </div>
       </div>
     </section>

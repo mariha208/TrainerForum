@@ -59,22 +59,151 @@ function buildLoginView(role) {
       </div>
       <div class="am-form-group">
         <label>Password</label>
-        <input type="password" id="loginPassword" placeholder="••••••••">
+        <div class="am-password-wrap" style="position:relative;">
+          <input type="password" id="loginPassword" placeholder="••••••••" style="width:100%;padding-right:44px;">
+          <button type="button" class="am-pwd-toggle" onclick="togglePasswordVisibility('loginPassword', this)" title="Show/Hide Password" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:rgba(255,255,255,0.6);cursor:pointer;font-size:1.1rem;padding:4px;line-height:1;">👁️</button>
+        </div>
       </div>
       <div class="am-opts">
         <label class="am-checkbox-label">
-          <input type="checkbox" class="am-checkbox"> Remember me
+          <input type="checkbox" id="loginRemember" class="am-checkbox"> Remember me
         </label>
-        <a href="#" class="am-link">Forgot Password?</a>
+        <a href="#" class="am-link" onclick="openForgotPasswordModal(); return false;">Forgot Password?</a>
       </div>
     </div>
     
     <div class="auth-footer">
-      <button class="btn am-btn-primary" onclick="handleLogin('${role}')">Sign In</button>
+      <button class="btn am-btn-primary" id="loginSubmitBtn" onclick="handleLogin('${role}')">Sign In</button>
       <p class="am-switch">Don't have an account? <a href="#" onclick="renderAuthView('register', '${role}')">Create Account</a></p>
     </div>
   `;
 }
+
+// ── SHOW / HIDE PASSWORD TOGGLE ──────────────────────────────────────────────
+window.togglePasswordVisibility = function(inputId, btn) {
+  const input = document.getElementById(inputId);
+  if (!input) return;
+  if (input.type === 'password') {
+    input.type = 'text';
+    if (btn) btn.innerHTML = '🙈';
+  } else {
+    input.type = 'password';
+    if (btn) btn.innerHTML = '👁️';
+  }
+};
+
+// ── FORGOT PASSWORD MODAL ───────────────────────────────────────────────────
+window.openForgotPasswordModal = function(prefilledEmail = '') {
+  let modal = document.getElementById('auth-modal');
+  if (!modal) return;
+  
+  const currentEmail = prefilledEmail || document.getElementById('loginEmail')?.value?.trim() || '';
+
+  modal.innerHTML = `
+    <div class="auth-overlay" onclick="closeAuthModal()"></div>
+    <div class="auth-container">
+      <button class="auth-close" onclick="closeAuthModal()">✕</button>
+      <div id="auth-content" class="auth-content">
+        <div class="auth-header">
+          <h2>Reset Your Password</h2>
+          <p>Enter your registered email address and we'll send you a link to reset your password.</p>
+        </div>
+        
+        <div class="auth-form-body am-grid-1">
+          <div class="am-form-group">
+            <label>Registered Email Address</label>
+            <input type="email" id="forgotEmail" placeholder="you@example.com" value="${currentEmail}" autofocus>
+            <div id="forgotEmailError" style="color:#ef4444;font-size:0.82rem;display:none;margin-top:4px;"></div>
+          </div>
+
+          <div id="forgotNoticeBox" style="display:none;padding:14px 16px;background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3);border-radius:10px;color:#4ade80;font-size:0.9rem;line-height:1.5;margin-bottom:15px;">
+            If an account exists, we've sent a password reset link to your email. Please check your inbox and spam folder.
+          </div>
+        </div>
+
+        <div class="auth-footer">
+          <button class="btn am-btn-primary" id="forgotSubmitBtn" onclick="handleForgotPasswordSubmit()">Send Reset Link</button>
+          <p class="am-switch" style="margin-top:16px;">Remember your password? <a href="#" class="am-link" onclick="renderAuthView('login', 'Organization'); return false;">Back to Login</a></p>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  modal.classList.add('active');
+  document.body.style.overflow = 'hidden';
+};
+
+window.handleForgotPasswordSubmit = async function() {
+  const emailInput = document.getElementById('forgotEmail');
+  const errDiv = document.getElementById('forgotEmailError');
+  const noticeBox = document.getElementById('forgotNoticeBox');
+  const submitBtn = document.getElementById('forgotSubmitBtn');
+
+  if (!emailInput) return;
+  const email = emailInput.value.trim();
+
+  if (!email || !/\S+@\S+\.\S+/.test(email)) {
+    if (errDiv) {
+      errDiv.textContent = 'Please enter a valid email address.';
+      errDiv.style.display = 'block';
+    }
+    return;
+  }
+  if (errDiv) errDiv.style.display = 'none';
+
+  // Loading state
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = 'Sending Reset Link...';
+    submitBtn.style.opacity = '0.7';
+  }
+
+  try {
+    const res = await fetch(`${SERVER_ORIGIN}/api/auth/forgot-password`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+    const data = await res.json();
+
+    if (res.status === 429) {
+      if (errDiv) {
+        errDiv.textContent = data.error || 'Too many reset requests. Please wait 15 minutes.';
+        errDiv.style.display = 'block';
+      }
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = 'Send Reset Link';
+        submitBtn.style.opacity = '1';
+      }
+      return;
+    }
+
+    // Always display non-revealing success message
+    if (noticeBox) {
+      noticeBox.style.display = 'block';
+    }
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '✓ Reset Link Sent';
+      submitBtn.style.background = '#22c55e';
+      submitBtn.style.color = '#ffffff';
+      submitBtn.style.opacity = '1';
+    }
+
+    if (window.showToast) {
+      window.showToast("If an account exists, we've sent a password reset link.", 4000);
+    }
+  } catch (err) {
+    console.error('Forgot password request error:', err);
+    if (noticeBox) noticeBox.style.display = 'block';
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = 'Send Reset Link';
+      submitBtn.style.opacity = '1';
+    }
+  }
+};
 
 function buildRegisterView(role) {
   const isOrg = role === 'Organization';
@@ -449,8 +578,9 @@ async function completeRegistration() {
 
       if (typeof window.updateNavbarAuthUI === "function") {
         window.updateNavbarAuthUI();
+        window.location.href = sessionUser.role === 'client' || sessionUser.role === 'organization' ? 'dashboard-org.html' : 'dashboard.html';
       } else {
-        window.location.href = 'dashboard.html'; // Redirect to dashboard immediately on new signup
+        window.location.href = sessionUser.role === 'client' || sessionUser.role === 'organization' ? 'dashboard-org.html' : 'dashboard.html';
       }
     } else {
       alert(data.error || "Failed to register account.");
@@ -523,6 +653,10 @@ window.handleLogin = async function (role) {
 
       if (typeof window.updateNavbarAuthUI === "function") {
         window.updateNavbarAuthUI();
+      }
+      const targetDash = (sessionUser.role === 'client' || sessionUser.role === 'organization') ? 'dashboard-org.html' : 'dashboard.html';
+      if (!window.location.pathname.includes(targetDash)) {
+        window.location.href = targetDash;
       } else {
         window.location.reload();
       }
@@ -534,3 +668,22 @@ window.handleLogin = async function (role) {
     alert("An error occurred during authentication.");
   }
 };
+
+// ── AUTO-OPEN MODAL ON HASH NAVIGATION ──────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  const hash = window.location.hash;
+  if (hash === '#login' || hash === '#signin') {
+    if (window.openAuthModal) window.openAuthModal('login');
+  } else if (hash === '#forgot-password' || hash === '#reset-password') {
+    if (window.openForgotPasswordModal) window.openForgotPasswordModal();
+  }
+});
+
+window.addEventListener('hashchange', () => {
+  const hash = window.location.hash;
+  if (hash === '#login' || hash === '#signin') {
+    if (window.openAuthModal) window.openAuthModal('login');
+  } else if (hash === '#forgot-password' || hash === '#reset-password') {
+    if (window.openForgotPasswordModal) window.openForgotPasswordModal();
+  }
+});

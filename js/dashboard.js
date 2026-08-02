@@ -928,6 +928,7 @@ document.addEventListener("DOMContentLoaded", () => {
         localStorage.setItem("currentTrainer", JSON.stringify(merged));
         populateDashboardInputs(merged);
         syncDisplayCardUI(merged);
+        checkGoogleAuthStatus(merged);
         console.log("Dashboard re-rendered with fresh MongoDB data.");
       }
     })
@@ -940,4 +941,188 @@ document.addEventListener("DOMContentLoaded", () => {
         window.location.href = "index.html"; // Redirect to home so they can register
       }
     });
+
+  // Run Google OAuth check on startup
+  const localTrainer = JSON.parse(localStorage.getItem('currentTrainer') || '{}');
+  checkGoogleAuthStatus(localTrainer);
 });
+
+// ── DASHBOARD SECURITY SETTINGS HANDLERS ──────────────────────────────────────
+function checkGoogleAuthStatus(userData) {
+  const form = document.getElementById('db-password-form');
+  const notice = document.getElementById('google-auth-notice');
+  if (!form || !notice) return;
+
+  if (userData && userData.authProvider === 'google') {
+    form.style.display = 'none';
+    notice.style.display = 'block';
+  } else {
+    form.style.display = 'block';
+    notice.style.display = 'none';
+  }
+}
+
+window.onDbPasswordInput = function() {
+  const pwd = document.getElementById('dbNewPassword')?.value || '';
+  const bar = document.getElementById('db-strength-bar');
+  const label = document.getElementById('db-strength-label');
+
+  if (!bar || !label) return;
+
+  const lenOk = pwd.length >= 8;
+  const upperOk = /[A-Z]/.test(pwd);
+  const lowerOk = /[a-z]/.test(pwd);
+  const numOk = /[0-9]/.test(pwd);
+  const specOk = /[^A-Za-z0-9]/.test(pwd);
+
+  let score = 0;
+  if (lenOk) score += 20;
+  if (upperOk) score += 20;
+  if (lowerOk) score += 20;
+  if (numOk) score += 20;
+  if (specOk) score += 20;
+
+  bar.style.width = `${score}%`;
+
+  if (score === 0) {
+    bar.style.backgroundColor = '#ef4444';
+    label.textContent = 'Password Strength';
+    label.style.color = '#94a3b8';
+  } else if (score < 60) {
+    bar.style.backgroundColor = '#ef4444';
+    label.textContent = 'Weak (Requires 8+ chars, upper, lower, number, special)';
+    label.style.color = '#ef4444';
+  } else if (score < 100) {
+    bar.style.backgroundColor = '#eab308';
+    label.textContent = 'Medium Strength';
+    label.style.color = '#eab308';
+  } else {
+    bar.style.backgroundColor = '#22c55e';
+    label.textContent = 'Strong Password ✓';
+    label.style.color = '#22c55e';
+  }
+
+  window.onDbConfirmPasswordInput();
+};
+
+window.onDbConfirmPasswordInput = function() {
+  const pwd = document.getElementById('dbNewPassword')?.value || '';
+  const confirm = document.getElementById('dbConfirmPassword')?.value || '';
+  const msg = document.getElementById('db-match-msg');
+  if (!msg) return;
+
+  if (!confirm) {
+    msg.style.display = 'none';
+    return;
+  }
+
+  msg.style.display = 'block';
+  if (pwd === confirm) {
+    msg.textContent = '✓ Passwords match';
+    msg.style.color = '#4ade80';
+  } else {
+    msg.textContent = '✕ Passwords do not match';
+    msg.style.color = '#ef4444';
+  }
+};
+
+window.handleDashboardPasswordUpdate = async function(e) {
+  e.preventDefault();
+  const currentPassword = document.getElementById('dbCurrentPassword')?.value;
+  const newPassword = document.getElementById('dbNewPassword')?.value;
+  const confirmPassword = document.getElementById('dbConfirmPassword')?.value;
+  const submitBtn = document.getElementById('db-update-password-btn');
+
+  if (!currentPassword || !newPassword || !confirmPassword) {
+    if (window.showToast) window.showToast('Please fill in all password fields.');
+    else alert('Please fill in all password fields.');
+    return;
+  }
+
+  if (newPassword !== confirmPassword) {
+    if (window.showToast) window.showToast('New password and confirm password do not match.');
+    else alert('New password and confirm password do not match.');
+    return;
+  }
+
+  if (newPassword.length < 8 || !/[A-Z]/.test(newPassword) || !/[a-z]/.test(newPassword) || !/[0-9]/.test(newPassword) || !/[^A-Za-z0-9]/.test(newPassword)) {
+    if (window.showToast) window.showToast('New password must be at least 8 chars with uppercase, lowercase, number & special char.');
+    else alert('Password does not meet security requirements.');
+    return;
+  }
+
+  const token = localStorage.getItem('authToken');
+  if (!token) {
+    if (window.showToast) window.showToast('Session expired. Please log in again.');
+    return;
+  }
+
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Updating...';
+  }
+
+  try {
+    const res = await fetch(`${SERVER_ORIGIN}/api/auth/change-password`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({ currentPassword, newPassword })
+    });
+    const data = await res.json();
+
+    if (res.ok) {
+      if (window.showToast) window.showToast(data.message || 'Password updated successfully!');
+      else alert('Password updated successfully!');
+
+      document.getElementById('dbCurrentPassword').value = '';
+      document.getElementById('dbNewPassword').value = '';
+      document.getElementById('dbConfirmPassword').value = '';
+      document.getElementById('db-match-msg').style.display = 'none';
+      document.getElementById('db-strength-bar').style.width = '0%';
+      document.getElementById('db-strength-label').textContent = 'Password Strength';
+    } else {
+      if (window.showToast) window.showToast(data.error || 'Failed to update password.');
+      else alert(data.error || 'Failed to update password.');
+    }
+  } catch (err) {
+    console.error('Change password error:', err);
+    if (window.showToast) window.showToast('Network error while updating password.');
+  } finally {
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Update Password';
+    }
+  }
+};
+
+window.handleDashboardForgotCurrentPassword = async function() {
+  let email = '';
+  try {
+    const trainer = JSON.parse(localStorage.getItem('currentTrainer') || '{}');
+    const session = JSON.parse(localStorage.getItem('userSession') || '{}');
+    email = trainer.email || trainer.trainerEmail || session.email || session.trainerEmail || '';
+  } catch (e) { }
+
+  if (window.openForgotPasswordModal) {
+    window.openForgotPasswordModal(email);
+  } else {
+    // Fallback direct API call
+    if (!email) email = prompt('Enter your registered email address for password reset:');
+    if (!email) return;
+
+    try {
+      await fetch(`${SERVER_ORIGIN}/api/auth/forgot-password`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+      if (window.showToast) window.showToast("If an account exists, we've sent a password reset link.", 4000);
+      else alert("If an account exists, we've sent a password reset link.");
+    } catch (err) {
+      console.error('Forgot password error:', err);
+    }
+  }
+};

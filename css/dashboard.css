@@ -4106,4 +4106,568 @@ button,
 .btn {
   cursor: pointer !important;
 }
+
+/* ════════════════════════════════════════════════════════════════════════
+   MOBILE RESPONSIVE — AVAILABILITY & PORTFOLIO  (v4 — FINAL)
+   Target: 320px – 767px (tablet included: 768px – 1023px)
+   Rules: Desktop (≥1024px) layout UNCHANGED.
+         Tablet (768px–1023px): gentle adjustments only.
+         Mobile (320px–767px): full single-column, touch-friendly.
+   Strategy: Use high-specificity selectors (#sec-*) to win over the
+             conflicting generic grid overrides already in the file.
+════════════════════════════════════════════════════════════════════════ */
+
+/* ── 0. Global containment — prevent any child causing horizontal scroll ── */
+html,
+body {
+  overflow-x: hidden !important;
+  max-width: 100vw !important;
+}
+
+/* ── 1. Global touch-target minimums (applies at ALL sizes, safe to add) ── */
+.btn,
+button:not(.cal-nav button):not(.nav-icon-btn):not(.theme-toggle):not(.mobile-menu-btn) {
+  min-height: 44px;
+}
+
+.form-control,
+input[type="text"],
+input[type="url"],
+input[type="email"],
+input[type="number"],
+input[type="time"],
+input[type="date"],
+select,
+textarea {
+  min-height: 44px;
+}
+
+/* Exception: small utility buttons that must stay compact */
+.btn-sm,
+.btn-icon,
+.cal-nav button,
+.nav-icon-btn,
+.theme-toggle,
+.mobile-menu-btn {
+  min-height: unset;
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   TABLET  768px – 1023px
+════════════════════════════════════════════════════════════════════════ */
+@media (min-width: 768px) and (max-width: 1023px) {
+
+  /* Availability: keep 2 columns on tablet but give them breathing room */
+  #sec-availability .grid-2 {
+    gap: 20px;
+  }
+
+  /* Portfolio gallery: 3 columns on tablet */
+  #sec-portfolio #portfolio-gallery.grid-4 {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+
+  /* Portfolio cards: 2 columns on tablet */
+  #sec-portfolio .grid-2 {
+    gap: 20px;
+  }
+
+  /* Calendar: ensure it never overflows card */
+  #db-calendar-widget {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+  }
+
+  .cal-days-grid,
+  .cal-days-header {
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   MOBILE  320px – 767px
+════════════════════════════════════════════════════════════════════════ */
+@media (max-width: 767px) {
+
+  /* ── 0. Root overflow guard (belt-and-suspenders) ── */
+  html,
+  body,
+  .db-main,
+  .db-section {
+    overflow-x: hidden !important;
+    max-width: 100vw !important;
+  }
+
+  /* ── 1. Section padding ── */
+  .db-section {
+    padding: 16px 14px 56px 14px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* ── 2. Page header stacks vertically ── */
+  .db-page-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
+  }
+
+  .db-page-header .phead-right {
+    width: 100% !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+  }
+
+  .db-page-header .phead-right .btn {
+    flex: 1 1 auto !important;
+    width: auto !important;
+    min-width: 120px !important;
+    justify-content: center !important;
+  }
+
+  .db-page-header h1 {
+    font-size: 1.4rem !important;
+    line-height: 1.3 !important;
+  }
+
+  /* ── 3. All cards full width, consistent padding ── */
+  .db-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+    padding: 18px 16px !important;
+    border-radius: var(--r-lg) !important;
+    margin-bottom: 0 !important;
+  }
+
+  /* ── 4. CRITICAL: Fix the conflicting 480px rule that re-forces grid-2 to 2-col ──
+     The rule at line 3931 applies `grid-template-columns: repeat(2, 1fr)` to ALL
+     .grid-2 elements on ≤480px, fighting single-column layouts in Availability
+     and Portfolio. These higher-specificity overrides win because #sec-* IDs
+     have higher specificity than the bare .grid-2 class selector.                  */
+
+  /* ──────────────────────────────────────────────
+     PAGE 1: AVAILABILITY SECTION
+  ────────────────────────────────────────────── */
+
+  /* The outer grid-2 wrapping Weekly Hours + Calendar: single column */
+  #sec-availability .grid-2 {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 16px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Both cards in Availability take full width */
+  #sec-availability .grid-2 > .db-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Weekly Recurring Hours container */
+  #weekly-hours-container {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    gap: 10px !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  /* Each avail-row (inline styled in JS) — override to wrap on mobile */
+  .avail-row {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    gap: 8px !important;
+    padding: 10px 12px !important;
+    background: var(--bg2) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 8px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    min-height: 54px !important;
+  }
+
+  /* Day label inside avail-row */
+  .avail-row > div:first-child {
+    width: 44px !important;
+    min-width: 44px !important;
+    flex-shrink: 0 !important;
+    font-weight: 700 !important;
+    font-size: 0.85rem !important;
+    color: var(--ts) !important;
+  }
+
+  /* Checkbox inside avail-row */
+  .avail-row .avail-toggle {
+    width: 20px !important;
+    height: 20px !important;
+    flex-shrink: 0 !important;
+    cursor: pointer !important;
+    accent-color: var(--gold) !important;
+  }
+
+  /* Time inputs inside avail-row: flex equally, never overflow */
+  .avail-row .avail-from,
+  .avail-row .avail-to,
+  .avail-row input[type="time"] {
+    flex: 1 1 calc(40% - 16px) !important;
+    min-width: 90px !important;
+    max-width: 100% !important;
+    font-size: 0.82rem !important;
+    padding: 8px 8px !important;
+    box-sizing: border-box !important;
+    min-height: 40px !important;
+    border-radius: 7px !important;
+  }
+
+  /* Em dash separator */
+  .avail-row > span {
+    flex-shrink: 0 !important;
+    color: var(--tm) !important;
+    font-size: 0.8rem !important;
+  }
+
+  /* Monthly Availability Calendar — full width, never cropped */
+  #db-calendar-widget {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+    border-radius: 10px !important;
+  }
+
+  .cal-container {
+    padding: 8px 6px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .cal-header {
+    margin-bottom: 12px !important;
+    gap: 8px !important;
+  }
+
+  .cal-header h3 {
+    font-size: 0.9rem !important;
+  }
+
+  .cal-days-header,
+  .cal-days-grid {
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .cal-days-grid {
+    gap: 2px !important;
+  }
+
+  .cal-day-cell {
+    font-size: 0.72rem !important;
+    border-radius: 5px !important;
+  }
+
+  /* Instruction tip box — full width, no overflow */
+  #sec-availability .db-card > div[style*="display:flex"][style*="align-items:flex-start"] {
+    flex-wrap: wrap !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    padding: 10px 12px !important;
+  }
+
+  #sec-availability .db-card > div[style*="display:flex"][style*="align-items:flex-start"] p {
+    font-size: 0.84rem !important;
+    line-height: 1.5 !important;
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    word-break: break-word !important;
+  }
+
+  /* Save Slots button — full width on mobile */
+  #sec-availability .phead-right .btn {
+    width: 100% !important;
+  }
+
+
+  /* ──────────────────────────────────────────────
+     PAGE 2: PORTFOLIO SECTION
+  ────────────────────────────────────────────── */
+
+  /* Portfolio gallery (grid-4) — 2 columns on mobile, fluid */
+  #sec-portfolio #portfolio-gallery {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    margin-bottom: 20px !important;
+  }
+
+  /* Gallery items — never overflow */
+  #sec-portfolio #portfolio-gallery > * {
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+    max-width: 100% !important;
+  }
+
+  /* Portfolio Intro Video + Testimonials: single column, stacked */
+  #sec-portfolio .grid-2 {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 16px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Order: Intro Video first, Testimonials second */
+  #sec-portfolio .grid-2 > .db-card:first-child {
+    order: 1 !important;
+  }
+
+  #sec-portfolio .grid-2 > .db-card:last-child {
+    order: 2 !important;
+  }
+
+  /* Both Portfolio cards: full width */
+  #sec-portfolio .grid-2 > .db-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  /* URL inputs full width */
+  #intro-video-url,
+  #testi-inputs-container .form-control,
+  #testi-inputs-container input[type="url"],
+  #sec-portfolio .form-control {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+    min-height: 44px !important;
+  }
+
+  /* Intro video thumbnail — responsive */
+  #intro-thumb-preview {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    border-radius: 10px !important;
+    overflow: hidden !important;
+  }
+
+  #intro-thumb-img {
+    width: 100% !important;
+    height: 160px !important;
+    object-fit: cover !important;
+    display: block !important;
+  }
+
+  /* Save Intro Video button — full width */
+  #sec-portfolio .db-card .btn.w-100 {
+    width: 100% !important;
+    display: flex !important;
+    justify-content: center !important;
+    min-height: 44px !important;
+    margin-top: 12px !important;
+  }
+
+  /* Testimonial rows: each input row stacks properly */
+  #testi-inputs-container {
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+
+  /* Each testi row (if it contains an input + button inline) */
+  #testi-inputs-container > div {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  #testi-inputs-container > div input,
+  #testi-inputs-container > div .form-control {
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 44px !important;
+    box-sizing: border-box !important;
+  }
+
+  /* "Add Video" and "Save Testimonials" buttons */
+  #sec-portfolio .db-card .btn-dark.btn-sm,
+  #sec-portfolio .db-card .btn-gold.w-100 {
+    width: 100% !important;
+    min-height: 44px !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    box-sizing: border-box !important;
+  }
+
+  /* "Max 5" label stays visible — ensure card-title doesn't truncate */
+  #sec-portfolio .card-title {
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+  }
+
+  /* ──────────────────────────────────────────────
+     GLOBAL GRID FIXES FOR MOBILE
+  ────────────────────────────────────────────── */
+
+  /* Restore single-column for generic grid-2 used outside of sec-availability
+     and sec-portfolio (e.g. Overview page) — override the 480px conflict rule  */
+  .grid-2:not(#services-container):not(#packages-container) {
+    grid-template-columns: 1fr !important;
+    display: grid !important;
+  }
+
+  /* grid-3 and grid-4 collapse to 1 column by default unless specifically overridden */
+  .grid-3:not(#services-container):not(#packages-container) {
+    grid-template-columns: 1fr !important;
+  }
+
+  .grid-4:not(#portfolio-gallery):not(#services-container):not(#packages-container) {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  /* KPI row (grid-4 on overview) → 2 columns on mobile */
+  .grid-4.mb-24 {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  /* form-row always single column */
+  .form-row,
+  .form-row.col3 {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+
+  /* ── Notification dropdown — responsive on mobile ── */
+  .notif-dropdown {
+    width: calc(100vw - 24px) !important;
+    right: 12px !important;
+    left: 12px !important;
+    max-width: 360px !important;
+  }
+
+  /* ── Toast — adjust for mobile ── */
+  .db-toast {
+    left: 12px !important;
+    right: 12px !important;
+    bottom: 16px !important;
+    max-width: calc(100vw - 24px) !important;
+  }
+
+  /* ── Images never overflow ── */
+  img {
+    max-width: 100% !important;
+    height: auto !important;
+  }
+
+  /* ── Dropdowns stay inside container ── */
+  select.form-control {
+    max-width: 100% !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* ── Icons vertically aligned ── */
+  .ct-ico,
+  .nav-ico,
+  .kpi-ico {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-shrink: 0 !important;
+  }
+
+  /* ── Consistent card spacing in stacked views ── */
+  .db-section > .db-card + .db-card,
+  .db-section > .grid-2 + .db-card,
+  .db-section > .db-card + .grid-2 {
+    margin-top: 16px !important;
+  }
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   NARROW MOBILE  ≤ 480px  — Section-specific overrides
+   These WIN over the conflicting generic `@media (max-width:480px)` block
+   that forces ALL grids to repeat(2,1fr). We use ID+class specificity.
+════════════════════════════════════════════════════════════════════════ */
+@media (max-width: 480px) {
+
+  /* Availability grid MUST stay single-column on narrow phones */
+  #sec-availability .grid-2,
+  #sec-availability.db-section .grid-2 {
+    display: flex !important;
+    flex-direction: column !important;
+    grid-template-columns: unset !important;
+    gap: 14px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Portfolio Intro+Testimonial grid MUST stay single-column on narrow phones */
+  #sec-portfolio .grid-2,
+  #sec-portfolio.db-section .grid-2 {
+    display: flex !important;
+    flex-direction: column !important;
+    grid-template-columns: unset !important;
+    gap: 14px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Section padding tighter on narrow */
+  .db-section {
+    padding: 12px 12px 56px 12px !important;
+  }
+
+  /* Time inputs on narrow phones — ensure they fit */
+  .avail-row .avail-from,
+  .avail-row .avail-to,
+  .avail-row input[type="time"] {
+    min-width: 80px !important;
+    flex: 1 1 0% !important;
+    font-size: 0.78rem !important;
+  }
+
+  /* KPI cards — 2-column grid on narrow mobile */
+  #sec-overview .grid-4 {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  /* Calendar day cells — slightly smaller on narrow phones */
+  .cal-day-cell {
+    font-size: 0.68rem !important;
+  }
+
+  /* Portfolio gallery — 2 columns maintained */
+  #sec-portfolio #portfolio-gallery {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  /* Card padding tighter */
+  .db-card {
+    padding: 14px 12px !important;
+  }
+
+  /* Page header h1 smaller on very narrow screens */
+  .db-page-header h1 {
+    font-size: 1.25rem !important;
+  }
+}
 
