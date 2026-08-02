@@ -37,8 +37,8 @@ function getResend() {
 async function sendPasswordResetEmail({ email, name, resetUrl }) {
   const recipientName = name || 'Valued User';
 
-  // Use verified custom domain sender when available, else use Resend test sender
-  const fromAddress = process.env.RESEND_FROM || 'onboarding@resend.dev';
+  // Use verified custom domain sender when available, else fall back to verified domain
+  const fromAddress = process.env.RESEND_FROM || 'no-reply@worldtrainerforum.com';
   const fromFormatted = `World Trainer Forum <${fromAddress}>`;
 
   const subject = 'Reset Your Password — World Trainer Forum';
