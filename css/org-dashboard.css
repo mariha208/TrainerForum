@@ -624,30 +624,59 @@
   }
 }
 
+/* High-contrast form labels for Organization Portal */
+.org-workspace label,
+.org-workspace .filter-label,
+.org-card label,
+.form-group label,
 .filter-label {
-  font-size: 11px;
-  font-weight: 700;
-  color: #94a3b8;
-  text-transform: uppercase;
-  margin-bottom: 4px;
-  display: block;
+  color: #c5a57b !important;
+  font-size: 11.5px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+  margin-bottom: 6px !important;
+  display: block !important;
 }
 
-.org-select, .org-input, .org-textarea {
+.org-select, .org-input, .org-textarea,
+.org-workspace input, .org-workspace select, .org-workspace textarea {
   width: 100%;
-  padding: 9px 12px;
-  background: #0a0f1d;
-  border: 1px solid #1f293d;
+  padding: 10px 14px;
+  background: #0a0f1d !important;
+  border: 1px solid #1f293d !important;
   border-radius: 10px;
-  font-size: 13px;
-  color: #ffffff;
+  font-size: 13.5px;
+  color: #ffffff !important;
   outline: none;
   box-sizing: border-box;
+  color-scheme: dark !important;
 }
 
-.org-select:focus, .org-input:focus, .org-textarea:focus {
-  border-color: #c5a57b;
-  background: #111827;
+.org-select option {
+  background: #111827 !important;
+  color: #ffffff !important;
+}
+
+.org-input::placeholder,
+.org-textarea::placeholder,
+.org-workspace input::placeholder,
+.org-workspace textarea::placeholder {
+  color: #64748b !important;
+  opacity: 1 !important;
+}
+
+.org-select:focus, .org-input:focus, .org-textarea:focus,
+.org-workspace input:focus, .org-workspace select:focus, .org-workspace textarea:focus {
+  border-color: #c5a57b !important;
+  background: #111827 !important;
+  box-shadow: 0 0 0 2px rgba(197, 165, 123, 0.2) !important;
+}
+
+/* Date picker calendar icon contrast */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(0.8) sepia(50%) saturate(400%) hue-rotate(5deg);
+  cursor: pointer;
 }
 
 .flex-between {
