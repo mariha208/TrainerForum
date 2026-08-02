@@ -229,7 +229,10 @@ router.post('/forgot-password', async (req, res) => {
       email: user.email,
       name: userName,
       resetUrl
-    }).catch(err => console.error('[Forgot Password] Email send error:', err.message));
+    }).catch(err => {
+      console.error('[Forgot Password] Email send error:', err.message);
+      console.error('[Forgot Password] Full error stack:', err.stack || err);
+    });
 
     return res.json({ message: successMsg });
   } catch (err) {

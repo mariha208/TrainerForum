@@ -177,6 +177,20 @@ ul {
   letter-spacing: -.01em;
   white-space: nowrap;
   flex-shrink: 0;
+  overflow: hidden;
+}
+
+/* Logo image — always constrained, never rotated/flipped */
+.logo img {
+  display: block;
+  height: 42px;
+  max-height: 42px;
+  width: auto;
+  object-fit: contain;
+  flex-shrink: 0;
+  transform: none !important;
+  rotate: none;
+  vertical-align: middle;
 }
 
 .logo .g {
@@ -4072,7 +4086,12 @@ nav {
   }
 
   #nav .logo img {
-    height: 30px !important;
+    height: 28px !important;
+    max-height: 28px !important;
+    width: auto !important;
+    object-fit: contain !important;
+    transform: none !important;
+    rotate: unset !important;
     margin-right: 4px !important;
   }
 

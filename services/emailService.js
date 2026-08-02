@@ -2,10 +2,39 @@
 const nodemailer = require('nodemailer');
 
 /**
- * Creates Nodemailer Transporter if SMTP environment variables exist
+ * Creates a Nodemailer Transporter.
+ *
+ * Priority order for configuration:
+ *   1. Gmail via EMAIL_USER + EMAIL_PASS (Gmail App Password — recommended for Render)
+ *   2. Custom SMTP via SMTP_HOST + SMTP_USER + SMTP_PASS (generic SMTP server)
+ *
+ * ⚠️  Gmail requires an App Password (NOT your regular Gmail password).
+ *     Generate one at: https://myaccount.google.com/apppasswords
+ *
+ * Required Render Environment Variables:
+ *   EMAIL_USER     — Gmail address, e.g. yourname@gmail.com
+ *   EMAIL_PASS     — Gmail App Password (16-character code, no spaces)
+ *   FRONTEND_URL   — Your deployed frontend URL, e.g. https://worldtrainerforum.com
+ *
+ * Optional (alternative SMTP):
+ *   SMTP_HOST, SMTP_PORT, SMTP_SECURE, SMTP_USER, SMTP_PASS, SMTP_FROM
  */
 function createTransporter() {
+  // Option 1: Gmail with App Password
+  if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
+    console.log('[EmailService] Using Gmail transporter (EMAIL_USER).');
+    return nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS // Must be a Gmail App Password, NOT your regular password
+      }
+    });
+  }
+
+  // Option 2: Generic SMTP server
   if (process.env.SMTP_HOST && process.env.SMTP_USER) {
+    console.log('[EmailService] Using custom SMTP transporter (SMTP_HOST).');
     return nodemailer.createTransport({
       host: process.env.SMTP_HOST,
       port: parseInt(process.env.SMTP_PORT || '587', 10),
@@ -16,6 +45,8 @@ function createTransporter() {
       }
     });
   }
+
+  console.warn('[EmailService] ⚠️  No email credentials configured. Set EMAIL_USER + EMAIL_PASS in Render environment variables.');
   return null;
 }
 
@@ -25,7 +56,11 @@ function createTransporter() {
  */
 async function sendPasswordResetEmail({ email, name, resetUrl }) {
   const recipientName = name || 'Valued User';
-  const fromEmail = process.env.SMTP_FROM || process.env.SMTP_USER || 'no-reply@worldtrainerforum.com';
+  const fromEmail = process.env.EMAIL_FROM ||
+                    process.env.EMAIL_USER ||
+                    process.env.SMTP_FROM  ||
+                    process.env.SMTP_USER  ||
+                    'no-reply@worldtrainerforum.com';
   
   const subject = 'Reset Your Password — World Trainer Forum';
 
@@ -218,7 +253,8 @@ async function sendPasswordResetEmail({ email, name, resetUrl }) {
       console.log(`✅ [EmailService] Password reset email sent to ${email}`);
       return { success: true };
     } catch (err) {
-      console.warn(`[EmailService] Failed to send email via Nodemailer:`, err.message);
+      console.error(`❌ [EmailService] Nodemailer error sending to ${email}:`, err.message);
+      console.error('[EmailService] Full error stack:', err.stack || err);
       return { success: false, error: err.message };
     }
   } else {
