@@ -156,6 +156,21 @@ document.addEventListener('DOMContentLoaded', () => {
   renderSessionReviews();
 });
 
+// ── MOBILE SIDEBAR TOGGLE LOGIC ───────────────────────────────────────────────
+window.toggleOrgSidebar = function () {
+  const sidebar = document.getElementById('orgSidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  if (sidebar) sidebar.classList.toggle('active');
+  if (overlay) overlay.classList.toggle('active');
+};
+
+window.closeOrgSidebar = function () {
+  const sidebar = document.getElementById('orgSidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  if (sidebar) sidebar.classList.remove('active');
+  if (overlay) overlay.classList.remove('active');
+};
+
 // ── TAB SWITCHING ─────────────────────────────────────────────────────────────
 window.switchOrgTab = function (tabId, btn) {
   const tabs = document.querySelectorAll('.org-tab-panel');
@@ -168,6 +183,9 @@ window.switchOrgTab = function (tabId, btn) {
   if (targetTab) targetTab.classList.add('active');
 
   if (btn) btn.classList.add('active');
+
+  // Auto-close sidebar drawer on mobile after selection
+  closeOrgSidebar();
 };
 
 // ── RENDER OVERVIEW: TOP RECOMMENDED TRAINERS ─────────────────────────────────

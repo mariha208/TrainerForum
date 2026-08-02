@@ -20,12 +20,12 @@
 <body class="db-body">
 
   <!-- ═════════════════════════════════════════════════════════════════════
-       GLOBAL NAVIGATION HEADER (PRESERVED)
+       GLOBAL NAVIGATION HEADER
   ═════════════════════════════════════════════════════════════════════ -->
-  <header class="header">
+  <header class="header" id="nav">
     <div class="container nav-container">
       <a href="index.html" class="logo">
-        <img src="bglogo.png" alt="World Trainer Forum Logo" class="logo-img">
+        <img src="img/logo.svg" alt="World Trainer Forum Logo" class="logo-nav-img">
         <span>WORLD <span class="gold-text">TRAINER</span> FORUM</span>
       </a>
 
@@ -37,14 +37,17 @@
       </nav>
 
       <div class="header-actions" id="header-auth-actions">
-        <!-- Dynamic User Session Info rendered by js/app.js -->
+        <!-- Dynamic User Session Info -->
       </div>
 
-      <button class="mobile-toggle" aria-label="Toggle navigation">
+      <button id="menuToggle" class="mobile-toggle" aria-label="Toggle navigation" onclick="toggleOrgSidebar()">
         <span></span><span></span><span></span>
       </button>
     </div>
   </header>
+
+  <!-- Sidebar Mobile Overlay -->
+  <div id="sidebarOverlay" class="sidebar-overlay" onclick="closeOrgSidebar()"></div>
 
   <!-- ═════════════════════════════════════════════════════════════════════
        MAIN INNER WORKSPACE AREA (ORGANIZATION PORTAL)
@@ -55,6 +58,9 @@
       <!-- TOP INNER ACTIONS BAR -->
       <div class="org-top-bar">
         <div class="org-brand-box">
+          <button type="button" class="org-mobile-menu-trigger" onclick="toggleOrgSidebar()" aria-label="Open Sidebar Menu">
+            ☰
+          </button>
           <img src="https://images.unsplash.com/photo-1549923746-c502d488b3ea?w=150&auto=format&fit=crop&q=80" alt="Company Logo" class="org-logo">
           <div>
             <div class="org-badge-wrap">
@@ -82,7 +88,11 @@
       <div class="org-layout">
         
         <!-- INNER SIDEBAR NAVIGATION -->
-        <aside class="org-sidebar">
+        <aside class="org-sidebar" id="orgSidebar">
+          <div class="sidebar-mobile-header">
+            <span class="sidebar-title">Portal Navigation</span>
+            <button type="button" class="sidebar-close-btn" onclick="closeOrgSidebar()">✕</button>
+          </div>
           <nav class="org-nav-menu">
             <button type="button" class="org-nav-item active" onclick="switchOrgTab('overview', this)">
               <span class="nav-ico">📊</span>
@@ -169,8 +179,10 @@
             <!-- RECENT BIDS & PROPOSALS LIST -->
             <div class="org-card">
               <h2 class="card-title-text mb-16">Recent Bids & Proposals</h2>
-              <div class="bids-list" id="recent-bids-container">
-                <!-- Dynamically Rendered by js/org-dashboard.js -->
+              <div class="table-responsive">
+                <div class="bids-list" id="recent-bids-container">
+                  <!-- Dynamically Rendered by js/org-dashboard.js -->
+                </div>
               </div>
             </div>
           </div>
@@ -242,8 +254,10 @@
               <button type="button" class="btn btn-org-primary" onclick="openPostRFPModal()">+ Post New RFP</button>
             </div>
 
-            <div class="rfp-list-container" id="rfp-list-container">
-              <!-- Dynamically Rendered by js/org-dashboard.js -->
+            <div class="table-responsive">
+              <div class="rfp-list-container" id="rfp-list-container">
+                <!-- Dynamically Rendered by js/org-dashboard.js -->
+              </div>
             </div>
           </div>
 
@@ -255,8 +269,10 @@
               <h2 class="card-title-text">Post-Session Reviews & Quality Evaluations</h2>
               <p class="card-sub-text mb-24">Rate completed sessions across 4 key parameters to maintain platform quality standards.</p>
 
-              <div class="session-reviews-list" id="reviews-list-container">
-                <!-- Dynamically Rendered by js/org-dashboard.js -->
+              <div class="table-responsive">
+                <div class="session-reviews-list" id="reviews-list-container">
+                  <!-- Dynamically Rendered by js/org-dashboard.js -->
+                </div>
               </div>
             </div>
           </div>
