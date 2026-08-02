@@ -180,17 +180,20 @@ ul {
   overflow: hidden;
 }
 
-/* Logo image — always constrained, never rotated/flipped */
-.logo img {
+/* Logo image — desktop: always constrained, never rotated/flipped */
+.logo-nav-img {
   display: block;
-  height: 42px;
-  max-height: 42px;
+  height: 40px;
+  max-height: 40px;
   width: auto;
+  max-width: 160px;
+  min-width: 28px;
   object-fit: contain;
   flex-shrink: 0;
   transform: none !important;
-  rotate: none;
+  rotate: unset;
   vertical-align: middle;
+  margin-right: 8px;
 }
 
 .logo .g {
@@ -4085,14 +4088,17 @@ nav {
     white-space: nowrap !important;
   }
 
-  #nav .logo img {
+  #nav .logo img,
+  #nav .logo-nav-img {
     height: 28px !important;
     max-height: 28px !important;
+    max-width: 120px !important;
     width: auto !important;
     object-fit: contain !important;
     transform: none !important;
     rotate: unset !important;
     margin-right: 4px !important;
+    flex-shrink: 0 !important;
   }
 
   .nav-r {

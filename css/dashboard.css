@@ -5,6 +5,30 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Cormorant+Garamond:wght@600;700&family=Inter:wght@300;400;500;600;700;800&display=swap');
 
+/* ── Logo Nav Image — constrained, never rotated ── */
+.logo-nav-img {
+  display: block;
+  height: 34px;
+  max-height: 34px;
+  width: auto;
+  max-width: 140px;
+  object-fit: contain;
+  flex-shrink: 0;
+  transform: none !important;
+  vertical-align: middle;
+  margin-right: 8px;
+}
+
+@media (max-width: 768px) {
+  .logo-nav-img {
+    height: 28px !important;
+    max-height: 28px !important;
+    max-width: 110px !important;
+    margin-right: 4px !important;
+  }
+}
+
+
 /* ── CSS Variables — LIGHT MODE (default, matches Option 3) ── */
 :root {
   --navy: #0B1B32;
