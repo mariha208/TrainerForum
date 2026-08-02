@@ -611,11 +611,11 @@ window.handleLogin = async function (role) {
     const data = await res.json();
     
     if (res.ok) {
-      const rawRole = (data.user && data.user.role) ? data.user.role : (role || 'trainer');
+      const rawRole = (data.user && data.user.role) ? data.user.role : (role === 'Organization' ? 'client' : 'trainer');
       const userRole = String(rawRole).toLowerCase();
 
       localStorage.setItem('token', data.token);
-      localStorage.setItem('userRole', userRole); // 'organization' or 'trainer'
+      localStorage.setItem('userRole', data.user.role || userRole);
 
       // Keep frontend session shape consistent
       const sessionUser = {
@@ -661,8 +661,8 @@ window.handleLogin = async function (role) {
 
       if (window.closeAuthModal) closeAuthModal();
 
-      // Redirect based on role:
-      if (userRole === 'organization' || userRole === 'client') {
+      // Role-based redirect logic (matches 'client' or 'organization')
+      if (userRole === 'client' || userRole === 'organization') {
         window.location.href = 'dashboard-org.html';
       } else if (userRole === 'trainer') {
         window.location.href = 'dashboard.html';
