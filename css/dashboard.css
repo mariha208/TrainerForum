@@ -4702,4 +4702,30 @@ textarea {
     font-size: 1.25rem !important;
   }
 }
+
+/* ── Service & Package Card — Delete Button Positioning ── */
+/* Ensure position:relative context on all db-cards (inline styles set this,
+   but CSS guarantees it even if JS-rendered card misses it) */
+#services-container .db-card,
+#packages-container .db-card {
+  position: relative !important;
+}
+
+/* Delete button anchored top-right, always visible, never overlapping text */
+#services-container .db-card > button[aria-label*="Delete"],
+#packages-container .db-card > button[aria-label*="Delete"] {
+  position: absolute !important;
+  top: 12px !important;
+  right: 12px !important;
+  z-index: 10 !important;
+}
+
+/* Hover state for delete buttons — glowing red on hover */
+#services-container .db-card > button[aria-label*="Delete"]:hover,
+#packages-container .db-card > button[aria-label*="Delete"]:hover {
+  background: rgba(220, 53, 69, 0.25) !important;
+  border-color: rgba(220, 53, 69, 0.6) !important;
+  box-shadow: 0 0 8px rgba(220, 53, 69, 0.3) !important;
+  transform: scale(1.08);
+}
 

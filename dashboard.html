@@ -1497,45 +1497,54 @@
       if (!cont) return;
       var empty = cont.querySelector('.empty-msg');
       if (empty) empty.remove();
+      if (!item.id) item.id = item._id || Date.now() + Math.floor(Math.random() * 9999);
+      var itemId = String(item.id || item._id);
+
       var div = document.createElement('div');
-      div.id = 'svc-' + item.id;
+      div.id = 'svc-' + itemId;
       div.className = 'db-card';
       div.style.position = 'relative';
-      div.innerHTML = '<button onclick="_deleteService(\'' + item.id + '\')" title="Delete Service" aria-label="Delete service" style="position:absolute;top:12px;right:12px;background:rgba(220,53,69,0.12);border:1px solid rgba(220,53,69,0.3);color:#dc3545;cursor:pointer;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:0.9rem;transition:all 0.18s ease;z-index:5;"><i class="fas fa-trash-alt"></i></button><div style="font-weight:700;font-size:1.05rem;color:var(--ts);margin-bottom:6px;padding-right:36px">' + item.name + (item.featured ? '<span style="font-size:0.65rem;background:rgba(197,160,89,0.2);color:var(--gold);padding:2px 6px;border-radius:4px;margin-left:6px;vertical-align:middle">Featured</span>' : '') + '</div><div style="font-size:0.82rem;color:var(--tm);margin-bottom:12px;line-height:1.4">' + item.desc + '</div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px"><span style="font-size:0.75rem;padding:2px 8px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;color:var(--tm)">⏱ ' + item.duration + '</span><span style="font-size:0.75rem;padding:2px 8px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;color:var(--tm)">📍 ' + item.mode + '</span><span style="font-size:0.75rem;padding:2px 8px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;color:var(--tm)">👥 ' + item.type + '</span></div><div style="font-size:1.1rem;font-weight:700;color:var(--gold)">₹' + item.price + '</div>';
+      div.innerHTML = '<button onclick="_deleteService(\'' + itemId + '\')" title="Delete Service" aria-label="Delete service" style="position:absolute;top:12px;right:12px;background:rgba(220,53,69,0.12);border:1px solid rgba(220,53,69,0.3);color:#dc3545;cursor:pointer;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:0.9rem;transition:all 0.18s ease;z-index:10;"><i class="fas fa-trash-alt"></i></button><div style="font-weight:700;font-size:1.05rem;color:var(--ts);margin-bottom:6px;padding-right:44px">' + item.name + (item.featured ? '<span style="font-size:0.65rem;background:rgba(197,160,89,0.2);color:var(--gold);padding:2px 6px;border-radius:4px;margin-left:6px;vertical-align:middle">Featured</span>' : '') + '</div><div style="font-size:0.82rem;color:var(--tm);margin-bottom:12px;line-height:1.4">' + (item.desc || '') + '</div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px"><span style="font-size:0.75rem;padding:2px 8px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;color:var(--tm)">⏱ ' + (item.duration || '') + '</span><span style="font-size:0.75rem;padding:2px 8px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;color:var(--tm)">📍 ' + (item.mode || '') + '</span><span style="font-size:0.75rem;padding:2px 8px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;color:var(--tm)">👥 ' + (item.type || '') + '</span></div><div style="font-size:1.1rem;font-weight:700;color:var(--gold)">₹' + (item.price || '0') + '</div>';
       cont.appendChild(div);
     }
     function _deleteService(id) {
+      if (!id || id === 'undefined') return console.warn('Invalid service ID for deletion');
+      var targetId = String(id);
       _openDeleteConfirm(
-        'this will delete the services/package from your profile',
+        'this will delete the selected service from your profile',
         function() {
           var userId = typeof getLoggedInUserId === 'function' ? getLoggedInUserId() : null;
           var cache = JSON.parse(localStorage.getItem('currentTrainer')) || {};
           if (!userId) userId = cache.trainerId || cache._id || cache.id || '1';
 
           // 1. Backend hard DELETE call
-          var origin = window.SERVER_ORIGIN || 'https://trainerforum.onrender.com';
-          fetch(origin + '/api/users/' + userId + '/services/' + id, {
+          var origin = window.SERVER_ORIGIN || window.location.origin || 'https://trainerforum.onrender.com';
+          fetch(origin + '/api/users/' + userId + '/services/' + targetId, {
             method: 'DELETE',
             headers: { 'Content-Type': 'application/json' }
           }).catch(function(err) { console.warn('Backend DELETE service error:', err); });
 
-          // 2. Remove DOM card instantly across viewports
-          var el = document.getElementById('svc-' + id);
+          // 2. Remove ONLY the specific target DOM card
+          var el = document.getElementById('svc-' + targetId);
           if (el) el.remove();
 
-          // 3. Filter local storage cache
+          // 3. Filter local storage cache strictly targeting only targetId
           if (Array.isArray(cache.services)) {
             cache.services = cache.services.filter(function (s) {
-              return String(s.id) !== String(id) && String(s._id) !== String(id);
+              var sId = String(s.id || s._id || '');
+              return sId !== targetId && String(s.id || '') !== targetId && String(s._id || '') !== targetId;
             });
             localStorage.setItem('currentTrainer', JSON.stringify(cache));
           }
 
-          // 4. Filter global window.TRAINERS array
+          // 4. Filter global window.TRAINERS array strictly targeting targetId
           if (Array.isArray(window.TRAINERS)) {
             var t = window.TRAINERS.find(function(x) { return String(x.id || x._id) === String(userId); });
             if (t && Array.isArray(t.services)) {
-              t.services = t.services.filter(function(s) { return String(s.id) !== String(id) && String(s._id) !== String(id); });
+              t.services = t.services.filter(function(s) {
+                var sId = String(s.id || s._id || '');
+                return sId !== targetId && String(s.id || '') !== targetId && String(s._id || '') !== targetId;
+              });
             }
           }
 
@@ -1579,52 +1588,60 @@
       if (!cont) return;
       var empty = cont.querySelector('.empty-msg');
       if (empty) empty.remove();
-      if (!item.id) item.id = Date.now() + Math.floor(Math.random() * 9999);
+      if (!item.id) item.id = item._id || Date.now() + Math.floor(Math.random() * 9999);
+      var itemId = String(item.id || item._id);
+
       if (!Array.isArray(item.features)) {
         item.features = typeof item.features === 'string' ? item.features.split(',').map(function (s) { return s.trim(); }).filter(Boolean) : [];
       }
       var div = document.createElement('div');
-      div.id = 'pkg-' + item.id;
+      div.id = 'pkg-' + itemId;
       div.className = 'db-card';
       div.style.position = 'relative';
       if (item.featured) div.style.borderColor = 'var(--gold)';
       var featsHtml = item.features.map(function (f) { return '<li style="font-size:0.8rem;color:var(--tm);margin-bottom:4px;display:flex;gap:6px"><span style="color:var(--gold)">✓</span> ' + f + '</li>' }).join('');
       var descHtml = item.desc ? '<div style="font-size:0.82rem;color:var(--tm);margin-bottom:12px;line-height:1.4">' + item.desc + '</div>' : '';
-      div.innerHTML = '<button onclick="_deletePackage(\'' + item.id + '\')" title="Delete Package" aria-label="Delete package" style="position:absolute;top:12px;right:12px;background:rgba(220,53,69,0.12);border:1px solid rgba(220,53,69,0.3);color:#dc3545;cursor:pointer;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:0.9rem;transition:all 0.18s ease;z-index:5;"><i class="fas fa-trash-alt"></i></button>' + (item.featured ? '<div style="font-size:0.65rem;color:var(--gold);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">⭐ Featured Package</div>' : '') + '<div style="font-weight:700;font-size:1.1rem;color:var(--ts);margin-bottom:6px;padding-right:36px">' + (item.name || 'Package') + '</div><div style="font-size:1.2rem;font-weight:700;color:var(--ts);margin-bottom:12px">₹' + (item.price || '0') + ' <span style="font-size:0.8rem;color:var(--tm);font-weight:400">/ ' + (item.duration || '') + '</span></div>' + descHtml + '<ul style="list-style:none;padding:0;margin:0">' + featsHtml + '</ul>';
+      div.innerHTML = '<button onclick="_deletePackage(\'' + itemId + '\')" title="Delete Package" aria-label="Delete package" style="position:absolute;top:12px;right:12px;background:rgba(220,53,69,0.12);border:1px solid rgba(220,53,69,0.3);color:#dc3545;cursor:pointer;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:0.9rem;transition:all 0.18s ease;z-index:10;"><i class="fas fa-trash-alt"></i></button>' + (item.featured ? '<div style="font-size:0.65rem;color:var(--gold);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;padding-right:44px">⭐ Featured Package</div>' : '') + '<div style="font-weight:700;font-size:1.1rem;color:var(--ts);margin-bottom:6px;padding-right:44px">' + (item.name || 'Package') + '</div><div style="font-size:1.2rem;font-weight:700;color:var(--ts);margin-bottom:12px">₹' + (item.price || '0') + ' <span style="font-size:0.8rem;color:var(--tm);font-weight:400">/ ' + (item.duration || '') + '</span></div>' + descHtml + '<ul style="list-style:none;padding:0;margin:0">' + featsHtml + '</ul>';
       cont.appendChild(div);
     }
     function _deletePackage(id) {
+      if (!id || id === 'undefined') return console.warn('Invalid package ID for deletion');
+      var targetId = String(id);
       _openDeleteConfirm(
-        'this will delete the services/package from your profile',
+        'this will delete the selected package from your profile',
         function() {
           var userId = typeof getLoggedInUserId === 'function' ? getLoggedInUserId() : null;
           var cache = JSON.parse(localStorage.getItem('currentTrainer')) || {};
           if (!userId) userId = cache.trainerId || cache._id || cache.id || '1';
 
           // 1. Backend hard DELETE call
-          var origin = window.SERVER_ORIGIN || 'https://trainerforum.onrender.com';
-          fetch(origin + '/api/users/' + userId + '/packages/' + id, {
+          var origin = window.SERVER_ORIGIN || window.location.origin || 'https://trainerforum.onrender.com';
+          fetch(origin + '/api/users/' + userId + '/packages/' + targetId, {
             method: 'DELETE',
             headers: { 'Content-Type': 'application/json' }
           }).catch(function(err) { console.warn('Backend DELETE package error:', err); });
 
-          // 2. Remove DOM card instantly across viewports
-          var el = document.getElementById('pkg-' + id);
+          // 2. Remove ONLY the specific target DOM card
+          var el = document.getElementById('pkg-' + targetId);
           if (el) el.remove();
 
-          // 3. Filter local storage cache
+          // 3. Filter local storage cache strictly targeting only targetId
           if (Array.isArray(cache.packages)) {
             cache.packages = cache.packages.filter(function (s) {
-              return String(s.id) !== String(id) && String(s._id) !== String(id);
+              var pId = String(s.id || s._id || '');
+              return pId !== targetId && String(s.id || '') !== targetId && String(s._id || '') !== targetId;
             });
             localStorage.setItem('currentTrainer', JSON.stringify(cache));
           }
 
-          // 4. Filter global window.TRAINERS array
+          // 4. Filter global window.TRAINERS array strictly targeting targetId
           if (Array.isArray(window.TRAINERS)) {
             var t = window.TRAINERS.find(function(x) { return String(x.id || x._id) === String(userId); });
             if (t && Array.isArray(t.packages)) {
-              t.packages = t.packages.filter(function(s) { return String(s.id) !== String(id) && String(s._id) !== String(id); });
+              t.packages = t.packages.filter(function(s) {
+                var pId = String(s.id || s._id || '');
+                return pId !== targetId && String(s.id || '') !== targetId && String(s._id || '') !== targetId;
+              });
             }
           }
 
@@ -1786,11 +1803,39 @@
 
       renderDashboardCalendar();
 
-      window.toast && window.toast('Saving availability to database...', 2000);
+      // ── API CALL: Sync availability to backend database ─────────────────
+      var origin = window.SERVER_ORIGIN || window.location.origin || 'https://trainerforum.onrender.com';
+      var _apiPayload = JSON.stringify({ trainerId: _tid, availability: avs });
+
+      // Primary: dedicated endpoint
+      fetch(origin + '/api/trainer/availability', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: _apiPayload
+      }).catch(function(err) { console.warn('[Availability Sync] Primary PUT failed:', err.message); });
+
+      // Fallback: per-user endpoint (covers both ObjectId and email-keyed trainers)
+      if (_tid && _tid !== '1') {
+        fetch(origin + '/api/users/' + _tid + '/availability', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ availability: avs })
+        }).catch(function() { });
+      }
+
+      // Sync open trainer modal if current trainer is viewing their own profile
+      if (window.currentModalTrainer) {
+        var _modalId = String(window.currentModalTrainer.id || window.currentModalTrainer._id || '');
+        if (_modalId && _modalId === String(_tid)) {
+          window.currentModalTrainer.availability = avs;
+        }
+      }
+
+      window.toast && window.toast('Saving availability to database...', 1500);
 
       if (typeof commitLocalProfileChanges === 'function') {
         commitLocalProfileChanges();
-        window.toast ? window.toast('\u2705 Availability slots synchronized!') : alert('Availability saved successfully!');
+        window.toast ? window.toast('\u2705 Availability synchronized globally!') : alert('Availability saved successfully!');
       }
     }
 

@@ -299,6 +299,47 @@ router.patch('/:id', async (req, res) => {
   }
 });
 
+// PUT update trainer availability
+router.put('/availability', async (req, res) => {
+  try {
+    const { trainerId, availability } = req.body;
+    let userId = trainerId || (req.user && req.user.id);
+    if (!userId) return res.status(400).json({ error: 'trainerId or user authentication required' });
+    const isObjectId = mongoose.Types.ObjectId.isValid(userId);
+    const query = isObjectId ? { _id: userId } : { email: String(userId).toLowerCase() };
+
+    const user = await User.findOneAndUpdate(
+      query,
+      { $set: { availability: availability || {} } },
+      { new: true }
+    ).select('-passwordHash');
+
+    if (!user) return res.status(404).json({ error: 'Trainer not found' });
+    res.json({ message: 'Availability updated in database', availability: user.availability, user });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.put('/:id/availability', async (req, res) => {
+  try {
+    const { availability } = req.body;
+    const isObjectId = mongoose.Types.ObjectId.isValid(req.params.id);
+    const query = isObjectId ? { _id: req.params.id } : { email: req.params.id.toLowerCase() };
+
+    const user = await User.findOneAndUpdate(
+      query,
+      { $set: { availability: availability || {} } },
+      { new: true }
+    ).select('-passwordHash');
+
+    if (!user) return res.status(404).json({ error: 'Trainer not found' });
+    res.json({ message: 'Availability updated in database', availability: user.availability, user });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // DELETE a service from user profile
 router.delete('/:id/services/:serviceId', async (req, res) => {
   try {
@@ -309,7 +350,10 @@ router.delete('/:id/services/:serviceId', async (req, res) => {
 
     const sid = String(req.params.serviceId);
     let services = Array.isArray(user.services) ? user.services : [];
-    user.services = services.filter(s => String(s.id) !== sid && String(s._id) !== sid);
+    user.services = services.filter(s => {
+      const sId = String(s._id || s.id || '');
+      return sId !== sid && String(s.id || '') !== sid && String(s._id || '') !== sid;
+    });
     user.markModified('services');
     await user.save();
 
@@ -329,7 +373,10 @@ router.delete('/:id/packages/:packageId', async (req, res) => {
 
     const pid = String(req.params.packageId);
     let packages = Array.isArray(user.packages) ? user.packages : [];
-    user.packages = packages.filter(p => String(p.id) !== pid && String(p._id) !== pid);
+    user.packages = packages.filter(p => {
+      const pId = String(p._id || p.id || '');
+      return pId !== pid && String(p.id || '') !== pid && String(p._id || '') !== pid;
+    });
     user.markModified('packages');
     await user.save();
 

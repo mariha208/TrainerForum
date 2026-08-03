@@ -233,6 +233,37 @@ app.post('/api/upload-image', upload.single('image'), async (req, res) => {
   }
 });
 
+// ── Direct Trainer Availability API Endpoint ─────────────────────────────────
+app.put('/api/trainer/availability', async (req, res) => {
+  try {
+    const mongoose = require('mongoose');
+    const User = require('./models/User');
+    const { trainerId, availability } = req.body;
+    let userId = trainerId || (req.user && req.user.id);
+    
+    if (!userId || mongoose.connection.readyState !== 1) {
+      return res.json({ message: 'Availability stored locally', availability });
+    }
+
+    const isObjectId = mongoose.Types.ObjectId.isValid(userId);
+    const query = isObjectId ? { _id: userId } : { email: String(userId).toLowerCase() };
+
+    const user = await User.findOneAndUpdate(
+      query,
+      { $set: { availability: availability || {} } },
+      { new: true }
+    ).select('-passwordHash');
+
+    if (!user) {
+      return res.json({ message: 'Availability updated', availability });
+    }
+    res.json({ message: 'Availability updated in database', availability: user.availability, user });
+  } catch (err) {
+    console.warn('[Availability API] Error:', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 app.use('/api/users', require('./routes/users'));
 app.use('/api/payments', require('./routes/payment.routes'));
 app.use('/api/images', require('./routes/images'));
