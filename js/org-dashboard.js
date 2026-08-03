@@ -139,6 +139,15 @@ window.closeOrgSidebar = function () {
   if (overlay) overlay.classList.remove('active');
 };
 
+// ── MOBILE NAVBAR DRAWER TOGGLE ───────────────────────────────────────────────
+window.toggleMobileNavDrawer = function () {
+  const drawer = document.getElementById('mobile-nav-drawer');
+  if (drawer) {
+    const isHidden = drawer.style.display === 'none' || !drawer.style.display;
+    drawer.style.display = isHidden ? 'flex' : 'none';
+  }
+};
+
 // ── TAB SWITCHING ─────────────────────────────────────────────────────────────
 window.switchOrgTab = function (tabId, targetParam) {
   const panels = document.querySelectorAll('.org-tab-panel');
@@ -242,6 +251,8 @@ function renderRequirementsTrack() {
 
   if (!tbody) return;
 
+  const cardsContainer = document.getElementById('requirements-cards-body');
+
   if (total === 0) {
     tbody.innerHTML = `
       <tr>
@@ -250,6 +261,13 @@ function renderRequirementsTrack() {
         </td>
       </tr>
     `;
+    if (cardsContainer) {
+      cardsContainer.innerHTML = `
+        <div style="text-align:center;padding:30px;color:#94a3b8;background:#0a0f1d;border:1px solid #1f293d;border-radius:14px;">
+          No training requirements submitted yet. Click "+ Submit New Requirement" above to create one.
+        </div>
+      `;
+    }
     return;
   }
 
@@ -308,6 +326,63 @@ function renderRequirementsTrack() {
       </tr>
     `;
   }).join('');
+
+  // ── RENDER MOBILE CARDS VIEW ──────────────────────────────────────────────
+  if (cardsContainer) {
+    cardsContainer.innerHTML = ORG_REQUIREMENTS_DATA.map(r => {
+      const statusRaw = String(r.approvalStatus || r.status || 'Pending').trim().toUpperCase();
+
+      let badgeClass = 'badge-pending';
+      let badgeText = '⏳ PENDING';
+
+      if (statusRaw === 'APPROVED' || statusRaw === 'ACCEPTED') {
+        badgeClass = 'badge-accepted';
+        badgeText = '✅ APPROVED';
+      } else if (statusRaw === 'REJECTED') {
+        badgeClass = 'badge-rejected';
+        badgeText = '❌ REJECTED';
+      }
+
+      const reqId = r.reqId || r.id || 'REQ-001';
+      const topic = r.topic || r.trainingTopic || 'N/A';
+      const orgName = r.orgName || r.organizationName || 'N/A';
+      const loc = r.locationType || r.locationPlace || 'N/A';
+      const city = r.cityDetails || r.cityAddress || '';
+      const cleanDate = formatSimpleDate(r.targetDate || r.targetDates || '');
+      const duration = r.duration || r.timeDuration || 'N/A';
+      const budget = Number(r.budget || 0).toLocaleString();
+
+      return `
+        <div class="org-req-card" style="background:#0a0f1d; border:1px solid #1f293d; border-radius:14px; padding:16px; display:flex; flex-direction:column; gap:12px; box-shadow:0 4px 14px rgba(0,0,0,0.3);">
+          <!-- Top Row: ID & Status -->
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-size:12px; font-weight:700; color:#c5a57b; letter-spacing:0.5px;">${escHtml(reqId)}</span>
+            <span class="badge-status ${badgeClass}" style="font-size:11px; padding:3px 10px;">${badgeText}</span>
+          </div>
+
+          <!-- Title & Org -->
+          <div>
+            <div style="font-size:15px; font-weight:700; color:#ffffff; line-height:1.3;">${escHtml(topic)}</div>
+            <div style="font-size:12px; color:#94a3b8; margin-top:2px;">${escHtml(orgName)}</div>
+          </div>
+
+          <!-- Divider -->
+          <div style="height:1px; background:#1f293d; margin:2px 0;"></div>
+
+          <!-- Details Grid -->
+          <div style="display:flex; flex-direction:column; gap:6px; font-size:12.5px;">
+            <div style="color:#cbd5e1;">📍 <strong>Location:</strong> ${escHtml(loc)} ${city ? `(${escHtml(city)})` : ''}</div>
+            <div style="color:#cbd5e1;">📅 <strong>Target Date:</strong> ${escHtml(cleanDate)}</div>
+            ${duration && duration !== 'N/A' ? `<div style="color:#cbd5e1;">⏰ <strong>Time:</strong> ${escHtml(duration)}</div>` : ''}
+            <div style="color:#34d399; font-weight:700;">💰 <strong>Budget:</strong> $${budget}</div>
+          </div>
+
+          <!-- Action Button -->
+          <button type="button" class="btn btn-ghost btn-sm" style="width:100%; margin-top:4px; text-align:center; justify-content:center;" onclick="openReqDetailsModal('${reqId}')">View Details</button>
+        </div>
+      `;
+    }).join('');
+  }
 }
 
 // ── RENDER HIRED TRAINERS VIEW & BOX 2 ────────────────────────────────────────

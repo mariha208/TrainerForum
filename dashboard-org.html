@@ -51,8 +51,8 @@
 
     <!-- RIGHT: Navigation Links + auth actions -->
     <div style="display:flex; align-items:center; gap:24px; margin-left:auto;">
-      <nav style="display:flex; align-items:center; gap:4px;">
-        <a href="index.html" class="nav-links a" style="
+      <nav class="desktop-nav-links" style="display:flex; align-items:center; gap:4px;">
+        <a href="index.html" style="
           display:inline-flex; align-items:center; height:38px; padding:0 10px;
           font-size:.88rem; font-weight:500; color:rgba(250,246,236,0.72);
           text-decoration:none; border-radius:6px; transition:color .2s;
@@ -83,8 +83,8 @@
 
       <!-- Mobile menu trigger -->
       <button id="menuToggle" class="mobile-toggle" aria-label="Toggle navigation"
-        onclick="toggleOrgSidebar()"
-        style="display:none; flex-direction:column; gap:5px; background:none; border:none; cursor:pointer; padding:4px;">
+        onclick="toggleMobileNavDrawer()"
+        style="display:none; flex-direction:column; justify-content:center; align-items:center; gap:5px; background:none; border:none; cursor:pointer; padding:6px;">
         <span style="display:block; width:22px; height:2px; background:#c5a57b; border-radius:2px;"></span>
         <span style="display:block; width:22px; height:2px; background:#c5a57b; border-radius:2px;"></span>
         <span style="display:block; width:22px; height:2px; background:#c5a57b; border-radius:2px;"></span>
@@ -92,12 +92,73 @@
     </div>
   </header>
 
+  <!-- Mobile Navigation Drawer -->
+  <div id="mobile-nav-drawer" style="
+    display:none; position:fixed; top:64px; left:0; right:0;
+    background:#0d1527; border-bottom:1px solid #1f293d;
+    padding:16px 24px; z-index:899; flex-direction:column; gap:8px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.5);
+  ">
+    <a href="index.html" onclick="toggleMobileNavDrawer()" style="color:#faf6ec; text-decoration:none; font-weight:600; font-size:15px; padding:10px 12px; border-radius:8px; display:block; background:rgba(255,255,255,0.03);">Home</a>
+    <a href="find-trainers.html" onclick="toggleMobileNavDrawer()" style="color:#faf6ec; text-decoration:none; font-weight:600; font-size:15px; padding:10px 12px; border-radius:8px; display:block; background:rgba(255,255,255,0.03);">Find Trainers</a>
+    <a href="categories.html" onclick="toggleMobileNavDrawer()" style="color:#faf6ec; text-decoration:none; font-weight:600; font-size:15px; padding:10px 12px; border-radius:8px; display:block; background:rgba(255,255,255,0.03);">Categories</a>
+    <a href="dashboard-org.html" onclick="toggleMobileNavDrawer()" style="color:#c5a57b; text-decoration:none; font-weight:700; font-size:15px; padding:10px 12px; border-radius:8px; display:block; background:rgba(197,165,123,0.15); border:1px solid rgba(197,165,123,0.3);">Dashboard</a>
+  </div>
+
   <!-- Show mobile toggle below 768px -->
   <style>
     @media (max-width: 768px) {
       #menuToggle { display: flex !important; }
-      #nav nav { display: none !important; }
+      .desktop-nav-links { display: none !important; }
       #header-auth-actions { display: none !important; }
+    }
+    @media (min-width: 769px) {
+      #menuToggle { display: none !important; }
+      .desktop-nav-links { display: flex !important; }
+      #mobile-nav-drawer { display: none !important; }
+    }
+    @media (max-width: 640px) {
+      .org-top-bar {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 14px !important;
+      }
+      .org-brand-box {
+        width: 100% !important;
+      }
+      #btn-edit-org-profile {
+        width: 100% !important;
+        justify-content: center !important;
+      }
+      .card-header-flex {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 12px !important;
+      }
+      .card-header-flex .btn-org-primary,
+      .card-header-flex .btn {
+        width: 100% !important;
+        text-align: center !important;
+        justify-content: center !important;
+      }
+    }
+    @media (max-width: 767px) {
+      .org-desktop-table {
+        display: none !important;
+      }
+      .org-mobile-cards {
+        display: flex !important;
+        flex-direction: column;
+        gap: 14px;
+      }
+    }
+    @media (min-width: 768px) {
+      .org-desktop-table {
+        display: block !important;
+      }
+      .org-mobile-cards {
+        display: none !important;
+      }
     }
   </style>
 
@@ -114,13 +175,10 @@
       <!-- TOP INNER ACTIONS BAR (CLEAN BRAND HEADER) -->
       <div class="org-top-bar">
         <div class="org-brand-box">
-          <button type="button" class="org-mobile-menu-trigger" onclick="toggleOrgSidebar()" aria-label="Open Sidebar Menu">
-            ☰
-          </button>
           <img src="https://images.unsplash.com/photo-1549923746-c502d488b3ea?w=150&auto=format&fit=crop&q=80"
                alt="Company Logo" class="org-logo" id="org-logo-img">
           <div>
-            <div class="org-badge-wrap">
+            <div class="org-badge-wrap" style="display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-bottom:4px;">
               <span class="org-portal-badge">Organization Portal</span>
               <span class="org-plan-badge" id="org-plan-text">Enterprise Plan</span>
             </div>
@@ -217,7 +275,8 @@
                 <button type="button" class="btn btn-org-primary" onclick="switchOrgTab('requirements')">+ Submit New Requirement</button>
               </div>
 
-              <div class="table-responsive">
+              <!-- Desktop Table View -->
+              <div class="table-responsive org-desktop-table">
                 <table class="org-table">
                   <thead>
                     <tr>
@@ -233,6 +292,11 @@
                     <!-- Dynamically Rendered by js/org-dashboard.js -->
                   </tbody>
                 </table>
+              </div>
+
+              <!-- Mobile Cards View -->
+              <div class="org-mobile-cards" id="requirements-cards-body">
+                <!-- Dynamically Rendered by js/org-dashboard.js -->
               </div>
             </div>
 
