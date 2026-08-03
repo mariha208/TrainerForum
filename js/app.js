@@ -64,8 +64,8 @@ window.getTrainerAvailability = function (t) {
 };
 
 /**
- * UNIFIED AVAILABILITY FORMATTER FUNCTION
- * Single source of truth formatter function across Mobile, Desktop, Dashboard, and Booking Modal.
+ * UNIFIED AVAILABILITY FORMATTER FUNCTION: getFormattedAvailability(input)
+ * Single source of truth availability formatter function across Mobile, Desktop, Dashboard, and Booking Modal.
  * Accepts either:
  *   - A trainer object containing .availability or .weekly_slots
  *   - A direct availability object (e.g. { Mon: { available: true }, Sat: { available: false } })
@@ -73,13 +73,13 @@ window.getTrainerAvailability = function (t) {
  *
  * Returns a standardized day string (e.g. "Mon, Tue, Wed, Thu", "Mon–Fri", "Everyday", "By Appointment").
  */
-window.formatAvailability = function (input) {
+window.getFormattedAvailability = function (input) {
   if (!input) return 'Mon–Fri | 9 AM–5 PM';
 
   let availObj = null;
 
   // If input is a trainer object, resolve availability using getTrainerAvailability or properties
-  if (typeof input === 'object' && !input.Mon && !input.mon && (input.id || input._id || input.trainerId || input.availability || input.weekly_slots)) {
+  if (typeof input === 'object' && input !== null && !input.Mon && !input.mon && (input.id || input._id || input.trainerId || input.availability || input.weekly_slots)) {
     availObj = typeof window.getTrainerAvailability === 'function'
       ? window.getTrainerAvailability(input)
       : (input.availability || input.weekly_slots);
@@ -123,8 +123,9 @@ window.formatAvailability = function (input) {
   return 'Mon–Fri | 9 AM–5 PM';
 };
 
-// Expose alias for full backward compatibility
-window.getAvailabilityPillText = window.formatAvailability;
+// Aliases for global compatibility across all components
+window.formatAvailability = window.getFormattedAvailability;
+window.getAvailabilityPillText = window.getFormattedAvailability;
 
 /**
  * Dynamic day-of-week evaluation helper.
