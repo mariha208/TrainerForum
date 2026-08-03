@@ -284,18 +284,93 @@ function renderHiredTrainersView() {
   `;
 }
 
-// ── REQUIREMENT SUBMISSION FORM HANDLER (LIVE POST API) ──────────────────────
+// ── GOOGLE APPS SCRIPT ENDPOINT (mirrors .env GOOGLE_APPS_SCRIPT_URL) ─────────
+const GAS_REQUIREMENT_URL = 'https://script.google.com/macros/s/AKfycby_a46pgW5bo42qBhXBxR_oX9KlGg_m7BdyUmgrzlUPQdYc_FSNyV4kykPonzX_oAL8WA/exec';
+
+// ── REQUIREMENT SUCCESS BANNER ────────────────────────────────────────────────
+function showRequirementSuccessBanner() {
+  // Remove any existing banner
+  const existing = document.getElementById('req-success-banner');
+  if (existing) existing.remove();
+
+  const banner = document.createElement('div');
+  banner.id = 'req-success-banner';
+  banner.style.cssText = `
+    position: fixed; top: 24px; left: 50%; transform: translateX(-50%);
+    background: linear-gradient(135deg, #0d9c6e, #10b981);
+    color: #ffffff; padding: 14px 28px; border-radius: 12px;
+    font-weight: 700; font-size: 15px; z-index: 9999;
+    box-shadow: 0 8px 32px rgba(16,185,129,0.45);
+    display: flex; align-items: center; gap: 10px;
+    animation: slideDownFade 0.35s ease;
+  `;
+  banner.innerHTML = `
+    <span style="font-size:20px">✅</span>
+    <span>Requirement submitted successfully! We'll be in touch soon.</span>
+  `;
+
+  // Inject keyframe animation once
+  if (!document.getElementById('req-banner-style')) {
+    const style = document.createElement('style');
+    style.id = 'req-banner-style';
+    style.textContent = `
+      @keyframes slideDownFade {
+        from { opacity: 0; transform: translateX(-50%) translateY(-18px); }
+        to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  document.body.appendChild(banner);
+  setTimeout(() => {
+    banner.style.transition = 'opacity 0.5s ease';
+    banner.style.opacity = '0';
+    setTimeout(() => banner.remove(), 500);
+  }, 5000);
+}
+
+// ── SUBMIT BUTTON LOADING STATE HELPERS ───────────────────────────────────────
+function setSubmitLoading(isLoading) {
+  const btn = document.querySelector('#org-requirement-form button[type="submit"]');
+  if (!btn) return;
+  if (isLoading) {
+    btn.disabled = true;
+    btn.dataset.originalHtml = btn.innerHTML;
+    btn.innerHTML = `
+      <span style="display:inline-flex;align-items:center;gap:8px">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2.5" style="animation:spin 0.75s linear infinite">
+          <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83
+                   M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+        </svg>
+        Submitting…
+      </span>
+    `;
+    if (!document.getElementById('spin-style')) {
+      const s = document.createElement('style');
+      s.id = 'spin-style';
+      s.textContent = '@keyframes spin { to { transform: rotate(360deg); } }';
+      document.head.appendChild(s);
+    }
+  } else {
+    btn.disabled = false;
+    btn.innerHTML = btn.dataset.originalHtml || '<span>🚀 Submit Requirement</span>';
+  }
+}
+
+// ── REQUIREMENT SUBMISSION FORM HANDLER (LIVE POST + GOOGLE SHEETS) ───────────
 window.handleOrgRequirementSubmit = async function (e) {
   e.preventDefault();
 
-  const orgName = document.getElementById('req-org-name')?.value.trim();
-  const topic = document.getElementById('req-topic')?.value.trim();
-  const budget = Number(document.getElementById('req-budget')?.value);
+  const orgName     = document.getElementById('req-org-name')?.value.trim();
+  const topic       = document.getElementById('req-topic')?.value.trim();
+  const budget      = Number(document.getElementById('req-budget')?.value);
   const locationType = document.getElementById('req-location-type')?.value;
   const cityDetails = document.getElementById('req-city-details')?.value.trim();
-  const targetDate = document.getElementById('req-dates')?.value;
-  const duration = document.getElementById('req-duration')?.value.trim();
-  const notes = document.getElementById('req-notes')?.value.trim();
+  const targetDate  = document.getElementById('req-dates')?.value;
+  const duration    = document.getElementById('req-duration')?.value.trim();
+  const notes       = document.getElementById('req-notes')?.value.trim();
 
   if (!orgName || !topic || !budget || !cityDetails || !targetDate || !duration) {
     if (window.showToast) window.showToast('Please fill in all required fields marked with *', 3500);
@@ -303,60 +378,104 @@ window.handleOrgRequirementSubmit = async function (e) {
   }
 
   const payload = {
-    orgName,
-    topic,
+    organizationName: orgName,
+    trainingTopic:    topic,
     budget,
-    locationType,
-    cityDetails,
-    targetDate,
-    duration,
-    notes: notes || ''
+    locationPlace:    locationType,
+    cityAddress:      cityDetails,
+    targetDates:      targetDate,
+    timeDuration:     duration,
+    specialNotes:     notes || ''
   };
 
+  // ── Disable submit button & show spinner ────────────────────────────────────
+  setSubmitLoading(true);
+
+  let backendOk = false;
+
+  // ── 1. POST to backend (MongoDB) ────────────────────────────────────────────
   try {
+    const backendPayload = {
+      orgName,
+      topic,
+      budget,
+      locationType,
+      cityDetails,
+      targetDate,
+      duration,
+      notes: notes || ''
+    };
+
     const res = await fetch(`${SERVER_ORIGIN}/api/requirements`, {
-      method: 'POST',
+      method:  'POST',
       headers: getAuthHeaders(),
-      body: JSON.stringify(payload)
+      body:    JSON.stringify(backendPayload)
     });
 
     if (res.ok) {
-      const data = await res.json();
-      if (window.showToast) {
-        window.showToast('Requirement submitted successfully! It is currently under review.', 5000);
-      } else {
-        alert('Requirement submitted successfully! It is currently under review.');
-      }
+      backendOk = true;
     } else {
-      throw new Error('Server returned error status');
+      throw new Error(`Server ${res.status}`);
     }
   } catch (err) {
-    console.warn('[ReqSubmit] Backend POST failed/offline, saving locally:', err.message);
-    
-    // Local fallback creation
+    console.warn('[ReqSubmit] Backend POST failed, saving locally:', err.message);
+
+    // Local fallback
     const fallbackReq = {
-      reqId: `REQ-${Math.floor(1000 + Math.random() * 9000)}`,
-      ...payload,
+      reqId:         `REQ-${Math.floor(1000 + Math.random() * 9000)}`,
+      orgName, topic, budget, locationType, cityDetails, targetDate, duration,
+      notes:         notes || '',
       submittedDate: new Date().toISOString().split('T')[0],
-      status: 'Pending'
+      status:        'Pending'
     };
     ORG_REQUIREMENTS_DATA.unshift(fallbackReq);
     localStorage.setItem('ORG_REQUIREMENTS_STORE', JSON.stringify(ORG_REQUIREMENTS_DATA));
-
-    if (window.showToast) {
-      window.showToast('Requirement submitted successfully! It is currently under review.', 5000);
-    }
+    backendOk = true; // treat local save as success for UX purposes
   }
 
-  // Reset form
-  const form = document.getElementById('org-requirement-form');
-  if (form) form.reset();
+  // ── 2. Fire-and-forget POST to Google Apps Script (Google Sheets logging) ───
+  // Content-Type: text/plain prevents CORS preflight on script.google.com
+  try {
+    fetch(GAS_REQUIREMENT_URL, {
+      method:  'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body:    JSON.stringify(payload)
+    }).then(async (gasRes) => {
+      if (!gasRes.ok) {
+        console.warn('[GAS] Google Sheets POST returned non-OK status:', gasRes.status);
+        return;
+      }
+      const gasData = await gasRes.json();
+      if (gasData?.status !== 'success') {
+        console.warn('[GAS] Unexpected response:', gasData);
+      } else {
+        console.info('[GAS] Requirement logged to Google Sheets ✓');
+      }
+    }).catch(gasErr => {
+      console.warn('[GAS] Google Sheets POST error (non-blocking):', gasErr.message);
+    });
+  } catch (gasErr) {
+    // Non-blocking — Google Sheets logging should never block the user flow
+    console.warn('[GAS] Failed to initiate Google Sheets POST:', gasErr.message);
+  }
 
-  // Refresh live requirements list & card metrics
-  await fetchLiveRequirements();
+  // ── Re-enable button ────────────────────────────────────────────────────────
+  setSubmitLoading(false);
 
-  // Switch to Overview tab
-  switchOrgTab('overview');
+  if (backendOk) {
+    // Show success banner
+    showRequirementSuccessBanner();
+
+    // Reset form
+    const form = document.getElementById('org-requirement-form');
+    if (form) form.reset();
+
+    // Refresh live requirements list & metrics
+    await fetchLiveRequirements();
+
+    // Switch to Overview tab
+    switchOrgTab('overview');
+  }
 };
 
 // ── REQUIREMENT DETAILS MODAL ─────────────────────────────────────────────────
