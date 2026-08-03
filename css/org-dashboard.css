@@ -925,7 +925,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   border: 1px solid rgba(245, 158, 11, 0.3);
 }
 
-.badge-accepted {
+.badge-accepted,
+.badge-approved {
   background: rgba(16, 185, 129, 0.15);
   color: #34d399;
   border: 1px solid rgba(52, 211, 153, 0.3);

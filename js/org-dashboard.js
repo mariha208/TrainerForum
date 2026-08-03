@@ -16,6 +16,14 @@ function getAuthHeaders() {
   };
 }
 
+// ── HELPER: ESCAPE HTML ───────────────────────────────────────────────────────
+function escHtml(str) {
+  if (!str) return '';
+  return String(str).replace(/[&<>"']/g, m => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  }[m]));
+}
+
 // ── INITIALIZATION ────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', async () => {
   await fetchLiveRequirements();
@@ -47,6 +55,45 @@ async function fetchLiveRequirements() {
   } catch (err) {
     console.warn('[OrgDashboard] Network error, loading local requirements:', err.message);
     ORG_REQUIREMENTS_DATA = JSON.parse(localStorage.getItem('ORG_REQUIREMENTS_STORE')) || [];
+  }
+
+  // Also fetch live approval status from Google Apps Script API to ensure real-time sync with Admin actions
+  try {
+    const gasRes = await fetch("https://script.google.com/macros/s/AKfycbw09cpyAHD1uVIzBdw6lCiHyugBT7AiTEGbQLsOHStHnzgeZKCStgyqm8_CgupQCCj-qg/exec");
+    if (gasRes.ok) {
+      const gasData = await gasRes.json();
+      const gasReqs = Array.isArray(gasData) ? gasData : (gasData.requirements || gasData.data || gasData.result || []);
+
+      if (Array.isArray(gasReqs) && gasReqs.length > 0) {
+        if (ORG_REQUIREMENTS_DATA.length === 0) {
+          ORG_REQUIREMENTS_DATA = gasReqs.map(r => ({
+            reqId: r.rowId || r.id || 'REQ-' + Math.floor(1000 + Math.random() * 9000),
+            orgName: r.organizationName || r.orgName || '',
+            topic: r.trainingTopic || r.topic || '',
+            budget: r.budget || 0,
+            locationType: r.locationPlace || r.locationType || '',
+            cityDetails: r.cityAddress || r.cityDetails || '',
+            targetDate: r.targetDates || r.targetDate || '',
+            duration: r.timeDuration || r.duration || '',
+            notes: r.specialNotes || r.notes || '',
+            status: r.approvalStatus || r.status || 'Pending'
+          }));
+        } else {
+          ORG_REQUIREMENTS_DATA.forEach(localReq => {
+            const matchedGas = gasReqs.find(gr => {
+              const gTopic = (gr.trainingTopic || gr.topic || '').toLowerCase();
+              const lTopic = (localReq.topic || '').toLowerCase();
+              return gTopic && lTopic && (gTopic.includes(lTopic) || lTopic.includes(gTopic));
+            });
+            if (matchedGas) {
+              localReq.status = matchedGas.approvalStatus || matchedGas.status || localReq.status;
+            }
+          });
+        }
+      }
+    }
+  } catch (gasErr) {
+    console.warn('[OrgDashboard] GAS fetch sync error (non-blocking):', gasErr.message);
   }
 
   renderRequirementsTrack();
@@ -148,13 +195,24 @@ function renderRequirementsTrack() {
   const countBadge = document.getElementById('count-reqs');
 
   const total = ORG_REQUIREMENTS_DATA.length;
-  const pending = ORG_REQUIREMENTS_DATA.filter(r => r.status === 'Pending').length;
-  const accepted = ORG_REQUIREMENTS_DATA.filter(r => r.status === 'Accepted').length;
-  const rejected = ORG_REQUIREMENTS_DATA.filter(r => r.status === 'Rejected').length;
+  const pending = ORG_REQUIREMENTS_DATA.filter(r => {
+    const s = String(r.approvalStatus || r.status || 'Pending').trim().toLowerCase();
+    return s === 'pending';
+  }).length;
+
+  const accepted = ORG_REQUIREMENTS_DATA.filter(r => {
+    const s = String(r.approvalStatus || r.status || 'Pending').trim().toLowerCase();
+    return s === 'approved' || s === 'accepted';
+  }).length;
+
+  const rejected = ORG_REQUIREMENTS_DATA.filter(r => {
+    const s = String(r.approvalStatus || r.status || 'Pending').trim().toLowerCase();
+    return s === 'rejected';
+  }).length;
 
   if (boxCount) boxCount.textContent = total;
   if (pillPending) pillPending.textContent = `${pending} Pending`;
-  if (pillAccepted) pillAccepted.textContent = `${accepted} Accepted`;
+  if (pillAccepted) pillAccepted.textContent = `${accepted} Approved`;
   if (pillRejected) pillRejected.textContent = `${rejected} Rejected`;
   if (countBadge) countBadge.textContent = total;
 
@@ -172,38 +230,51 @@ function renderRequirementsTrack() {
   }
 
   tbody.innerHTML = ORG_REQUIREMENTS_DATA.map(r => {
+    const currentStatus = String(r.approvalStatus || r.status || 'Pending').trim();
+    const statusLower = currentStatus.toLowerCase();
+
     let badgeClass = 'badge-pending';
-    let badgeIcon = '⏱️';
-    if (r.status === 'Accepted') {
+    let badgeText = '⏰ PENDING';
+
+    if (statusLower === 'approved' || statusLower === 'accepted') {
       badgeClass = 'badge-accepted';
-      badgeIcon = '✓';
-    } else if (r.status === 'Rejected') {
+      badgeText = '✅ APPROVED';
+    } else if (statusLower === 'rejected') {
       badgeClass = 'badge-rejected';
-      badgeIcon = '✕';
+      badgeText = '❌ REJECTED';
     }
+
+    const reqId = r.reqId || r.id || 'REQ-001';
+    const topic = r.topic || r.trainingTopic || 'N/A';
+    const orgName = r.orgName || r.organizationName || 'N/A';
+    const loc = r.locationType || r.locationPlace || 'N/A';
+    const city = r.cityDetails || r.cityAddress || '';
+    const dateStr = r.targetDate || r.targetDates || 'N/A';
+    const duration = r.duration || r.timeDuration || 'N/A';
+    const budget = Number(r.budget || 0).toLocaleString();
 
     return `
       <tr>
         <td>
-          <div style="font-size:11px;font-weight:700;color:#c5a57b;letter-spacing:0.5px">${r.reqId || r.id}</div>
-          <div style="font-weight:700;color:#ffffff;margin-top:2px">${r.topic}</div>
-          <div style="font-size:12px;color:#94a3b8">${r.orgName}</div>
+          <div style="font-size:11px;font-weight:700;color:#c5a57b;letter-spacing:0.5px">${escHtml(reqId)}</div>
+          <div style="font-weight:700;color:#ffffff;margin-top:2px">${escHtml(topic)}</div>
+          <div style="font-size:12px;color:#94a3b8">${escHtml(orgName)}</div>
         </td>
         <td>
-          <div>📍 ${r.locationType} (${r.cityDetails})</div>
-          <div style="font-size:12px;color:#94a3b8;margin-top:2px">📅 ${r.targetDate}</div>
+          <div>📍 ${escHtml(loc)} ${city ? `(${escHtml(city)})` : ''}</div>
+          <div style="font-size:12px;color:#94a3b8;margin-top:2px">📅 ${escHtml(dateStr)}</div>
         </td>
         <td>
-          <div style="font-weight:800;color:#34d399">$${Number(r.budget).toLocaleString()}</div>
+          <div style="font-weight:800;color:#34d399">$${budget}</div>
         </td>
         <td>
-          <div style="color:#cbd5e1">${r.targetDate} (${r.duration})</div>
+          <div style="color:#cbd5e1">${escHtml(dateStr)} (${escHtml(duration)})</div>
         </td>
         <td>
-          <span class="badge-status ${badgeClass}">${badgeIcon} ${r.status}</span>
+          <span class="badge-status ${badgeClass}">${badgeText}</span>
         </td>
         <td>
-          <button type="button" class="btn btn-ghost btn-sm" onclick="openReqDetailsModal('${r.reqId || r.id}')">View Details</button>
+          <button type="button" class="btn btn-ghost btn-sm" onclick="openReqDetailsModal('${reqId}')">View Details</button>
         </td>
       </tr>
     `;
@@ -482,28 +553,32 @@ window.handleOrgRequirementSubmit = async function (e) {
 
 // ── REQUIREMENT DETAILS MODAL ─────────────────────────────────────────────────
 window.openReqDetailsModal = function (reqId) {
-  const req = ORG_REQUIREMENTS_DATA.find(r => (r.reqId || r.id) === reqId);
+  const req = ORG_REQUIREMENTS_DATA.find(r => (r.reqId || r.id || r.rowId) == reqId);
   if (!req) return;
 
   const content = document.getElementById('req-details-content');
   if (!content) return;
 
+  const currentStatus = String(req.approvalStatus || req.status || 'Pending').trim();
+  const statusLower = currentStatus.toLowerCase();
+
   let badgeClass = 'badge-pending';
-  let badgeIcon = '⏱️';
-  if (req.status === 'Accepted') {
+  let badgeText = '⏰ PENDING';
+
+  if (statusLower === 'approved' || statusLower === 'accepted') {
     badgeClass = 'badge-accepted';
-    badgeIcon = '✓';
-  } else if (req.status === 'Rejected') {
+    badgeText = '✅ APPROVED';
+  } else if (statusLower === 'rejected') {
     badgeClass = 'badge-rejected';
-    badgeIcon = '✕';
+    badgeText = '❌ REJECTED';
   }
 
   content.innerHTML = `
     <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px">
       <div>
-        <span class="badge-status ${badgeClass}">${badgeIcon} ${req.status}</span>
-        <h3 style="margin:8px 0 0 0;font-size:18px;font-weight:800;color:#ffffff">${req.topic}</h3>
-        <p style="margin:2px 0 0 0;font-size:12px;color:#94a3b8">${req.orgName} • Ref: ${req.reqId || req.id}</p>
+        <span class="badge-status ${badgeClass}">${badgeText}</span>
+        <h3 style="margin:8px 0 0 0;font-size:18px;font-weight:800;color:#ffffff">${escHtml(req.topic || req.trainingTopic || 'N/A')}</h3>
+        <p style="margin:2px 0 0 0;font-size:12px;color:#94a3b8">${escHtml(req.orgName || req.organizationName || 'N/A')} • Ref: ${escHtml(req.reqId || req.id || req.rowId || 'REQ-001')}</p>
       </div>
     </div>
 

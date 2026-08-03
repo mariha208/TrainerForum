@@ -682,16 +682,28 @@ window.loadRequirements = async function() {
       const dates = req.targetDates || req.targetDate || 'N/A';
       const duration = req.timeDuration || req.duration || 'N/A';
       const notes = req.specialNotes || req.notes || 'None';
-      const status = req.status || req.approvalStatus || 'Pending';
+
+      const currentStatus = String(req.approvalStatus || req.status || 'Pending').trim();
+      const statusLower = currentStatus.toLowerCase();
 
       let statusBadge = '';
-      const statusLower = String(status).toLowerCase();
-      if (statusLower === 'approved') {
+      if (statusLower === 'approved' || statusLower === 'accepted') {
         statusBadge = `<span class="badge" style="background:rgba(46,204,113,0.15); color:#4ade80; border:1px solid rgba(46,204,113,0.3);">✅ Approved</span>`;
       } else if (statusLower === 'rejected') {
         statusBadge = `<span class="badge" style="background:rgba(231,76,60,0.15); color:#f87171; border:1px solid rgba(231,76,60,0.3);">❌ Rejected</span>`;
       } else {
         statusBadge = `<span class="badge" style="background:rgba(245,200,66,0.15); color:var(--gold); border:1px solid rgba(245,200,66,0.3);">⏳ Pending</span>`;
+      }
+
+      let actionCellHtml = '';
+      if (statusLower === 'approved' || statusLower === 'accepted' || statusLower === 'rejected') {
+        actionCellHtml = `<span style="color:var(--tm); font-size:.8rem; font-style:italic;">Action Completed</span>`;
+      } else {
+        actionCellHtml = `
+          <div style="display:flex; gap:6px; align-items:center;">
+            <button class="btn-sm" style="background:rgba(46,204,113,0.2); color:#4ade80; border:1px solid rgba(46,204,113,0.4);" onclick="updateRequirementStatus('${rowId}', 'Approved')">Approve</button>
+            <button class="btn-sm" style="background:rgba(231,76,60,0.2); color:#f87171; border:1px solid rgba(231,76,60,0.4);" onclick="updateRequirementStatus('${rowId}', 'Rejected')">Reject</button>
+          </div>`;
       }
 
       return `<tr>
@@ -711,12 +723,7 @@ window.loadRequirements = async function() {
           <div style="font-size:.8rem; color:var(--tm); max-width:200px; white-space:normal; line-height:1.4;">${escHtml(notes)}</div>
         </td>
         <td id="req-status-badge-${rowId}">${statusBadge}</td>
-        <td>
-          <div style="display:flex; gap:6px; align-items:center;">
-            <button class="btn-sm" style="background:rgba(46,204,113,0.2); color:#4ade80; border:1px solid rgba(46,204,113,0.4);" onclick="updateRequirementStatus('${rowId}', 'Approved')">Approve</button>
-            <button class="btn-sm" style="background:rgba(231,76,60,0.2); color:#f87171; border:1px solid rgba(231,76,60,0.4);" onclick="updateRequirementStatus('${rowId}', 'Rejected')">Reject</button>
-          </div>
-        </td>
+        <td id="req-action-cell-${rowId}">${actionCellHtml}</td>
       </tr>`;
     }).join('');
 
@@ -734,30 +741,43 @@ window.updateRequirementStatus = async function(rowId, status) {
       status: status
     };
 
-    const res = await fetch(REQUIREMENTS_API_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify(payload)
-    });
-
-    // Update UI badge dynamically
+    // Update UI badge and actions column immediately
     const badgeEl = document.getElementById(`req-status-badge-${rowId}`);
+    const actionCell = document.getElementById(`req-action-cell-${rowId}`);
+
     if (badgeEl) {
-      if (status === 'Approved') {
+      if (status.toLowerCase() === 'approved') {
         badgeEl.innerHTML = `<span class="badge" style="background:rgba(46,204,113,0.15); color:#4ade80; border:1px solid rgba(46,204,113,0.3);">✅ Approved</span>`;
       } else {
         badgeEl.innerHTML = `<span class="badge" style="background:rgba(231,76,60,0.15); color:#f87171; border:1px solid rgba(231,76,60,0.3);">❌ Rejected</span>`;
       }
     }
 
+    if (actionCell) {
+      actionCell.innerHTML = `<span style="color:var(--tm); font-size:.8rem; font-style:italic;">Action Completed</span>`;
+    }
+
+    const res = await fetch(REQUIREMENTS_API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload)
+    });
+
     if (window.showToast) {
       window.showToast(`Requirement status updated to ${status}!`);
     } else {
       alert(`Requirement status updated to ${status}!`);
     }
+
+    // Refresh from Google Apps Script to ensure full sync
+    setTimeout(() => {
+      loadRequirements();
+    }, 1200);
+
   } catch (err) {
     console.error('[Admin] Update requirement status error:', err);
     alert('❌ Failed to update requirement status: ' + err.message);
   }
 };
+
 
