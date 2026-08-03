@@ -1505,16 +1505,21 @@
       cont.appendChild(div);
     }
     function _deleteService(id) {
-      if (!confirm('Delete service?')) return;
-      var el = document.getElementById('svc-' + id); if (el) el.remove();
-      var cache = JSON.parse(localStorage.getItem('currentTrainer')) || {};
-      if (Array.isArray(cache.services)) {
-        cache.services = cache.services.filter(function (s) { return s.id !== id });
-        localStorage.setItem('currentTrainer', JSON.stringify(cache));
-      }
-      var c = document.getElementById('services-container');
-      if (c && c.children.length === 0) c.innerHTML = '<div class="empty-msg" style="grid-column:1/-1;text-align:center;padding:20px;color:var(--tm);font-size:.85rem">No services defined.</div>';
-      if (typeof commitLocalProfileChanges === 'function') commitLocalProfileChanges();
+      _openDeleteConfirm(
+        'This will permanently delete this service from your profile.',
+        function() {
+          var el = document.getElementById('svc-' + id); if (el) el.remove();
+          var cache = JSON.parse(localStorage.getItem('currentTrainer')) || {};
+          if (Array.isArray(cache.services)) {
+            cache.services = cache.services.filter(function (s) { return s.id !== id });
+            localStorage.setItem('currentTrainer', JSON.stringify(cache));
+          }
+          var c = document.getElementById('services-container');
+          if (c && c.children.length === 0) c.innerHTML = '<div class="empty-msg" style="grid-column:1/-1;text-align:center;padding:20px;color:var(--tm);font-size:.85rem">No services defined.</div>';
+          if (typeof commitLocalProfileChanges === 'function') commitLocalProfileChanges();
+          window.toast && window.toast('\u2714 Service removed and profile saved.');
+        }
+      );
     }
 
     /* ── Packages Logic ── */
@@ -1561,16 +1566,21 @@
       cont.appendChild(div);
     }
     function _deletePackage(id) {
-      if (!confirm('Delete package?')) return;
-      var el = document.getElementById('pkg-' + id); if (el) el.remove();
-      var cache = JSON.parse(localStorage.getItem('currentTrainer')) || {};
-      if (Array.isArray(cache.packages)) {
-        cache.packages = cache.packages.filter(function (s) { return s.id !== id });
-        localStorage.setItem('currentTrainer', JSON.stringify(cache));
-      }
-      var c = document.getElementById('packages-container');
-      if (c && c.children.length === 0) c.innerHTML = '<div class="empty-msg" style="grid-column:1/-1;text-align:center;padding:20px;color:var(--tm);font-size:.85rem">No packages defined.</div>';
-      if (typeof commitLocalProfileChanges === 'function') commitLocalProfileChanges();
+      _openDeleteConfirm(
+        'This will permanently delete this package from your profile.',
+        function() {
+          var el = document.getElementById('pkg-' + id); if (el) el.remove();
+          var cache = JSON.parse(localStorage.getItem('currentTrainer')) || {};
+          if (Array.isArray(cache.packages)) {
+            cache.packages = cache.packages.filter(function (s) { return s.id !== id });
+            localStorage.setItem('currentTrainer', JSON.stringify(cache));
+          }
+          var c = document.getElementById('packages-container');
+          if (c && c.children.length === 0) c.innerHTML = '<div class="empty-msg" style="grid-column:1/-1;text-align:center;padding:20px;color:var(--tm);font-size:.85rem">No packages defined.</div>';
+          if (typeof commitLocalProfileChanges === 'function') commitLocalProfileChanges();
+          window.toast && window.toast('\u2714 Package removed and profile saved.');
+        }
+      );
     }
 
     /* ── Availability Logic ── */
@@ -2295,20 +2305,49 @@
       }
     });
 
-    // Global Save Button Popup
-    document.addEventListener('click', function (e) {
-      var btn = e.target.closest('button');
-      if (btn) {
-        var text = (btn.textContent || btn.innerText).toLowerCase();
-        var onclickAttr = btn.getAttribute('onclick') || '';
-        if (text.includes('save') || onclickAttr.toLowerCase().includes('save')) {
-          setTimeout(function () {
-            alert('your profile is updated');
-          }, 300);
-        }
-      }
-    });
+    // (Global save-button alert removed — was intercepting Save Slots on mobile)
+    /* ── Delete Confirm Modal ── */
+    function _openDeleteConfirm(message, onAccept) {
+      var modal = document.getElementById('delete-confirm-modal');
+      var msg = document.getElementById('delete-confirm-msg');
+      if (!modal) return;
+      if (msg) msg.textContent = message;
+      modal.style.display = 'flex';
+      document.getElementById('delete-confirm-accept').onclick = function () {
+        modal.style.display = 'none';
+        onAccept();
+      };
+      document.getElementById('delete-confirm-cancel').onclick = function () {
+        modal.style.display = 'none';
+      };
+      // Close on backdrop click
+      modal.onclick = function(e) {
+        if (e.target === modal) modal.style.display = 'none';
+      };
+    }
   </script>
+
+  <!-- ── Custom Delete Confirmation Modal ── -->
+  <div id="delete-confirm-modal" style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.55);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:20px;">
+    <div style="background:var(--bg2,#1e1e2a);border:1.5px solid var(--border,rgba(255,255,255,0.1));border-radius:18px;padding:32px 28px 28px;max-width:380px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.5);animation:dcm-in 0.22s cubic-bezier(.4,0,.2,1);">
+      <!-- Dustbin Icon -->
+      <div style="width:64px;height:64px;background:rgba(220,53,69,0.12);border:2px solid rgba(220,53,69,0.3);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;font-size:1.9rem;">🗑️</div>
+      <div style="font-size:1.05rem;font-weight:700;color:var(--ts,#fff);margin-bottom:10px;">Remove from Profile?</div>
+      <p id="delete-confirm-msg" style="font-size:0.87rem;color:var(--tm,#aaa);line-height:1.6;margin-bottom:24px;">This will permanently delete this item from your profile.</p>
+      <div style="display:flex;gap:12px;">
+        <button id="delete-confirm-cancel" style="flex:1;padding:11px 0;border-radius:10px;border:1.5px solid var(--border,rgba(255,255,255,0.15));background:transparent;color:var(--ts,#fff);font-size:0.93rem;font-weight:600;cursor:pointer;transition:background 0.18s;">Cancel</button>
+        <button id="delete-confirm-accept" style="flex:1;padding:11px 0;border-radius:10px;border:none;background:linear-gradient(135deg,#dc3545,#b02a37);color:#fff;font-size:0.93rem;font-weight:700;cursor:pointer;box-shadow:0 4px 14px rgba(220,53,69,0.35);transition:opacity 0.18s;">Delete</button>
+      </div>
+    </div>
+  </div>
+  <style>
+    @keyframes dcm-in {
+      from { opacity:0; transform:scale(0.88) translateY(20px); }
+      to   { opacity:1; transform:scale(1) translateY(0); }
+    }
+    #delete-confirm-cancel:hover { background: var(--bg3, rgba(255,255,255,0.07)) !important; }
+    #delete-confirm-accept:hover { opacity: 0.88; }
+  </style>
 </body>
 
 </html>
