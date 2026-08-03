@@ -83,10 +83,69 @@ window.getAvailabilityPillText = function (t) {
 };
 
 /**
+ * Dynamic day-of-week evaluation helper.
+ * Evaluates whether a given date is available based on:
+ *   1. Specific date overrides (specificDates)
+ *   2. Weekly recurring availability (Mon, Tue, Wed, Thu, Fri, Sat, Sun)
+ *   3. Fallback defaults (Mon-Fri enabled, Sat-Sun disabled)
+ */
+window.isDayAvailable = function (avs, dayName, year, month, day) {
+  if (!avs) {
+    return dayName !== 'Sat' && dayName !== 'Sun';
+  }
+
+  // Parse if avs is JSON string
+  if (typeof avs === 'string') {
+    try {
+      const parsed = JSON.parse(avs);
+      if (parsed && typeof parsed === 'object') avs = parsed;
+    } catch (e) {
+      const str = avs.toLowerCase();
+      if (str.includes('everyday')) return true;
+      if (str.includes('mon-fri') || str.includes('mon–fri')) return dayName !== 'Sat' && dayName !== 'Sun';
+      if (str.includes(dayName.toLowerCase())) return true;
+      return dayName !== 'Sat' && dayName !== 'Sun';
+    }
+  }
+
+  // 1. Check specific dates override
+  const spec = avs.specificDates || (avs.weeklyAvailability && avs.weeklyAvailability.specificDates);
+  if (spec && typeof spec === 'object') {
+    const m0 = month;
+    const m1 = month + 1;
+    const k0 = `${year}-${m0}-${day}`;
+    const k1 = `${year}-${m1}-${day}`;
+    const kISO = `${year}-${String(m1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+
+    if (typeof spec[k0] !== 'undefined') return !!spec[k0];
+    if (typeof spec[k1] !== 'undefined') return !!spec[k1];
+    if (typeof spec[kISO] !== 'undefined') return !!spec[kISO];
+  }
+
+  // 2. Check weekly recurring schedule
+  const weekly = avs.weeklyAvailability || avs.weeklyHours || avs;
+  const dayKey = dayName; // e.g. 'Mon', 'Sat'
+  const dayConf = weekly[dayKey] || weekly[dayKey.toLowerCase()] || weekly[dayKey.toUpperCase()];
+
+  if (typeof dayConf !== 'undefined') {
+    if (typeof dayConf === 'boolean') return dayConf;
+    if (typeof dayConf === 'string') return dayConf === 'true';
+    if (dayConf && typeof dayConf === 'object') {
+      if (typeof dayConf.available !== 'undefined') return !!dayConf.available;
+      if (typeof dayConf.enabled !== 'undefined') return !!dayConf.enabled;
+    }
+  }
+
+  // 3. Default fallback: Mon-Fri available, Sat-Sun unavailable
+  return dayName !== 'Sat' && dayName !== 'Sun';
+};
+
+/**
  * After saving availability to the DB, call this to re-fetch the trainer's
  * record from the API and push the fresh availability object into:
  *   - window.TRAINERS[n].availability
  *   - All .avail-pill DOM elements that reference this trainer
+ *   - Monthly availability calendar grids on dashboard and profile modals
  */
 window.refreshTrainerAvailabilityFromDB = async function (trainerId) {
   if (!trainerId || trainerId === '1') return;
@@ -111,6 +170,16 @@ window.refreshTrainerAvailabilityFromDB = async function (trainerId) {
     document.querySelectorAll(`.avail-pill[data-trainer-id="${trainerId}"]`).forEach(el => {
       el.textContent = '\uD83D\uDCC5 ' + (window.getAvailabilityPillText({ availability: freshAvail }) || 'Available');
     });
+
+    // Real-time sync: re-render monthly calendar grid on Dashboard if function exists
+    if (typeof window.renderDashboardCalendar === 'function') {
+      window.renderDashboardCalendar();
+    }
+
+    // Real-time sync: re-render monthly calendar grid on Profile Modal if function exists
+    if (typeof window.renderBPMCalendar === 'function') {
+      window.renderBPMCalendar();
+    }
 
     console.log('[AvailSync] Trainer', trainerId, 'availability refreshed from DB:', freshAvail);
   } catch (err) {

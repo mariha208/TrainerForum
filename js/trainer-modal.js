@@ -1271,70 +1271,56 @@ window.renderBPMCalendar = function () {
   const daysCount = new Date(year, month + 1, 0).getDate();
   const prevDays = new Date(year, month, 0).getDate();
 
-  // Read blocked specific dates from the booked trainer's availability
-  let _bpmSpecificDates = {};
-  let _bpmWeeklyAvs = {};
-  const _daysMap = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-  try {
-    let _bpmAvs = window.bookingState.trainerAvailability;
-    if (!_bpmAvs) {
-      const tid = window.bookingState.trainerId;
-      const TRAINERS = window.TRAINERS || [];
-      const t = TRAINERS.find(x => String(x.id) === String(tid)) || window.currentTrainer || {};
-      if (typeof window.getTrainerAvailability === 'function') {
-        _bpmAvs = window.getTrainerAvailability(t);
-      }
+  // Resolve trainer availability
+  let _bpmAvs = window.bookingState.trainerAvailability;
+  const tid = window.bookingState.trainerId;
+  const TRAINERS = window.TRAINERS || [];
+  const t = TRAINERS.find(x => String(x.id || x._id) === String(tid)) || window.currentTrainer || {};
+
+  if (!_bpmAvs && typeof window.getTrainerAvailability === 'function') {
+    _bpmAvs = window.getTrainerAvailability(t);
+  }
+  if (!_bpmAvs) {
+    const _ct = JSON.parse(localStorage.getItem('currentTrainer') || '{}');
+    const _ctId = String(_ct.trainerId || _ct._id || _ct.id || '');
+    const _bookedId = String(tid || '');
+    if (_ctId && _bookedId && _ctId === _bookedId) {
+      _bpmAvs = _ct.availability;
+      if (typeof _bpmAvs === 'string') { try { _bpmAvs = JSON.parse(_bpmAvs); } catch(e){} }
     }
-    if (!_bpmAvs) {
-      // ── BUGFIX: only fall back to currentTrainer if the booked trainer IS the logged-in trainer ──
-      const _ct = JSON.parse(localStorage.getItem('currentTrainer') || '{}');
-      const _ctId = String(_ct.trainerId || _ct._id || _ct.id || '');
-      const _bookedId = String(window.bookingState.trainerId || '');
-      if (_ctId && _bookedId && _ctId === _bookedId) {
-        _bpmAvs = _ct.availability;
-        if (typeof _bpmAvs === 'string') _bpmAvs = JSON.parse(_bpmAvs);
-      }
-      // Also try the per-trainer localStorage key directly
-      if (!_bpmAvs && _bookedId) {
-        const _lavail = JSON.parse(localStorage.getItem('tv-trainer-' + _bookedId + '-availability') || 'null');
-        if (_lavail) _bpmAvs = _lavail;
-      }
+    if (!_bpmAvs && _bookedId) {
+      const _lavail = JSON.parse(localStorage.getItem('tv-trainer-' + _bookedId + '-availability') || 'null');
+      if (_lavail) _bpmAvs = _lavail;
     }
-    if (_bpmAvs && _bpmAvs.specificDates) _bpmSpecificDates = _bpmAvs.specificDates;
-    if (_bpmAvs) {
-      ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].forEach(function(dk) {
-        if (_bpmAvs[dk]) {
-          var inf = _bpmAvs[dk];
-          _bpmWeeklyAvs[dk] = typeof inf.available !== 'undefined' ? inf.available : (inf.enabled !== false);
-        }
-      });
-    }
-  } catch(e) {}
+  }
 
   let cells = '';
   for (let i = firstDay - 1; i >= 0; i--) {
     cells += `<div class="bpm-cal-day other-month">${prevDays - i}</div>`;
   }
+
   for (let d = 1; d <= daysCount; d++) {
+    const cellDate = new Date(year, month, d);
+    const dayName = days[cellDate.getDay()];
     const isToday = d === today.getDate() && month === today.getMonth() && year === today.getFullYear();
     const isSelected = d === state.selectedDay;
-    const isPast = new Date(year, month, d) < new Date(today.getFullYear(), today.getMonth(), today.getDate());
-    // Check if this specific date is blocked
-    const _dateKey = year + '-' + month + '-' + d;
-    const _dayName = _daysMap[new Date(year, month, d).getDay()];
-    let isBlocked = false;
-    if (typeof _bpmSpecificDates[_dateKey] !== 'undefined') {
-      isBlocked = !_bpmSpecificDates[_dateKey];
-    } else if (typeof _bpmWeeklyAvs[_dayName] !== 'undefined') {
-      isBlocked = !_bpmWeeklyAvs[_dayName];
-    }
+    const isPast = cellDate < new Date(today.getFullYear(), today.getMonth(), today.getDate());
+
+    // Dynamic day-of-week evaluation via isDayAvailable
+    const available = typeof window.isDayAvailable === 'function'
+      ? window.isDayAvailable(_bpmAvs, dayName, year, month, d)
+      : (dayName !== 'Sat' && dayName !== 'Sun');
+
+    const isBlocked = !available;
+
     let cls = 'bpm-cal-day';
     if (isPast) cls += ' other-month';
     else if (isBlocked) cls += ' booked';
     else if (isSelected) cls += ' selected';
     else if (isToday) cls += ' today';
+
     const click = (!isPast && !isBlocked) ? `onclick="selectBPMDay(${d})"` : '';
-    const titleAttr = isBlocked ? 'title="Unavailable"' : '';
+    const titleAttr = isBlocked ? 'title="Unavailable"' : 'title="Available"';
     cells += `<div class="${cls}" ${click} ${titleAttr}>${d}</div>`;
   }
   const totalCells = firstDay + daysCount;
@@ -1419,16 +1405,17 @@ window.selectBPMDay = function (d) {
   const daysMap = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   const dayName = daysMap[new Date(state.year, state.month, d).getDay()];
 
-  let isAvailableDay = true;
+  let isAvailableDay = typeof window.isDayAvailable === 'function'
+    ? window.isDayAvailable(_bpmAvs, dayName, state.year, state.month, d)
+    : (dayName !== 'Sat' && dayName !== 'Sun');
+
   let startHour = 9;
   let endHour = 18;
 
   if (_bpmAvs) {
-    const dayConfig = _bpmAvs[dayName] || _bpmAvs[dayName.toLowerCase()];
+    const weekly = _bpmAvs.weeklyAvailability || _bpmAvs.weeklyHours || _bpmAvs;
+    const dayConfig = weekly[dayName] || weekly[dayName.toLowerCase()];
     if (dayConfig) {
-      if (typeof dayConfig.available !== 'undefined') isAvailableDay = !!dayConfig.available;
-      else if (typeof dayConfig.enabled !== 'undefined') isAvailableDay = !!dayConfig.enabled;
-
       if (dayConfig.start) {
         const p = parseInt(dayConfig.start.split(':')[0]);
         if (!isNaN(p)) startHour = p;

@@ -1877,18 +1877,26 @@
       var cont = document.getElementById('weekly-hours-container');
       if (cont) {
         cont.querySelectorAll('.avail-row').forEach(function (row) {
-          avs[row.dataset.day] = row.querySelector('.avail-toggle').checked;
-        });
-      } else {
-        var stored = (JSON.parse(localStorage.getItem('currentTrainer')) || {}).availability;
-        if (typeof stored === 'string') { try { stored = JSON.parse(stored); } catch (e) { stored = {}; } }
-        stored = stored || {};
-        Object.keys(stored).forEach(function (d) {
-          var info = stored[d] || {};
-          var isAvail = typeof info.available !== 'undefined' ? info.available : info.enabled;
-          avs[d] = isAvail !== false;
+          var d = row.dataset.day;
+          var toggle = row.querySelector('.avail-toggle');
+          if (d && toggle) {
+            avs[d] = { available: toggle.checked };
+          }
         });
       }
+      var stored = (JSON.parse(localStorage.getItem('currentTrainer')) || {}).availability;
+      if (typeof stored === 'string') { try { stored = JSON.parse(stored); } catch (e) { stored = {}; } }
+      stored = stored || {};
+      if (stored.specificDates) avs.specificDates = stored.specificDates;
+
+      Object.keys(stored).forEach(function (d) {
+        if (d === 'specificDates') return;
+        if (!avs[d]) {
+          var info = stored[d] || {};
+          var isAvail = typeof info.available !== 'undefined' ? info.available : (info.enabled !== false);
+          avs[d] = { available: isAvail !== false };
+        }
+      });
       return avs;
     }
 
@@ -1902,6 +1910,8 @@
       var daysInMonth = new Date(_dbCalYear, _dbCalMonth + 1, 0).getDate();
       var today = new Date();
       var dayNames = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+      var fullDayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
       var headerHtml = dayNames.map(function (n) {
         return '<div style="text-align:center;font-size:.68rem;font-weight:700;color:var(--tm);padding:5px 0">' + n + '</div>';
       }).join('');
@@ -1909,26 +1919,22 @@
       var cells = '';
       for (var i = 0; i < firstDay; i++) cells += '<div></div>';
 
-      var cache = JSON.parse(localStorage.getItem('currentTrainer')) || {};
-      var rawAvs = cache.availability;
-      if (typeof rawAvs === 'string') { try { rawAvs = JSON.parse(rawAvs); } catch (e) { rawAvs = {}; } }
-      var specificDates = (rawAvs && rawAvs.specificDates) ? rawAvs.specificDates : {};
-
       for (var day = 1; day <= daysInMonth; day++) {
-        var d = new Date(_dbCalYear, _dbCalMonth, day);
-        var dayKey = _DB_DAY_MAP[d.getDay()];
-        var dateStr = _dbCalYear + '-' + _dbCalMonth + '-' + day;
+        var dObj = new Date(_dbCalYear, _dbCalMonth, day);
+        var dayName = fullDayNames[dObj.getDay()];
 
-        var enabled = avs[dayKey] !== false;
-        if (typeof specificDates[dateStr] !== 'undefined') {
-          enabled = specificDates[dateStr];
-        }
+        // Dynamic Day-of-Week & Specific Date evaluation via isDayAvailable
+        var enabled = typeof window.isDayAvailable === 'function'
+          ? window.isDayAvailable(avs, dayName, _dbCalYear, _dbCalMonth, day)
+          : (dayName !== 'Sat' && dayName !== 'Sun');
 
         var isToday = (day === today.getDate() && _dbCalMonth === today.getMonth() && _dbCalYear === today.getFullYear());
         var bg = enabled ? (isToday ? 'rgba(197,160,89,0.25)' : 'rgba(0,0,0,0.02)') : 'rgba(239,68,68,0.15)';
         var bdr = enabled ? (isToday ? '1.5px solid #C5A059' : '1px solid rgba(0,0,0,0.06)') : '1px solid rgba(239,68,68,0.3)';
         var clr = enabled ? (isToday ? '#C5A059' : 'var(--tp)') : 'rgba(239,68,68,0.9)';
-        cells += '<div onclick="toggleSpecificDate(' + _dbCalYear + ',' + _dbCalMonth + ',' + day + ')" style="cursor:pointer;text-align:center;padding:7px 3px;border-radius:7px;background:' + bg + ';border:' + bdr + ';font-size:.76rem;font-weight:600;color:' + clr + '" title="Click to block/unblock this specific day">' + day + '</div>';
+        var titleAttr = enabled ? 'Available (Click to block this specific date)' : 'Unavailable (Click to unblock this date)';
+
+        cells += '<div onclick="toggleSpecificDate(' + _dbCalYear + ',' + _dbCalMonth + ',' + day + ')" style="cursor:pointer;text-align:center;padding:7px 3px;border-radius:7px;background:' + bg + ';border:' + bdr + ';font-size:.76rem;font-weight:600;color:' + clr + '" title="' + titleAttr + '">' + day + '</div>';
       }
       widget.innerHTML =
         '<div style="padding:10px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);background:rgba(0,0,0,0.02)">'
@@ -1942,6 +1948,7 @@
         + '<span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:2px;background:rgba(197,160,89,0.25);display:inline-block"></span>Today</span>'
         + '</div>';
     }
+    window.renderDashboardCalendar = renderDashboardCalendar;
     function _dbCalPrev() { if (--_dbCalMonth < 0) { _dbCalMonth = 11; _dbCalYear--; } renderDashboardCalendar(); }
     function _dbCalNext() { if (++_dbCalMonth > 11) { _dbCalMonth = 0; _dbCalYear++; } renderDashboardCalendar(); }
 
