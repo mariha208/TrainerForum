@@ -1848,8 +1848,33 @@
               if (t && Array.isArray(t.packages)) {
                 t.packages = t.packages.filter(function(p) { return String(p.id || p._id || '') !== targetId; });
               }
+            }
+            var c = document.getElementById('packages-container');
+            if (c && c.querySelectorAll('.db-card').length === 0) {
+              c.innerHTML = '<div class="empty-msg" style="grid-column:1/-1;text-align:center;padding:20px;color:var(--tm);font-size:.85rem">No packages defined.</div>';
+            }
+            if (typeof commitLocalProfileChanges === 'function') commitLocalProfileChanges();
+            window.toast && window.toast('\u2713 Package permanently deleted.');
+          }
 
-
+          fetch(origin + '/api/packages/' + targetId + '?userId=' + userId, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' }
+          }).then(function(res) {
+            if (res.ok) {
+              _doLocalPkgDelete();
+            } else {
+              fetch(origin + '/api/users/' + userId + '/packages/' + targetId, { method: 'DELETE' })
+                .then(function() { _doLocalPkgDelete(); })
+                .catch(function() { _doLocalPkgDelete(); });
+            }
+          }).catch(function(err) {
+            console.warn('Backend DELETE package error:', err);
+            _doLocalPkgDelete();
+          });
+        }
+      );
+    }
     var _availSaveTimer = null;
     function _renderAvailabilitySettings() {
       var cont = document.getElementById('weekly-hours-container');
