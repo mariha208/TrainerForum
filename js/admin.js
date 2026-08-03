@@ -16,6 +16,9 @@ const POSTS_API_BASE = `${API_BASE_URL}/posts`;
 const NOTIFS_API_BASE = `${API_BASE_URL}/notifications`;
 const UPLOAD_API_BASE = `${API_BASE_URL}/upload-image`;
 
+// ── GOOGLE APPS SCRIPT API ENDPOINT FOR REQUIREMENTS ──────────────────────────
+const REQUIREMENTS_API_URL = "https://script.google.com/macros/s/AKfycbw09cpyAHD1uVIzBdw6lCiHyugBT7AiTEGbQLsOHStHnzgeZKCStgyqm8_CgupQCCj-qg/exec";
+
 let allTrainers = [];      // All fetched trainers (raw)
 let filteredTrainers = []; // After filters applied
 const PAGE_SIZE = 15;
@@ -457,20 +460,38 @@ if (typeof window !== 'undefined') {
   window.switchAdminTab = function(tab) {
     const btnTrainers = document.getElementById('tab-btn-trainers');
     const btnPublishing = document.getElementById('tab-btn-publishing');
+    const btnRequirements = document.getElementById('tab-btn-requirements');
+
     const secTrainers = document.getElementById('tab-section-trainers');
     const secPublishing = document.getElementById('tab-section-publishing');
+    const secRequirements = document.getElementById('requirementsView');
 
     if (tab === 'publishing') {
       if (btnTrainers) btnTrainers.className = 'btn-sm btn-dark';
       if (btnPublishing) btnPublishing.className = 'btn-sm btn-gold';
+      if (btnRequirements) btnRequirements.className = 'btn-sm btn-dark';
+
       if (secTrainers) secTrainers.style.display = 'none';
       if (secPublishing) secPublishing.style.display = 'block';
+      if (secRequirements) { secRequirements.style.display = 'none'; secRequirements.classList.add('hidden'); }
       loadPublishedPosts();
+    } else if (tab === 'requirements') {
+      if (btnTrainers) btnTrainers.className = 'btn-sm btn-dark';
+      if (btnPublishing) btnPublishing.className = 'btn-sm btn-dark';
+      if (btnRequirements) btnRequirements.className = 'btn-sm btn-gold';
+
+      if (secTrainers) secTrainers.style.display = 'none';
+      if (secPublishing) secPublishing.style.display = 'none';
+      if (secRequirements) { secRequirements.style.display = 'block'; secRequirements.classList.remove('hidden'); }
+      loadRequirements();
     } else {
       if (btnTrainers) btnTrainers.className = 'btn-sm btn-gold';
       if (btnPublishing) btnPublishing.className = 'btn-sm btn-dark';
+      if (btnRequirements) btnRequirements.className = 'btn-sm btn-dark';
+
       if (secTrainers) secTrainers.style.display = 'block';
       if (secPublishing) secPublishing.style.display = 'none';
+      if (secRequirements) { secRequirements.style.display = 'none'; secRequirements.classList.add('hidden'); }
     }
   };
 
@@ -629,3 +650,114 @@ window.deletePost = async function(id, title) {
     alert('❌ Failed to delete post: ' + err.message);
   }
 };
+
+// ── TRAINING REQUIREMENTS MANAGEMENT (GOOGLE APPS SCRIPT INTEGRATION) ───────────
+let allRequirements = [];
+
+window.loadRequirements = async function() {
+  const tbody = document.getElementById('requirements-tbody');
+  if (!tbody) return;
+
+  tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:40px; color:var(--tm);">Loading requirements...</td></tr>`;
+
+  try {
+    const res = await fetch(REQUIREMENTS_API_URL);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+
+    allRequirements = Array.isArray(data) ? data : (data.requirements || data.data || data.result || []);
+
+    if (!Array.isArray(allRequirements) || allRequirements.length === 0) {
+      tbody.innerHTML = `<tr class="empty-row"><td colspan="6">No training requirements submitted yet.</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = allRequirements.map((req, idx) => {
+      const rowId = req.rowId || req.id || req.reqId || (idx + 2);
+      const orgName = req.organizationName || req.orgName || 'N/A';
+      const topic = req.trainingTopic || req.topic || 'N/A';
+      const budget = req.budget ? (typeof req.budget === 'number' ? `$${req.budget.toLocaleString()}` : `$${req.budget}`) : 'N/A';
+      const location = req.locationPlace || req.locationType || req.location || 'N/A';
+      const city = req.cityAddress || req.cityDetails || '';
+      const dates = req.targetDates || req.targetDate || 'N/A';
+      const duration = req.timeDuration || req.duration || 'N/A';
+      const notes = req.specialNotes || req.notes || 'None';
+      const status = req.status || req.approvalStatus || 'Pending';
+
+      let statusBadge = '';
+      const statusLower = String(status).toLowerCase();
+      if (statusLower === 'approved') {
+        statusBadge = `<span class="badge" style="background:rgba(46,204,113,0.15); color:#4ade80; border:1px solid rgba(46,204,113,0.3);">✅ Approved</span>`;
+      } else if (statusLower === 'rejected') {
+        statusBadge = `<span class="badge" style="background:rgba(231,76,60,0.15); color:#f87171; border:1px solid rgba(231,76,60,0.3);">❌ Rejected</span>`;
+      } else {
+        statusBadge = `<span class="badge" style="background:rgba(245,200,66,0.15); color:var(--gold); border:1px solid rgba(245,200,66,0.3);">⏳ Pending</span>`;
+      }
+
+      return `<tr>
+        <td>
+          <div style="font-weight:700; color:var(--ts);">${escHtml(orgName)}</div>
+          <div style="font-size:.82rem; color:var(--gold); margin-top:2px;">${escHtml(topic)}</div>
+        </td>
+        <td>
+          <div style="font-weight:700; color:#34d399;">${escHtml(budget)}</div>
+          <div style="font-size:.8rem; color:var(--tm); margin-top:2px;">📍 ${escHtml(location)} ${city ? `(${escHtml(city)})` : ''}</div>
+        </td>
+        <td>
+          <div style="font-size:.85rem; color:var(--ts);">📅 ${escHtml(dates)}</div>
+          <div style="font-size:.8rem; color:var(--tm); margin-top:2px;">⏱️ ${escHtml(duration)}</div>
+        </td>
+        <td>
+          <div style="font-size:.8rem; color:var(--tm); max-width:200px; white-space:normal; line-height:1.4;">${escHtml(notes)}</div>
+        </td>
+        <td id="req-status-badge-${rowId}">${statusBadge}</td>
+        <td>
+          <div style="display:flex; gap:6px; align-items:center;">
+            <button class="btn-sm" style="background:rgba(46,204,113,0.2); color:#4ade80; border:1px solid rgba(46,204,113,0.4);" onclick="updateRequirementStatus('${rowId}', 'Approved')">Approve</button>
+            <button class="btn-sm" style="background:rgba(231,76,60,0.2); color:#f87171; border:1px solid rgba(231,76,60,0.4);" onclick="updateRequirementStatus('${rowId}', 'Rejected')">Reject</button>
+          </div>
+        </td>
+      </tr>`;
+    }).join('');
+
+  } catch (err) {
+    console.error('[Admin] Load requirements error:', err);
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:40px; color:#f87171;">❌ Failed to load requirements from Google Apps Script.</td></tr>`;
+  }
+};
+
+window.updateRequirementStatus = async function(rowId, status) {
+  try {
+    const payload = {
+      action: "updateStatus",
+      rowId: rowId,
+      status: status
+    };
+
+    const res = await fetch(REQUIREMENTS_API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload)
+    });
+
+    // Update UI badge dynamically
+    const badgeEl = document.getElementById(`req-status-badge-${rowId}`);
+    if (badgeEl) {
+      if (status === 'Approved') {
+        badgeEl.innerHTML = `<span class="badge" style="background:rgba(46,204,113,0.15); color:#4ade80; border:1px solid rgba(46,204,113,0.3);">✅ Approved</span>`;
+      } else {
+        badgeEl.innerHTML = `<span class="badge" style="background:rgba(231,76,60,0.15); color:#f87171; border:1px solid rgba(231,76,60,0.3);">❌ Rejected</span>`;
+      }
+    }
+
+    if (window.showToast) {
+      window.showToast(`Requirement status updated to ${status}!`);
+    } else {
+      alert(`Requirement status updated to ${status}!`);
+    }
+  } catch (err) {
+    console.error('[Admin] Update requirement status error:', err);
+    alert('❌ Failed to update requirement status: ' + err.message);
+  }
+};
+

@@ -527,6 +527,10 @@
       color: var(--tm);
     }
 
+    .hidden {
+      display: none !important;
+    }
+
     @media (max-width: 768px) {
       .stats-row {
         grid-template-columns: repeat(2, 1fr);
@@ -562,11 +566,10 @@
 
     <!-- ADMIN TABS -->
     <div
-      style="display:flex; gap:12px; margin-bottom:24px; border-bottom:1px solid var(--border); padding-bottom:12px;">
-      <button class="btn-sm btn-gold" id="tab-btn-trainers" onclick="switchAdminTab('trainers')">👥 Trainer
-        Accounts</button>
-      <button class="btn-sm btn-dark" id="tab-btn-publishing" onclick="switchAdminTab('publishing')">📢 Content
-        Publishing</button>
+      style="display:flex; gap:12px; margin-bottom:24px; border-bottom:1px solid var(--border); padding-bottom:12px; flex-wrap:wrap;">
+      <button class="btn-sm btn-gold" id="tab-btn-trainers" onclick="switchAdminTab('trainers')">👥 Trainer Accounts</button>
+      <button class="btn-sm btn-dark" id="tab-btn-publishing" onclick="switchAdminTab('publishing')">📢 Content Publishing</button>
+      <button class="btn-sm btn-dark" id="tab-btn-requirements" onclick="switchAdminTab('requirements')">📋 Training Requirements</button>
     </div>
 
     <!-- TRAINERS TAB SECTION -->
@@ -763,6 +766,38 @@
             </tr>
           </tbody>
         </table>
+      </div>
+    </div>
+
+    <!-- REQUIREMENTS MANAGEMENT TAB SECTION -->
+    <div id="requirementsView" class="hidden" style="display:none;">
+      <div class="table-wrap">
+        <div style="padding:18px 24px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+          <div>
+            <h3 style="font-size:1.1rem; font-weight:700; color:var(--ts);">📋 Corporate Training Requirements</h3>
+            <p style="color:var(--tm); font-size:.82rem; margin-top:2px;">Review and manage corporate RFP submissions from Google Apps Script API.</p>
+          </div>
+          <button class="btn-sm btn-dark" onclick="loadRequirements()">🔄 Refresh Requirements</button>
+        </div>
+        <div style="overflow-x:auto;">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Organization & Topic</th>
+                <th>Budget & Location</th>
+                <th>Target Dates & Duration</th>
+                <th>Special Notes</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="requirements-tbody">
+              <tr>
+                <td colspan="6" style="text-align:center; padding:40px; color:var(--tm);">Loading requirements…</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </main>
