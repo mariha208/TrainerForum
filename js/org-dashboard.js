@@ -284,38 +284,10 @@ function renderHiredTrainersView() {
   `;
 }
 
-// ── GOOGLE APPS SCRIPT ENDPOINT (mirrors .env GOOGLE_APPS_SCRIPT_URL) ─────────
-const handleSubmitRequirement = async (formData) => {
-  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycby_a46pgW5bo42qBhXBxR_oX9KlGg_m7BdyUmgrzlUPQdYc_FSNyV4kykPonzX_oAL8WA/exec";
+// ── GOOGLE APPS SCRIPT ENDPOINT ───────────────────────────────────────────────
+const GAS_REQUIREMENT_URL = 'https://script.google.com/macros/s/AKfycbypww_5LXAW63ENMZVdAsV2J_BdCBjxddHI0f_w2OUTjBShtccvlp-RdG9UgDUepy34kg/exec';
 
-  const payload = {
-    organizationName: formData.organizationName, // e.g. "Acme Global Technologies"
-    trainingTopic: formData.trainingTopic,       // e.g. "Executive Generative AI Workshop"
-    budget: formData.budget,                     // e.g. "5000"
-    locationPlace: formData.locationPlace,       // e.g. "In City (Onsite)"
-    cityAddress: formData.cityAddress,           // e.g. "Bangalore, HQ Indiranagar"
-    targetDates: formData.targetDates,           // e.g. "17-08-2026"
-    timeDuration: formData.timeDuration,         // e.g. "10:00 AM - 4:00 PM / 2 Days"
-    specialNotes: formData.specialNotes          // e.g. "Detail target audience size..."
-  };
 
-  try {
-    const response = await fetch(WEB_APP_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "text/plain;charset=utf-8", // Uses text/plain to avoid CORS preflight issues with Apps Script
-      },
-      body: JSON.stringify(payload),
-    });
-
-    const result = await response.json();
-    if (result.status === "success") {
-      alert("Requirement submitted successfully!");
-    }
-  } catch (error) {
-    console.error("Submission failed:", error);
-  }
-};
 
 // ── REQUIREMENT SUCCESS BANNER ────────────────────────────────────────────────
 function showRequirementSuccessBanner() {
