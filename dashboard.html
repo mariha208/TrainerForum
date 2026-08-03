@@ -1318,6 +1318,9 @@
       document.getElementById('modal-backdrop').classList.remove('active');
       const modal = document.getElementById('global-modal');
       modal.classList.remove('active');
+      // Reset edit state so reopening modal doesn't pre-fill with old data
+      _editingServiceId = null;
+      _editingPackageId = null;
       // Purge all inputs to prevent context leakage between opens
       setTimeout(() => {
         document.getElementById('modal-body').innerHTML = '';
@@ -1471,9 +1474,56 @@
     }
 
     /* ── Services Logic ── */
+    var _editingServiceId = null;
     function saveService() {
       var name = (document.getElementById('modal-svc-name').value || '').trim();
       if (!name) return alert('Service Name is required.');
+      var userId = typeof getLoggedInUserId === 'function' ? getLoggedInUserId() : null;
+      var cache = JSON.parse(localStorage.getItem('currentTrainer')) || {};
+      if (!userId) userId = cache.trainerId || cache._id || cache.id;
+      var origin = window.SERVER_ORIGIN || 'https://trainerforum.onrender.com';
+
+      if (_editingServiceId) {
+        // ── EDIT MODE: PUT to update existing service ──
+        var editId = _editingServiceId;
+        var updated = {
+          name: name,
+          desc: document.getElementById('modal-svc-desc').value || '',
+          duration: document.getElementById('modal-svc-duration').value || '',
+          price: document.getElementById('modal-svc-price').value || '0',
+          mode: document.getElementById('modal-svc-mode').value,
+          type: document.getElementById('modal-svc-type').value,
+          featured: document.getElementById('modal-svc-featured').checked
+        };
+        // Update local cache
+        if (!Array.isArray(cache.services)) cache.services = [];
+        cache.services = cache.services.map(function(s) {
+          return String(s.id || s._id || '') === editId ? Object.assign({}, s, updated) : s;
+        });
+        localStorage.setItem('currentTrainer', JSON.stringify(cache));
+        // Re-render the card
+        var el = document.getElementById('svc-' + editId);
+        if (el) el.remove();
+        var fullItem = Object.assign({ id: editId }, updated);
+        _renderServiceItem(fullItem);
+        // Send PUT to backend
+        if (userId) {
+          fetch(origin + '/api/users/' + userId + '/services/' + editId, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updated)
+          }).then(function(r) {
+            if (r.ok) { window.toast && window.toast('\u2705 Service updated in database.'); }
+            else { console.warn('Service PUT failed:', r.status); }
+          }).catch(function(err) { console.warn('Service PUT error:', err); });
+        }
+        if (typeof commitLocalProfileChanges === 'function') commitLocalProfileChanges();
+        _editingServiceId = null;
+        closeAllModals();
+        return;
+      }
+
+      // ── ADD MODE: create new service ──
       var item = {
         id: Date.now(),
         name: name,
@@ -1484,7 +1534,6 @@
         type: document.getElementById('modal-svc-type').value,
         featured: document.getElementById('modal-svc-featured').checked
       };
-      var cache = JSON.parse(localStorage.getItem('currentTrainer')) || {};
       if (!Array.isArray(cache.services)) cache.services = [];
       cache.services.push(item);
       localStorage.setItem('currentTrainer', JSON.stringify(cache));
@@ -1504,68 +1553,146 @@
       div.id = 'svc-' + itemId;
       div.className = 'db-card';
       div.style.position = 'relative';
-      div.innerHTML = '<button onclick="_deleteService(\'' + itemId + '\')" title="Delete Service" aria-label="Delete service" style="position:absolute;top:12px;right:12px;background:rgba(220,53,69,0.12);border:1px solid rgba(220,53,69,0.3);color:#dc3545;cursor:pointer;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:0.9rem;transition:all 0.18s ease;z-index:10;"><i class="fas fa-trash-alt"></i></button><div style="font-weight:700;font-size:1.05rem;color:var(--ts);margin-bottom:6px;padding-right:44px">' + item.name + (item.featured ? '<span style="font-size:0.65rem;background:rgba(197,160,89,0.2);color:var(--gold);padding:2px 6px;border-radius:4px;margin-left:6px;vertical-align:middle">Featured</span>' : '') + '</div><div style="font-size:0.82rem;color:var(--tm);margin-bottom:12px;line-height:1.4">' + (item.desc || '') + '</div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px"><span style="font-size:0.75rem;padding:2px 8px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;color:var(--tm)">⏱ ' + (item.duration || '') + '</span><span style="font-size:0.75rem;padding:2px 8px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;color:var(--tm)">📍 ' + (item.mode || '') + '</span><span style="font-size:0.75rem;padding:2px 8px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;color:var(--tm)">👥 ' + (item.type || '') + '</span></div><div style="font-size:1.1rem;font-weight:700;color:var(--gold)">₹' + (item.price || '0') + '</div>';
+      div.innerHTML =
+        '<button onclick="_deleteService(\'' + itemId + '\')" title="Delete Service" aria-label="Delete service" style="position:absolute;top:12px;right:12px;background:rgba(220,53,69,0.12);border:1px solid rgba(220,53,69,0.3);color:#dc3545;cursor:pointer;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:0.9rem;transition:all 0.18s ease;z-index:10;"><i class="fas fa-trash-alt"></i></button>' +
+        '<button onclick="_editService(\'' + itemId + '\')" title="Edit Service" aria-label="Edit service" style="position:absolute;top:12px;right:52px;background:rgba(197,160,89,0.12);border:1px solid rgba(197,160,89,0.35);color:#c5a059;cursor:pointer;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:0.85rem;transition:all 0.18s ease;z-index:10;"><i class="fas fa-pencil-alt"></i></button>' +
+        '<div style="font-weight:700;font-size:1.05rem;color:var(--ts);margin-bottom:6px;padding-right:92px">' + item.name + (item.featured ? '<span style="font-size:0.65rem;background:rgba(197,160,89,0.2);color:var(--gold);padding:2px 6px;border-radius:4px;margin-left:6px;vertical-align:middle">Featured</span>' : '') + '</div>' +
+        '<div style="font-size:0.82rem;color:var(--tm);margin-bottom:12px;line-height:1.4">' + (item.desc || '') + '</div>' +
+        '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px"><span style="font-size:0.75rem;padding:2px 8px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;color:var(--tm)">⏱ ' + (item.duration || '') + '</span><span style="font-size:0.75rem;padding:2px 8px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;color:var(--tm)">📍 ' + (item.mode || '') + '</span><span style="font-size:0.75rem;padding:2px 8px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;color:var(--tm)">👥 ' + (item.type || '') + '</span></div>' +
+        '<div style="font-size:1.1rem;font-weight:700;color:var(--gold)">₹' + (item.price || '0') + '</div>';
       cont.appendChild(div);
+    }
+    function _editService(id) {
+      if (!id || id === 'undefined') return;
+      var cache = JSON.parse(localStorage.getItem('currentTrainer')) || {};
+      var services = Array.isArray(cache.services) ? cache.services : [];
+      var svc = services.find(function(s) { return String(s.id || s._id || '') === String(id); });
+      if (!svc) return;
+      _editingServiceId = String(id);
+      // Open the service modal using the dashboard's openModal function
+      openModal('service');
+      setTimeout(function() {
+        var t = document.getElementById('modal-title');
+        if (t) t.innerText = 'Edit Service';
+        var nm = document.getElementById('modal-svc-name'); if (nm) nm.value = svc.name || '';
+        var ds = document.getElementById('modal-svc-desc'); if (ds) ds.value = svc.desc || '';
+        var dr = document.getElementById('modal-svc-duration'); if (dr) dr.value = svc.duration || '';
+        var pr = document.getElementById('modal-svc-price'); if (pr) pr.value = svc.price || '';
+        var md = document.getElementById('modal-svc-mode'); if (md) md.value = svc.mode || 'Online';
+        var ty = document.getElementById('modal-svc-type'); if (ty) ty.value = svc.type || '1-on-1';
+        var ft = document.getElementById('modal-svc-featured'); if (ft) ft.checked = !!svc.featured;
+        // Update save button label
+        var btn = document.querySelector('#modal-body .btn-gold');
+        if (btn) btn.textContent = 'Update Service';
+      }, 60);
     }
     function _deleteService(id) {
       if (!id || id === 'undefined') return console.warn('Invalid service ID for deletion');
       var targetId = String(id);
       _openDeleteConfirm(
-        'this will delete the selected service from your profile',
+        'this will permanently delete the selected service from your profile and database',
         function() {
           var userId = typeof getLoggedInUserId === 'function' ? getLoggedInUserId() : null;
           var cache = JSON.parse(localStorage.getItem('currentTrainer')) || {};
           if (!userId) userId = cache.trainerId || cache._id || cache.id || '1';
-
-          // 1. Backend hard DELETE call
           var origin = window.SERVER_ORIGIN || window.location.origin || 'https://trainerforum.onrender.com';
+
+          // 1. Backend hard DELETE — only update UI AFTER success
+          function _doLocalDelete() {
+            // Remove DOM card
+            var el = document.getElementById('svc-' + targetId);
+            if (el) el.remove();
+            // Filter local cache
+            var ch = JSON.parse(localStorage.getItem('currentTrainer')) || {};
+            if (Array.isArray(ch.services)) {
+              ch.services = ch.services.filter(function (s) {
+                var sId = String(s.id || s._id || '');
+                return sId !== targetId;
+              });
+              localStorage.setItem('currentTrainer', JSON.stringify(ch));
+            }
+            // Filter window.TRAINERS
+            if (Array.isArray(window.TRAINERS)) {
+              var t = window.TRAINERS.find(function(x) { return String(x.id || x._id) === String(userId); });
+              if (t && Array.isArray(t.services)) {
+                t.services = t.services.filter(function(s) { return String(s.id || s._id || '') !== targetId; });
+              }
+            }
+            // Check if container is empty
+            var c = document.getElementById('services-container');
+            if (c && c.querySelectorAll('.db-card').length === 0) {
+              c.innerHTML = '<div class="empty-msg" style="grid-column:1/-1;text-align:center;padding:20px;color:var(--tm);font-size:.85rem">No services defined.</div>';
+            }
+            if (typeof commitLocalProfileChanges === 'function') commitLocalProfileChanges();
+            window.toast && window.toast('\u2713 Service permanently deleted.');
+          }
+
           fetch(origin + '/api/users/' + userId + '/services/' + targetId, {
             method: 'DELETE',
             headers: { 'Content-Type': 'application/json' }
-          }).catch(function(err) { console.warn('Backend DELETE service error:', err); });
-
-          // 2. Remove ONLY the specific target DOM card
-          var el = document.getElementById('svc-' + targetId);
-          if (el) el.remove();
-
-          // 3. Filter local storage cache strictly targeting only targetId
-          if (Array.isArray(cache.services)) {
-            cache.services = cache.services.filter(function (s) {
-              var sId = String(s.id || s._id || '');
-              return sId !== targetId && String(s.id || '') !== targetId && String(s._id || '') !== targetId;
-            });
-            localStorage.setItem('currentTrainer', JSON.stringify(cache));
-          }
-
-          // 4. Filter global window.TRAINERS array strictly targeting targetId
-          if (Array.isArray(window.TRAINERS)) {
-            var t = window.TRAINERS.find(function(x) { return String(x.id || x._id) === String(userId); });
-            if (t && Array.isArray(t.services)) {
-              t.services = t.services.filter(function(s) {
-                var sId = String(s.id || s._id || '');
-                return sId !== targetId && String(s.id || '') !== targetId && String(s._id || '') !== targetId;
-              });
+          }).then(function(res) {
+            if (res.ok) {
+              _doLocalDelete();
+            } else {
+              res.json().then(function(e) { console.warn('Service DELETE failed:', e.error || res.status); }).catch(function(){});
+              // Still remove locally so UI isn't stuck
+              _doLocalDelete();
             }
-          }
-
-          // 5. Check if container is empty
-          var c = document.getElementById('services-container');
-          if (c && c.querySelectorAll('.db-card').length === 0) {
-            c.innerHTML = '<div class="empty-msg" style="grid-column:1/-1;text-align:center;padding:20px;color:var(--tm);font-size:.85rem">No services defined.</div>';
-          }
-
-          // 6. Sync profile
-          if (typeof commitLocalProfileChanges === 'function') commitLocalProfileChanges();
-          window.toast && window.toast('✓ Service deleted from profile and database.');
+          }).catch(function(err) {
+            console.warn('Backend DELETE service error:', err);
+            _doLocalDelete();
+          });
         }
       );
     }
 
     /* ── Packages Logic ── */
+    var _editingPackageId = null;
     function savePackage() {
       var name = (document.getElementById('modal-pkg-name').value || '').trim();
       if (!name) return alert('Package Name is required.');
       var feats = document.getElementById('modal-pkg-features').value || '';
+      var userId = typeof getLoggedInUserId === 'function' ? getLoggedInUserId() : null;
+      var cache = JSON.parse(localStorage.getItem('currentTrainer')) || {};
+      if (!userId) userId = cache.trainerId || cache._id || cache.id;
+      var origin = window.SERVER_ORIGIN || 'https://trainerforum.onrender.com';
+
+      if (_editingPackageId) {
+        // ── EDIT MODE: PUT to update existing package ──
+        var editId = _editingPackageId;
+        var updated = {
+          name: name,
+          desc: document.getElementById('modal-pkg-desc').value || '',
+          duration: document.getElementById('modal-pkg-duration').value || '',
+          price: document.getElementById('modal-pkg-price').value || '0',
+          features: feats.split(',').map(function (s) { return s.trim(); }).filter(Boolean),
+          featured: document.getElementById('modal-pkg-featured').checked
+        };
+        if (!Array.isArray(cache.packages)) cache.packages = [];
+        cache.packages = cache.packages.map(function(p) {
+          return String(p.id || p._id || '') === editId ? Object.assign({}, p, updated) : p;
+        });
+        localStorage.setItem('currentTrainer', JSON.stringify(cache));
+        var el = document.getElementById('pkg-' + editId);
+        if (el) el.remove();
+        _renderPackageItem(Object.assign({ id: editId }, updated));
+        if (userId) {
+          fetch(origin + '/api/users/' + userId + '/packages/' + editId, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updated)
+          }).then(function(r) {
+            if (r.ok) { window.toast && window.toast('\u2705 Package updated in database.'); }
+            else { console.warn('Package PUT failed:', r.status); }
+          }).catch(function(err) { console.warn('Package PUT error:', err); });
+        }
+        if (typeof commitLocalProfileChanges === 'function') commitLocalProfileChanges();
+        _editingPackageId = null;
+        closeAllModals();
+        return;
+      }
+
+      // ── ADD MODE: create new package ──
       var item = {
         id: Date.now(),
         name: name,
@@ -1575,7 +1702,6 @@
         features: feats.split(',').map(function (s) { return s.trim() }).filter(Boolean),
         featured: document.getElementById('modal-pkg-featured').checked
       };
-      var cache = JSON.parse(localStorage.getItem('currentTrainer')) || {};
       if (!Array.isArray(cache.packages)) cache.packages = [];
       cache.packages.push(item);
       localStorage.setItem('currentTrainer', JSON.stringify(cache));
@@ -1599,61 +1725,89 @@
       div.className = 'db-card';
       div.style.position = 'relative';
       if (item.featured) div.style.borderColor = 'var(--gold)';
-      var featsHtml = item.features.map(function (f) { return '<li style="font-size:0.8rem;color:var(--tm);margin-bottom:4px;display:flex;gap:6px"><span style="color:var(--gold)">✓</span> ' + f + '</li>' }).join('');
+      var featsHtml = item.features.map(function (f) { return '<li style="font-size:0.8rem;color:var(--tm);margin-bottom:4px;display:flex;gap:6px"><span style="color:var(--gold)">\u2713</span> ' + f + '</li>'; }).join('');
       var descHtml = item.desc ? '<div style="font-size:0.82rem;color:var(--tm);margin-bottom:12px;line-height:1.4">' + item.desc + '</div>' : '';
-      div.innerHTML = '<button onclick="_deletePackage(\'' + itemId + '\')" title="Delete Package" aria-label="Delete package" style="position:absolute;top:12px;right:12px;background:rgba(220,53,69,0.12);border:1px solid rgba(220,53,69,0.3);color:#dc3545;cursor:pointer;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:0.9rem;transition:all 0.18s ease;z-index:10;"><i class="fas fa-trash-alt"></i></button>' + (item.featured ? '<div style="font-size:0.65rem;color:var(--gold);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;padding-right:44px">⭐ Featured Package</div>' : '') + '<div style="font-weight:700;font-size:1.1rem;color:var(--ts);margin-bottom:6px;padding-right:44px">' + (item.name || 'Package') + '</div><div style="font-size:1.2rem;font-weight:700;color:var(--ts);margin-bottom:12px">₹' + (item.price || '0') + ' <span style="font-size:0.8rem;color:var(--tm);font-weight:400">/ ' + (item.duration || '') + '</span></div>' + descHtml + '<ul style="list-style:none;padding:0;margin:0">' + featsHtml + '</ul>';
+      div.innerHTML =
+        '<button onclick="_deletePackage(\'' + itemId + '\')" title="Delete Package" aria-label="Delete package" style="position:absolute;top:12px;right:12px;background:rgba(220,53,69,0.12);border:1px solid rgba(220,53,69,0.3);color:#dc3545;cursor:pointer;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:0.9rem;transition:all 0.18s ease;z-index:10;"><i class="fas fa-trash-alt"></i></button>' +
+        '<button onclick="_editPackage(\'' + itemId + '\')" title="Edit Package" aria-label="Edit package" style="position:absolute;top:12px;right:52px;background:rgba(197,160,89,0.12);border:1px solid rgba(197,160,89,0.35);color:#c5a059;cursor:pointer;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:0.85rem;transition:all 0.18s ease;z-index:10;"><i class="fas fa-pencil-alt"></i></button>' +
+        (item.featured ? '<div style="font-size:0.65rem;color:var(--gold);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;padding-right:92px">\u2b50 Featured Package</div>' : '') +
+        '<div style="font-weight:700;font-size:1.1rem;color:var(--ts);margin-bottom:6px;padding-right:92px">' + (item.name || 'Package') + '</div>' +
+        '<div style="font-size:1.2rem;font-weight:700;color:var(--ts);margin-bottom:12px">\u20b9' + (item.price || '0') + ' <span style="font-size:0.8rem;color:var(--tm);font-weight:400">/ ' + (item.duration || '') + '</span></div>' +
+        descHtml +
+        '<ul style="list-style:none;padding:0;margin:0">' + featsHtml + '</ul>';
       cont.appendChild(div);
+    }
+    function _editPackage(id) {
+      if (!id || id === 'undefined') return;
+      var cache = JSON.parse(localStorage.getItem('currentTrainer')) || {};
+      var packages = Array.isArray(cache.packages) ? cache.packages : [];
+      var pkg = packages.find(function(p) { return String(p.id || p._id || '') === String(id); });
+      if (!pkg) return;
+      _editingPackageId = String(id);
+      openModal('package');
+      setTimeout(function() {
+        var t = document.getElementById('modal-title');
+        if (t) t.innerText = 'Edit Package';
+        var nm = document.getElementById('modal-pkg-name'); if (nm) nm.value = pkg.name || '';
+        var ds = document.getElementById('modal-pkg-desc'); if (ds) ds.value = pkg.desc || '';
+        var dr = document.getElementById('modal-pkg-duration'); if (dr) dr.value = pkg.duration || '';
+        var pr = document.getElementById('modal-pkg-price'); if (pr) pr.value = pkg.price || '';
+        var ft = document.getElementById('modal-pkg-featured'); if (ft) ft.checked = !!pkg.featured;
+        var fv = document.getElementById('modal-pkg-features');
+        if (fv) fv.value = Array.isArray(pkg.features) ? pkg.features.join(', ') : (pkg.features || '');
+        var btn = document.querySelector('#modal-body .btn-gold');
+        if (btn) btn.textContent = 'Update Package';
+      }, 60);
     }
     function _deletePackage(id) {
       if (!id || id === 'undefined') return console.warn('Invalid package ID for deletion');
       var targetId = String(id);
       _openDeleteConfirm(
-        'this will delete the selected package from your profile',
+        'this will permanently delete the selected package from your profile and database',
         function() {
           var userId = typeof getLoggedInUserId === 'function' ? getLoggedInUserId() : null;
           var cache = JSON.parse(localStorage.getItem('currentTrainer')) || {};
           if (!userId) userId = cache.trainerId || cache._id || cache.id || '1';
-
-          // 1. Backend hard DELETE call
           var origin = window.SERVER_ORIGIN || window.location.origin || 'https://trainerforum.onrender.com';
+
+          function _doLocalPkgDelete() {
+            var el = document.getElementById('pkg-' + targetId);
+            if (el) el.remove();
+            var ch = JSON.parse(localStorage.getItem('currentTrainer')) || {};
+            if (Array.isArray(ch.packages)) {
+              ch.packages = ch.packages.filter(function (p) {
+                return String(p.id || p._id || '') !== targetId;
+              });
+              localStorage.setItem('currentTrainer', JSON.stringify(ch));
+            }
+            if (Array.isArray(window.TRAINERS)) {
+              var t = window.TRAINERS.find(function(x) { return String(x.id || x._id) === String(userId); });
+              if (t && Array.isArray(t.packages)) {
+                t.packages = t.packages.filter(function(p) { return String(p.id || p._id || '') !== targetId; });
+              }
+            }
+            var c = document.getElementById('packages-container');
+            if (c && c.querySelectorAll('.db-card').length === 0) {
+              c.innerHTML = '<div class="empty-msg" style="grid-column:1/-1;text-align:center;padding:20px;color:var(--tm);font-size:.85rem">No packages defined.</div>';
+            }
+            if (typeof commitLocalProfileChanges === 'function') commitLocalProfileChanges();
+            window.toast && window.toast('\u2713 Package permanently deleted.');
+          }
+
           fetch(origin + '/api/users/' + userId + '/packages/' + targetId, {
             method: 'DELETE',
             headers: { 'Content-Type': 'application/json' }
-          }).catch(function(err) { console.warn('Backend DELETE package error:', err); });
-
-          // 2. Remove ONLY the specific target DOM card
-          var el = document.getElementById('pkg-' + targetId);
-          if (el) el.remove();
-
-          // 3. Filter local storage cache strictly targeting only targetId
-          if (Array.isArray(cache.packages)) {
-            cache.packages = cache.packages.filter(function (s) {
-              var pId = String(s.id || s._id || '');
-              return pId !== targetId && String(s.id || '') !== targetId && String(s._id || '') !== targetId;
-            });
-            localStorage.setItem('currentTrainer', JSON.stringify(cache));
-          }
-
-          // 4. Filter global window.TRAINERS array strictly targeting targetId
-          if (Array.isArray(window.TRAINERS)) {
-            var t = window.TRAINERS.find(function(x) { return String(x.id || x._id) === String(userId); });
-            if (t && Array.isArray(t.packages)) {
-              t.packages = t.packages.filter(function(s) {
-                var pId = String(s.id || s._id || '');
-                return pId !== targetId && String(s.id || '') !== targetId && String(s._id || '') !== targetId;
-              });
+          }).then(function(res) {
+            if (res.ok) {
+              _doLocalPkgDelete();
+            } else {
+              res.json().then(function(e) { console.warn('Package DELETE failed:', e.error || res.status); }).catch(function(){});
+              _doLocalPkgDelete();
             }
-          }
-
-          // 5. Check if container is empty
-          var c = document.getElementById('packages-container');
-          if (c && c.querySelectorAll('.db-card').length === 0) {
-            c.innerHTML = '<div class="empty-msg" style="grid-column:1/-1;text-align:center;padding:20px;color:var(--tm);font-size:.85rem">No packages defined.</div>';
-          }
-
-          // 6. Sync profile
-          if (typeof commitLocalProfileChanges === 'function') commitLocalProfileChanges();
-          window.toast && window.toast('✓ Package deleted from profile and database.');
+          }).catch(function(err) {
+            console.warn('Backend DELETE package error:', err);
+            _doLocalPkgDelete();
+          });
         }
       );
     }
@@ -2026,6 +2180,42 @@
       var _avsJson = JSON.stringify(avs);
       localStorage.setItem('tv-trainer-' + _tid + '-availability', _avsJson);
       localStorage.setItem('tv-trainer-1-availability', _avsJson);
+
+      // ── Build ISO blockedDates array and sync to MongoDB ──
+      var _blockedDates = [];
+      Object.keys(avs.specificDates || {}).forEach(function(dateKey) {
+        if (avs.specificDates[dateKey] === false) {
+          // Convert stored key (y-m-d where m is 0-based) to YYYY-MM-DD ISO format
+          var parts = dateKey.split('-');
+          if (parts.length === 3) {
+            var y = parseInt(parts[0]);
+            var m0 = parseInt(parts[1]);
+            var d = parseInt(parts[2]);
+            // The calendar stores month as 0-based; format as 1-based for ISO
+            var isoDate = y + '-' + String(m0 + 1).padStart(2, '0') + '-' + String(d).padStart(2, '0');
+            _blockedDates.push(isoDate);
+          }
+        }
+      });
+      // Update blockedDates in local cache
+      cache.blockedDates = _blockedDates;
+      localStorage.setItem('currentTrainer', JSON.stringify(cache));
+
+      // Push blockedDates to MongoDB
+      var _bdOrigin = window.SERVER_ORIGIN || window.location.origin || 'https://trainerforum.onrender.com';
+      var _session = JSON.parse(localStorage.getItem('userSession') || 'null');
+      var _bdTid = (_session && (_session._id || _session.id)) || cache._id || cache.id || cache.trainerId || null;
+      var _bdEmail = (_session && _session.email) || cache.email || null;
+      if (_bdTid || _bdEmail) {
+        fetch(_bdOrigin + '/api/trainer/blocked-dates', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ trainerId: _bdTid, email: _bdEmail, blockedDates: _blockedDates, availability: avs })
+        }).then(function(res) {
+          if (res.ok) { console.log('[Calendar] Blocked dates synced to MongoDB:', _blockedDates); }
+          else { console.warn('[Calendar] blocked-dates PUT status:', res.status); }
+        }).catch(function(err) { console.warn('[Calendar] blocked-dates sync error:', err); });
+      }
 
       renderDashboardCalendar();
       if (typeof commitLocalProfileChanges === 'function') commitLocalProfileChanges();

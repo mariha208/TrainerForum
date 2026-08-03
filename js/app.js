@@ -131,6 +131,7 @@ window.getAvailabilityPillText   = window.formatTrainerAvailability;
 /**
  * Dynamic day-of-week evaluation helper.
  * Evaluates whether a given date is available based on:
+ *   0. blockedDates ISO array from MongoDB (highest priority — always blocks)
  *   1. Specific date overrides (specificDates)
  *   2. Weekly recurring availability (Mon, Tue, Wed, Thu, Fri, Sat, Sun)
  *   3. Fallback defaults (Mon-Fri enabled, Sat-Sun disabled)
@@ -152,6 +153,15 @@ window.isDayAvailable = function (avs, dayName, year, month, day) {
       if (str.includes(dayName.toLowerCase())) return true;
       return dayName !== 'Sat' && dayName !== 'Sun';
     }
+  }
+
+  // 0. Check blockedDates ISO array (from MongoDB — highest priority override)
+  // avs.blockedDates is an array of ISO strings like ["2026-08-05", "2026-08-12"]
+  const blockedDates = avs.blockedDates;
+  if (Array.isArray(blockedDates) && blockedDates.length > 0) {
+    const m1 = month + 1; // month param is 0-based
+    const isoDate = `${year}-${String(m1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    if (blockedDates.indexOf(isoDate) !== -1) return false; // explicitly blocked
   }
 
   // 1. Check specific dates override

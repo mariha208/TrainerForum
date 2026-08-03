@@ -276,7 +276,7 @@ router.patch('/:id', async (req, res) => {
 
     // Pass-through fields that match User model directly
     const passthrough = [
-      'bio', 'website', 'specialization', 'availability',
+      'bio', 'website', 'specialization', 'availability', 'blockedDates',
       'services', 'packages', 'testimonials', 'videoIntro',
       'portfolioLinks', 'tags', 'skills', 'languages',
       'country', 'firebaseUid',
@@ -309,23 +309,75 @@ router.patch('/:id', async (req, res) => {
   }
 });
 
+// PUT update trainer blocked dates
+router.put('/blocked-dates', async (req, res) => {
+  try {
+    const { trainerId, email, blockedDates, availability } = req.body;
+    let userId = trainerId || email || (req.user && req.user.id);
+    if (!userId) return res.status(400).json({ error: 'trainerId or email or auth required' });
+    const isObjectId = mongoose.Types.ObjectId.isValid(userId);
+    const query = isObjectId ? { _id: userId } : { email: String(userId).toLowerCase() };
+
+    const update = {};
+    if (Array.isArray(blockedDates)) update.blockedDates = blockedDates;
+    if (availability) update.availability = availability;
+
+    const user = await User.findOneAndUpdate(
+      query,
+      { $set: update },
+      { new: true }
+    ).select('-passwordHash');
+
+    if (!user) return res.status(404).json({ error: 'Trainer not found' });
+    res.json({ message: 'Blocked dates updated in database', blockedDates: user.blockedDates, availability: user.availability, user });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.put('/:id/blocked-dates', async (req, res) => {
+  try {
+    const { blockedDates, availability } = req.body;
+    const isObjectId = mongoose.Types.ObjectId.isValid(req.params.id);
+    const query = isObjectId ? { _id: req.params.id } : { email: req.params.id.toLowerCase() };
+
+    const update = {};
+    if (Array.isArray(blockedDates)) update.blockedDates = blockedDates;
+    if (availability) update.availability = availability;
+
+    const user = await User.findOneAndUpdate(
+      query,
+      { $set: update },
+      { new: true }
+    ).select('-passwordHash');
+
+    if (!user) return res.status(404).json({ error: 'Trainer not found' });
+    res.json({ message: 'Blocked dates updated in database', blockedDates: user.blockedDates, availability: user.availability, user });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // PUT update trainer availability
 router.put('/availability', async (req, res) => {
   try {
-    const { trainerId, email, availability } = req.body;
+    const { trainerId, email, availability, blockedDates } = req.body;
     let userId = trainerId || email || (req.user && req.user.id);
     if (!userId) return res.status(400).json({ error: 'trainerId or user authentication required' });
     const isObjectId = mongoose.Types.ObjectId.isValid(userId);
     const query = isObjectId ? { _id: userId } : { email: String(userId).toLowerCase() };
 
+    const update = { availability: availability || {} };
+    if (Array.isArray(blockedDates)) update.blockedDates = blockedDates;
+
     const user = await User.findOneAndUpdate(
       query,
-      { $set: { availability: availability || {} } },
+      { $set: update },
       { new: true }
     ).select('-passwordHash');
 
     if (!user) return res.status(404).json({ error: 'Trainer not found' });
-    res.json({ message: 'Availability updated in database', availability: user.availability, user });
+    res.json({ message: 'Availability updated in database', availability: user.availability, blockedDates: user.blockedDates, user });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -333,18 +385,49 @@ router.put('/availability', async (req, res) => {
 
 router.put('/:id/availability', async (req, res) => {
   try {
-    const { availability } = req.body;
+    const { availability, blockedDates } = req.body;
     const isObjectId = mongoose.Types.ObjectId.isValid(req.params.id);
     const query = isObjectId ? { _id: req.params.id } : { email: req.params.id.toLowerCase() };
 
+    const update = { availability: availability || {} };
+    if (Array.isArray(blockedDates)) update.blockedDates = blockedDates;
+
     const user = await User.findOneAndUpdate(
       query,
-      { $set: { availability: availability || {} } },
+      { $set: update },
       { new: true }
     ).select('-passwordHash');
 
     if (!user) return res.status(404).json({ error: 'Trainer not found' });
-    res.json({ message: 'Availability updated in database', availability: user.availability, user });
+    res.json({ message: 'Availability updated in database', availability: user.availability, blockedDates: user.blockedDates, user });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// PUT update a service in user profile
+router.put('/:id/services/:serviceId', async (req, res) => {
+  try {
+    const isObjectId = mongoose.Types.ObjectId.isValid(req.params.id);
+    const query = isObjectId ? { _id: req.params.id } : { email: req.params.id.toLowerCase() };
+    const user = await User.findOne(query);
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
+    const sid = String(req.params.serviceId);
+    let services = Array.isArray(user.services) ? user.services : [];
+    let idx = services.findIndex(s => String(s._id || s.id || '') === sid);
+    
+    if (idx !== -1) {
+      services[idx] = { ...services[idx], ...req.body, id: services[idx].id || services[idx]._id || sid };
+    } else {
+      services.push({ ...req.body, id: sid });
+    }
+
+    user.services = services;
+    user.markModified('services');
+    await user.save();
+
+    res.json({ message: 'Service updated in database', service: services[idx !== -1 ? idx : services.length - 1], services: user.services });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -368,6 +451,34 @@ router.delete('/:id/services/:serviceId', async (req, res) => {
     await user.save();
 
     res.json({ message: 'Service deleted from database', services: user.services });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// PUT update a package in user profile
+router.put('/:id/packages/:packageId', async (req, res) => {
+  try {
+    const isObjectId = mongoose.Types.ObjectId.isValid(req.params.id);
+    const query = isObjectId ? { _id: req.params.id } : { email: req.params.id.toLowerCase() };
+    const user = await User.findOne(query);
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
+    const pid = String(req.params.packageId);
+    let packages = Array.isArray(user.packages) ? user.packages : [];
+    let idx = packages.findIndex(p => String(p._id || p.id || '') === pid);
+
+    if (idx !== -1) {
+      packages[idx] = { ...packages[idx], ...req.body, id: packages[idx].id || packages[idx]._id || pid };
+    } else {
+      packages.push({ ...req.body, id: pid });
+    }
+
+    user.packages = packages;
+    user.markModified('packages');
+    await user.save();
+
+    res.json({ message: 'Package updated in database', package: packages[idx !== -1 ? idx : packages.length - 1], packages: user.packages });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

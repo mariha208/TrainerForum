@@ -78,6 +78,7 @@ const userSchema = new mongoose.Schema(
     // ── Extended Profile Fields ────────────────────────────────
     specialization:    { type: String, default: '' },
     availability:      { type: mongoose.Schema.Types.Mixed, default: {} },
+    blockedDates:      { type: [String], default: [] },
     services:          { type: mongoose.Schema.Types.Mixed, default: [] },
     packages:          { type: mongoose.Schema.Types.Mixed, default: [] },
     testimonials:      { type: mongoose.Schema.Types.Mixed, default: [] },
@@ -137,6 +138,7 @@ userSchema.methods.toPublicCard = function () {
     services: this.services,
     packages: this.packages,
     availability: this.availability,
+    blockedDates: this.blockedDates || [],
     portfolio: this.portfolio,
   };
 };

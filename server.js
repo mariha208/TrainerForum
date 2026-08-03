@@ -233,33 +233,199 @@ app.post('/api/upload-image', upload.single('image'), async (req, res) => {
   }
 });
 
-// ── Direct Trainer Availability API Endpoint ─────────────────────────────────
+// ── Direct Trainer Availability & Blocked Dates API Endpoints ──────────────────
 app.put('/api/trainer/availability', async (req, res) => {
   try {
     const mongoose = require('mongoose');
     const User = require('./models/User');
-    const { trainerId, email, availability } = req.body;
+    const { trainerId, email, availability, blockedDates } = req.body;
     let userId = trainerId || email || (req.user && req.user.id);
     
     if (!userId || mongoose.connection.readyState !== 1) {
-      return res.json({ message: 'Availability stored locally', availability });
+      return res.json({ message: 'Availability stored locally', availability, blockedDates });
     }
 
     const isObjectId = mongoose.Types.ObjectId.isValid(userId);
     const query = isObjectId ? { _id: userId } : { email: String(userId).toLowerCase() };
 
+    const update = { availability: availability || {} };
+    if (Array.isArray(blockedDates)) update.blockedDates = blockedDates;
+
     const user = await User.findOneAndUpdate(
       query,
-      { $set: { availability: availability || {} } },
+      { $set: update },
       { new: true }
     ).select('-passwordHash');
 
     if (!user) {
-      return res.json({ message: 'Availability updated', availability });
+      return res.json({ message: 'Availability updated', availability, blockedDates });
     }
-    res.json({ message: 'Availability updated in database', availability: user.availability, user });
+    res.json({ message: 'Availability updated in database', availability: user.availability, blockedDates: user.blockedDates, user });
   } catch (err) {
     console.warn('[Availability API] Error:', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.put('/api/trainer/blocked-dates', async (req, res) => {
+  try {
+    const mongoose = require('mongoose');
+    const User = require('./models/User');
+    const { trainerId, email, blockedDates, availability } = req.body;
+    let userId = trainerId || email || (req.user && req.user.id);
+
+    if (!userId || mongoose.connection.readyState !== 1) {
+      return res.json({ message: 'Blocked dates stored locally', blockedDates, availability });
+    }
+
+    const isObjectId = mongoose.Types.ObjectId.isValid(userId);
+    const query = isObjectId ? { _id: userId } : { email: String(userId).toLowerCase() };
+
+    const update = {};
+    if (Array.isArray(blockedDates)) update.blockedDates = blockedDates;
+    if (availability) update.availability = availability;
+
+    const user = await User.findOneAndUpdate(
+      query,
+      { $set: update },
+      { new: true }
+    ).select('-passwordHash');
+
+    if (!user) {
+      return res.json({ message: 'Blocked dates updated', blockedDates, availability });
+    }
+    res.json({ message: 'Blocked dates updated in database', blockedDates: user.blockedDates, availability: user.availability, user });
+  } catch (err) {
+    console.warn('[Blocked Dates API] Error:', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ── Direct Services & Packages Endpoints (Aliases) ──────────────────────────
+app.delete('/api/services/:id', async (req, res) => {
+  try {
+    const mongoose = require('mongoose');
+    const User = require('./models/User');
+    const sid = String(req.params.id);
+    const userId = req.query.userId || req.query.trainerId || req.body?.userId || req.body?.trainerId;
+
+    let user;
+    if (userId) {
+      const isObjectId = mongoose.Types.ObjectId.isValid(userId);
+      const query = isObjectId ? { _id: userId } : { email: String(userId).toLowerCase() };
+      user = await User.findOne(query);
+    } else {
+      user = await User.findOne({ 'services.id': sid }) || await User.findOne({ 'services._id': sid });
+    }
+
+    if (!user) return res.status(404).json({ error: 'Service or User not found' });
+
+    user.services = (user.services || []).filter(s => String(s.id || s._id || '') !== sid);
+    user.markModified('services');
+    await user.save();
+
+    res.json({ message: 'Service deleted from database', services: user.services });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.put('/api/services/:id', async (req, res) => {
+  try {
+    const mongoose = require('mongoose');
+    const User = require('./models/User');
+    const sid = String(req.params.id);
+    const userId = req.body?.userId || req.body?.trainerId || req.query.userId || req.query.trainerId;
+
+    let user;
+    if (userId) {
+      const isObjectId = mongoose.Types.ObjectId.isValid(userId);
+      const query = isObjectId ? { _id: userId } : { email: String(userId).toLowerCase() };
+      user = await User.findOne(query);
+    } else {
+      user = await User.findOne({ 'services.id': sid }) || await User.findOne({ 'services._id': sid });
+    }
+
+    if (!user) return res.status(404).json({ error: 'Service or User not found' });
+
+    let services = Array.isArray(user.services) ? user.services : [];
+    let idx = services.findIndex(s => String(s._id || s.id || '') === sid);
+    if (idx !== -1) {
+      services[idx] = { ...services[idx], ...req.body, id: services[idx].id || services[idx]._id || sid };
+    } else {
+      services.push({ ...req.body, id: sid });
+    }
+
+    user.services = services;
+    user.markModified('services');
+    await user.save();
+
+    res.json({ message: 'Service updated in database', service: services[idx !== -1 ? idx : services.length - 1], services: user.services });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.delete('/api/packages/:id', async (req, res) => {
+  try {
+    const mongoose = require('mongoose');
+    const User = require('./models/User');
+    const pid = String(req.params.id);
+    const userId = req.query.userId || req.query.trainerId || req.body?.userId || req.body?.trainerId;
+
+    let user;
+    if (userId) {
+      const isObjectId = mongoose.Types.ObjectId.isValid(userId);
+      const query = isObjectId ? { _id: userId } : { email: String(userId).toLowerCase() };
+      user = await User.findOne(query);
+    } else {
+      user = await User.findOne({ 'packages.id': pid }) || await User.findOne({ 'packages._id': pid });
+    }
+
+    if (!user) return res.status(404).json({ error: 'Package or User not found' });
+
+    user.packages = (user.packages || []).filter(p => String(p.id || p._id || '') !== pid);
+    user.markModified('packages');
+    await user.save();
+
+    res.json({ message: 'Package deleted from database', packages: user.packages });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.put('/api/packages/:id', async (req, res) => {
+  try {
+    const mongoose = require('mongoose');
+    const User = require('./models/User');
+    const pid = String(req.params.id);
+    const userId = req.body?.userId || req.body?.trainerId || req.query.userId || req.query.trainerId;
+
+    let user;
+    if (userId) {
+      const isObjectId = mongoose.Types.ObjectId.isValid(userId);
+      const query = isObjectId ? { _id: userId } : { email: String(userId).toLowerCase() };
+      user = await User.findOne(query);
+    } else {
+      user = await User.findOne({ 'packages.id': pid }) || await User.findOne({ 'packages._id': pid });
+    }
+
+    if (!user) return res.status(404).json({ error: 'Package or User not found' });
+
+    let packages = Array.isArray(user.packages) ? user.packages : [];
+    let idx = packages.findIndex(p => String(p._id || p.id || '') === pid);
+    if (idx !== -1) {
+      packages[idx] = { ...packages[idx], ...req.body, id: packages[idx].id || packages[idx]._id || pid };
+    } else {
+      packages.push({ ...req.body, id: pid });
+    }
+
+    user.packages = packages;
+    user.markModified('packages');
+    await user.save();
+
+    res.json({ message: 'Package updated in database', package: packages[idx !== -1 ? idx : packages.length - 1], packages: user.packages });
+  } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
