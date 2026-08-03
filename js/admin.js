@@ -651,16 +651,27 @@ window.deletePost = async function(id, title) {
   }
 };
 
-// ── DATE CLEANING HELPER ────────────────────────────────────────────────────
-function getCleanDate(dateStr) {
-  if (!dateStr) return '';
-  const str = String(dateStr);
-  // Split at 'T' if present and return only the date part (YYYY-MM-DD)
+// ── DATE CLEANING HELPER ─────────────────────────────────────────────────────
+function formatSimpleDate(rawDateStr) {
+  if (!rawDateStr) return '';
+  const str = String(rawDateStr).trim();
+  // Extract YYYY-MM-DD if ISO string containing 'T'
   if (str.includes('T')) {
     return str.split('T')[0];
   }
+  // Fallback: parse as Date object
+  const d = new Date(str);
+  if (!isNaN(d.getTime())) {
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
   return str;
 }
+// backward-compat aliases
+const getCleanDate = formatSimpleDate;
+
 
 // ── TRAINING REQUIREMENTS MANAGEMENT (GOOGLE APPS SCRIPT INTEGRATION) ───────────
 let allRequirements = [];
@@ -690,7 +701,7 @@ window.loadRequirements = async function() {
       const budget = req.budget ? (typeof req.budget === 'number' ? `$${req.budget.toLocaleString()}` : `$${req.budget}`) : 'N/A';
       const location = req.locationPlace || req.locationType || req.location || 'N/A';
       const city = req.cityAddress || req.cityDetails || '';
-      const cleanDate = getCleanDate(req.targetDates || req.targetDate || '');
+      const cleanDate = formatSimpleDate(req.targetDates || req.targetDate || '');
       const duration = req.timeDuration || req.duration || 'N/A';
       const notes = req.specialNotes || req.notes || 'None';
 
@@ -724,6 +735,7 @@ window.loadRequirements = async function() {
         <td>
           <div style="font-weight:700; color:#34d399;">${escHtml(budget)}</div>
           <div style="font-size:.8rem; color:var(--tm); margin-top:2px;">📍 ${escHtml(location)} ${city ? `(${escHtml(city)})` : ''}</div>
+          <div style="font-size:.75rem; color:#64748b; margin-top:1px;">🗓️ ${escHtml(formatSimpleDate(req.targetDates || req.targetDate))}</div>
         </td>
         <td>
           <div style="display:flex;flex-direction:column;gap:2px">

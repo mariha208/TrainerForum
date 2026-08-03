@@ -188,16 +188,26 @@ window.selectOverviewTrack = function (trackType) {
   }
 };
 
-function getCleanDate(rawDateStr) {
+function formatSimpleDate(rawDateStr) {
   if (!rawDateStr) return '';
-  const str = String(rawDateStr);
+  const str = String(rawDateStr).trim();
+  // Extract YYYY-MM-DD if ISO string containing 'T'
   if (str.includes('T')) {
     return str.split('T')[0];
   }
+  // Fallback: parse as Date object
+  const d = new Date(str);
+  if (!isNaN(d.getTime())) {
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
   return str;
 }
-// alias for backward compat
-const formatDate = getCleanDate;
+// aliases for backward compat
+const getCleanDate = formatSimpleDate;
+const formatDate = formatSimpleDate;
 
 // ── RENDER REQUIREMENTS TRACK & BOX 1 ─────────────────────────────────────────
 function renderRequirementsTrack() {
@@ -265,7 +275,7 @@ function renderRequirementsTrack() {
     const orgName = r.orgName || r.organizationName || 'N/A';
     const loc = r.locationType || r.locationPlace || 'N/A';
     const city = r.cityDetails || r.cityAddress || '';
-    const cleanDate = getCleanDate(r.targetDate || r.targetDates || 'N/A');
+    const cleanDate = formatSimpleDate(r.targetDate || r.targetDates || '');
     const duration = r.duration || r.timeDuration || 'N/A';
     const budget = Number(r.budget || 0).toLocaleString();
 
@@ -278,14 +288,16 @@ function renderRequirementsTrack() {
         </td>
         <td>
           <div>📍 ${escHtml(loc)} ${city ? `(${escHtml(city)})` : ''}</div>
-          <div style="font-size:12px;color:#94a3b8;margin-top:2px">📅 ${escHtml(cleanDate)}</div>
+          <div style="font-size:12px;color:#94a3b8;margin-top:2px">🗓️ ${escHtml(formatSimpleDate(r.targetDate || r.targetDates))}</div>
         </td>
         <td>
           <div style="font-weight:800;color:#34d399">$${budget}</div>
         </td>
         <td>
-          <div style="font-weight:600;color:#ffffff">📅 ${escHtml(cleanDate)}</div>
-          <div style="font-size:12px;color:#94a3b8;margin-top:2px">⏱️ ${escHtml(duration)}</div>
+          <div style="display:flex;flex-direction:column;gap:2px">
+            <span style="font-weight:600;color:#ffffff;font-size:13px">📅 ${escHtml(cleanDate)}</span>
+            ${duration && duration !== 'N/A' ? `<span style="font-size:12px;color:#94a3b8">⏰ ${escHtml(duration)}</span>` : ''}
+          </div>
         </td>
         <td>
           <span class="badge-status ${badgeClass}">${badgeText}</span>
