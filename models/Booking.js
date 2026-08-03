@@ -11,9 +11,11 @@ const BookingSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  organizationId: {
+    type: String
+  },
   trainerId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
+    type: mongoose.Schema.Types.Mixed
   },
   trainerName: {
     type: String,
@@ -31,9 +33,12 @@ const BookingSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  timeSlot: {
+    type: String
+  },
   duration: {
     type: String,
-    default: '1 Day'
+    default: '1 Hour'
   },
   status: {
     type: String,

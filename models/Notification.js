@@ -23,6 +23,11 @@ const notificationSchema = new mongoose.Schema({
     type: String,
     default: '#'
   },
+  recipientId: {
+    type: String,
+    default: null,
+    index: true
+  },
   isRead: {
     type: Boolean,
     default: false,

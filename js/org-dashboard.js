@@ -72,6 +72,7 @@ async function fetchLiveHiredTrainers() {
 
   renderHiredTrainersView();
 }
+window.fetchLiveHiredTrainers = fetchLiveHiredTrainers;
 
 // ── MOBILE SIDEBAR TOGGLE ─────────────────────────────────────────────────────
 window.toggleOrgSidebar = function () {

@@ -1210,9 +1210,9 @@ window.openBookingModal = async function (tid) {
           <div class="bpm-total-label">Total Amount</div>
           <div class="bpm-total-amt" id="bpm-total-amt">${fmtINR(t.pn || 5000)}</div>
         </div>
-        <button class="tpm-btn tpm-btn-gold"
-          style="width:100%;justify-content:center;margin-top:16px;padding:14px;font-size:0.95rem"
-          onclick="confirmBPMBooking()">
+        <button class="tpm-btn tpm-btn-gold" id="bpm-confirm-btn"
+          style="width:100%;justify-content:center;margin-top:16px;padding:14px;font-size:0.95rem;opacity:0.4;cursor:not-allowed;background:#475569"
+          onclick="confirmBPMBooking()" disabled>
           Confirm & Pay Securely 🔒
         </button>
         <div class="bpm-trust">
@@ -1229,6 +1229,7 @@ window.openBookingModal = async function (tid) {
   `;
 
   renderBPMCalendar();
+  if (typeof window.updateBPMConfirmButton === 'function') window.updateBPMConfirmButton();
 };
 
 window.closeBookingModal = function () {
@@ -1373,38 +1374,125 @@ window.confirmBookingModal = window.confirmBPMBooking = function () {
   _showPaymentGateway();
 };
 
+window.updateBPMConfirmButton = function () {
+  const btn = document.getElementById('bpm-confirm-btn');
+  if (!btn) return;
+  const state = window.bookingState;
+  const isReady = !!(state.selectedDay && state.selectedTime);
+  if (isReady) {
+    btn.removeAttribute('disabled');
+    btn.style.opacity = '1';
+    btn.style.cursor = 'pointer';
+    btn.style.background = 'linear-gradient(135deg, #C5A059, #E6C97A)';
+  } else {
+    btn.setAttribute('disabled', 'true');
+    btn.style.opacity = '0.4';
+    btn.style.cursor = 'not-allowed';
+    btn.style.background = '#475569';
+  }
+};
+
 window.selectBPMDay = function (d) {
   window.bookingState.selectedDay = d;
+  window.bookingState.selectedTime = null; // reset time slot selection on new day
   renderBPMCalendar();
+  
   const slotWrap = document.getElementById('bpm-slots-wrap');
   if (slotWrap) slotWrap.style.display = 'block';
   const slotsEl = document.getElementById('bpm-slots');
-  const slots = ['9:00 AM', '11:00 AM', '1:00 PM', '3:00 PM', '5:00 PM', '7:00 PM'];
-  const unavail = new Set([1, 3]);
-  if (slotsEl) {
-    slotsEl.innerHTML = slots.map((s, i) => `
-      <div class="tpm-time-slot ${unavail.has(i) ? 'unavailable' : ''}" onclick="${unavail.has(i) ? '' : `selectBPMTime('${s}')`}">
-        ${s}${unavail.has(i) ? ' (Full)' : ''}
-      </div>
-    `).join('');
+
+  const tid = window.bookingState.trainerId;
+  const TRAINERS = window.TRAINERS || [];
+  const t = TRAINERS.find(x => String(x.id) === String(tid)) || window.currentTrainer || {};
+
+  let _bpmAvs = window.bookingState.trainerAvailability;
+  if (!_bpmAvs && typeof window.getTrainerAvailability === 'function') {
+    _bpmAvs = window.getTrainerAvailability(t);
   }
+
+  const state = window.bookingState;
+  const daysMap = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const dayName = daysMap[new Date(state.year, state.month, d).getDay()];
+
+  let isAvailableDay = true;
+  let startHour = 9;
+  let endHour = 18;
+
+  if (_bpmAvs) {
+    const dayConfig = _bpmAvs[dayName] || _bpmAvs[dayName.toLowerCase()];
+    if (dayConfig) {
+      if (typeof dayConfig.available !== 'undefined') isAvailableDay = !!dayConfig.available;
+      else if (typeof dayConfig.enabled !== 'undefined') isAvailableDay = !!dayConfig.enabled;
+
+      if (dayConfig.start) {
+        const p = parseInt(dayConfig.start.split(':')[0]);
+        if (!isNaN(p)) startHour = p;
+      }
+      if (dayConfig.end) {
+        const p = parseInt(dayConfig.end.split(':')[0]);
+        if (!isNaN(p)) endHour = p;
+      }
+    }
+  }
+
+  if (!isAvailableDay) {
+    if (slotsEl) {
+      slotsEl.innerHTML = `<div style="color:#ef4444;font-size:0.82rem;padding:8px;font-family:'Poppins',sans-serif">Trainer is not available on ${dayName}s. Please choose another date.</div>`;
+    }
+  } else {
+    const slots = [];
+    for (let h = startHour; h < endHour; h += 2) {
+      const displayHour = h % 12 === 0 ? 12 : h % 12;
+      const ampm = h < 12 ? 'AM' : 'PM';
+      slots.push(`${displayHour}:00 ${ampm}`);
+    }
+    if (slots.length === 0) {
+      slots.push('9:00 AM', '11:00 AM', '1:00 PM', '3:00 PM', '5:00 PM');
+    }
+
+    if (slotsEl) {
+      slotsEl.innerHTML = slots.map(s => `
+        <div class="tpm-time-slot" onclick="selectBPMTime('${s}')">
+          ${s}
+        </div>
+      `).join('');
+    }
+  }
+
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   const sumDate = document.getElementById('bpm-sum-date');
   if (sumDate) sumDate.textContent = `${d} ${months[window.bookingState.month]} ${window.bookingState.year}`;
+  
+  const sumTime = document.getElementById('bpm-sum-time');
+  if (sumTime) sumTime.textContent = 'Not selected';
+
+  window.updateBPMConfirmButton();
 };
 
 window.selectBPMTime = function (t) {
   window.bookingState.selectedTime = t;
   document.querySelectorAll('#bpm-slots .tpm-time-slot').forEach(s => s.classList.remove('selected'));
+  
   const slots = document.querySelectorAll('#bpm-slots .tpm-time-slot');
-  const times = ['9:00 AM', '11:00 AM', '1:00 PM', '3:00 PM', '5:00 PM', '7:00 PM'];
-  const idx = times.indexOf(t);
-  if (slots[idx]) slots[idx].classList.add('selected');
+  slots.forEach(s => {
+    if (s.textContent.trim().startsWith(t)) {
+      s.classList.add('selected');
+    }
+  });
+
   const sumTime = document.getElementById('bpm-sum-time');
   if (sumTime) sumTime.textContent = t;
+
+  window.updateBPMConfirmButton();
 };
 
 window.confirmBPMBooking = function () {
+  const state = window.bookingState;
+  if (!state.selectedDay || !state.selectedTime) {
+    if (window.toast) window.toast('⚠️ Please select both a Date and a Time Slot before proceeding.');
+    else alert('Please select both a Date and a Time Slot before proceeding.');
+    return;
+  }
   _showPaymentGateway();
 };
 
@@ -1567,21 +1655,91 @@ window._switchPayTab = function (tab) {
   });
 };
 
-window._processBPMPayment = function () {
+window._processBPMPayment = async function () {
   const bpmBox = document.querySelector('.bpm-box');
   if (!bpmBox) return;
+
+  const state = window.bookingState;
+  const TRAINERS = window.TRAINERS || [];
+  const t = TRAINERS.find(x => String(x.id) === String(state.trainerId)) || window.currentTrainer || {};
+
+  bpmBox.innerHTML = `
+  <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;text-align:center;padding:48px 32px">
+    <div style="width:50px;height:50px;border:4px solid rgba(197,160,89,0.2);border-top-color:#C5A059;border-radius:50%;animation:bpmSpin 0.8s linear infinite;margin-bottom:20px"></div>
+    <h3 style="color:#C5A059;margin-bottom:8px">Processing Session Booking...</h3>
+    <p style="color:rgba(237,242,247,0.7);font-size:0.9rem;font-family:'Poppins',sans-serif">Attaching booking parameters and notifying trainer...</p>
+  </div>`;
+
+  const userSession = JSON.parse(localStorage.getItem('userSession') || '{}');
+  const orgId = userSession.orgId || userSession.id || userSession._id || 'ORG-101';
+  const organizationId = userSession.organizationId || orgId;
+
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const dateStr = `${state.selectedDay} ${months[state.month]} ${state.year}`;
+  const trainerIdVal = String(state.trainerId || t.id || t._id || '');
+
+  const payload = {
+    orgId: orgId,
+    organizationId: organizationId,
+    trainerId: trainerIdVal,
+    trainerName: t.name || 'Expert Trainer',
+    trainerAvatar: t.photoUrl || t.profilePic || t.av || '',
+    topic: state.selectedPkgName || t.category || '1-on-1 Training Session',
+    scheduledDate: dateStr,
+    timeSlot: state.selectedTime || '',
+    duration: '1 Hour',
+    status: 'Scheduled'
+  };
+
+  let bookingResult = null;
+  try {
+    const origin = window.SERVER_ORIGIN || '';
+    const res = await fetch(`${origin}/api/bookings`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(localStorage.getItem('token') ? { 'Authorization': `Bearer ${localStorage.getItem('token')}` } : {})
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      bookingResult = data.booking;
+    }
+  } catch (err) {
+    console.warn('[Booking] POST error, falling back locally:', err.message);
+  }
+
+  if (!bookingResult) {
+    bookingResult = {
+      bookingId: `BKG-${Math.floor(1000 + Math.random() * 9000)}`,
+      ...payload
+    };
+  }
+
+  // Save to local ORG_HIRED_TRAINERS_STORE so local state matches backend
+  const localStore = JSON.parse(localStorage.getItem('ORG_HIRED_TRAINERS_STORE') || '[]');
+  localStore.unshift(bookingResult);
+  localStorage.setItem('ORG_HIRED_TRAINERS_STORE', JSON.stringify(localStore));
+
+  // ── TRIGGER DASHBOARD REFETCH / STATE REFRESH IMMEDIATELY ──
+  if (typeof window.fetchLiveHiredTrainers === 'function') {
+    try { await window.fetchLiveHiredTrainers(); } catch(e) {}
+  }
+
   bpmBox.innerHTML = `
   <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;text-align:center;padding:48px 32px">
     <div style="width:80px;height:80px;border-radius:50%;background:rgba(74,222,128,0.12);border:2px solid rgba(74,222,128,0.4);display:flex;align-items:center;justify-content:center;font-size:2.2rem;margin-bottom:24px;animation:pulse 1.5s ease infinite">✅</div>
     <h2 style="color:rgba(237,242,247,0.95);margin-bottom:8px">Booking Confirmed!</h2>
-    <p style="color:rgba(237,242,247,0.5);font-family:'Poppins',sans-serif;font-size:0.9rem;max-width:360px;line-height:1.7">Your session has been booked successfully. A confirmation has been sent to your email. The trainer will contact you within 2 hours.</p>
+    <p style="color:rgba(237,242,247,0.5);font-family:'Poppins',sans-serif;font-size:0.9rem;max-width:360px;line-height:1.7">Your session has been booked successfully. Scheduled session appears in your dashboard.</p>
     <div style="margin-top:28px;padding:18px 28px;background:rgba(197,160,89,0.08);border:1px solid rgba(197,160,89,0.2);border-radius:14px;font-family:'Poppins',sans-serif">
       <div style="font-size:0.7rem;color:rgba(237,242,247,0.35);margin-bottom:4px">Booking Reference</div>
-      <div style="font-size:1rem;font-weight:700;color:#C5A059;letter-spacing:.1em">#WTF-${Math.random().toString(36).substring(2, 8).toUpperCase()}</div>
+      <div style="font-size:1rem;font-weight:700;color:#C5A059;letter-spacing:.1em">${bookingResult.bookingId || '#WTF-CONFIRMED'}</div>
     </div>
     <button onclick="closeBookingModal()" style="margin-top:28px;padding:13px 36px;background:linear-gradient(135deg,#C5A059,#E6C97A);border:none;border-radius:999px;color:#071A3A;font-family:'Poppins',sans-serif;font-size:0.95rem;font-weight:700;cursor:pointer">Done</button>
   </div>`;
-  window.toast && window.toast('🎉 Booking confirmed! Check your email for details.');
+  if (window.toast) window.toast('🎉 Booking confirmed! Scheduled session updated.');
 };
 
 // ── EXPOSE GLOBALS ──────────────────────────────────────────────────────────────

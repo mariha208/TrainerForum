@@ -32,7 +32,17 @@ function writeJsonFallback(filePath, data) {
 // ── GET /api/notifications ───────────────────────────────────────────────────
 router.get('/', async (req, res) => {
   try {
-    let notifs = await Notification.find().sort({ createdAt: -1 }).limit(50).lean();
+    const recipientId = req.query.recipientId || req.query.userId || (req.user ? (req.user._id || req.user.id) : null);
+    
+    // Filter condition: broadcast notifs (recipientId null/empty) OR targeted specifically to recipientId
+    let query = {};
+    if (recipientId) {
+      query = { $or: [{ recipientId: null }, { recipientId: '' }, { recipientId: String(recipientId) }] };
+    } else {
+      query = { $or: [{ recipientId: null }, { recipientId: '' }] };
+    }
+
+    let notifs = await Notification.find(query).sort({ createdAt: -1 }).limit(50).lean();
     
     // If no explicit notification records exist yet in DB, dynamically construct notifications from latest published posts
     if (!notifs || notifs.length === 0) {
@@ -56,6 +66,7 @@ router.get('/', async (req, res) => {
       title: n.title,
       message: n.message,
       type: (n.type || 'news').toLowerCase(),
+      recipientId: n.recipientId || null,
       targetUrl: n.targetUrl || '#',
       isRead: !!n.isRead,
       createdAt: n.createdAt
@@ -64,7 +75,13 @@ router.get('/', async (req, res) => {
     return res.json(formatted);
   } catch (err) {
     console.warn('[Notifications API] DB fetch failed, falling back to local JSON:', err.message);
-    const notifs = readJsonFallback(NOTIFS_FILE);
+    const recipientId = req.query.recipientId || req.query.userId || null;
+    let notifs = readJsonFallback(NOTIFS_FILE);
+    if (recipientId) {
+      notifs = notifs.filter(n => !n.recipientId || String(n.recipientId) === String(recipientId));
+    } else {
+      notifs = notifs.filter(n => !n.recipientId);
+    }
     notifs.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     return res.json(notifs);
   }

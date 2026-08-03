@@ -21,25 +21,50 @@ router.get('/my-hired-trainers', async (req, res) => {
 // POST /api/bookings — Hire a trainer
 router.post('/', async (req, res) => {
   try {
-    const { orgId, trainerName, trainerAvatar, topic, scheduledDate, duration } = req.body;
+    const { orgId, organizationId, trainerId, trainerName, trainerAvatar, topic, scheduledDate, timeSlot, duration } = req.body;
     const bookingId = `BKG-${Math.floor(1000 + Math.random() * 9000)}`;
+
+    const finalOrgId = orgId || organizationId || 'ORG-101';
+    const finalDateStr = timeSlot ? `${scheduledDate} · ${timeSlot}` : scheduledDate;
 
     const newBooking = new Booking({
       bookingId,
-      orgId: orgId || 'ORG-101',
-      trainerName,
+      orgId: finalOrgId,
+      organizationId: finalOrgId,
+      trainerId: trainerId || '',
+      trainerName: trainerName || 'Expert Trainer',
       trainerAvatar: trainerAvatar || '',
-      topic,
-      scheduledDate,
-      duration: duration || '1 Day',
+      topic: topic || '1-on-1 Training Session',
+      scheduledDate: finalDateStr,
+      timeSlot: timeSlot || '',
+      duration: duration || '1 Hour',
       status: 'Scheduled'
     });
 
     await newBooking.save();
+
+    // ── TRAINER NOTIFICATION: Create targeted notification for booked trainer exclusively ──
+    if (trainerId) {
+      try {
+        const Notification = require('../models/Notification');
+        const notification = new Notification({
+          title: 'New Session Booking 📅',
+          message: `You have been booked for "${topic || 'Training Session'}" on ${scheduledDate}${timeSlot ? ' at ' + timeSlot : ''}.`,
+          type: 'general',
+          recipientId: String(trainerId),
+          targetUrl: 'dashboard.html',
+          isRead: false
+        });
+        await notification.save();
+      } catch (notifErr) {
+        console.error('❌ [Bookings] Trainer notification error:', notifErr.message);
+      }
+    }
+
     res.status(201).json({ success: true, booking: newBooking });
   } catch (err) {
     console.error('❌ [Bookings] POST Error:', err);
-    res.status(500).json({ error: 'Failed to create booking.' });
+    res.status(500).json({ error: 'Failed to create booking: ' + err.message });
   }
 });
 

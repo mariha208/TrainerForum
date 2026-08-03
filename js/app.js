@@ -12,6 +12,58 @@ if (typeof window !== 'undefined' && typeof window.TRAINERS === 'undefined') {
   window.TRAINERS = [];
 }
 
+window.getTrainerAvailability = function (t) {
+  if (!t) return null;
+  const tid = String(t.id || t._id || t.trainerId || '');
+  let avail = null;
+
+  if (tid) {
+    try {
+      const lavail = JSON.parse(localStorage.getItem(`tv-trainer-${tid}-availability`) || 'null');
+      if (lavail) avail = lavail;
+    } catch (e) {}
+  }
+
+  if (!avail && tid) {
+    try {
+      const ct = JSON.parse(localStorage.getItem('currentTrainer') || '{}');
+      const ctId = String(ct.id || ct._id || ct.trainerId || '');
+      if (ctId && ctId === tid && ct.availability) {
+        avail = typeof ct.availability === 'string' ? JSON.parse(ct.availability) : ct.availability;
+      }
+    } catch (e) {}
+  }
+
+  if (!avail && t.availability) {
+    try {
+      avail = typeof t.availability === 'string' ? JSON.parse(t.availability) : t.availability;
+    } catch (e) {
+      avail = t.availability;
+    }
+  }
+
+  return avail;
+};
+
+window.getAvailabilityPillText = function (t) {
+  const avail = window.getTrainerAvailability(t);
+  if (!avail) return 'Mon–Fri | 9 AM–5 PM';
+  if (typeof avail === 'string') return avail;
+  
+  if (typeof avail === 'object') {
+    const dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    const activeDays = dayNames.filter(d => {
+      const c = avail[d] || avail[d.toLowerCase()];
+      return c && (c.available !== false && c.enabled !== false);
+    });
+    if (activeDays.length === 7) return 'Everyday';
+    if (activeDays.length === 5 && activeDays.includes('Mon') && activeDays.includes('Fri')) return 'Mon–Fri';
+    if (activeDays.length > 0) return `${activeDays.join(', ')}`;
+    return 'By Appointment';
+  }
+  return 'Mon–Fri | 9 AM–5 PM';
+};
+
 // ── MODAL BRIDGE ─────────────────────────────────────────────────────────────
 if (typeof window !== 'undefined') {
   window.openModal = function (mode) {
@@ -697,6 +749,9 @@ function subscribeToTrainers() {
                   </span>
                   <span style="background: #f1f5f9; border-radius: 10px; padding: 3px 10px; font-size: 11px; font-weight: 600; color: #475569;">
                     ${parseInt(normalizedTrainer.experience || '0') || 0}+ yrs
+                  </span>
+                  <span style="background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 10px; padding: 3px 10px; font-size: 11px; font-weight: 600; color: #047857;">
+                    📅 ${window.getAvailabilityPillText ? window.getAvailabilityPillText(normalizedTrainer) : 'Available'}
                   </span>
                 </div>
 
