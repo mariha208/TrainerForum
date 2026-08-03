@@ -188,6 +188,17 @@ window.selectOverviewTrack = function (trackType) {
   }
 };
 
+function getCleanDate(rawDateStr) {
+  if (!rawDateStr) return '';
+  const str = String(rawDateStr);
+  if (str.includes('T')) {
+    return str.split('T')[0];
+  }
+  return str;
+}
+// alias for backward compat
+const formatDate = getCleanDate;
+
 // ── RENDER REQUIREMENTS TRACK & BOX 1 ─────────────────────────────────────────
 function renderRequirementsTrack() {
   const tbody = document.getElementById('requirements-table-body');
@@ -199,18 +210,18 @@ function renderRequirementsTrack() {
 
   const total = ORG_REQUIREMENTS_DATA.length;
   const pending = ORG_REQUIREMENTS_DATA.filter(r => {
-    const s = String(r.approvalStatus || r.status || 'Pending').trim().toLowerCase();
-    return s === 'pending';
+    const s = String(r.approvalStatus || r.status || 'Pending').trim().toUpperCase();
+    return s === 'PENDING';
   }).length;
 
   const accepted = ORG_REQUIREMENTS_DATA.filter(r => {
-    const s = String(r.approvalStatus || r.status || 'Pending').trim().toLowerCase();
-    return s === 'approved' || s === 'accepted';
+    const s = String(r.approvalStatus || r.status || 'Pending').trim().toUpperCase();
+    return s === 'APPROVED' || s === 'ACCEPTED';
   }).length;
 
   const rejected = ORG_REQUIREMENTS_DATA.filter(r => {
-    const s = String(r.approvalStatus || r.status || 'Pending').trim().toLowerCase();
-    return s === 'rejected';
+    const s = String(r.approvalStatus || r.status || 'Pending').trim().toUpperCase();
+    return s === 'REJECTED';
   }).length;
 
   if (boxCount) boxCount.textContent = total;
@@ -233,18 +244,20 @@ function renderRequirementsTrack() {
   }
 
   tbody.innerHTML = ORG_REQUIREMENTS_DATA.map(r => {
-    const currentStatus = String(r.approvalStatus || r.status || 'Pending').trim();
-    const statusLower = currentStatus.toLowerCase();
+    const statusRaw = String(r.approvalStatus || r.status || 'Pending').trim().toUpperCase();
 
     let badgeClass = 'badge-pending';
-    let badgeText = '⏰ PENDING';
+    let badgeText = '⏳ PENDING';
 
-    if (statusLower === 'approved' || statusLower === 'accepted') {
+    if (statusRaw === 'APPROVED' || statusRaw === 'ACCEPTED') {
       badgeClass = 'badge-accepted';
       badgeText = '✅ APPROVED';
-    } else if (statusLower === 'rejected') {
+    } else if (statusRaw === 'REJECTED') {
       badgeClass = 'badge-rejected';
       badgeText = '❌ REJECTED';
+    } else {
+      badgeClass = 'badge-pending';
+      badgeText = '⏳ PENDING';
     }
 
     const reqId = r.reqId || r.id || 'REQ-001';
@@ -252,7 +265,7 @@ function renderRequirementsTrack() {
     const orgName = r.orgName || r.organizationName || 'N/A';
     const loc = r.locationType || r.locationPlace || 'N/A';
     const city = r.cityDetails || r.cityAddress || '';
-    const dateStr = r.targetDate || r.targetDates || 'N/A';
+    const cleanDate = getCleanDate(r.targetDate || r.targetDates || 'N/A');
     const duration = r.duration || r.timeDuration || 'N/A';
     const budget = Number(r.budget || 0).toLocaleString();
 
@@ -265,13 +278,14 @@ function renderRequirementsTrack() {
         </td>
         <td>
           <div>📍 ${escHtml(loc)} ${city ? `(${escHtml(city)})` : ''}</div>
-          <div style="font-size:12px;color:#94a3b8;margin-top:2px">📅 ${escHtml(dateStr)}</div>
+          <div style="font-size:12px;color:#94a3b8;margin-top:2px">📅 ${escHtml(cleanDate)}</div>
         </td>
         <td>
           <div style="font-weight:800;color:#34d399">$${budget}</div>
         </td>
         <td>
-          <div style="color:#cbd5e1">${escHtml(dateStr)} (${escHtml(duration)})</div>
+          <div style="font-weight:600;color:#ffffff">📅 ${escHtml(cleanDate)}</div>
+          <div style="font-size:12px;color:#94a3b8;margin-top:2px">⏱️ ${escHtml(duration)}</div>
         </td>
         <td>
           <span class="badge-status ${badgeClass}">${badgeText}</span>
@@ -343,9 +357,9 @@ function renderHiredTrainersView() {
                   <div style="font-weight:600;color:#c5a57b">${t.topic}</div>
                 </td>
                 <td>
-                  <div>📅 ${t.scheduledDate}</div>
-                  <div style="font-size:11.5px;color:#94a3b8">${t.duration}</div>
-                </td>
+                   <div>📅 ${getCleanDate(t.scheduledDate)}</div>
+                   <div style="font-size:11.5px;color:#94a3b8">⏳ ${t.duration || ''}</div>
+                 </td>
                 <td>
                   <span class="badge-status ${badgeClass}">${t.status}</span>
                 </td>
@@ -562,16 +576,15 @@ window.openReqDetailsModal = function (reqId) {
   const content = document.getElementById('req-details-content');
   if (!content) return;
 
-  const currentStatus = String(req.approvalStatus || req.status || 'Pending').trim();
-  const statusLower = currentStatus.toLowerCase();
+  const statusRaw = String(req.approvalStatus || req.status || 'Pending').trim().toUpperCase();
 
   let badgeClass = 'badge-pending';
-  let badgeText = '⏰ PENDING';
+  let badgeText = '⏳ PENDING';
 
-  if (statusLower === 'approved' || statusLower === 'accepted') {
+  if (statusRaw === 'APPROVED' || statusRaw === 'ACCEPTED') {
     badgeClass = 'badge-accepted';
     badgeText = '✅ APPROVED';
-  } else if (statusLower === 'rejected') {
+  } else if (statusRaw === 'REJECTED') {
     badgeClass = 'badge-rejected';
     badgeText = '❌ REJECTED';
   }
@@ -604,13 +617,16 @@ window.openReqDetailsModal = function (reqId) {
         </div>
         <div>
           <span style="font-size:11px;font-weight:700;color:#c5a57b;text-transform:uppercase">Target Date</span>
-          <div style="font-size:13px;color:#cbd5e1;margin-top:2px">📅 ${req.targetDate}</div>
+          <div style="font-size:13px;font-weight:600;color:#ffffff;margin-top:2px">📅 ${getCleanDate(req.targetDate || req.targetDates)}</div>
         </div>
       </div>
 
       <div style="margin-bottom:12px">
         <span style="font-size:11px;font-weight:700;color:#c5a57b;text-transform:uppercase">Time & Duration</span>
-        <div style="font-size:13px;color:#cbd5e1;margin-top:2px">⏱️ ${req.duration}</div>
+        <div style="margin-top:4px;display:flex;flex-direction:column;gap:2px">
+          <span style="font-size:13px;font-weight:600;color:#ffffff">📅 ${getCleanDate(req.targetDate || req.targetDates)}</span>
+          ${(req.duration || req.timeDuration) ? `<span style="font-size:12px;color:#94a3b8">⏰ ${req.duration || req.timeDuration}</span>` : ''}
+        </div>
       </div>
 
       <div>

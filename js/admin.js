@@ -651,6 +651,17 @@ window.deletePost = async function(id, title) {
   }
 };
 
+// ── DATE CLEANING HELPER ────────────────────────────────────────────────────
+function getCleanDate(dateStr) {
+  if (!dateStr) return '';
+  const str = String(dateStr);
+  // Split at 'T' if present and return only the date part (YYYY-MM-DD)
+  if (str.includes('T')) {
+    return str.split('T')[0];
+  }
+  return str;
+}
+
 // ── TRAINING REQUIREMENTS MANAGEMENT (GOOGLE APPS SCRIPT INTEGRATION) ───────────
 let allRequirements = [];
 
@@ -679,24 +690,23 @@ window.loadRequirements = async function() {
       const budget = req.budget ? (typeof req.budget === 'number' ? `$${req.budget.toLocaleString()}` : `$${req.budget}`) : 'N/A';
       const location = req.locationPlace || req.locationType || req.location || 'N/A';
       const city = req.cityAddress || req.cityDetails || '';
-      const dates = req.targetDates || req.targetDate || 'N/A';
+      const cleanDate = getCleanDate(req.targetDates || req.targetDate || '');
       const duration = req.timeDuration || req.duration || 'N/A';
       const notes = req.specialNotes || req.notes || 'None';
 
-      const currentStatus = String(req.approvalStatus || req.status || 'Pending').trim();
-      const statusLower = currentStatus.toLowerCase();
+      const statusRaw = String(req.approvalStatus || req.status || 'Pending').trim().toUpperCase();
 
       let statusBadge = '';
-      if (statusLower === 'approved' || statusLower === 'accepted') {
-        statusBadge = `<span class="badge" style="background:rgba(46,204,113,0.15); color:#4ade80; border:1px solid rgba(46,204,113,0.3);">✅ Approved</span>`;
-      } else if (statusLower === 'rejected') {
-        statusBadge = `<span class="badge" style="background:rgba(231,76,60,0.15); color:#f87171; border:1px solid rgba(231,76,60,0.3);">❌ Rejected</span>`;
+      if (statusRaw === 'APPROVED' || statusRaw === 'ACCEPTED') {
+        statusBadge = `<span class="badge" style="background:rgba(46,204,113,0.15); color:#4ade80; border:1px solid rgba(46,204,113,0.3);">✅ APPROVED</span>`;
+      } else if (statusRaw === 'REJECTED') {
+        statusBadge = `<span class="badge" style="background:rgba(231,76,60,0.15); color:#f87171; border:1px solid rgba(231,76,60,0.3);">❌ REJECTED</span>`;
       } else {
-        statusBadge = `<span class="badge" style="background:rgba(245,200,66,0.15); color:var(--gold); border:1px solid rgba(245,200,66,0.3);">⏳ Pending</span>`;
+        statusBadge = `<span class="badge" style="background:rgba(245,200,66,0.15); color:var(--gold); border:1px solid rgba(245,200,66,0.3);">⏳ PENDING</span>`;
       }
 
       let actionCellHtml = '';
-      if (statusLower === 'approved' || statusLower === 'accepted' || statusLower === 'rejected') {
+      if (statusRaw === 'APPROVED' || statusRaw === 'ACCEPTED' || statusRaw === 'REJECTED') {
         actionCellHtml = `<span style="color:var(--tm); font-size:.8rem; font-style:italic;">Action Completed</span>`;
       } else {
         actionCellHtml = `
@@ -716,8 +726,10 @@ window.loadRequirements = async function() {
           <div style="font-size:.8rem; color:var(--tm); margin-top:2px;">📍 ${escHtml(location)} ${city ? `(${escHtml(city)})` : ''}</div>
         </td>
         <td>
-          <div style="font-size:.85rem; color:var(--ts);">📅 ${escHtml(dates)}</div>
-          <div style="font-size:.8rem; color:var(--tm); margin-top:2px;">⏱️ ${escHtml(duration)}</div>
+          <div style="display:flex;flex-direction:column;gap:2px">
+            <span style="font-size:.85rem;font-weight:600;color:var(--ts)">📅 ${escHtml(cleanDate)}</span>
+            ${duration && duration !== 'N/A' ? `<span style="font-size:.8rem;color:#94a3b8">⏰ ${escHtml(duration)}</span>` : ''}
+          </div>
         </td>
         <td>
           <div style="font-size:.8rem; color:var(--tm); max-width:200px; white-space:normal; line-height:1.4;">${escHtml(notes)}</div>
