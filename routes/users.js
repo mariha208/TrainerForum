@@ -299,6 +299,46 @@ router.patch('/:id', async (req, res) => {
   }
 });
 
+// DELETE a service from user profile
+router.delete('/:id/services/:serviceId', async (req, res) => {
+  try {
+    const isObjectId = mongoose.Types.ObjectId.isValid(req.params.id);
+    const query = isObjectId ? { _id: req.params.id } : { email: req.params.id.toLowerCase() };
+    const user = await User.findOne(query);
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
+    const sid = String(req.params.serviceId);
+    let services = Array.isArray(user.services) ? user.services : [];
+    user.services = services.filter(s => String(s.id) !== sid && String(s._id) !== sid);
+    user.markModified('services');
+    await user.save();
+
+    res.json({ message: 'Service deleted from database', services: user.services });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// DELETE a package from user profile
+router.delete('/:id/packages/:packageId', async (req, res) => {
+  try {
+    const isObjectId = mongoose.Types.ObjectId.isValid(req.params.id);
+    const query = isObjectId ? { _id: req.params.id } : { email: req.params.id.toLowerCase() };
+    const user = await User.findOne(query);
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
+    const pid = String(req.params.packageId);
+    let packages = Array.isArray(user.packages) ? user.packages : [];
+    user.packages = packages.filter(p => String(p.id) !== pid && String(p._id) !== pid);
+    user.markModified('packages');
+    await user.save();
+
+    res.json({ message: 'Package deleted from database', packages: user.packages });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // DELETE a user
 router.delete('/:id', async (req, res) => {
   try {

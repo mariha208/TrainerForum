@@ -15,7 +15,6 @@
   object-fit: contain;
   flex-shrink: 0;
   transform: none !important;
-  vertical-align: middle;
   margin-right: 8px;
 }
 
@@ -4245,13 +4244,22 @@ textarea {
     display: flex !important;
     flex-wrap: wrap !important;
     gap: 8px !important;
+    position: relative !important;
+    z-index: 25 !important;
+    pointer-events: auto !important;
   }
 
   .db-page-header .phead-right .btn {
     flex: 1 1 auto !important;
-    width: auto !important;
+    width: 100% !important;
     min-width: 120px !important;
     justify-content: center !important;
+    touch-action: manipulation !important;
+    cursor: pointer !important;
+    pointer-events: auto !important;
+    position: relative !important;
+    z-index: 30 !important;
+    -webkit-tap-highlight-color: transparent !important;
   }
 
   .db-page-header h1 {

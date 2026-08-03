@@ -964,7 +964,7 @@
           <p>Define your active hours and calendar preferences for incoming bookable slots</p>
         </div>
         <div class="phead-right">
-          <button class="btn btn-gold btn-sm" onclick="saveAvailability()">💾 Save Slots</button>
+          <button class="btn btn-gold btn-sm btn-save-slots" onclick="saveAvailability(event)" ontouchstart="saveAvailability(event)" style="cursor:pointer; position:relative; z-index:20; pointer-events:auto; touch-action:manipulation;">💾 Save Slots</button>
         </div>
       </div>
 
@@ -1501,23 +1501,53 @@
       div.id = 'svc-' + item.id;
       div.className = 'db-card';
       div.style.position = 'relative';
-      div.innerHTML = '<button onclick="_deleteService(' + item.id + ')" style="position:absolute;top:10px;right:10px;background:none;border:none;color:var(--red);cursor:pointer;font-size:1.2rem">&#128465;</button><div style="font-weight:700;font-size:1.05rem;color:var(--ts);margin-bottom:6px">' + item.name + (item.featured ? '<span style="font-size:0.65rem;background:rgba(197,160,89,0.2);color:var(--gold);padding:2px 6px;border-radius:4px;margin-left:6px;vertical-align:middle">Featured</span>' : '') + '</div><div style="font-size:0.82rem;color:var(--tm);margin-bottom:12px;line-height:1.4">' + item.desc + '</div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px"><span style="font-size:0.75rem;padding:2px 8px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;color:var(--tm)">⏱ ' + item.duration + '</span><span style="font-size:0.75rem;padding:2px 8px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;color:var(--tm)">📍 ' + item.mode + '</span><span style="font-size:0.75rem;padding:2px 8px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;color:var(--tm)">👥 ' + item.type + '</span></div><div style="font-size:1.1rem;font-weight:700;color:var(--gold)">₹' + item.price + '</div>';
+      div.innerHTML = '<button onclick="_deleteService(\'' + item.id + '\')" title="Delete Service" aria-label="Delete service" style="position:absolute;top:12px;right:12px;background:rgba(220,53,69,0.12);border:1px solid rgba(220,53,69,0.3);color:#dc3545;cursor:pointer;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:0.9rem;transition:all 0.18s ease;z-index:5;"><i class="fas fa-trash-alt"></i></button><div style="font-weight:700;font-size:1.05rem;color:var(--ts);margin-bottom:6px;padding-right:36px">' + item.name + (item.featured ? '<span style="font-size:0.65rem;background:rgba(197,160,89,0.2);color:var(--gold);padding:2px 6px;border-radius:4px;margin-left:6px;vertical-align:middle">Featured</span>' : '') + '</div><div style="font-size:0.82rem;color:var(--tm);margin-bottom:12px;line-height:1.4">' + item.desc + '</div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px"><span style="font-size:0.75rem;padding:2px 8px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;color:var(--tm)">⏱ ' + item.duration + '</span><span style="font-size:0.75rem;padding:2px 8px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;color:var(--tm)">📍 ' + item.mode + '</span><span style="font-size:0.75rem;padding:2px 8px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;color:var(--tm)">👥 ' + item.type + '</span></div><div style="font-size:1.1rem;font-weight:700;color:var(--gold)">₹' + item.price + '</div>';
       cont.appendChild(div);
     }
     function _deleteService(id) {
       _openDeleteConfirm(
-        'This will permanently delete this service from your profile.',
+        'this will delete the services/package from your profile',
         function() {
-          var el = document.getElementById('svc-' + id); if (el) el.remove();
+          var userId = typeof getLoggedInUserId === 'function' ? getLoggedInUserId() : null;
           var cache = JSON.parse(localStorage.getItem('currentTrainer')) || {};
+          if (!userId) userId = cache.trainerId || cache._id || cache.id || '1';
+
+          // 1. Backend hard DELETE call
+          var origin = window.SERVER_ORIGIN || 'https://trainerforum.onrender.com';
+          fetch(origin + '/api/users/' + userId + '/services/' + id, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' }
+          }).catch(function(err) { console.warn('Backend DELETE service error:', err); });
+
+          // 2. Remove DOM card instantly across viewports
+          var el = document.getElementById('svc-' + id);
+          if (el) el.remove();
+
+          // 3. Filter local storage cache
           if (Array.isArray(cache.services)) {
-            cache.services = cache.services.filter(function (s) { return s.id !== id });
+            cache.services = cache.services.filter(function (s) {
+              return String(s.id) !== String(id) && String(s._id) !== String(id);
+            });
             localStorage.setItem('currentTrainer', JSON.stringify(cache));
           }
+
+          // 4. Filter global window.TRAINERS array
+          if (Array.isArray(window.TRAINERS)) {
+            var t = window.TRAINERS.find(function(x) { return String(x.id || x._id) === String(userId); });
+            if (t && Array.isArray(t.services)) {
+              t.services = t.services.filter(function(s) { return String(s.id) !== String(id) && String(s._id) !== String(id); });
+            }
+          }
+
+          // 5. Check if container is empty
           var c = document.getElementById('services-container');
-          if (c && c.children.length === 0) c.innerHTML = '<div class="empty-msg" style="grid-column:1/-1;text-align:center;padding:20px;color:var(--tm);font-size:.85rem">No services defined.</div>';
+          if (c && c.querySelectorAll('.db-card').length === 0) {
+            c.innerHTML = '<div class="empty-msg" style="grid-column:1/-1;text-align:center;padding:20px;color:var(--tm);font-size:.85rem">No services defined.</div>';
+          }
+
+          // 6. Sync profile
           if (typeof commitLocalProfileChanges === 'function') commitLocalProfileChanges();
-          window.toast && window.toast('\u2714 Service removed and profile saved.');
+          window.toast && window.toast('✓ Service deleted from profile and database.');
         }
       );
     }
@@ -1549,9 +1579,7 @@
       if (!cont) return;
       var empty = cont.querySelector('.empty-msg');
       if (empty) empty.remove();
-      // Ensure item has an id (may be missing when loaded from API)
       if (!item.id) item.id = Date.now() + Math.floor(Math.random() * 9999);
-      // Ensure features is always an array
       if (!Array.isArray(item.features)) {
         item.features = typeof item.features === 'string' ? item.features.split(',').map(function (s) { return s.trim(); }).filter(Boolean) : [];
       }
@@ -1562,23 +1590,53 @@
       if (item.featured) div.style.borderColor = 'var(--gold)';
       var featsHtml = item.features.map(function (f) { return '<li style="font-size:0.8rem;color:var(--tm);margin-bottom:4px;display:flex;gap:6px"><span style="color:var(--gold)">✓</span> ' + f + '</li>' }).join('');
       var descHtml = item.desc ? '<div style="font-size:0.82rem;color:var(--tm);margin-bottom:12px;line-height:1.4">' + item.desc + '</div>' : '';
-      div.innerHTML = '<button onclick="_deletePackage(' + item.id + ')" style="position:absolute;top:10px;right:10px;background:none;border:none;color:var(--red);cursor:pointer;font-size:1.2rem">&#128465;</button>' + (item.featured ? '<div style="font-size:0.65rem;color:var(--gold);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">⭐ Featured Package</div>' : '') + '<div style="font-weight:700;font-size:1.1rem;color:var(--ts);margin-bottom:6px">' + (item.name || 'Package') + '</div><div style="font-size:1.2rem;font-weight:700;color:var(--ts);margin-bottom:12px">₹' + (item.price || '0') + ' <span style="font-size:0.8rem;color:var(--tm);font-weight:400">/ ' + (item.duration || '') + '</span></div>' + descHtml + '<ul style="list-style:none;padding:0;margin:0">' + featsHtml + '</ul>';
+      div.innerHTML = '<button onclick="_deletePackage(\'' + item.id + '\')" title="Delete Package" aria-label="Delete package" style="position:absolute;top:12px;right:12px;background:rgba(220,53,69,0.12);border:1px solid rgba(220,53,69,0.3);color:#dc3545;cursor:pointer;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:0.9rem;transition:all 0.18s ease;z-index:5;"><i class="fas fa-trash-alt"></i></button>' + (item.featured ? '<div style="font-size:0.65rem;color:var(--gold);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">⭐ Featured Package</div>' : '') + '<div style="font-weight:700;font-size:1.1rem;color:var(--ts);margin-bottom:6px;padding-right:36px">' + (item.name || 'Package') + '</div><div style="font-size:1.2rem;font-weight:700;color:var(--ts);margin-bottom:12px">₹' + (item.price || '0') + ' <span style="font-size:0.8rem;color:var(--tm);font-weight:400">/ ' + (item.duration || '') + '</span></div>' + descHtml + '<ul style="list-style:none;padding:0;margin:0">' + featsHtml + '</ul>';
       cont.appendChild(div);
     }
     function _deletePackage(id) {
       _openDeleteConfirm(
-        'This will permanently delete this package from your profile.',
+        'this will delete the services/package from your profile',
         function() {
-          var el = document.getElementById('pkg-' + id); if (el) el.remove();
+          var userId = typeof getLoggedInUserId === 'function' ? getLoggedInUserId() : null;
           var cache = JSON.parse(localStorage.getItem('currentTrainer')) || {};
+          if (!userId) userId = cache.trainerId || cache._id || cache.id || '1';
+
+          // 1. Backend hard DELETE call
+          var origin = window.SERVER_ORIGIN || 'https://trainerforum.onrender.com';
+          fetch(origin + '/api/users/' + userId + '/packages/' + id, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' }
+          }).catch(function(err) { console.warn('Backend DELETE package error:', err); });
+
+          // 2. Remove DOM card instantly across viewports
+          var el = document.getElementById('pkg-' + id);
+          if (el) el.remove();
+
+          // 3. Filter local storage cache
           if (Array.isArray(cache.packages)) {
-            cache.packages = cache.packages.filter(function (s) { return s.id !== id });
+            cache.packages = cache.packages.filter(function (s) {
+              return String(s.id) !== String(id) && String(s._id) !== String(id);
+            });
             localStorage.setItem('currentTrainer', JSON.stringify(cache));
           }
+
+          // 4. Filter global window.TRAINERS array
+          if (Array.isArray(window.TRAINERS)) {
+            var t = window.TRAINERS.find(function(x) { return String(x.id || x._id) === String(userId); });
+            if (t && Array.isArray(t.packages)) {
+              t.packages = t.packages.filter(function(s) { return String(s.id) !== String(id) && String(s._id) !== String(id); });
+            }
+          }
+
+          // 5. Check if container is empty
           var c = document.getElementById('packages-container');
-          if (c && c.children.length === 0) c.innerHTML = '<div class="empty-msg" style="grid-column:1/-1;text-align:center;padding:20px;color:var(--tm);font-size:.85rem">No packages defined.</div>';
+          if (c && c.querySelectorAll('.db-card').length === 0) {
+            c.innerHTML = '<div class="empty-msg" style="grid-column:1/-1;text-align:center;padding:20px;color:var(--tm);font-size:.85rem">No packages defined.</div>';
+          }
+
+          // 6. Sync profile
           if (typeof commitLocalProfileChanges === 'function') commitLocalProfileChanges();
-          window.toast && window.toast('\u2714 Package removed and profile saved.');
+          window.toast && window.toast('✓ Package deleted from profile and database.');
         }
       );
     }
@@ -1608,19 +1666,21 @@
       }
       var timeRange = timePart.split('-').map(function (t) { return to24h(t.trim()); });
       var startT = timeRange[0] || '09:00', endT = timeRange[1] || '18:00';
-      var dayOrder = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-      // Expand range like Mon-Fri
+      var dayMap = { Mon: 'Mon', Tue: 'Tue', Wed: 'Wed', Thu: 'Thu', Fri: 'Fri', Sat: 'Sat', Sun: 'Sun' };
+
       if (dayPart.includes('-')) {
-        var bounds = dayPart.split('-').map(function (d) { return d.trim().slice(0, 3); });
-        var si = dayOrder.indexOf(bounds[0]), ei = dayOrder.indexOf(bounds[1]);
-        if (si >= 0 && ei >= 0) {
-          for (var i = si; i <= ei; i++) { result[dayOrder[i]] = { available: true, start: startT, end: endT }; }
+        var dp = dayPart.split('-').map(function (s) { return s.trim(); });
+        var daysArr = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+        var idx1 = daysArr.indexOf(dp[0]), idx2 = daysArr.indexOf(dp[1]);
+        if (idx1 !== -1 && idx2 !== -1) {
+          for (var i = idx1; i <= idx2; i++) {
+            result[daysArr[i]] = { available: true, start: startT, end: endT };
+          }
         }
       } else {
-        // Comma-separated list
-        dayPart.split(',').forEach(function (d) {
-          var key = d.trim().slice(0, 3);
-          if (result[key] !== undefined) result[key] = { available: true, start: startT, end: endT };
+        var list = dayPart.split(',').map(function (s) { return s.trim(); });
+        list.forEach(function (d) {
+          if (result[d]) result[d] = { available: true, start: startT, end: endT };
         });
       }
       return result;
@@ -1632,7 +1692,6 @@
       var cache = JSON.parse(localStorage.getItem('currentTrainer')) || {};
       var avs = cache.availability;
       if (typeof avs === 'string') {
-        // Try JSON first, then plain string format like "Mon-Fri | 9:00 AM - 6:00 PM"
         try { avs = JSON.parse(avs); } catch (e) {
           avs = _parseAvailabilityString(cache.availability);
         }
@@ -1647,45 +1706,56 @@
       } var days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
       cont.innerHTML = days.map(function (d) {
         var info = avs[d] || { available: false, start: '09:00', end: '17:00' };
-        // Fallback for older data format
         var isAvail = typeof info.available !== 'undefined' ? info.available : info.enabled;
         var tStart = info.start || info.from || '09:00';
         var tEnd = info.end || info.to || '17:00';
         return '<div class="avail-row" data-day="' + d + '" style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:8px"><div style="width:36px;font-weight:600;color:var(--ts);font-size:.82rem;flex-shrink:0">' + d + '</div><input type="checkbox" class="avail-toggle" style="width:16px;height:16px;flex-shrink:0;cursor:pointer;accent-color:var(--gold)" ' + (isAvail ? 'checked' : '') + '><input type="time" class="form-control avail-from" style="flex:1;min-width:0;font-size:.78rem;padding:5px 6px" value="' + tStart + '" ' + (isAvail ? '' : 'disabled') + '><span style="color:var(--tm);font-size:.75rem;flex-shrink:0">\u2013</span><input type="time" class="form-control avail-to" style="flex:1;min-width:0;font-size:.78rem;padding:5px 6px" value="' + tEnd + '" ' + (isAvail ? '' : 'disabled') + '></div>';
       }).join('');
-      // Attach toggle listeners
-      cont.querySelectorAll('.avail-toggle').forEach(function (chk) {
-        chk.addEventListener('change', function () {
+
+      // Preserve input changes on the fly
+      cont.querySelectorAll('.avail-toggle, .avail-from, .avail-to').forEach(function (inp) {
+        inp.addEventListener('change', function () {
           var row = this.closest('.avail-row');
-          row.querySelector('.avail-from').disabled = !this.checked;
-          row.querySelector('.avail-to').disabled = !this.checked;
+          if (row) {
+            var toggle = row.querySelector('.avail-toggle');
+            var from = row.querySelector('.avail-from');
+            var to = row.querySelector('.avail-to');
+            if (from) from.disabled = !toggle.checked;
+            if (to) to.disabled = !toggle.checked;
+          }
           renderDashboardCalendar();
         });
       });
       renderDashboardCalendar();
     }
-    function saveAvailability() {
+    function saveAvailability(e) {
+      if (e && e.type === 'touchstart') {
+        if (e.cancelable) e.preventDefault();
+      }
+      if (window._isSavingAvailability) return;
+      window._isSavingAvailability = true;
+      setTimeout(function() { window._isSavingAvailability = false; }, 400);
+
       var cont = document.getElementById('weekly-hours-container');
       var cache = JSON.parse(localStorage.getItem('currentTrainer')) || {};
       var oldAvs = cache.availability;
-      if (typeof oldAvs === 'string') { try { oldAvs = JSON.parse(oldAvs); } catch (e) { } }
+      if (typeof oldAvs === 'string') { try { oldAvs = JSON.parse(oldAvs); } catch (ex) { } }
       oldAvs = oldAvs || {};
 
       var avs = {};
-      // Carry over old specific date overrides
       avs.specificDates = oldAvs.specificDates || {};
 
-      cont.querySelectorAll('.avail-row').forEach(function (row) {
-        var d = row.dataset.day;
-        avs[d] = {
-          available: row.querySelector('.avail-toggle').checked,
-          start: row.querySelector('.avail-from').value,
-          end: row.querySelector('.avail-to').value
-        };
-      });
+      if (cont) {
+        cont.querySelectorAll('.avail-row').forEach(function (row) {
+          var d = row.dataset.day;
+          avs[d] = {
+            available: row.querySelector('.avail-toggle').checked,
+            start: row.querySelector('.avail-from').value,
+            end: row.querySelector('.avail-to').value
+          };
+        });
+      }
 
-      // ── BUGFIX: prune specificDates entries that now match the new weekly default ──
-      // This prevents old blocks from persisting after the weekly schedule changes.
       Object.keys(avs.specificDates).forEach(function (dateKey) {
         var parts = dateKey.split('-');
         if (parts.length < 3) return;
@@ -1693,7 +1763,6 @@
         var dObj = new Date(y, mo, dy);
         var wkDay = _DB_DAY_MAP[dObj.getDay()];
         var weeklyDefault = avs[wkDay] ? (avs[wkDay].available !== false) : true;
-        // If the specificDate value now matches the weekly default, remove it — it's redundant
         if (avs.specificDates[dateKey] === weeklyDefault) {
           delete avs.specificDates[dateKey];
         }
@@ -1702,17 +1771,27 @@
       cache.availability = avs;
       localStorage.setItem('currentTrainer', JSON.stringify(cache));
 
-      // ── Write to per-trainer key so trainer-modal & booking modal can read correct data ──
       var _tid = cache.trainerId || cache._id || cache.id || '1';
       var _avsJson = JSON.stringify(avs);
       localStorage.setItem('tv-trainer-' + _tid + '-availability', _avsJson);
-      localStorage.setItem('tv-trainer-1-availability', _avsJson); // universal fallback
+      localStorage.setItem('tv-trainer-1-availability', _avsJson);
+
+      if (window.bookingState) {
+        window.bookingState.trainerAvailability = avs;
+      }
+      if (Array.isArray(window.TRAINERS)) {
+        var tr = window.TRAINERS.find(function(x) { return String(x.id || x._id) === String(_tid); });
+        if (tr) tr.availability = avs;
+      }
 
       renderDashboardCalendar();
 
-      window.toast && window.toast('Saving availability to database...', 3000);
+      window.toast && window.toast('Saving availability to database...', 2000);
 
-      if (typeof commitLocalProfileChanges === 'function') { commitLocalProfileChanges(); window.toast ? window.toast('\u2705 Availability slots synchronized!') : alert('Availability saved successfully!'); }
+      if (typeof commitLocalProfileChanges === 'function') {
+        commitLocalProfileChanges();
+        window.toast ? window.toast('\u2705 Availability slots synchronized!') : alert('Availability saved successfully!');
+      }
     }
 
     /* ── Dashboard Calendar ── */
@@ -2328,15 +2407,17 @@
   </script>
 
   <!-- ── Custom Delete Confirmation Modal ── -->
-  <div id="delete-confirm-modal" style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.55);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:20px;">
-    <div style="background:var(--bg2,#1e1e2a);border:1.5px solid var(--border,rgba(255,255,255,0.1));border-radius:18px;padding:32px 28px 28px;max-width:380px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.5);animation:dcm-in 0.22s cubic-bezier(.4,0,.2,1);">
+  <div id="delete-confirm-modal" style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:20px;">
+    <div style="background:var(--bg2,#1e1e2a);border:1.5px solid var(--border,rgba(255,255,255,0.12));border-radius:18px;padding:32px 28px 28px;max-width:380px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.55);animation:dcm-in 0.22s cubic-bezier(.4,0,.2,1);">
       <!-- Dustbin Icon -->
-      <div style="width:64px;height:64px;background:rgba(220,53,69,0.12);border:2px solid rgba(220,53,69,0.3);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;font-size:1.9rem;">🗑️</div>
-      <div style="font-size:1.05rem;font-weight:700;color:var(--ts,#fff);margin-bottom:10px;">Remove from Profile?</div>
-      <p id="delete-confirm-msg" style="font-size:0.87rem;color:var(--tm,#aaa);line-height:1.6;margin-bottom:24px;">This will permanently delete this item from your profile.</p>
+      <div style="width:64px;height:64px;background:rgba(220,53,69,0.14);border:2px solid rgba(220,53,69,0.35);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;color:#dc3545;font-size:1.6rem;">
+        <i class="fas fa-trash-alt"></i>
+      </div>
+      <div style="font-size:1.1rem;font-weight:700;color:var(--ts,#fff);margin-bottom:10px;">Confirm Deletion</div>
+      <p id="delete-confirm-msg" style="font-size:0.88rem;color:var(--tm,#aaa);line-height:1.5;margin-bottom:24px;">this will delete the services/package from your profile</p>
       <div style="display:flex;gap:12px;">
-        <button id="delete-confirm-cancel" style="flex:1;padding:11px 0;border-radius:10px;border:1.5px solid var(--border,rgba(255,255,255,0.15));background:transparent;color:var(--ts,#fff);font-size:0.93rem;font-weight:600;cursor:pointer;transition:background 0.18s;">Cancel</button>
-        <button id="delete-confirm-accept" style="flex:1;padding:11px 0;border-radius:10px;border:none;background:linear-gradient(135deg,#dc3545,#b02a37);color:#fff;font-size:0.93rem;font-weight:700;cursor:pointer;box-shadow:0 4px 14px rgba(220,53,69,0.35);transition:opacity 0.18s;">Delete</button>
+        <button id="delete-confirm-cancel" style="flex:1;padding:11px 0;border-radius:10px;border:1.5px solid var(--border,rgba(255,255,255,0.18));background:transparent;color:var(--ts,#fff);font-size:0.93rem;font-weight:600;cursor:pointer;transition:background 0.18s;">Cancel</button>
+        <button id="delete-confirm-accept" style="flex:1;padding:11px 0;border-radius:10px;border:none;background:linear-gradient(135deg,#dc3545,#b02a37);color:#fff;font-size:0.93rem;font-weight:700;cursor:pointer;box-shadow:0 4px 14px rgba(220,53,69,0.35);transition:opacity 0.18s;">Accept</button>
       </div>
     </div>
   </div>
