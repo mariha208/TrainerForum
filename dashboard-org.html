@@ -61,7 +61,8 @@
           <button type="button" class="org-mobile-menu-trigger" onclick="toggleOrgSidebar()" aria-label="Open Sidebar Menu">
             ☰
           </button>
-          <img src="https://images.unsplash.com/photo-1549923746-c502d488b3ea?w=150&auto=format&fit=crop&q=80" alt="Company Logo" class="org-logo">
+          <img src="https://images.unsplash.com/photo-1549923746-c502d488b3ea?w=150&auto=format&fit=crop&q=80"
+               alt="Company Logo" class="org-logo" id="org-logo-img">
           <div>
             <div class="org-badge-wrap">
               <span class="org-portal-badge">Organization Portal</span>
@@ -71,6 +72,20 @@
             <p class="org-user-sub" id="org-user-text">Welcome back, Corporate L&D Lead</p>
           </div>
         </div>
+        <!-- Edit Profile Button -->
+        <button type="button" id="btn-edit-org-profile"
+          onclick="openEditOrgProfileModal()"
+          style="
+            display:flex; align-items:center; gap:8px;
+            background:rgba(197,165,123,0.12); color:#c5a57b;
+            border:1px solid rgba(197,165,123,0.35); border-radius:12px;
+            padding:10px 18px; font-size:13px; font-weight:700; cursor:pointer;
+            transition:all 0.2s ease;
+          "
+          onmouseover="this.style.background='rgba(197,165,123,0.22)'"
+          onmouseout="this.style.background='rgba(197,165,123,0.12)'">
+          ✏️ Edit Profile
+        </button>
       </div>
 
       <!-- INNER DASHBOARD WORKSPACE (SIDEBAR + CONTENT) -->
@@ -94,7 +109,6 @@
             <button type="button" class="org-nav-item" id="nav-item-requirements" onclick="switchOrgTab('requirements', event)">
               <span class="nav-ico">📋</span>
               <span>Requirements</span>
-              <span class="org-nav-count" id="count-reqs">3</span>
             </button>
           </nav>
         </aside>
@@ -415,6 +429,54 @@
     </div>
   </div>
 
+  <!-- ═════════════════════════════════════════════════════════════════════
+       EDIT ORG PROFILE MODAL
+  ═════════════════════════════════════════════════════════════════════ -->
+  <div id="modal-edit-org-profile" class="org-modal-overlay">
+    <div class="org-modal-card" style="max-width:520px;">
+      <button type="button" class="modal-close-btn" onclick="closeEditOrgProfileModal()">✕</button>
+      <h2 class="modal-title" style="margin-bottom:6px;">✏️ Edit Organization Profile</h2>
+      <p style="font-size:12.5px;color:#94a3b8;margin-bottom:20px;">Update your organization details. Changes are saved to your account.</p>
+
+      <form id="edit-org-profile-form" onsubmit="saveOrgProfile(event)">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+          <div class="form-group">
+            <label class="filter-label">Organization Name <span style="color:#f87171">*</span></label>
+            <input type="text" id="ep-org-name" class="org-input" placeholder="e.g. Acme Global Technologies" required>
+          </div>
+          <div class="form-group">
+            <label class="filter-label">Contact Person / Role</label>
+            <input type="text" id="ep-contact-role" class="org-input" placeholder="e.g. Sarah Jenkins — L&D Lead">
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+          <div class="form-group">
+            <label class="filter-label">Website URL</label>
+            <input type="url" id="ep-website" class="org-input" placeholder="https://acmeglobal.com">
+          </div>
+          <div class="form-group">
+            <label class="filter-label">Location / City</label>
+            <input type="text" id="ep-location" class="org-input" placeholder="e.g. Bangalore, India">
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom:20px;">
+          <label class="filter-label">Profile / Logo Image URL</label>
+          <input type="url" id="ep-logo-url" class="org-input" placeholder="https://example.com/logo.png">
+        </div>
+
+        <!-- Save status message -->
+        <div id="ep-status-msg" style="display:none;font-size:12.5px;margin-bottom:14px;padding:8px 14px;border-radius:8px;"></div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-ghost" onclick="closeEditOrgProfileModal()">Cancel</button>
+          <button type="submit" class="btn btn-org-primary" id="ep-save-btn">💾 Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- Global Toast Notifications -->
   <div id="global-toast-container"></div>
 
@@ -424,5 +486,154 @@
 
   <!-- Organization Dashboard Controller -->
   <script src="js/org-dashboard.js"></script>
+
+  <script>
+    /* ── ORG PROFILE: FETCH + EDIT MODAL CONTROLLER ──────────────────────────
+       Fetches the organization profile from MongoDB on page load and populates
+       the top bar. The Edit Profile modal reads/writes the same endpoint.
+    ─────────────────────────────────────────────────────────────────────────── */
+
+    const ORG_PROFILE_URL = `${window.SERVER_ORIGIN || 'https://trainerforum.onrender.com'}/api/organization/profile`;
+
+    // ── Fetch profile on page load ──────────────────────────────────────────
+    async function loadOrgProfile() {
+      try {
+        const token = localStorage.getItem('token') || localStorage.getItem('wtf_auth_token');
+        const res = await fetch(ORG_PROFILE_URL, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+          }
+        });
+        if (!res.ok) return; // silently fall back to defaults if unauthenticated
+
+        const data = await res.json();
+        const profile = data.organization || data.profile || data || {};
+
+        // Update top-bar DOM elements
+        if (profile.organizationName || profile.name) {
+          const el = document.getElementById('org-name-text');
+          if (el) el.textContent = profile.organizationName || profile.name;
+        }
+        if (profile.contactPerson || profile.role) {
+          const el = document.getElementById('org-user-text');
+          if (el) el.textContent = `Welcome back, ${profile.contactPerson || profile.role}`;
+        }
+        if (profile.plan || profile.membershipType) {
+          const el = document.getElementById('org-plan-text');
+          if (el) el.textContent = profile.plan || profile.membershipType;
+        }
+        if (profile.logoUrl || profile.profileImage) {
+          const el = document.getElementById('org-logo-img');
+          if (el) el.src = profile.logoUrl || profile.profileImage;
+        }
+      } catch (err) {
+        console.warn('[OrgProfile] Fetch failed (non-blocking):', err.message);
+      }
+    }
+
+    // ── Open modal & pre-populate fields ───────────────────────────────────
+    window.openEditOrgProfileModal = async function () {
+      document.getElementById('modal-edit-org-profile').classList.add('active');
+
+      // Pre-fill from current DOM state
+      const nameEl = document.getElementById('org-name-text');
+      const userEl = document.getElementById('org-user-text');
+      const logoEl = document.getElementById('org-logo-img');
+
+      if (nameEl) document.getElementById('ep-org-name').value = nameEl.textContent.trim();
+      if (userEl) {
+        const roleText = userEl.textContent.replace('Welcome back, ', '').trim();
+        document.getElementById('ep-contact-role').value = roleText;
+      }
+      if (logoEl) document.getElementById('ep-logo-url').value = logoEl.src || '';
+
+      // Also try fetching fresh values from API
+      try {
+        const token = localStorage.getItem('token') || localStorage.getItem('wtf_auth_token');
+        const res = await fetch(ORG_PROFILE_URL, {
+          headers: { 'Content-Type': 'application/json', ...(token ? { 'Authorization': `Bearer ${token}` } : {}) }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          const p = data.organization || data.profile || data || {};
+          if (p.organizationName || p.name)
+            document.getElementById('ep-org-name').value = p.organizationName || p.name;
+          if (p.contactPerson || p.role)
+            document.getElementById('ep-contact-role').value = p.contactPerson || p.role;
+          if (p.website) document.getElementById('ep-website').value = p.website;
+          if (p.location) document.getElementById('ep-location').value = p.location;
+          if (p.logoUrl || p.profileImage)
+            document.getElementById('ep-logo-url').value = p.logoUrl || p.profileImage;
+        }
+      } catch (_) {}
+    };
+
+    window.closeEditOrgProfileModal = function () {
+      document.getElementById('modal-edit-org-profile').classList.remove('active');
+      const msg = document.getElementById('ep-status-msg');
+      if (msg) { msg.style.display = 'none'; msg.textContent = ''; }
+    };
+
+    // ── Save changes via PATCH ──────────────────────────────────────────────
+    window.saveOrgProfile = async function (e) {
+      e.preventDefault();
+      const saveBtn = document.getElementById('ep-save-btn');
+      const statusMsg = document.getElementById('ep-status-msg');
+      if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = '⏳ Saving…'; }
+
+      const payload = {
+        organizationName: document.getElementById('ep-org-name').value.trim(),
+        contactPerson:    document.getElementById('ep-contact-role').value.trim(),
+        website:          document.getElementById('ep-website').value.trim(),
+        location:         document.getElementById('ep-location').value.trim(),
+        logoUrl:          document.getElementById('ep-logo-url').value.trim()
+      };
+
+      try {
+        const token = localStorage.getItem('token') || localStorage.getItem('wtf_auth_token');
+        const res = await fetch(ORG_PROFILE_URL, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+          },
+          body: JSON.stringify(payload)
+        });
+
+        if (res.ok) {
+          // Update top-bar immediately (no page refresh)
+          const nameEl = document.getElementById('org-name-text');
+          const userEl = document.getElementById('org-user-text');
+          const logoEl = document.getElementById('org-logo-img');
+          if (nameEl && payload.organizationName) nameEl.textContent = payload.organizationName;
+          if (userEl && payload.contactPerson)    userEl.textContent = `Welcome back, ${payload.contactPerson}`;
+          if (logoEl && payload.logoUrl)           logoEl.src = payload.logoUrl;
+
+          statusMsg.style.display = 'block';
+          statusMsg.style.background = 'rgba(16,185,129,0.15)';
+          statusMsg.style.color = '#34d399';
+          statusMsg.style.border = '1px solid rgba(52,211,153,0.3)';
+          statusMsg.textContent = '✅ Profile updated successfully!';
+
+          setTimeout(() => closeEditOrgProfileModal(), 1600);
+        } else {
+          throw new Error('Server returned ' + res.status);
+        }
+      } catch (err) {
+        statusMsg.style.display = 'block';
+        statusMsg.style.background = 'rgba(231,76,60,0.12)';
+        statusMsg.style.color = '#f87171';
+        statusMsg.style.border = '1px solid rgba(248,113,113,0.3)';
+        statusMsg.textContent = `❌ Failed to save: ${err.message}`;
+      } finally {
+        if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = '💾 Save Changes'; }
+      }
+    };
+
+    // Run profile fetch on page load
+    document.addEventListener('DOMContentLoaded', loadOrgProfile);
+  </script>
 </body>
 </html>
