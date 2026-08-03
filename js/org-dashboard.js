@@ -37,63 +37,66 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 });
 
+const REQUIREMENTS_API_URL = "https://script.google.com/macros/s/AKfycbw09cpyAHD1uVIzBdw6lCiHyugBT7AiTEGbQLsOHStHnzgeZKCStgyqm8_CgupQCCj-qg/exec";
+
 // ── FETCH LIVE REQUIREMENTS (API INTEGRATION) ─────────────────────────────────
 async function fetchLiveRequirements() {
-  try {
-    const res = await fetch(`${SERVER_ORIGIN}/api/requirements/my-requirements`, {
-      method: 'GET',
-      headers: getAuthHeaders()
-    });
+  let gasFetched = false;
 
-    if (res.ok) {
-      const data = await res.json();
-      ORG_REQUIREMENTS_DATA = data.requirements || [];
-    } else {
-      console.warn('[OrgDashboard] Fallback to local storage for requirements.');
-      ORG_REQUIREMENTS_DATA = JSON.parse(localStorage.getItem('ORG_REQUIREMENTS_STORE')) || [];
-    }
-  } catch (err) {
-    console.warn('[OrgDashboard] Network error, loading local requirements:', err.message);
-    ORG_REQUIREMENTS_DATA = JSON.parse(localStorage.getItem('ORG_REQUIREMENTS_STORE')) || [];
-  }
-
-  // Also fetch live approval status from Google Apps Script API to ensure real-time sync with Admin actions
+  // 1. Fetch live requirements from Google Apps Script Web App API
   try {
-    const gasRes = await fetch("https://script.google.com/macros/s/AKfycbw09cpyAHD1uVIzBdw6lCiHyugBT7AiTEGbQLsOHStHnzgeZKCStgyqm8_CgupQCCj-qg/exec");
+    const gasRes = await fetch(REQUIREMENTS_API_URL, { method: 'GET' });
     if (gasRes.ok) {
       const gasData = await gasRes.json();
       const gasReqs = Array.isArray(gasData) ? gasData : (gasData.requirements || gasData.data || gasData.result || []);
 
       if (Array.isArray(gasReqs) && gasReqs.length > 0) {
-        if (ORG_REQUIREMENTS_DATA.length === 0) {
-          ORG_REQUIREMENTS_DATA = gasReqs.map(r => ({
-            reqId: r.rowId || r.id || 'REQ-' + Math.floor(1000 + Math.random() * 9000),
-            orgName: r.organizationName || r.orgName || '',
-            topic: r.trainingTopic || r.topic || '',
-            budget: r.budget || 0,
-            locationType: r.locationPlace || r.locationType || '',
-            cityDetails: r.cityAddress || r.cityDetails || '',
-            targetDate: r.targetDates || r.targetDate || '',
-            duration: r.timeDuration || r.duration || '',
-            notes: r.specialNotes || r.notes || '',
-            status: r.approvalStatus || r.status || 'Pending'
-          }));
-        } else {
-          ORG_REQUIREMENTS_DATA.forEach(localReq => {
-            const matchedGas = gasReqs.find(gr => {
-              const gTopic = (gr.trainingTopic || gr.topic || '').toLowerCase();
-              const lTopic = (localReq.topic || '').toLowerCase();
-              return gTopic && lTopic && (gTopic.includes(lTopic) || lTopic.includes(gTopic));
-            });
-            if (matchedGas) {
-              localReq.status = matchedGas.approvalStatus || matchedGas.status || localReq.status;
-            }
-          });
-        }
+        ORG_REQUIREMENTS_DATA = gasReqs.map((item, idx) => {
+          const rawStatus = item.approvalStatus || item.status || 'Pending';
+          const currentStatus = String(rawStatus || 'Pending').trim();
+          return {
+            rowId: item.rowId || item.id || (idx + 2),
+            reqId: item.reqId || item.id || `REQ-${item.rowId || (1000 + idx)}`,
+            orgName: item.organizationName || item.orgName || 'Organization',
+            topic: item.trainingTopic || item.topic || 'Training Topic',
+            budget: item.budget || 0,
+            locationType: item.locationPlace || item.locationType || 'In City',
+            cityDetails: item.cityAddress || item.cityDetails || '',
+            targetDate: item.targetDates || item.targetDate || '',
+            duration: item.timeDuration || item.duration || '',
+            notes: item.specialNotes || item.notes || '',
+            approvalStatus: currentStatus,
+            status: currentStatus
+          };
+        });
+        gasFetched = true;
       }
     }
   } catch (gasErr) {
-    console.warn('[OrgDashboard] GAS fetch sync error (non-blocking):', gasErr.message);
+    console.warn('[OrgDashboard] Primary GAS fetch failed:', gasErr.message);
+  }
+
+  // 2. Fallback to backend/local storage only if GAS fetch fails
+  if (!gasFetched) {
+    try {
+      const res = await fetch(`${SERVER_ORIGIN}/api/requirements/my-requirements`, {
+        method: 'GET',
+        headers: getAuthHeaders()
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        ORG_REQUIREMENTS_DATA = (data.requirements || []).map(r => ({
+          ...r,
+          status: r.approvalStatus || r.status || 'Pending'
+        }));
+      } else {
+        ORG_REQUIREMENTS_DATA = JSON.parse(localStorage.getItem('ORG_REQUIREMENTS_STORE')) || [];
+      }
+    } catch (err) {
+      console.warn('[OrgDashboard] Backend fetch failed, using local store:', err.message);
+      ORG_REQUIREMENTS_DATA = JSON.parse(localStorage.getItem('ORG_REQUIREMENTS_STORE')) || [];
+    }
   }
 
   renderRequirementsTrack();
