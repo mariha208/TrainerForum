@@ -1848,79 +1848,9 @@
               if (t && Array.isArray(t.packages)) {
                 t.packages = t.packages.filter(function(p) { return String(p.id || p._id || '') !== targetId; });
               }
-            }
-            var c = document.getElementById('packages-container');
-            if (c && c.querySelectorAll('.db-card').length === 0) {
-              c.innerHTML = '<div class="empty-msg" style="grid-column:1/-1;text-align:center;padding:20px;color:var(--tm);font-size:.85rem">No packages defined.</div>';
-            }
-            if (typeof commitLocalProfileChanges === 'function') commitLocalProfileChanges();
-            window.toast && window.toast('\u2713 Package permanently deleted.');
-          }
 
-          fetch(origin + '/api/packages/' + targetId + '?userId=' + userId, {
-            method: 'DELETE',
-            headers: { 'Content-Type': 'application/json' }
-          }).then(function(res) {
-            if (res.ok) {
-              _doLocalPkgDelete();
-            } else {
-              fetch(origin + '/api/users/' + userId + '/packages/' + targetId, { method: 'DELETE' })
-                .then(function() { _doLocalPkgDelete(); })
-                .catch(function() { _doLocalPkgDelete(); });
-            }
-          }).catch(function(err) {
-            console.warn('Backend DELETE package error:', err);
-            _doLocalPkgDelete();
-          });
-        }
-      );
-    }
 
-    /* ── Availability Logic ── */
-    function _parseAvailabilityString(str) {
-      // Parses "Mon-Fri | 9:00 AM - 6:00 PM" or "Mon,Wed,Fri | 09:00-18:00" into structured object
-      var result = {
-        Mon: { available: false, start: '09:00', end: '18:00' }, Tue: { available: false, start: '09:00', end: '18:00' },
-        Wed: { available: false, start: '09:00', end: '18:00' }, Thu: { available: false, start: '09:00', end: '18:00' },
-        Fri: { available: false, start: '09:00', end: '18:00' }, Sat: { available: false, start: '10:00', end: '14:00' },
-        Sun: { available: false, start: '10:00', end: '14:00' }
-      };
-      if (!str || typeof str !== 'string') return null;
-      var parts = str.split('|');
-      if (parts.length < 2) return null;
-      var dayPart = parts[0].trim(); // e.g. "Mon-Fri" or "Mon,Wed"
-      var timePart = parts[1].trim(); // e.g. "9:00 AM - 6:00 PM"
-      // Convert time like "9:00 AM" to "09:00" 24h
-      function to24h(t) {
-        var m = t.match(/(\d+):(\d+)\s*(AM|PM)?/i);
-        if (!m) return t.trim();
-        var h = parseInt(m[1]), min = m[2], ap = m[3];
-        if (ap && ap.toUpperCase() === 'PM' && h < 12) h += 12;
-        if (ap && ap.toUpperCase() === 'AM' && h === 12) h = 0;
-        return (h < 10 ? '0' : '') + h + ':' + min;
-      }
-      var timeRange = timePart.split('-').map(function (t) { return to24h(t.trim()); });
-      var startT = timeRange[0] || '09:00', endT = timeRange[1] || '18:00';
-      var dayMap = { Mon: 'Mon', Tue: 'Tue', Wed: 'Wed', Thu: 'Thu', Fri: 'Fri', Sat: 'Sat', Sun: 'Sun' };
-
-      if (dayPart.includes('-')) {
-        var dp = dayPart.split('-').map(function (s) { return s.trim(); });
-        var daysArr = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-        var idx1 = daysArr.indexOf(dp[0]), idx2 = daysArr.indexOf(dp[1]);
-        if (idx1 !== -1 && idx2 !== -1) {
-          for (var i = idx1; i <= idx2; i++) {
-            result[daysArr[i]] = { available: true, start: startT, end: endT };
-          }
-        }
-      } else {
-        var list = dayPart.split(',').map(function (s) { return s.trim(); });
-        list.forEach(function (d) {
-          if (result[d]) result[d] = { available: true, start: startT, end: endT };
-        });
-      }
-      return result;
-    }
-
+    var _availSaveTimer = null;
     function _renderAvailabilitySettings() {
       var cont = document.getElementById('weekly-hours-container');
       if (!cont) return;
@@ -1931,23 +1861,37 @@
           avs = _parseAvailabilityString(cache.availability);
         }
       }
-      if (!avs || (!avs.Mon && !avs.Tue && !avs.Wed && !avs.Thu && !avs.Fri && !avs.Sat && !avs.Sun)) {
+      avs = avs || {};
+      var days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+      var fullDayMap = { Mon: 'monday', Tue: 'tuesday', Wed: 'wednesday', Thu: 'thursday', Fri: 'friday', Sat: 'saturday', Sun: 'sunday' };
+
+      if (cache.availableDays && typeof cache.availableDays === 'object') {
+        days.forEach(function(d) {
+          var keyLower = fullDayMap[d];
+          if (typeof cache.availableDays[keyLower] !== 'undefined') {
+            if (!avs[d]) avs[d] = { available: cache.availableDays[keyLower], start: '09:00', end: '18:00' };
+            else avs[d].available = !!cache.availableDays[keyLower];
+          }
+        });
+      }
+
+      if (!avs.Mon && !avs.Tue && !avs.Wed && !avs.Thu && !avs.Fri && !avs.Sat && !avs.Sun) {
         avs = {
           Mon: { available: true, start: '09:00', end: '18:00' }, Tue: { available: true, start: '09:00', end: '18:00' },
           Wed: { available: true, start: '09:00', end: '17:00' }, Thu: { available: true, start: '10:00', end: '18:00' },
           Fri: { available: true, start: '09:00', end: '17:00' }, Sat: { available: true, start: '10:00', end: '14:00' },
           Sun: { available: false, start: '10:00', end: '14:00' }
         };
-      } var days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+      }
+
       cont.innerHTML = days.map(function (d) {
         var info = avs[d] || { available: false, start: '09:00', end: '17:00' };
-        var isAvail = typeof info.available !== 'undefined' ? info.available : info.enabled;
+        var isAvail = typeof info.available !== 'undefined' ? info.available : (info.enabled !== false);
         var tStart = info.start || info.from || '09:00';
         var tEnd = info.end || info.to || '17:00';
         return '<div class="avail-row" data-day="' + d + '" style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:8px"><div style="width:36px;font-weight:600;color:var(--ts);font-size:.82rem;flex-shrink:0">' + d + '</div><input type="checkbox" class="avail-toggle" style="width:16px;height:16px;flex-shrink:0;cursor:pointer;accent-color:var(--gold)" ' + (isAvail ? 'checked' : '') + '><input type="time" class="form-control avail-from" style="flex:1;min-width:0;font-size:.78rem;padding:5px 6px" value="' + tStart + '" ' + (isAvail ? '' : 'disabled') + '><span style="color:var(--tm);font-size:.75rem;flex-shrink:0">\u2013</span><input type="time" class="form-control avail-to" style="flex:1;min-width:0;font-size:.78rem;padding:5px 6px" value="' + tEnd + '" ' + (isAvail ? '' : 'disabled') + '></div>';
       }).join('');
 
-      // Preserve input changes on the fly
       cont.querySelectorAll('.avail-toggle, .avail-from, .avail-to').forEach(function (inp) {
         inp.addEventListener('change', function () {
           var row = this.closest('.avail-row');
@@ -1959,11 +1903,13 @@
             if (to) to.disabled = !toggle.checked;
           }
           renderDashboardCalendar();
+          clearTimeout(_availSaveTimer);
+          _availSaveTimer = setTimeout(function() { saveAvailability(); }, 300);
         });
       });
       renderDashboardCalendar();
     }
-    function saveAvailability(e) {
+        function saveAvailability(e) {
       if (e && e.type === 'touchstart') {
         if (e.cancelable) e.preventDefault();
       }
@@ -1980,6 +1926,10 @@
       var avs = {};
       avs.specificDates = oldAvs.specificDates || {};
       var weeklyAvailability = [];
+      var availableDays = {
+        monday: true, tuesday: true, wednesday: true, thursday: true, friday: true, saturday: false, sunday: false
+      };
+      var fullDayMap = { Sun: 'sunday', Mon: 'monday', Tue: 'tuesday', Wed: 'wednesday', Thu: 'thursday', Fri: 'friday', Sat: 'saturday' };
 
       if (cont) {
         cont.querySelectorAll('.avail-row').forEach(function (row) {
@@ -1992,6 +1942,7 @@
             start: sFrom,
             end: sTo
           };
+          if (fullDayMap[d]) availableDays[fullDayMap[d]] = isChk;
           weeklyAvailability.push({
             day: d,
             enabled: isChk,
@@ -2001,63 +1952,38 @@
         });
       }
 
-      // Clean up specificDates that match the weekly default (no need to persist)
-      Object.keys(avs.specificDates).forEach(function (dateKey) {
-        var parts = dateKey.split('-');
-        if (parts.length < 3) return;
-        var y = parseInt(parts[0]), mo = parseInt(parts[1]), dy = parseInt(parts[2]);
-        var dObj = new Date(y, mo, dy);
-        var wkDay = _DB_DAY_MAP[dObj.getDay()];
-        var weeklyDefault = avs[wkDay] ? (avs[wkDay].available !== false) : true;
-        if (avs.specificDates[dateKey] === weeklyDefault) {
-          delete avs.specificDates[dateKey];
-        }
-      });
-
-      // 1. Update localStorage immediately for instant local feedback
       var session = JSON.parse(localStorage.getItem('userSession') || 'null');
       var _tid = (session && (session._id || session.id)) || cache._id || cache.id || cache.trainerId || null;
       var _email = (session && session.email) || cache.email || null;
 
       cache.availability = avs;
       cache.weeklyAvailability = weeklyAvailability;
+      cache.availableDays = availableDays;
       localStorage.setItem('currentTrainer', JSON.stringify(cache));
 
       var _avsJson = JSON.stringify(avs);
       if (_tid) localStorage.setItem('tv-trainer-' + _tid + '-availability', _avsJson);
       localStorage.setItem('tv-trainer-1-availability', _avsJson);
 
-      // 2. Update in-memory window.TRAINERS for public card pills
       if (Array.isArray(window.TRAINERS) && _tid) {
         var tr = window.TRAINERS.find(function(x) { return String(x.id || x._id) === String(_tid); });
-        if (tr) { tr.availability = avs; tr.weeklyAvailability = weeklyAvailability; }
+        if (tr) { tr.availability = avs; tr.weeklyAvailability = weeklyAvailability; tr.availableDays = availableDays; }
       }
 
-      // 3. Sync open trainer modal
-      if (window.currentModalTrainer && _tid) {
-        var _modalId = String(window.currentModalTrainer.id || window.currentModalTrainer._id || '');
-        if (_modalId && _modalId === String(_tid)) {
-          window.currentModalTrainer.availability = avs;
-          window.currentModalTrainer.weeklyAvailability = weeklyAvailability;
-        }
-      }
-
-      // 4. Sync bookingState
-      if (window.bookingState) {
-        window.bookingState.trainerAvailability = avs;
-      }
-
-      // 5. Re-render calendar immediately
       renderDashboardCalendar();
-
-      // 6. Expose _getAvailability so commitLocalProfileChanges always sends the object
       window._getAvailability = function() { return avs; };
-
       window.toast && window.toast('Saving to database...', 1500);
 
-      // 7. API: PUT to backend — sends trainerId and email so backend matches user record
       var origin = window.SERVER_ORIGIN || 'https://trainerforum.onrender.com';
-      var _apiPayload = JSON.stringify({ trainerId: _tid, email: _email, availability: avs, weeklyAvailability: weeklyAvailability, blockedDates: cache.blockedDates || [] });
+      var _apiPayload = JSON.stringify({
+        trainerId: _tid,
+        email: _email,
+        availability: avs,
+        weeklyAvailability: weeklyAvailability,
+        availableDays: availableDays,
+        blockedDates: cache.blockedDates || [],
+        bookedDates: cache.bookedDates || []
+      });
 
       var primaryPromise = fetch(origin + '/api/trainer/availability', {
         method: 'PUT',
@@ -2065,13 +1991,12 @@
         body: _apiPayload
       });
 
-      // Also fire per-user endpoint in parallel
       var targetIdOrEmail = _tid || _email;
       if (targetIdOrEmail && targetIdOrEmail !== '1') {
         fetch(origin + '/api/users/' + targetIdOrEmail + '/availability', {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ availability: avs })
+          body: _apiPayload
         }).catch(function() {});
       }
 
@@ -2079,24 +2004,17 @@
         .then(function(res) { return res.json(); })
         .then(function(data) {
           console.log('[AvailSync] DB confirmed save:', data);
-          window.toast ? window.toast('\u2705 Availability saved globally!') : alert('Availability saved!');
-
-          // 8. Re-fetch from DB and push to public cards / window.TRAINERS
+          window.toast ? window.toast('✅ Availability saved globally!') : alert('Availability saved!');
           if (typeof window.refreshTrainerAvailabilityFromDB === 'function' && targetIdOrEmail) {
             window.refreshTrainerAvailabilityFromDB(targetIdOrEmail);
           }
-
-          // 9. Full profile sync (availability already included via window._getAvailability)
           if (typeof commitLocalProfileChanges === 'function') {
             commitLocalProfileChanges();
           }
         })
         .catch(function(err) {
-          console.warn('[AvailSync] PUT failed — saved locally only:', err.message);
-          window.toast ? window.toast('\u26A0\uFE0F Saved locally (DB offline)') : alert('Saved locally.');
-          if (typeof commitLocalProfileChanges === 'function') {
-            commitLocalProfileChanges();
-          }
+          console.warn('[AvailSync] PUT failed:', err.message);
+          window.toast && window.toast('⚠️ Saved locally (DB offline)');
         });
     }
 
@@ -2108,13 +2026,17 @@
     function _getAvailMap() {
       var cache = JSON.parse(localStorage.getItem('currentTrainer')) || {};
       var avs = {};
+      var availableDays = {};
       var cont = document.getElementById('weekly-hours-container');
+      var fullDayMap = { Sun: 'sunday', Mon: 'monday', Tue: 'tuesday', Wed: 'wednesday', Thu: 'thursday', Fri: 'friday', Sat: 'saturday' };
+
       if (cont) {
         cont.querySelectorAll('.avail-row').forEach(function (row) {
           var d = row.dataset.day;
           var toggle = row.querySelector('.avail-toggle');
           if (d && toggle) {
             avs[d] = { available: toggle.checked };
+            if (fullDayMap[d]) availableDays[fullDayMap[d]] = toggle.checked;
           }
         });
       }
@@ -2124,10 +2046,14 @@
       if (stored.specificDates) avs.specificDates = stored.specificDates;
       if (cache.blockedDates) avs.blockedDates = cache.blockedDates;
       if (stored.blockedDates) avs.blockedDates = stored.blockedDates;
+      if (cache.bookedDates) avs.bookedDates = cache.bookedDates;
+      if (stored.bookedDates) avs.bookedDates = stored.bookedDates;
       if (cache.weeklyAvailability) avs.weeklyAvailability = cache.weeklyAvailability;
+      if (cache.availableDays) avs.availableDays = Object.assign({}, cache.availableDays, availableDays);
+      else avs.availableDays = availableDays;
 
       Object.keys(stored).forEach(function (d) {
-        if (d === 'specificDates' || d === 'blockedDates') return;
+        if (d === 'specificDates' || d === 'blockedDates' || d === 'bookedDates' || d === 'availableDays') return;
         if (!avs[d]) {
           var info = stored[d] || {};
           var isAvail = typeof info.available !== 'undefined' ? info.available : (info.enabled !== false);
@@ -2161,15 +2087,32 @@
         var dayName = fullDayNames[dObj.getDay()];
 
         // Dynamic Day-of-Week & Specific Date evaluation via isDayAvailable
-        var enabled = typeof window.isDayAvailable === 'function'
+        var status = typeof window.isDayAvailable === 'function'
           ? window.isDayAvailable(avs, dayName, _dbCalYear, _dbCalMonth, day)
           : (dayName !== 'Sat' && dayName !== 'Sun');
 
         var isToday = (day === today.getDate() && _dbCalMonth === today.getMonth() && _dbCalYear === today.getFullYear());
-        var bg = enabled ? (isToday ? 'rgba(197,160,89,0.25)' : 'rgba(0,0,0,0.02)') : 'rgba(239,68,68,0.15)';
-        var bdr = enabled ? (isToday ? '1.5px solid #C5A059' : '1px solid rgba(0,0,0,0.06)') : '1px solid rgba(239,68,68,0.3)';
-        var clr = enabled ? (isToday ? '#C5A059' : 'var(--tp)') : 'rgba(239,68,68,0.9)';
-        var titleAttr = enabled ? 'Available (Click to block this specific date)' : 'Unavailable (Click to unblock this date)';
+        
+        var bg, bdr, clr, titleAttr;
+        if (status === 'booked') {
+          // ORANGE: Booked Session
+          bg = 'rgba(245,158,11,0.18)';
+          bdr = '1px solid rgba(245,158,11,0.45)';
+          clr = '#d97706';
+          titleAttr = 'Booked Session';
+        } else if (status === false) {
+          // RED: Unavailable Weekday or Blocked Date
+          bg = 'rgba(239,68,68,0.15)';
+          bdr = '1px solid rgba(239,68,68,0.3)';
+          clr = 'rgba(239,68,68,0.9)';
+          titleAttr = 'Unavailable (Click to unblock)';
+        } else {
+          // GREEN: Available Weekday
+          bg = isToday ? 'rgba(197,160,89,0.25)' : 'rgba(16,185,129,0.12)';
+          bdr = isToday ? '1.5px solid #C5A059' : '1px solid rgba(16,185,129,0.3)';
+          clr = isToday ? '#C5A059' : '#10b981';
+          titleAttr = 'Available (Click to block this date)';
+        }
 
         cells += '<div onclick="toggleSpecificDate(' + _dbCalYear + ',' + _dbCalMonth + ',' + day + ')" style="cursor:pointer;text-align:center;padding:7px 3px;border-radius:7px;background:' + bg + ';border:' + bdr + ';font-size:.76rem;font-weight:600;color:' + clr + '" title="' + titleAttr + '">' + day + '</div>';
       }
@@ -2180,9 +2123,11 @@
         + '<button onclick="_dbCalNext()" style="background:none;border:none;color:var(--gold);cursor:pointer;font-size:1.2rem;line-height:1;padding:2px 8px">&#8250;</button>'
         + '</div>'
         + '<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;padding:10px">' + headerHtml + cells + '</div>'
-        + '<div style="padding:4px 14px 12px;display:flex;gap:14px;font-size:.68rem;color:var(--tm)">'
+        + '<div style="padding:4px 14px 12px;display:flex;gap:10px;flex-wrap:wrap;font-size:.68rem;color:var(--tm)">'
+        + '<span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:2px;background:rgba(16,185,129,0.4);display:inline-block"></span>Available</span>'
         + '<span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:2px;background:rgba(239,68,68,0.4);display:inline-block"></span>Unavailable</span>'
-        + '<span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:2px;background:rgba(197,160,89,0.25);display:inline-block"></span>Today</span>'
+        + '<span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:2px;background:rgba(245,158,11,0.5);display:inline-block"></span>Booked</span>'
+        + '<span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:2px;background:rgba(197,160,89,0.4);display:inline-block"></span>Today</span>'
         + '</div>';
     }
     window.renderDashboardCalendar = renderDashboardCalendar;
@@ -2191,103 +2136,40 @@
 
     window.toggleSpecificDate = function (y, m, d) {
       var cache = JSON.parse(localStorage.getItem('currentTrainer')) || {};
-      var avs = cache.availability;
-      if (typeof avs === 'string') {
-        try { avs = JSON.parse(avs); } catch (e) { avs = _parseAvailabilityString(cache.availability) || {}; }
-      }
-      avs = avs || {};
-      if (!avs.specificDates) avs.specificDates = {};
+      var m1 = String(m + 1).padStart(2, '0');
+      var d1 = String(d).padStart(2, '0');
+      var isoDate = y + '-' + m1 + '-' + d1;
 
-      var dateStr = y + '-' + m + '-' + d;
-      var dObj = new Date(y, m, d);
-      var dayKey = _DB_DAY_MAP[dObj.getDay()];
-      var _friendlyDate = dObj.toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+      var blocked = Array.isArray(cache.blockedDates) ? cache.blockedDates.slice() : [];
+      var idx = blocked.indexOf(isoDate);
 
-      // Read the current effective state of this specific date
-      var currentState = true; // default = available
-      if (typeof avs.specificDates[dateStr] !== 'undefined') {
-        currentState = avs.specificDates[dateStr];
+      if (idx !== -1) {
+        // Unblock: remove ISO date string
+        blocked.splice(idx, 1);
       } else {
-        // No specific override — read from weekly schedule
-        var weeklyCont = document.getElementById('weekly-hours-container');
-        if (weeklyCont) {
-          var row = weeklyCont.querySelector('.avail-row[data-day="' + dayKey + '"]');
-          if (row) currentState = row.querySelector('.avail-toggle').checked;
-        } else {
-          var w = avs[dayKey];
-          if (w) currentState = typeof w.available !== 'undefined' ? w.available : w.enabled;
-          if (currentState === undefined) currentState = true;
-        }
+        // Block: add ISO date string (preventing duplicates)
+        blocked.push(isoDate);
       }
 
-      // ── Confirm before blocking/unblocking ──
-      var _action = currentState ? 'block (mark unavailable)' : 'unblock (mark available)';
-      var _confirmed = window.confirm(
-        'Are you sure you want to ' + _action + ':\n\n' + _friendlyDate + '?\n\n' +
-        (currentState
-          ? 'This will mark the day as unavailable for new bookings.'
-          : 'This will restore the day as available for bookings.')
-      );
-      if (!_confirmed) return;
-
-      var newState = !currentState;
-
-      // ── BUGFIX: only store a specific override when it DIFFERS from the weekly default.
-      // If the new state matches the weekly default, delete the override instead.
-      var weeklyDefault = true;
-      var weeklyCont2 = document.getElementById('weekly-hours-container');
-      if (weeklyCont2) {
-        var row2 = weeklyCont2.querySelector('.avail-row[data-day="' + dayKey + '"]');
-        if (row2) weeklyDefault = row2.querySelector('.avail-toggle').checked;
-      } else if (avs[dayKey]) {
-        var w2 = avs[dayKey];
-        weeklyDefault = typeof w2.available !== 'undefined' ? w2.available : w2.enabled;
-        if (weeklyDefault === undefined) weeklyDefault = true;
-      }
-
-      if (newState === weeklyDefault) {
-        // Override now matches weekly default — remove it so there's no stale entry
-        delete avs.specificDates[dateStr];
-      } else {
-        avs.specificDates[dateStr] = newState;
-      }
-
-      cache.availability = avs;
+      cache.blockedDates = blocked;
       localStorage.setItem('currentTrainer', JSON.stringify(cache));
 
-      // ── Keep per-trainer key in sync ──
-      var _tid = cache.trainerId || cache._id || cache.id || '1';
-      var _avsJson = JSON.stringify(avs);
-      localStorage.setItem('tv-trainer-' + _tid + '-availability', _avsJson);
-      localStorage.setItem('tv-trainer-1-availability', _avsJson);
-
-      // ── Build ISO blockedDates array and sync to MongoDB ──
-      var _blockedDates = [];
-      Object.keys(avs.specificDates || {}).forEach(function(dateKey) {
-        if (avs.specificDates[dateKey] === false) {
-          // Convert stored key (y-m-d where m is 0-based) to YYYY-MM-DD ISO format
-          var parts = dateKey.split('-');
-          if (parts.length === 3) {
-            var y = parseInt(parts[0]);
-            var m0 = parseInt(parts[1]);
-            var d = parseInt(parts[2]);
-            // The calendar stores month as 0-based; format as 1-based for ISO
-            var isoDate = y + '-' + String(m0 + 1).padStart(2, '0') + '-' + String(d).padStart(2, '0');
-            _blockedDates.push(isoDate);
-          }
-        }
-      });
-      // Update blockedDates in local cache
-      cache.blockedDates = _blockedDates;
-      localStorage.setItem('currentTrainer', JSON.stringify(cache));
-
-      // Push blockedDates & availability to MongoDB
       var _bdOrigin = window.SERVER_ORIGIN || 'https://trainerforum.onrender.com';
       var _session = JSON.parse(localStorage.getItem('userSession') || 'null');
       var _bdTid = (_session && (_session._id || _session.id)) || cache._id || cache.id || cache.trainerId || null;
       var _bdEmail = (_session && _session.email) || cache.email || null;
+
       if (_bdTid || _bdEmail) {
-        var payload = { trainerId: _bdTid, email: _bdEmail, blockedDates: _blockedDates, availability: avs, weeklyAvailability: cache.weeklyAvailability || [] };
+        var payload = {
+          trainerId: _bdTid,
+          email: _bdEmail,
+          blockedDates: blocked,
+          availability: cache.availability || {},
+          weeklyAvailability: cache.weeklyAvailability || [],
+          availableDays: cache.availableDays || {},
+          bookedDates: cache.bookedDates || []
+        };
+
         fetch(_bdOrigin + '/api/trainer/blocked-dates', {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
@@ -2299,14 +2181,18 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         }).then(function(res) {
-          if (res.ok) { console.log('[Calendar] Availability synced to MongoDB'); }
+          if (res.ok) {
+            console.log('[Calendar] Availability synced to MongoDB');
+            if (typeof window.refreshTrainerAvailabilityFromDB === 'function' && _bdTid) {
+              window.refreshTrainerAvailabilityFromDB(_bdTid);
+            }
+          }
         }).catch(function(err) { console.warn('[Calendar] availability sync error:', err); });
       }
 
       renderDashboardCalendar();
       if (typeof commitLocalProfileChanges === 'function') commitLocalProfileChanges();
     };
-
     /* ── Portfolio Logic ── */
     window.tempPortfolioImgUrl = '';
     var portInput = document.getElementById('portfolio-file-upload');

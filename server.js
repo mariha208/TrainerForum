@@ -238,7 +238,7 @@ app.put('/api/trainer/availability', async (req, res) => {
   try {
     const mongoose = require('mongoose');
     const User = require('./models/User');
-    const { trainerId, email, availability, blockedDates } = req.body;
+    const { trainerId, email, availability, blockedDates, weeklyAvailability, availableDays, bookedDates } = req.body;
     let userId = trainerId || email || (req.user && req.user.id);
     
     if (!userId || mongoose.connection.readyState !== 1) {
@@ -250,6 +250,9 @@ app.put('/api/trainer/availability', async (req, res) => {
 
     const update = { availability: availability || {} };
     if (Array.isArray(blockedDates)) update.blockedDates = blockedDates;
+    if (Array.isArray(bookedDates)) update.bookedDates = bookedDates;
+    if (weeklyAvailability) update.weeklyAvailability = weeklyAvailability;
+    if (availableDays) update.availableDays = availableDays;
 
     const user = await User.findOneAndUpdate(
       query,
@@ -260,7 +263,7 @@ app.put('/api/trainer/availability', async (req, res) => {
     if (!user) {
       return res.json({ message: 'Availability updated', availability, blockedDates });
     }
-    res.json({ message: 'Availability updated in database', availability: user.availability, blockedDates: user.blockedDates, user });
+    res.json({ message: 'Availability updated in database', availability: user.availability, blockedDates: user.blockedDates, weeklyAvailability: user.weeklyAvailability, availableDays: user.availableDays, bookedDates: user.bookedDates, user });
   } catch (err) {
     console.warn('[Availability API] Error:', err.message);
     res.status(500).json({ error: err.message });
@@ -271,7 +274,7 @@ app.put('/api/trainer/blocked-dates', async (req, res) => {
   try {
     const mongoose = require('mongoose');
     const User = require('./models/User');
-    const { trainerId, email, blockedDates, availability } = req.body;
+    const { trainerId, email, blockedDates, availability, weeklyAvailability, availableDays, bookedDates } = req.body;
     let userId = trainerId || email || (req.user && req.user.id);
 
     if (!userId || mongoose.connection.readyState !== 1) {
@@ -283,7 +286,10 @@ app.put('/api/trainer/blocked-dates', async (req, res) => {
 
     const update = {};
     if (Array.isArray(blockedDates)) update.blockedDates = blockedDates;
+    if (Array.isArray(bookedDates)) update.bookedDates = bookedDates;
     if (availability) update.availability = availability;
+    if (weeklyAvailability) update.weeklyAvailability = weeklyAvailability;
+    if (availableDays) update.availableDays = availableDays;
 
     const user = await User.findOneAndUpdate(
       query,
@@ -294,7 +300,7 @@ app.put('/api/trainer/blocked-dates', async (req, res) => {
     if (!user) {
       return res.json({ message: 'Blocked dates updated', blockedDates, availability });
     }
-    res.json({ message: 'Blocked dates updated in database', blockedDates: user.blockedDates, availability: user.availability, user });
+    res.json({ message: 'Blocked dates updated in database', blockedDates: user.blockedDates, availability: user.availability, weeklyAvailability: user.weeklyAvailability, availableDays: user.availableDays, bookedDates: user.bookedDates, user });
   } catch (err) {
     console.warn('[Blocked Dates API] Error:', err.message);
     res.status(500).json({ error: err.message });

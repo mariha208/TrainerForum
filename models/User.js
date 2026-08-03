@@ -79,7 +79,9 @@ const userSchema = new mongoose.Schema(
     specialization:    { type: String, default: '' },
     availability:      { type: mongoose.Schema.Types.Mixed, default: {} },
     weeklyAvailability: { type: mongoose.Schema.Types.Mixed, default: [] },
+    availableDays:     { type: mongoose.Schema.Types.Mixed, default: { monday: true, tuesday: true, wednesday: true, thursday: true, friday: true, saturday: false, sunday: false } },
     blockedDates:      { type: [String], default: [] },
+    bookedDates:       { type: [String], default: [] },
     services:          { type: mongoose.Schema.Types.Mixed, default: [] },
     packages:          { type: mongoose.Schema.Types.Mixed, default: [] },
     testimonials:      { type: mongoose.Schema.Types.Mixed, default: [] },
@@ -140,7 +142,9 @@ userSchema.methods.toPublicCard = function () {
     packages: this.packages,
     availability: this.availability,
     weeklyAvailability: this.weeklyAvailability || [],
+    availableDays: this.availableDays || {},
     blockedDates: this.blockedDates || [],
+    bookedDates: this.bookedDates || [],
     portfolio: this.portfolio,
   };
 };

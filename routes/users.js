@@ -276,7 +276,7 @@ router.patch('/:id', async (req, res) => {
 
     // Pass-through fields that match User model directly
     const passthrough = [
-      'bio', 'website', 'specialization', 'availability', 'blockedDates',
+      'bio', 'website', 'specialization', 'availability', 'weeklyAvailability', 'availableDays', 'blockedDates', 'bookedDates',
       'services', 'packages', 'testimonials', 'videoIntro',
       'portfolioLinks', 'tags', 'skills', 'languages',
       'country', 'firebaseUid',
@@ -312,7 +312,7 @@ router.patch('/:id', async (req, res) => {
 // PUT update trainer blocked dates
 router.put('/blocked-dates', async (req, res) => {
   try {
-    const { trainerId, email, blockedDates, availability, weeklyAvailability } = req.body;
+    const { trainerId, email, blockedDates, availability, weeklyAvailability, availableDays, bookedDates } = req.body;
     let userId = trainerId || email || (req.user && req.user.id);
     if (!userId) return res.status(400).json({ error: 'trainerId or email or auth required' });
     const isObjectId = mongoose.Types.ObjectId.isValid(userId);
@@ -320,8 +320,10 @@ router.put('/blocked-dates', async (req, res) => {
 
     const update = {};
     if (Array.isArray(blockedDates)) update.blockedDates = blockedDates;
+    if (Array.isArray(bookedDates)) update.bookedDates = bookedDates;
     if (availability) update.availability = availability;
     if (weeklyAvailability) update.weeklyAvailability = weeklyAvailability;
+    if (availableDays) update.availableDays = availableDays;
 
     const user = await User.findOneAndUpdate(
       query,
@@ -330,7 +332,7 @@ router.put('/blocked-dates', async (req, res) => {
     ).select('-passwordHash');
 
     if (!user) return res.status(404).json({ error: 'Trainer not found' });
-    res.json({ message: 'Blocked dates updated in database', blockedDates: user.blockedDates, availability: user.availability, weeklyAvailability: user.weeklyAvailability, user });
+    res.json({ message: 'Blocked dates updated in database', blockedDates: user.blockedDates, bookedDates: user.bookedDates, availability: user.availability, weeklyAvailability: user.weeklyAvailability, availableDays: user.availableDays, user });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -338,14 +340,16 @@ router.put('/blocked-dates', async (req, res) => {
 
 router.put('/:id/blocked-dates', async (req, res) => {
   try {
-    const { blockedDates, availability, weeklyAvailability } = req.body;
+    const { blockedDates, availability, weeklyAvailability, availableDays, bookedDates } = req.body;
     const isObjectId = mongoose.Types.ObjectId.isValid(req.params.id);
     const query = isObjectId ? { _id: req.params.id } : { email: req.params.id.toLowerCase() };
 
     const update = {};
     if (Array.isArray(blockedDates)) update.blockedDates = blockedDates;
+    if (Array.isArray(bookedDates)) update.bookedDates = bookedDates;
     if (availability) update.availability = availability;
     if (weeklyAvailability) update.weeklyAvailability = weeklyAvailability;
+    if (availableDays) update.availableDays = availableDays;
 
     const user = await User.findOneAndUpdate(
       query,
@@ -354,7 +358,7 @@ router.put('/:id/blocked-dates', async (req, res) => {
     ).select('-passwordHash');
 
     if (!user) return res.status(404).json({ error: 'Trainer not found' });
-    res.json({ message: 'Blocked dates updated in database', blockedDates: user.blockedDates, availability: user.availability, weeklyAvailability: user.weeklyAvailability, user });
+    res.json({ message: 'Blocked dates updated in database', blockedDates: user.blockedDates, bookedDates: user.bookedDates, availability: user.availability, weeklyAvailability: user.weeklyAvailability, availableDays: user.availableDays, user });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -363,7 +367,7 @@ router.put('/:id/blocked-dates', async (req, res) => {
 // PUT update trainer availability
 router.put('/availability', async (req, res) => {
   try {
-    const { trainerId, email, availability, blockedDates, weeklyAvailability } = req.body;
+    const { trainerId, email, availability, blockedDates, weeklyAvailability, availableDays, bookedDates } = req.body;
     let userId = trainerId || email || (req.user && req.user.id);
     if (!userId) return res.status(400).json({ error: 'trainerId or user authentication required' });
     const isObjectId = mongoose.Types.ObjectId.isValid(userId);
@@ -371,7 +375,9 @@ router.put('/availability', async (req, res) => {
 
     const update = { availability: availability || {} };
     if (Array.isArray(blockedDates)) update.blockedDates = blockedDates;
+    if (Array.isArray(bookedDates)) update.bookedDates = bookedDates;
     if (weeklyAvailability) update.weeklyAvailability = weeklyAvailability;
+    if (availableDays) update.availableDays = availableDays;
 
     const user = await User.findOneAndUpdate(
       query,
@@ -380,7 +386,7 @@ router.put('/availability', async (req, res) => {
     ).select('-passwordHash');
 
     if (!user) return res.status(404).json({ error: 'Trainer not found' });
-    res.json({ message: 'Availability updated in database', availability: user.availability, blockedDates: user.blockedDates, weeklyAvailability: user.weeklyAvailability, user });
+    res.json({ message: 'Availability updated in database', availability: user.availability, blockedDates: user.blockedDates, bookedDates: user.bookedDates, weeklyAvailability: user.weeklyAvailability, availableDays: user.availableDays, user });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -388,13 +394,15 @@ router.put('/availability', async (req, res) => {
 
 router.put('/:id/availability', async (req, res) => {
   try {
-    const { availability, blockedDates, weeklyAvailability } = req.body;
+    const { availability, blockedDates, weeklyAvailability, availableDays, bookedDates } = req.body;
     const isObjectId = mongoose.Types.ObjectId.isValid(req.params.id);
     const query = isObjectId ? { _id: req.params.id } : { email: req.params.id.toLowerCase() };
 
     const update = { availability: availability || {} };
     if (Array.isArray(blockedDates)) update.blockedDates = blockedDates;
+    if (Array.isArray(bookedDates)) update.bookedDates = bookedDates;
     if (weeklyAvailability) update.weeklyAvailability = weeklyAvailability;
+    if (availableDays) update.availableDays = availableDays;
 
     const user = await User.findOneAndUpdate(
       query,
@@ -403,7 +411,7 @@ router.put('/:id/availability', async (req, res) => {
     ).select('-passwordHash');
 
     if (!user) return res.status(404).json({ error: 'Trainer not found' });
-    res.json({ message: 'Availability updated in database', availability: user.availability, blockedDates: user.blockedDates, weeklyAvailability: user.weeklyAvailability, user });
+    res.json({ message: 'Availability updated in database', availability: user.availability, blockedDates: user.blockedDates, bookedDates: user.bookedDates, weeklyAvailability: user.weeklyAvailability, availableDays: user.availableDays, user });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

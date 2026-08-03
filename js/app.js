@@ -155,30 +155,44 @@ window.isDayAvailable = function (avs, dayName, year, month, day) {
     }
   }
 
-  // 0. Check blockedDates ISO array (from MongoDB — highest priority override)
-  // avs.blockedDates is an array of ISO strings like ["2026-08-05", "2026-08-12"]
+  const m1 = month + 1; // month param is 0-based
+  const isoDate = `${year}-${String(m1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+
+  // 1. Check bookedDates ISO array (Orange / Booked status)
+  const bookedDates = avs.bookedDates;
+  if (Array.isArray(bookedDates) && bookedDates.length > 0) {
+    if (bookedDates.indexOf(isoDate) !== -1) return 'booked';
+  }
+
+  // 2. Check blockedDates ISO array (Red / Blocked status)
   const blockedDates = avs.blockedDates;
   if (Array.isArray(blockedDates) && blockedDates.length > 0) {
-    const m1 = month + 1; // month param is 0-based
-    const isoDate = `${year}-${String(m1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
     if (blockedDates.indexOf(isoDate) !== -1) return false; // explicitly blocked
   }
 
-  // 1. Check specific dates override
+  // 3. Check specific dates override
   const spec = avs.specificDates || (avs.weeklyAvailability && avs.weeklyAvailability.specificDates);
   if (spec && typeof spec === 'object') {
     const m0 = month;
-    const m1 = month + 1;
     const k0 = `${year}-${m0}-${day}`;
     const k1 = `${year}-${m1}-${day}`;
-    const kISO = `${year}-${String(m1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
 
     if (typeof spec[k0] !== 'undefined') return !!spec[k0];
     if (typeof spec[k1] !== 'undefined') return !!spec[k1];
-    if (typeof spec[kISO] !== 'undefined') return !!spec[kISO];
+    if (typeof spec[isoDate] !== 'undefined') return !!spec[isoDate];
   }
 
-  // 2. Check weekly recurring schedule
+  // 4. Check availableDays map (e.g. { monday: true, tuesday: false, ... })
+  const availDays = avs.availableDays;
+  if (availDays && typeof availDays === 'object') {
+    const fullDayMap = { Sun: 'sunday', Mon: 'monday', Tue: 'tuesday', Wed: 'wednesday', Thu: 'thursday', Fri: 'friday', Sat: 'saturday' };
+    const dayKeyLower = fullDayMap[dayName] || String(dayName).toLowerCase();
+    if (typeof availDays[dayKeyLower] !== 'undefined') {
+      return !!availDays[dayKeyLower];
+    }
+  }
+
+  // 5. Check weekly recurring schedule (array of objects)
   const weekly = avs.weeklyAvailability || avs.weeklyHours || avs;
   if (Array.isArray(weekly)) {
     const found = weekly.find(function(w) {
@@ -205,7 +219,7 @@ window.isDayAvailable = function (avs, dayName, year, month, day) {
     }
   }
 
-  // 3. Default fallback: Mon-Fri available, Sat-Sun unavailable
+  // 6. Default fallback: Mon-Fri available, Sat-Sun unavailable
   return dayName !== 'Sat' && dayName !== 'Sun';
 };
 
@@ -223,7 +237,9 @@ window.refreshTrainerAvailabilityFromDB = async function (trainerId) {
     const freshUser = await res.json();
     const freshAvail = freshUser.availability;
     const freshBlocked = freshUser.blockedDates || [];
+    const freshBooked = freshUser.bookedDates || [];
     const freshWeekly = freshUser.weeklyAvailability || [];
+    const freshDays = freshUser.availableDays || {};
     const freshServices = freshUser.services || [];
     const freshPackages = freshUser.packages || [];
 
@@ -237,7 +253,9 @@ window.refreshTrainerAvailabilityFromDB = async function (trainerId) {
         if ((trId && freshId && trId === freshId) || (trEmail && freshEmail && trEmail === freshEmail)) {
           tr.availability = freshAvail;
           tr.blockedDates = freshBlocked;
+          tr.bookedDates = freshBooked;
           tr.weeklyAvailability = freshWeekly;
+          tr.availableDays = freshDays;
           tr.services = freshServices;
           tr.packages = freshPackages;
         }
@@ -255,7 +273,9 @@ window.refreshTrainerAvailabilityFromDB = async function (trainerId) {
         const ct = JSON.parse(localStorage.getItem('currentTrainer') || '{}');
         ct.availability = freshAvail;
         ct.blockedDates = freshBlocked;
+        ct.bookedDates = freshBooked;
         ct.weeklyAvailability = freshWeekly;
+        ct.availableDays = freshDays;
         ct.services = freshServices;
         ct.packages = freshPackages;
         localStorage.setItem('currentTrainer', JSON.stringify(ct));
@@ -273,7 +293,9 @@ window.refreshTrainerAvailabilityFromDB = async function (trainerId) {
     if (window.bookingState && String(window.bookingState.trainerId) === String(trainerId)) {
       window.bookingState.trainerAvailability = freshAvail;
       window.bookingState.blockedDates = freshBlocked;
+      window.bookingState.bookedDates = freshBooked;
       window.bookingState.weeklyAvailability = freshWeekly;
+      window.bookingState.availableDays = freshDays;
     }
 
     // 5. Re-render Monthly Dashboard Calendar
@@ -291,6 +313,9 @@ window.refreshTrainerAvailabilityFromDB = async function (trainerId) {
       window.ALL_TRAINERS.forEach(tr => {
         if (String(tr.trainerId || tr.id || tr._id) === String(trainerId)) {
           tr.availability = freshAvail;
+          tr.blockedDates = freshBlocked;
+          tr.bookedDates = freshBooked;
+          tr.availableDays = freshDays;
         }
       });
       window.renderCards(window.ALL_TRAINERS);
