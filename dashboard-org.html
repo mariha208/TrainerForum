@@ -22,29 +22,85 @@
   <!-- ═════════════════════════════════════════════════════════════════════
        GLOBAL NAVIGATION HEADER
   ═════════════════════════════════════════════════════════════════════ -->
-  <header class="header" id="nav">
-    <div class="container nav-container">
-      <a href="index.html" class="logo">
-        <img src="img/logo.svg" alt="World Trainer Forum Logo" class="logo-nav-img">
-        <span>WORLD <span class="gold-text">TRAINER</span> FORUM</span>
-      </a>
+  <header id="nav" style="
+    position: fixed; top: 0; left: 0; right: 0; z-index: 900;
+    height: 64px;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 32px;
+    background: rgba(10, 15, 29, 0.96);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    gap: 16px;
+  ">
 
-      <nav class="nav-links">
-        <a href="index.html">Home</a>
-        <a href="find-trainers.html">Find Trainers</a>
-        <a href="categories.html">Categories</a>
-        <a href="dashboard-org.html" class="active">Dashboard</a>
+    <!-- LEFT: Logo + Brand Title → links to Home -->
+    <a href="index.html" style="
+      display: flex; align-items: center; gap: 10px;
+      text-decoration: none; flex-shrink: 0;
+    ">
+      <img src="img/logo.svg" alt="World Trainer Forum Logo"
+           class="logo-nav-img"
+           style="height:40px; max-height:40px; width:auto; object-fit:contain; display:block;">
+      <span style="
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 1.4rem; font-weight: 700;
+        color: #faf6ec; white-space: nowrap; letter-spacing: -0.01em;
+      ">WORLD <span style="color:#c5a57b;">TRAINER</span> FORUM</span>
+    </a>
+
+    <!-- RIGHT: Navigation Links + auth actions -->
+    <div style="display:flex; align-items:center; gap:24px; margin-left:auto;">
+      <nav style="display:flex; align-items:center; gap:4px;">
+        <a href="index.html" class="nav-links a" style="
+          display:inline-flex; align-items:center; height:38px; padding:0 10px;
+          font-size:.88rem; font-weight:500; color:rgba(250,246,236,0.72);
+          text-decoration:none; border-radius:6px; transition:color .2s;
+        " onmouseover="this.style.color='#faf6ec'" onmouseout="this.style.color='rgba(250,246,236,0.72)'">Home</a>
+
+        <a href="find-trainers.html" style="
+          display:inline-flex; align-items:center; height:38px; padding:0 10px;
+          font-size:.88rem; font-weight:500; color:rgba(250,246,236,0.72);
+          text-decoration:none; border-radius:6px; transition:color .2s;
+        " onmouseover="this.style.color='#faf6ec'" onmouseout="this.style.color='rgba(250,246,236,0.72)'">Find Trainers</a>
+
+        <a href="categories.html" style="
+          display:inline-flex; align-items:center; height:38px; padding:0 10px;
+          font-size:.88rem; font-weight:500; color:rgba(250,246,236,0.72);
+          text-decoration:none; border-radius:6px; transition:color .2s;
+        " onmouseover="this.style.color='#faf6ec'" onmouseout="this.style.color='rgba(250,246,236,0.72)'">Categories</a>
+
+        <a href="dashboard-org.html" style="
+          display:inline-flex; align-items:center; height:38px; padding:0 10px;
+          font-size:.88rem; font-weight:600; color:#c5a57b;
+          text-decoration:none; border-radius:6px;
+          border-bottom: 2px solid #c5a57b;
+        ">Dashboard</a>
       </nav>
 
-      <div class="header-actions" id="header-auth-actions">
-        <!-- Dynamic User Session Info -->
-      </div>
+      <!-- Dynamic auth actions (login/avatar) -->
+      <div id="header-auth-actions"></div>
 
-      <button id="menuToggle" class="mobile-toggle" aria-label="Toggle navigation" onclick="toggleOrgSidebar()">
-        <span></span><span></span><span></span>
+      <!-- Mobile menu trigger -->
+      <button id="menuToggle" class="mobile-toggle" aria-label="Toggle navigation"
+        onclick="toggleOrgSidebar()"
+        style="display:none; flex-direction:column; gap:5px; background:none; border:none; cursor:pointer; padding:4px;">
+        <span style="display:block; width:22px; height:2px; background:#c5a57b; border-radius:2px;"></span>
+        <span style="display:block; width:22px; height:2px; background:#c5a57b; border-radius:2px;"></span>
+        <span style="display:block; width:22px; height:2px; background:#c5a57b; border-radius:2px;"></span>
       </button>
     </div>
   </header>
+
+  <!-- Show mobile toggle below 768px -->
+  <style>
+    @media (max-width: 768px) {
+      #menuToggle { display: flex !important; }
+      #nav nav { display: none !important; }
+      #header-auth-actions { display: none !important; }
+    }
+  </style>
+
 
   <!-- Sidebar Mobile Overlay -->
   <div id="sidebarOverlay" class="sidebar-overlay" onclick="closeOrgSidebar()"></div>
