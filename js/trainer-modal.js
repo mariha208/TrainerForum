@@ -1271,14 +1271,20 @@ window.renderBPMCalendar = function () {
   const daysCount = new Date(year, month + 1, 0).getDate();
   const prevDays = new Date(year, month, 0).getDate();
 
-  const booked = new Set([randomBetween(3, 8), randomBetween(12, 16), randomBetween(20, 25)]);
-
   // Read blocked specific dates from the booked trainer's availability
   let _bpmSpecificDates = {};
   let _bpmWeeklyAvs = {};
   const _daysMap = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   try {
     let _bpmAvs = window.bookingState.trainerAvailability;
+    if (!_bpmAvs) {
+      const tid = window.bookingState.trainerId;
+      const TRAINERS = window.TRAINERS || [];
+      const t = TRAINERS.find(x => String(x.id) === String(tid)) || window.currentTrainer || {};
+      if (typeof window.getTrainerAvailability === 'function') {
+        _bpmAvs = window.getTrainerAvailability(t);
+      }
+    }
     if (!_bpmAvs) {
       // ── BUGFIX: only fall back to currentTrainer if the booked trainer IS the logged-in trainer ──
       const _ct = JSON.parse(localStorage.getItem('currentTrainer') || '{}');
@@ -1312,7 +1318,6 @@ window.renderBPMCalendar = function () {
   for (let d = 1; d <= daysCount; d++) {
     const isToday = d === today.getDate() && month === today.getMonth() && year === today.getFullYear();
     const isSelected = d === state.selectedDay;
-    const isBk = booked.has(d);
     const isPast = new Date(year, month, d) < new Date(today.getFullYear(), today.getMonth(), today.getDate());
     // Check if this specific date is blocked
     const _dateKey = year + '-' + month + '-' + d;
@@ -1325,10 +1330,10 @@ window.renderBPMCalendar = function () {
     }
     let cls = 'bpm-cal-day';
     if (isPast) cls += ' other-month';
-    else if (isBk || isBlocked) cls += ' booked';
+    else if (isBlocked) cls += ' booked';
     else if (isSelected) cls += ' selected';
     else if (isToday) cls += ' today';
-    const click = (!isPast && !isBk && !isBlocked) ? `onclick="selectBPMDay(${d})"` : '';
+    const click = (!isPast && !isBlocked) ? `onclick="selectBPMDay(${d})"` : '';
     const titleAttr = isBlocked ? 'title="Unavailable"' : '';
     cells += `<div class="${cls}" ${click} ${titleAttr}>${d}</div>`;
   }
