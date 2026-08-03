@@ -180,6 +180,19 @@ window.isDayAvailable = function (avs, dayName, year, month, day) {
 
   // 2. Check weekly recurring schedule
   const weekly = avs.weeklyAvailability || avs.weeklyHours || avs;
+  if (Array.isArray(weekly)) {
+    const found = weekly.find(function(w) {
+      if (!w || !w.day) return false;
+      var d = String(w.day).toLowerCase();
+      var dn = String(dayName).toLowerCase();
+      return d === dn || d.substring(0, 3) === dn.substring(0, 3);
+    });
+    if (found) {
+      if (typeof found.enabled !== 'undefined') return !!found.enabled;
+      if (typeof found.available !== 'undefined') return !!found.available;
+    }
+  }
+
   const dayKey = dayName; // e.g. 'Mon', 'Sat'
   const dayConf = weekly[dayKey] || weekly[dayKey.toLowerCase()] || weekly[dayKey.toUpperCase()];
 
@@ -209,6 +222,10 @@ window.refreshTrainerAvailabilityFromDB = async function (trainerId) {
     if (!res.ok) return;
     const freshUser = await res.json();
     const freshAvail = freshUser.availability;
+    const freshBlocked = freshUser.blockedDates || [];
+    const freshWeekly = freshUser.weeklyAvailability || [];
+    const freshServices = freshUser.services || [];
+    const freshPackages = freshUser.packages || [];
 
     // 1. Invalidate & update window.TRAINERS in-memory array
     if (Array.isArray(window.TRAINERS)) {
@@ -219,6 +236,10 @@ window.refreshTrainerAvailabilityFromDB = async function (trainerId) {
         const freshEmail = (freshUser.email || '').toLowerCase();
         if ((trId && freshId && trId === freshId) || (trEmail && freshEmail && trEmail === freshEmail)) {
           tr.availability = freshAvail;
+          tr.blockedDates = freshBlocked;
+          tr.weeklyAvailability = freshWeekly;
+          tr.services = freshServices;
+          tr.packages = freshPackages;
         }
       });
     }
@@ -233,6 +254,10 @@ window.refreshTrainerAvailabilityFromDB = async function (trainerId) {
       if ((sessionId && String(sessionId) === freshId) || (sessionEmail && freshEmail && sessionEmail === freshEmail)) {
         const ct = JSON.parse(localStorage.getItem('currentTrainer') || '{}');
         ct.availability = freshAvail;
+        ct.blockedDates = freshBlocked;
+        ct.weeklyAvailability = freshWeekly;
+        ct.services = freshServices;
+        ct.packages = freshPackages;
         localStorage.setItem('currentTrainer', JSON.stringify(ct));
       }
     } catch (e) {}
@@ -247,6 +272,8 @@ window.refreshTrainerAvailabilityFromDB = async function (trainerId) {
     // 4. Update bookingState if modal is open for this trainer
     if (window.bookingState && String(window.bookingState.trainerId) === String(trainerId)) {
       window.bookingState.trainerAvailability = freshAvail;
+      window.bookingState.blockedDates = freshBlocked;
+      window.bookingState.weeklyAvailability = freshWeekly;
     }
 
     // 5. Re-render Monthly Dashboard Calendar

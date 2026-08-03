@@ -1921,15 +1921,25 @@
 
       var avs = {};
       avs.specificDates = oldAvs.specificDates || {};
+      var weeklyAvailability = [];
 
       if (cont) {
         cont.querySelectorAll('.avail-row').forEach(function (row) {
           var d = row.dataset.day;
+          var isChk = row.querySelector('.avail-toggle').checked;
+          var sFrom = row.querySelector('.avail-from').value;
+          var sTo = row.querySelector('.avail-to').value;
           avs[d] = {
-            available: row.querySelector('.avail-toggle').checked,
-            start: row.querySelector('.avail-from').value,
-            end: row.querySelector('.avail-to').value
+            available: isChk,
+            start: sFrom,
+            end: sTo
           };
+          weeklyAvailability.push({
+            day: d,
+            enabled: isChk,
+            startTime: sFrom,
+            endTime: sTo
+          });
         });
       }
 
@@ -1952,6 +1962,7 @@
       var _email = (session && session.email) || cache.email || null;
 
       cache.availability = avs;
+      cache.weeklyAvailability = weeklyAvailability;
       localStorage.setItem('currentTrainer', JSON.stringify(cache));
 
       var _avsJson = JSON.stringify(avs);
@@ -1961,7 +1972,7 @@
       // 2. Update in-memory window.TRAINERS for public card pills
       if (Array.isArray(window.TRAINERS) && _tid) {
         var tr = window.TRAINERS.find(function(x) { return String(x.id || x._id) === String(_tid); });
-        if (tr) tr.availability = avs;
+        if (tr) { tr.availability = avs; tr.weeklyAvailability = weeklyAvailability; }
       }
 
       // 3. Sync open trainer modal
@@ -1969,6 +1980,7 @@
         var _modalId = String(window.currentModalTrainer.id || window.currentModalTrainer._id || '');
         if (_modalId && _modalId === String(_tid)) {
           window.currentModalTrainer.availability = avs;
+          window.currentModalTrainer.weeklyAvailability = weeklyAvailability;
         }
       }
 
@@ -1987,7 +1999,7 @@
 
       // 7. API: PUT to backend — sends trainerId and email so backend matches user record
       var origin = window.SERVER_ORIGIN || window.location.origin || 'https://trainerforum.onrender.com';
-      var _apiPayload = JSON.stringify({ trainerId: _tid, email: _email, availability: avs });
+      var _apiPayload = JSON.stringify({ trainerId: _tid, email: _email, availability: avs, weeklyAvailability: weeklyAvailability, blockedDates: cache.blockedDates || [] });
 
       var primaryPromise = fetch(origin + '/api/trainer/availability', {
         method: 'PUT',
@@ -2054,6 +2066,7 @@
       if (stored.specificDates) avs.specificDates = stored.specificDates;
       if (cache.blockedDates) avs.blockedDates = cache.blockedDates;
       if (stored.blockedDates) avs.blockedDates = stored.blockedDates;
+      if (cache.weeklyAvailability) avs.weeklyAvailability = cache.weeklyAvailability;
 
       Object.keys(stored).forEach(function (d) {
         if (d === 'specificDates' || d === 'blockedDates') return;
@@ -2216,7 +2229,7 @@
       var _bdTid = (_session && (_session._id || _session.id)) || cache._id || cache.id || cache.trainerId || null;
       var _bdEmail = (_session && _session.email) || cache.email || null;
       if (_bdTid || _bdEmail) {
-        var payload = { trainerId: _bdTid, email: _bdEmail, blockedDates: _blockedDates, availability: avs };
+        var payload = { trainerId: _bdTid, email: _bdEmail, blockedDates: _blockedDates, availability: avs, weeklyAvailability: cache.weeklyAvailability || [] };
         fetch(_bdOrigin + '/api/trainer/blocked-dates', {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
