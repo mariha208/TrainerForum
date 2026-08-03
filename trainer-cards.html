@@ -334,6 +334,13 @@
               </a>
             </div>
 
+            <!-- Availability pill — unified formatter -->
+            <div class="flex items-center justify-center mb-3">
+              <span class="avail-pill inline-flex items-center gap-1.5 bg-emerald-500/10 text-emerald-400 text-[11px] font-semibold px-3 py-1 rounded-full border border-emerald-500/20" data-trainer-id="${id}">
+                📅 ${typeof window.formatAvailability === 'function' ? window.formatAvailability(trainer) : 'Available'}
+              </span>
+            </div>
+
             <!-- Divider -->
             <hr class="divider border-t mb-4 mx-1" />
 

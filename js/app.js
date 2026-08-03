@@ -63,24 +63,68 @@ window.getTrainerAvailability = function (t) {
   return null;
 };
 
-window.getAvailabilityPillText = function (t) {
-  const avail = window.getTrainerAvailability(t);
-  if (!avail) return 'Mon–Fri | 9 AM–5 PM';
-  if (typeof avail === 'string') return avail;
+/**
+ * UNIFIED AVAILABILITY FORMATTER FUNCTION
+ * Single source of truth formatter function across Mobile, Desktop, Dashboard, and Booking Modal.
+ * Accepts either:
+ *   - A trainer object containing .availability or .weekly_slots
+ *   - A direct availability object (e.g. { Mon: { available: true }, Sat: { available: false } })
+ *   - An availability JSON string or text summary
+ *
+ * Returns a standardized day string (e.g. "Mon, Tue, Wed, Thu", "Mon–Fri", "Everyday", "By Appointment").
+ */
+window.formatAvailability = function (input) {
+  if (!input) return 'Mon–Fri | 9 AM–5 PM';
 
-  if (typeof avail === 'object') {
+  let availObj = null;
+
+  // If input is a trainer object, resolve availability using getTrainerAvailability or properties
+  if (typeof input === 'object' && !input.Mon && !input.mon && (input.id || input._id || input.trainerId || input.availability || input.weekly_slots)) {
+    availObj = typeof window.getTrainerAvailability === 'function'
+      ? window.getTrainerAvailability(input)
+      : (input.availability || input.weekly_slots);
+  } else {
+    availObj = input;
+  }
+
+  if (!availObj) return 'Mon–Fri | 9 AM–5 PM';
+
+  // If JSON string, try parsing
+  if (typeof availObj === 'string') {
+    const trimmed = availObj.trim();
+    if (trimmed.startsWith('{') || trimmed.startsWith('[')) {
+      try { availObj = JSON.parse(trimmed); } catch (e) { return trimmed; }
+    } else {
+      return trimmed;
+    }
+  }
+
+  // If structured object
+  if (typeof availObj === 'object' && availObj !== null) {
     const dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
     const activeDays = dayNames.filter(d => {
-      const c = avail[d] || avail[d.toLowerCase()];
-      return c && (c.available !== false && c.enabled !== false);
+      const c = availObj[d] || availObj[d.toLowerCase()] || availObj[d.toUpperCase()];
+      if (!c) return false;
+      if (typeof c === 'boolean') return c;
+      if (typeof c === 'string') return c === 'true';
+      return c.available !== false && c.enabled !== false;
     });
+
     if (activeDays.length === 7) return 'Everyday';
-    if (activeDays.length === 5 && activeDays.includes('Mon') && activeDays.includes('Fri')) return 'Mon–Fri';
-    if (activeDays.length > 0) return `${activeDays.join(', ')}`;
+    if (activeDays.length === 5 && activeDays.includes('Mon') && activeDays.includes('Fri') && activeDays.includes('Tue') && activeDays.includes('Wed') && activeDays.includes('Thu')) {
+      return 'Mon–Fri';
+    }
+    if (activeDays.length > 0) {
+      return activeDays.join(', ');
+    }
     return 'By Appointment';
   }
+
   return 'Mon–Fri | 9 AM–5 PM';
 };
+
+// Expose alias for full backward compatibility
+window.getAvailabilityPillText = window.formatAvailability;
 
 /**
  * Dynamic day-of-week evaluation helper.
@@ -141,11 +185,9 @@ window.isDayAvailable = function (avs, dayName, year, month, day) {
 };
 
 /**
- * After saving availability to the DB, call this to re-fetch the trainer's
- * record from the API and push the fresh availability object into:
- *   - window.TRAINERS[n].availability
- *   - All .avail-pill DOM elements that reference this trainer
- *   - Monthly availability calendar grids on dashboard and profile modals
+ * Global State Invalidater & Re-fetcher:
+ * Re-fetches fresh trainer record from database API and invalidates local state,
+ * updating Mobile Cards, Laptop/Desktop Cards, Trainer Dashboard, and Booking Modal instantly.
  */
 window.refreshTrainerAvailabilityFromDB = async function (trainerId) {
   if (!trainerId || trainerId === '1') return;
@@ -155,9 +197,8 @@ window.refreshTrainerAvailabilityFromDB = async function (trainerId) {
     if (!res.ok) return;
     const freshUser = await res.json();
     const freshAvail = freshUser.availability;
-    if (!freshAvail) return;
 
-    // Update window.TRAINERS in-memory
+    // 1. Invalidate & update window.TRAINERS in-memory array
     if (Array.isArray(window.TRAINERS)) {
       window.TRAINERS.forEach(tr => {
         if (String(tr.id || tr._id) === String(trainerId)) {
@@ -166,24 +207,51 @@ window.refreshTrainerAvailabilityFromDB = async function (trainerId) {
       });
     }
 
-    // Re-render any .avail-pill spans that carry a data-trainer-id attribute
+    // 2. Sync local trainer session cache if viewing own profile
+    try {
+      const session = JSON.parse(localStorage.getItem('userSession') || 'null');
+      const sessionId = session && (session._id || session.id || '');
+      if (sessionId && String(sessionId) === String(trainerId)) {
+        const ct = JSON.parse(localStorage.getItem('currentTrainer') || '{}');
+        ct.availability = freshAvail;
+        localStorage.setItem('currentTrainer', JSON.stringify(ct));
+      }
+    } catch (e) {}
+
+    // 3. Update all Mobile & Desktop card availability pill badges
+    const formattedText = window.formatAvailability(freshUser);
     document.querySelectorAll(`.avail-pill[data-trainer-id="${trainerId}"]`).forEach(el => {
-      el.textContent = '\uD83D\uDCC5 ' + (window.getAvailabilityPillText({ availability: freshAvail }) || 'Available');
+      el.textContent = '📅 ' + formattedText;
     });
 
-    // Real-time sync: re-render monthly calendar grid on Dashboard if function exists
+    // 4. Update bookingState if modal is open for this trainer
+    if (window.bookingState && String(window.bookingState.trainerId) === String(trainerId)) {
+      window.bookingState.trainerAvailability = freshAvail;
+    }
+
+    // 5. Re-render Monthly Dashboard Calendar
     if (typeof window.renderDashboardCalendar === 'function') {
       window.renderDashboardCalendar();
     }
 
-    // Real-time sync: re-render monthly calendar grid on Profile Modal if function exists
+    // 6. Re-render Booking / Profile Modal Calendar Grid
     if (typeof window.renderBPMCalendar === 'function') {
       window.renderBPMCalendar();
     }
 
-    console.log('[AvailSync] Trainer', trainerId, 'availability refreshed from DB:', freshAvail);
+    // 7. Re-render standalone card grid if present (trainer-cards.html)
+    if (typeof window.renderCards === 'function' && Array.isArray(window.ALL_TRAINERS)) {
+      window.ALL_TRAINERS.forEach(tr => {
+        if (String(tr.trainerId || tr.id || tr._id) === String(trainerId)) {
+          tr.availability = freshAvail;
+        }
+      });
+      window.renderCards(window.ALL_TRAINERS);
+    }
+
+    console.log('[AvailSync] Global trainer state invalidated & updated for ID:', trainerId, formattedText);
   } catch (err) {
-    console.warn('[AvailSync] Failed to refresh from DB:', err.message);
+    console.warn('[AvailSync] Failed to re-fetch trainer state:', err.message);
   }
 };
 
@@ -874,8 +942,8 @@ function subscribeToTrainers() {
                   <span style="background: #f1f5f9; border-radius: 10px; padding: 3px 10px; font-size: 11px; font-weight: 600; color: #475569;">
                     ${parseInt(normalizedTrainer.experience || '0') || 0}+ yrs
                   </span>
-                  <span style="background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 10px; padding: 3px 10px; font-size: 11px; font-weight: 600; color: #047857;">
-                    📅 ${window.getAvailabilityPillText ? window.getAvailabilityPillText(normalizedTrainer) : 'Available'}
+                  <span class="avail-pill" data-trainer-id="${normalizedTrainer.id}" style="background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 10px; padding: 3px 10px; font-size: 11px; font-weight: 600; color: #047857;">
+                    📅 ${window.formatAvailability ? window.formatAvailability(normalizedTrainer) : 'Available'}
                   </span>
                 </div>
 
