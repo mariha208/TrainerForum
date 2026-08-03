@@ -20,7 +20,7 @@ function getAuthHeaders() {
 document.addEventListener('DOMContentLoaded', async () => {
   await fetchLiveRequirements();
   await fetchLiveHiredTrainers();
-  
+
   // Set default target date input to 14 days in future
   const dateInput = document.getElementById('req-dates');
   if (dateInput) {
@@ -98,8 +98,8 @@ window.switchOrgTab = function (tabId, targetParam) {
   navButtons.forEach(b => b.classList.remove('active'));
 
   const targetId = tabId === 'overview' ? 'overview-section' :
-                   tabId === 'requirements' ? 'requirements-section' :
-                   `org-tab-${tabId}`;
+    tabId === 'requirements' ? 'requirements-section' :
+      `org-tab-${tabId}`;
 
   const targetPanel = document.getElementById(targetId);
   if (targetPanel) targetPanel.classList.add('active');
@@ -254,10 +254,10 @@ function renderHiredTrainersView() {
         </thead>
         <tbody>
           ${ORG_HIRED_TRAINERS_DATA.map(t => {
-            let badgeClass = 'badge-blue';
-            if (t.status === 'Completed') badgeClass = 'badge-amber';
+    let badgeClass = 'badge-blue';
+    if (t.status === 'Completed') badgeClass = 'badge-amber';
 
-            return `
+    return `
               <tr>
                 <td>
                   <div style="display:flex;align-items:center;gap:10px">
@@ -277,7 +277,7 @@ function renderHiredTrainersView() {
                 </td>
               </tr>
             `;
-          }).join('')}
+  }).join('')}
         </tbody>
       </table>
     </div>
@@ -285,7 +285,37 @@ function renderHiredTrainersView() {
 }
 
 // ── GOOGLE APPS SCRIPT ENDPOINT (mirrors .env GOOGLE_APPS_SCRIPT_URL) ─────────
-const GAS_REQUIREMENT_URL = 'https://script.google.com/macros/s/AKfycby_a46pgW5bo42qBhXBxR_oX9KlGg_m7BdyUmgrzlUPQdYc_FSNyV4kykPonzX_oAL8WA/exec';
+const handleSubmitRequirement = async (formData) => {
+  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycby_a46pgW5bo42qBhXBxR_oX9KlGg_m7BdyUmgrzlUPQdYc_FSNyV4kykPonzX_oAL8WA/exec";
+
+  const payload = {
+    organizationName: formData.organizationName, // e.g. "Acme Global Technologies"
+    trainingTopic: formData.trainingTopic,       // e.g. "Executive Generative AI Workshop"
+    budget: formData.budget,                     // e.g. "5000"
+    locationPlace: formData.locationPlace,       // e.g. "In City (Onsite)"
+    cityAddress: formData.cityAddress,           // e.g. "Bangalore, HQ Indiranagar"
+    targetDates: formData.targetDates,           // e.g. "17-08-2026"
+    timeDuration: formData.timeDuration,         // e.g. "10:00 AM - 4:00 PM / 2 Days"
+    specialNotes: formData.specialNotes          // e.g. "Detail target audience size..."
+  };
+
+  try {
+    const response = await fetch(WEB_APP_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "text/plain;charset=utf-8", // Uses text/plain to avoid CORS preflight issues with Apps Script
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const result = await response.json();
+    if (result.status === "success") {
+      alert("Requirement submitted successfully!");
+    }
+  } catch (error) {
+    console.error("Submission failed:", error);
+  }
+};
 
 // ── REQUIREMENT SUCCESS BANNER ────────────────────────────────────────────────
 function showRequirementSuccessBanner() {
@@ -363,14 +393,14 @@ function setSubmitLoading(isLoading) {
 window.handleOrgRequirementSubmit = async function (e) {
   e.preventDefault();
 
-  const orgName     = document.getElementById('req-org-name')?.value.trim();
-  const topic       = document.getElementById('req-topic')?.value.trim();
-  const budget      = Number(document.getElementById('req-budget')?.value);
+  const orgName = document.getElementById('req-org-name')?.value.trim();
+  const topic = document.getElementById('req-topic')?.value.trim();
+  const budget = Number(document.getElementById('req-budget')?.value);
   const locationType = document.getElementById('req-location-type')?.value;
   const cityDetails = document.getElementById('req-city-details')?.value.trim();
-  const targetDate  = document.getElementById('req-dates')?.value;
-  const duration    = document.getElementById('req-duration')?.value.trim();
-  const notes       = document.getElementById('req-notes')?.value.trim();
+  const targetDate = document.getElementById('req-dates')?.value;
+  const duration = document.getElementById('req-duration')?.value.trim();
+  const notes = document.getElementById('req-notes')?.value.trim();
 
   if (!orgName || !topic || !budget || !cityDetails || !targetDate || !duration) {
     if (window.showToast) window.showToast('Please fill in all required fields marked with *', 3500);
@@ -379,13 +409,13 @@ window.handleOrgRequirementSubmit = async function (e) {
 
   const payload = {
     organizationName: orgName,
-    trainingTopic:    topic,
+    trainingTopic: topic,
     budget,
-    locationPlace:    locationType,
-    cityAddress:      cityDetails,
-    targetDates:      targetDate,
-    timeDuration:     duration,
-    specialNotes:     notes || ''
+    locationPlace: locationType,
+    cityAddress: cityDetails,
+    targetDates: targetDate,
+    timeDuration: duration,
+    specialNotes: notes || ''
   };
 
   // ── Disable submit button & show spinner ────────────────────────────────────
@@ -407,9 +437,9 @@ window.handleOrgRequirementSubmit = async function (e) {
     };
 
     const res = await fetch(`${SERVER_ORIGIN}/api/requirements`, {
-      method:  'POST',
+      method: 'POST',
       headers: getAuthHeaders(),
-      body:    JSON.stringify(backendPayload)
+      body: JSON.stringify(backendPayload)
     });
 
     if (res.ok) {
@@ -422,11 +452,11 @@ window.handleOrgRequirementSubmit = async function (e) {
 
     // Local fallback
     const fallbackReq = {
-      reqId:         `REQ-${Math.floor(1000 + Math.random() * 9000)}`,
+      reqId: `REQ-${Math.floor(1000 + Math.random() * 9000)}`,
       orgName, topic, budget, locationType, cityDetails, targetDate, duration,
-      notes:         notes || '',
+      notes: notes || '',
       submittedDate: new Date().toISOString().split('T')[0],
-      status:        'Pending'
+      status: 'Pending'
     };
     ORG_REQUIREMENTS_DATA.unshift(fallbackReq);
     localStorage.setItem('ORG_REQUIREMENTS_STORE', JSON.stringify(ORG_REQUIREMENTS_DATA));
@@ -437,9 +467,9 @@ window.handleOrgRequirementSubmit = async function (e) {
   // Content-Type: text/plain prevents CORS preflight on script.google.com
   try {
     fetch(GAS_REQUIREMENT_URL, {
-      method:  'POST',
+      method: 'POST',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body:    JSON.stringify(payload)
+      body: JSON.stringify(payload)
     }).then(async (gasRes) => {
       if (!gasRes.ok) {
         console.warn('[GAS] Google Sheets POST returned non-OK status:', gasRes.status);
