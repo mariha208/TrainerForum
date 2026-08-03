@@ -275,28 +275,31 @@
                 <button type="button" class="btn btn-org-primary" onclick="switchOrgTab('requirements')">+ Submit New Requirement</button>
               </div>
 
-              <!-- Desktop Table View -->
-              <div class="table-responsive org-desktop-table">
-                <table class="org-table">
-                  <thead>
-                    <tr>
-                      <th>Requirement / Topic</th>
-                      <th>Location (In/Out City)</th>
-                      <th>Budget</th>
-                      <th>Target Date & Time</th>
-                      <th>Status</th>
-                      <th>Action</th>
-                    </tr>
-                  </thead>
-                  <tbody id="requirements-table-body">
-                    <!-- Dynamically Rendered by js/org-dashboard.js -->
-                  </tbody>
-                </table>
-              </div>
+              <!-- Target DOM Container for Requirements List -->
+              <div id="requirementsListContainer" class="mt-6 w-full" style="margin-top: 24px; width: 100%;">
+                <!-- Desktop Table View -->
+                <div class="table-responsive org-desktop-table">
+                  <table class="org-table">
+                    <thead>
+                      <tr>
+                        <th>Requirement / Topic</th>
+                        <th>Location (In/Out City)</th>
+                        <th>Budget</th>
+                        <th>Target Date & Time</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody id="requirements-table-body">
+                      <!-- Dynamically Rendered by js/org-dashboard.js -->
+                    </tbody>
+                  </table>
+                </div>
 
-              <!-- Mobile Cards View -->
-              <div class="org-mobile-cards" id="requirements-cards-body">
-                <!-- Dynamically Rendered by js/org-dashboard.js -->
+                <!-- Mobile Cards View -->
+                <div class="org-mobile-cards" id="requirements-cards-body">
+                  <!-- Dynamically Rendered by js/org-dashboard.js -->
+                </div>
               </div>
             </div>
 

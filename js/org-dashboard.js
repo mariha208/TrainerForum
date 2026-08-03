@@ -47,33 +47,43 @@ async function fetchLiveRequirements() {
   try {
     const gasRes = await fetch(REQUIREMENTS_API_URL, { method: 'GET' });
     if (gasRes.ok) {
-      const gasData = await gasRes.json();
-      const gasReqs = Array.isArray(gasData) ? gasData : (gasData.requirements || gasData.data || gasData.result || []);
-
-      if (Array.isArray(gasReqs) && gasReqs.length > 0) {
-        ORG_REQUIREMENTS_DATA = gasReqs.map((item, idx) => {
-          const rawStatus = item.approvalStatus || item.status || 'Pending';
-          const currentStatus = String(rawStatus || 'Pending').trim();
-          return {
-            rowId: item.rowId || item.id || (idx + 2),
-            reqId: item.reqId || item.id || `REQ-${item.rowId || (1000 + idx)}`,
-            orgName: item.organizationName || item.orgName || 'Organization',
-            topic: item.trainingTopic || item.topic || 'Training Topic',
-            budget: item.budget || 0,
-            locationType: item.locationPlace || item.locationType || 'In City',
-            cityDetails: item.cityAddress || item.cityDetails || '',
-            targetDate: item.targetDates || item.targetDate || '',
-            duration: item.timeDuration || item.duration || '',
-            notes: item.specialNotes || item.notes || '',
-            approvalStatus: currentStatus,
-            status: currentStatus
-          };
-        });
-        gasFetched = true;
+      let gasData = null;
+      try {
+        gasData = await gasRes.json();
+      } catch (jsonErr) {
+        console.error('[OrgDashboard] JSON parsing error from GAS:', jsonErr);
       }
+
+      if (gasData) {
+        const gasReqs = Array.isArray(gasData) ? gasData : (gasData.requirements || gasData.data || gasData.result || []);
+
+        if (Array.isArray(gasReqs) && gasReqs.length > 0) {
+          ORG_REQUIREMENTS_DATA = gasReqs.map((item, idx) => {
+            const rawStatus = item.approvalStatus || item.status || 'Pending';
+            const currentStatus = String(rawStatus || 'Pending').trim();
+            return {
+              rowId: item.rowId || item.id || (idx + 2),
+              reqId: item.reqId || item.id || `REQ-${item.rowId || (1000 + idx)}`,
+              orgName: item.organizationName || item.orgName || 'Organization',
+              topic: item.trainingTopic || item.topic || 'Training Topic',
+              budget: item.budget || 0,
+              locationType: item.locationPlace || item.locationType || 'In City',
+              cityDetails: item.cityAddress || item.cityDetails || '',
+              targetDate: item.targetDates || item.targetDate || '',
+              duration: item.timeDuration || item.duration || '',
+              notes: item.specialNotes || item.notes || '',
+              approvalStatus: currentStatus,
+              status: currentStatus
+            };
+          });
+          gasFetched = true;
+        }
+      }
+    } else {
+      console.warn('[OrgDashboard] Primary GAS fetch returned non-OK status:', gasRes.status);
     }
   } catch (gasErr) {
-    console.warn('[OrgDashboard] Primary GAS fetch failed:', gasErr.message);
+    console.error('[OrgDashboard] Primary GAS fetch network error:', gasErr.message);
   }
 
   // 2. Fallback to backend/local storage only if GAS fetch fails
@@ -85,11 +95,19 @@ async function fetchLiveRequirements() {
       });
 
       if (res.ok) {
-        const data = await res.json();
-        ORG_REQUIREMENTS_DATA = (data.requirements || []).map(r => ({
-          ...r,
-          status: r.approvalStatus || r.status || 'Pending'
-        }));
+        const data = await res.json().catch(jsonErr => {
+          console.error('[OrgDashboard] Backend JSON error:', jsonErr);
+          return null;
+        });
+
+        if (data && Array.isArray(data.requirements)) {
+          ORG_REQUIREMENTS_DATA = data.requirements.map(r => ({
+            ...r,
+            status: r.approvalStatus || r.status || 'Pending'
+          }));
+        } else {
+          ORG_REQUIREMENTS_DATA = JSON.parse(localStorage.getItem('ORG_REQUIREMENTS_STORE')) || [];
+        }
       } else {
         ORG_REQUIREMENTS_DATA = JSON.parse(localStorage.getItem('ORG_REQUIREMENTS_STORE')) || [];
       }
@@ -99,7 +117,8 @@ async function fetchLiveRequirements() {
     }
   }
 
-  renderRequirementsTrack();
+  // Render immediately after fetching
+  renderRequirementsTrack(ORG_REQUIREMENTS_DATA);
 }
 
 // ── FETCH LIVE HIRED TRAINERS (API INTEGRATION) ──────────────────────────────
@@ -219,26 +238,28 @@ const getCleanDate = formatSimpleDate;
 const formatDate = formatSimpleDate;
 
 // ── RENDER REQUIREMENTS TRACK & BOX 1 ─────────────────────────────────────────
-function renderRequirementsTrack() {
+function renderRequirementsTrack(customData) {
+  const reqData = Array.isArray(customData) ? customData : ORG_REQUIREMENTS_DATA;
   const tbody = document.getElementById('requirements-table-body');
+  const cardsContainer = document.getElementById('requirements-cards-body');
   const boxCount = document.getElementById('box-reqs-count');
   const pillPending = document.getElementById('box-pill-pending');
   const pillAccepted = document.getElementById('box-pill-accepted');
   const pillRejected = document.getElementById('box-pill-rejected');
   const countBadge = document.getElementById('count-reqs');
 
-  const total = ORG_REQUIREMENTS_DATA.length;
-  const pending = ORG_REQUIREMENTS_DATA.filter(r => {
+  const total = reqData.length;
+  const pending = reqData.filter(r => {
     const s = String(r.approvalStatus || r.status || 'Pending').trim().toUpperCase();
     return s === 'PENDING';
   }).length;
 
-  const accepted = ORG_REQUIREMENTS_DATA.filter(r => {
+  const accepted = reqData.filter(r => {
     const s = String(r.approvalStatus || r.status || 'Pending').trim().toUpperCase();
     return s === 'APPROVED' || s === 'ACCEPTED';
   }).length;
 
-  const rejected = ORG_REQUIREMENTS_DATA.filter(r => {
+  const rejected = reqData.filter(r => {
     const s = String(r.approvalStatus || r.status || 'Pending').trim().toUpperCase();
     return s === 'REJECTED';
   }).length;
@@ -249,29 +270,33 @@ function renderRequirementsTrack() {
   if (pillRejected) pillRejected.textContent = `${rejected} Rejected`;
   if (countBadge) countBadge.textContent = total;
 
-  if (!tbody) return;
+  if (!tbody && !cardsContainer) return;
 
-  const cardsContainer = document.getElementById('requirements-cards-body');
-
-  if (total === 0) {
-    tbody.innerHTML = `
-      <tr>
-        <td colspan="6" style="text-align:center;padding:40px;color:#94a3b8">
-          No training requirements submitted yet. Click "+ Submit New Requirement" above to create one.
-        </td>
-      </tr>
-    `;
+  // Empty Data Check
+  if (!reqData || reqData.length === 0) {
+    if (tbody) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="6" style="text-align:center;padding:30px;color:#94a3b8">
+            <div class="p-6 text-center text-gray-400 bg-[#161f33] rounded-xl border border-gray-800" style="padding:20px; text-align:center; color:#94a3b8; background:#161f33; border-radius:12px; border:1px solid #1f293d;">
+              No training requirements submitted yet.
+            </div>
+          </td>
+        </tr>
+      `;
+    }
     if (cardsContainer) {
       cardsContainer.innerHTML = `
-        <div style="text-align:center;padding:30px;color:#94a3b8;background:#0a0f1d;border:1px solid #1f293d;border-radius:14px;">
-          No training requirements submitted yet. Click "+ Submit New Requirement" above to create one.
+        <div class="p-6 text-center text-gray-400 bg-[#161f33] rounded-xl border border-gray-800" style="padding:24px; text-align:center; color:#94a3b8; background:#161f33; border-radius:12px; border:1px solid #1f293d;">
+          No training requirements submitted yet.
         </div>
       `;
     }
     return;
   }
 
-  tbody.innerHTML = ORG_REQUIREMENTS_DATA.map(r => {
+  if (tbody) {
+    tbody.innerHTML = reqData.map(r => {
     const statusRaw = String(r.approvalStatus || r.status || 'Pending').trim().toUpperCase();
 
     let badgeClass = 'badge-pending';
@@ -326,10 +351,11 @@ function renderRequirementsTrack() {
       </tr>
     `;
   }).join('');
+  }
 
   // ── RENDER MOBILE CARDS VIEW ──────────────────────────────────────────────
   if (cardsContainer) {
-    cardsContainer.innerHTML = ORG_REQUIREMENTS_DATA.map(r => {
+    cardsContainer.innerHTML = reqData.map(r => {
       const statusRaw = String(r.approvalStatus || r.status || 'Pending').trim().toUpperCase();
 
       let badgeClass = 'badge-pending';
@@ -384,6 +410,10 @@ function renderRequirementsTrack() {
     }).join('');
   }
 }
+
+// Export global aliases for window scope
+window.renderRequirementsTrack = renderRequirementsTrack;
+window.renderRequirements = renderRequirementsTrack;
 
 // ── RENDER HIRED TRAINERS VIEW & BOX 2 ────────────────────────────────────────
 function renderHiredTrainersView() {
