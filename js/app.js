@@ -203,7 +203,11 @@ window.refreshTrainerAvailabilityFromDB = async function (trainerId) {
     // 1. Invalidate & update window.TRAINERS in-memory array
     if (Array.isArray(window.TRAINERS)) {
       window.TRAINERS.forEach(tr => {
-        if (String(tr.id || tr._id) === String(trainerId)) {
+        const trId = String(tr.id || tr._id || '');
+        const freshId = String(freshUser._id || freshUser.id || trainerId || '');
+        const trEmail = (tr.email || '').toLowerCase();
+        const freshEmail = (freshUser.email || '').toLowerCase();
+        if ((trId && freshId && trId === freshId) || (trEmail && freshEmail && trEmail === freshEmail)) {
           tr.availability = freshAvail;
         }
       });
@@ -213,7 +217,10 @@ window.refreshTrainerAvailabilityFromDB = async function (trainerId) {
     try {
       const session = JSON.parse(localStorage.getItem('userSession') || 'null');
       const sessionId = session && (session._id || session.id || '');
-      if (sessionId && String(sessionId) === String(trainerId)) {
+      const sessionEmail = (session && session.email || '').toLowerCase();
+      const freshId = String(freshUser._id || freshUser.id || trainerId || '');
+      const freshEmail = (freshUser.email || '').toLowerCase();
+      if ((sessionId && String(sessionId) === freshId) || (sessionEmail && freshEmail && sessionEmail === freshEmail)) {
         const ct = JSON.parse(localStorage.getItem('currentTrainer') || '{}');
         ct.availability = freshAvail;
         localStorage.setItem('currentTrainer', JSON.stringify(ct));
@@ -221,8 +228,9 @@ window.refreshTrainerAvailabilityFromDB = async function (trainerId) {
     } catch (e) {}
 
     // 3. Update all Mobile & Desktop card availability pill badges
-    const formattedText = window.formatAvailability(freshUser);
-    document.querySelectorAll(`.avail-pill[data-trainer-id="${trainerId}"]`).forEach(el => {
+    const formattedText = window.formatTrainerAvailability(freshUser);
+    const targetId = freshUser._id || freshUser.id || trainerId;
+    document.querySelectorAll(`.avail-pill[data-trainer-id="${targetId}"], .avail-pill[data-trainer-id="${trainerId}"]`).forEach(el => {
       el.textContent = '📅 ' + formattedText;
     });
 

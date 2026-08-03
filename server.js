@@ -238,8 +238,8 @@ app.put('/api/trainer/availability', async (req, res) => {
   try {
     const mongoose = require('mongoose');
     const User = require('./models/User');
-    const { trainerId, availability } = req.body;
-    let userId = trainerId || (req.user && req.user.id);
+    const { trainerId, email, availability } = req.body;
+    let userId = trainerId || email || (req.user && req.user.id);
     
     if (!userId || mongoose.connection.readyState !== 1) {
       return res.json({ message: 'Availability stored locally', availability });

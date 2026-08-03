@@ -1787,10 +1787,13 @@
       });
 
       // 1. Update localStorage immediately for instant local feedback
+      var session = JSON.parse(localStorage.getItem('userSession') || 'null');
+      var _tid = (session && (session._id || session.id)) || cache._id || cache.id || cache.trainerId || null;
+      var _email = (session && session.email) || cache.email || null;
+
       cache.availability = avs;
       localStorage.setItem('currentTrainer', JSON.stringify(cache));
 
-      var _tid = cache.trainerId || cache._id || cache.id || null;
       var _avsJson = JSON.stringify(avs);
       if (_tid) localStorage.setItem('tv-trainer-' + _tid + '-availability', _avsJson);
       localStorage.setItem('tv-trainer-1-availability', _avsJson);
@@ -1822,9 +1825,9 @@
 
       window.toast && window.toast('Saving to database...', 1500);
 
-      // 7. API: PUT to backend — awaited so we confirm before showing success
+      // 7. API: PUT to backend — sends trainerId and email so backend matches user record
       var origin = window.SERVER_ORIGIN || window.location.origin || 'https://trainerforum.onrender.com';
-      var _apiPayload = JSON.stringify({ trainerId: _tid, availability: avs });
+      var _apiPayload = JSON.stringify({ trainerId: _tid, email: _email, availability: avs });
 
       var primaryPromise = fetch(origin + '/api/trainer/availability', {
         method: 'PUT',
@@ -1833,8 +1836,9 @@
       });
 
       // Also fire per-user endpoint in parallel
-      if (_tid && _tid !== '1') {
-        fetch(origin + '/api/users/' + _tid + '/availability', {
+      var targetIdOrEmail = _tid || _email;
+      if (targetIdOrEmail && targetIdOrEmail !== '1') {
+        fetch(origin + '/api/users/' + targetIdOrEmail + '/availability', {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ availability: avs })
@@ -1848,8 +1852,8 @@
           window.toast ? window.toast('\u2705 Availability saved globally!') : alert('Availability saved!');
 
           // 8. Re-fetch from DB and push to public cards / window.TRAINERS
-          if (typeof window.refreshTrainerAvailabilityFromDB === 'function' && _tid) {
-            window.refreshTrainerAvailabilityFromDB(_tid);
+          if (typeof window.refreshTrainerAvailabilityFromDB === 'function' && targetIdOrEmail) {
+            window.refreshTrainerAvailabilityFromDB(targetIdOrEmail);
           }
 
           // 9. Full profile sync (availability already included via window._getAvailability)
@@ -1860,7 +1864,6 @@
         .catch(function(err) {
           console.warn('[AvailSync] PUT failed — saved locally only:', err.message);
           window.toast ? window.toast('\u26A0\uFE0F Saved locally (DB offline)') : alert('Saved locally.');
-          // Still do a local-only profile commit so other fields stay in sync
           if (typeof commitLocalProfileChanges === 'function') {
             commitLocalProfileChanges();
           }

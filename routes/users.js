@@ -312,8 +312,8 @@ router.patch('/:id', async (req, res) => {
 // PUT update trainer availability
 router.put('/availability', async (req, res) => {
   try {
-    const { trainerId, availability } = req.body;
-    let userId = trainerId || (req.user && req.user.id);
+    const { trainerId, email, availability } = req.body;
+    let userId = trainerId || email || (req.user && req.user.id);
     if (!userId) return res.status(400).json({ error: 'trainerId or user authentication required' });
     const isObjectId = mongoose.Types.ObjectId.isValid(userId);
     const query = isObjectId ? { _id: userId } : { email: String(userId).toLowerCase() };
