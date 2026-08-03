@@ -2030,6 +2030,7 @@
     var _DB_DAY_MAP = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
     function _getAvailMap() {
+      var cache = JSON.parse(localStorage.getItem('currentTrainer')) || {};
       var avs = {};
       var cont = document.getElementById('weekly-hours-container');
       if (cont) {
@@ -2041,13 +2042,15 @@
           }
         });
       }
-      var stored = (JSON.parse(localStorage.getItem('currentTrainer')) || {}).availability;
+      var stored = cache.availability;
       if (typeof stored === 'string') { try { stored = JSON.parse(stored); } catch (e) { stored = {}; } }
       stored = stored || {};
       if (stored.specificDates) avs.specificDates = stored.specificDates;
+      if (cache.blockedDates) avs.blockedDates = cache.blockedDates;
+      if (stored.blockedDates) avs.blockedDates = stored.blockedDates;
 
       Object.keys(stored).forEach(function (d) {
-        if (d === 'specificDates') return;
+        if (d === 'specificDates' || d === 'blockedDates') return;
         if (!avs[d]) {
           var info = stored[d] || {};
           var isAvail = typeof info.available !== 'undefined' ? info.available : (info.enabled !== false);
