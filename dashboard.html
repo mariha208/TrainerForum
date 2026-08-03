@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -1523,9 +1523,8 @@
         return;
       }
 
-      // ── ADD MODE: create new service ──
-      var item = {
-        id: Date.now(),
+      // ── ADD MODE: POST to backend to get real MongoDB _id ──
+      var newSvc = {
         name: name,
         desc: document.getElementById('modal-svc-desc').value || '',
         duration: document.getElementById('modal-svc-duration').value || '',
@@ -1534,12 +1533,38 @@
         type: document.getElementById('modal-svc-type').value,
         featured: document.getElementById('modal-svc-featured').checked
       };
-      if (!Array.isArray(cache.services)) cache.services = [];
-      cache.services.push(item);
-      localStorage.setItem('currentTrainer', JSON.stringify(cache));
-      _renderServiceItem(item);
-      if (typeof commitLocalProfileChanges === 'function') commitLocalProfileChanges();
       closeAllModals();
+      if (userId) {
+        fetch(origin + '/api/users/' + userId + '/services', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(newSvc)
+        }).then(function(r) { return r.json(); })
+        .then(function(data) {
+          // Use the real MongoDB _id returned from backend
+          var savedService = data.service || data;
+          var realId = String(savedService._id || savedService.id || Date.now());
+          var item = Object.assign({}, newSvc, { id: realId, _id: realId });
+          if (!Array.isArray(cache.services)) cache.services = [];
+          cache.services.push(item);
+          localStorage.setItem('currentTrainer', JSON.stringify(cache));
+          _renderServiceItem(item);
+          window.toast && window.toast('\u2705 Service saved to database.');
+        }).catch(function(err) {
+          console.warn('Service POST error, saving locally:', err);
+          var item = Object.assign({}, newSvc, { id: Date.now() });
+          if (!Array.isArray(cache.services)) cache.services = [];
+          cache.services.push(item);
+          localStorage.setItem('currentTrainer', JSON.stringify(cache));
+          _renderServiceItem(item);
+        });
+      } else {
+        var item = Object.assign({}, newSvc, { id: Date.now() });
+        if (!Array.isArray(cache.services)) cache.services = [];
+        cache.services.push(item);
+        localStorage.setItem('currentTrainer', JSON.stringify(cache));
+        _renderServiceItem(item);
+      }
     }
     function _renderServiceItem(item) {
       var cont = document.getElementById('services-container');
@@ -1695,9 +1720,8 @@
         return;
       }
 
-      // ── ADD MODE: create new package ──
-      var item = {
-        id: Date.now(),
+      // -- ADD MODE: POST to backend to get real MongoDB _id --
+      var newPkg = {
         name: name,
         desc: document.getElementById('modal-pkg-desc').value || '',
         duration: document.getElementById('modal-pkg-duration').value || '',
@@ -1705,14 +1729,39 @@
         features: feats.split(',').map(function (s) { return s.trim() }).filter(Boolean),
         featured: document.getElementById('modal-pkg-featured').checked
       };
-      if (!Array.isArray(cache.packages)) cache.packages = [];
-      cache.packages.push(item);
-      localStorage.setItem('currentTrainer', JSON.stringify(cache));
-      _renderPackageItem(item);
-      if (typeof commitLocalProfileChanges === 'function') commitLocalProfileChanges();
       closeAllModals();
+      if (userId) {
+        fetch(origin + '/api/users/' + userId + '/packages', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(newPkg)
+        }).then(function(r) { return r.json(); })
+        .then(function(data) {
+          var savedPkg = data.package || data;
+          var realId = String(savedPkg._id || savedPkg.id || Date.now());
+          var item = Object.assign({}, newPkg, { id: realId, _id: realId });
+          if (!Array.isArray(cache.packages)) cache.packages = [];
+          cache.packages.push(item);
+          localStorage.setItem('currentTrainer', JSON.stringify(cache));
+          _renderPackageItem(item);
+          window.toast && window.toast('\u2705 Package saved to database.');
+        }).catch(function(err) {
+          console.warn('Package POST error, saving locally:', err);
+          var item = Object.assign({}, newPkg, { id: Date.now() });
+          if (!Array.isArray(cache.packages)) cache.packages = [];
+          cache.packages.push(item);
+          localStorage.setItem('currentTrainer', JSON.stringify(cache));
+          _renderPackageItem(item);
+        });
+      } else {
+        var item = Object.assign({}, newPkg, { id: Date.now() });
+        if (!Array.isArray(cache.packages)) cache.packages = [];
+        cache.packages.push(item);
+        localStorage.setItem('currentTrainer', JSON.stringify(cache));
+        _renderPackageItem(item);
+      }
     }
-    function _renderPackageItem(item) {
+        function _renderPackageItem(item) {
       var cont = document.getElementById('packages-container');
       if (!cont) return;
       var empty = cont.querySelector('.empty-msg');
@@ -2548,7 +2597,58 @@
       }
     }
 
+    function syncDashboardFromMongoDB() {
+      var session = JSON.parse(localStorage.getItem('userSession') || 'null');
+      var cache = JSON.parse(localStorage.getItem('currentTrainer') || 'null');
+      var userId = (session && (session._id || session.id)) || (cache && (cache._id || cache.id || cache.trainerId)) || null;
+      if (!userId) return;
+      var origin = window.SERVER_ORIGIN || window.location.origin || 'https://trainerforum.onrender.com';
+      fetch(origin + '/api/users/' + userId)
+        .then(function(res) { return res.ok ? res.json() : null; })
+        .then(function(freshUser) {
+          if (!freshUser) return;
+          console.log('[Dashboard] Loaded fresh profile from MongoDB:', freshUser);
+          // NOTE: Services & Packages are loaded from MongoDB by syncDashboardFromMongoDB() above.
+          // Do NOT pre-render from localStorage here to avoid showing stale/deleted items.
+          var updatedCache = Object.assign({}, cache || {}, freshUser);
+          localStorage.setItem('currentTrainer', JSON.stringify(updatedCache));
+
+          // Re-render Services
+          var sCont = document.getElementById('services-container');
+          if (sCont) {
+            sCont.innerHTML = '';
+            if (Array.isArray(freshUser.services) && freshUser.services.length > 0) {
+              freshUser.services.forEach(function(s) { _renderServiceItem(s); });
+            } else {
+              sCont.innerHTML = '<div class="empty-msg" style="grid-column:1/-1;text-align:center;padding:20px;color:var(--tm);font-size:.85rem">No services defined.</div>';
+            }
+          }
+
+          // Re-render Packages
+          var pCont = document.getElementById('packages-container');
+          if (pCont) {
+            pCont.innerHTML = '';
+            if (Array.isArray(freshUser.packages) && freshUser.packages.length > 0) {
+              freshUser.packages.forEach(function(p) { _renderPackageItem(p); });
+            } else {
+              pCont.innerHTML = '<div class="empty-msg" style="grid-column:1/-1;text-align:center;padding:20px;color:var(--tm);font-size:.85rem">No packages defined.</div>';
+            }
+          }
+
+          // Re-render Availability & Calendar
+          if (typeof _renderAvailabilitySettings === 'function') _renderAvailabilitySettings();
+          renderDashboardCalendar();
+        })
+        .catch(function(err) {
+          console.warn('[Dashboard] Sync from MongoDB failed:', err);
+        });
+    }
+    window.syncDashboardFromMongoDB = syncDashboardFromMongoDB;
+
     document.addEventListener('DOMContentLoaded', function () {
+      // 1. Fetch fresh state from MongoDB first
+      syncDashboardFromMongoDB();
+
       var certBtn = document.getElementById('add-cert-btn');
       if (certBtn) certBtn.addEventListener('click', function () { openModal('certificate'); });
       var eventBtn = document.getElementById('add-event-btn');
@@ -2566,17 +2666,7 @@
         if (tbody) tbody.innerHTML = '<tr class="event-empty-row"><td colspan="5" style="text-align:center;padding:20px;color:var(--tm);font-size:.85rem">No events yet. Click <strong>+ Add Event</strong> to begin.</td></tr>';
       }
 
-      // Load Services
-      var sCont = document.getElementById('services-container');
-      if (Array.isArray(cache.services) && cache.services.length > 0) {
-        cache.services.forEach(function (item) { _renderServiceItem(item); });
-      } else if (sCont) sCont.innerHTML = '<div class="empty-msg" style="grid-column:1/-1;text-align:center;padding:20px;color:var(--tm);font-size:.85rem">No services defined.</div>';
-
-      // Load Packages
-      var pCont = document.getElementById('packages-container');
-      if (Array.isArray(cache.packages) && cache.packages.length > 0) {
-        cache.packages.forEach(function (item) { _renderPackageItem(item); });
-      } else if (pCont) pCont.innerHTML = '<div class="empty-msg" style="grid-column:1/-1;text-align:center;padding:20px;color:var(--tm);font-size:.85rem">No packages defined.</div>';
+      // NOTE: Services & Packages are loaded from MongoDB by syncDashboardFromMongoDB() above.
 
       // Load Availability
       if (typeof _renderAvailabilitySettings === 'function') _renderAvailabilitySettings();

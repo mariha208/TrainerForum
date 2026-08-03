@@ -409,6 +409,60 @@ router.put('/:id/availability', async (req, res) => {
   }
 });
 
+// POST create a new service for a user profile
+router.post('/:id/services', async (req, res) => {
+  try {
+    const isObjectId = mongoose.Types.ObjectId.isValid(req.params.id);
+    const query = isObjectId ? { _id: req.params.id } : { email: req.params.id.toLowerCase() };
+    const user = await User.findOne(query);
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
+    const newService = {
+      _id: new mongoose.Types.ObjectId(),
+      id: undefined,
+      ...req.body,
+      createdAt: new Date()
+    };
+    newService.id = String(newService._id);
+
+    if (!Array.isArray(user.services)) user.services = [];
+    user.services.push(newService);
+    user.markModified('services');
+    await user.save();
+
+    res.status(201).json({ message: 'Service created in MongoDB', service: newService, services: user.services });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// POST create a new package for a user profile
+router.post('/:id/packages', async (req, res) => {
+  try {
+    const isObjectId = mongoose.Types.ObjectId.isValid(req.params.id);
+    const query = isObjectId ? { _id: req.params.id } : { email: req.params.id.toLowerCase() };
+    const user = await User.findOne(query);
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
+    const newPackage = {
+      _id: new mongoose.Types.ObjectId(),
+      id: undefined,
+      ...req.body,
+      createdAt: new Date()
+    };
+    newPackage.id = String(newPackage._id);
+
+    if (!Array.isArray(user.packages)) user.packages = [];
+    user.packages.push(newPackage);
+    user.markModified('packages');
+    await user.save();
+
+    res.status(201).json({ message: 'Package created in MongoDB', package: newPackage, packages: user.packages });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // PUT update a service in user profile
 router.put('/:id/services/:serviceId', async (req, res) => {
   try {
