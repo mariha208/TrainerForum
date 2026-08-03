@@ -64,7 +64,7 @@ window.getTrainerAvailability = function (t) {
 };
 
 /**
- * UNIFIED AVAILABILITY FORMATTER FUNCTION: getFormattedAvailability(input)
+ * MASTER AVAILABILITY FORMATTER FUNCTION: formatTrainerAvailability(availabilityData)
  * Single source of truth availability formatter function across Mobile, Desktop, Dashboard, and Booking Modal.
  * Accepts either:
  *   - A trainer object containing .availability or .weekly_slots
@@ -73,18 +73,18 @@ window.getTrainerAvailability = function (t) {
  *
  * Returns a standardized day string (e.g. "Mon, Tue, Wed, Thu", "Mon–Fri", "Everyday", "By Appointment").
  */
-window.getFormattedAvailability = function (input) {
-  if (!input) return 'Mon–Fri | 9 AM–5 PM';
+window.formatTrainerAvailability = function (availabilityData) {
+  if (!availabilityData) return 'Mon–Fri | 9 AM–5 PM';
 
   let availObj = null;
 
   // If input is a trainer object, resolve availability using getTrainerAvailability or properties
-  if (typeof input === 'object' && input !== null && !input.Mon && !input.mon && (input.id || input._id || input.trainerId || input.availability || input.weekly_slots)) {
+  if (typeof availabilityData === 'object' && availabilityData !== null && !availabilityData.Mon && !availabilityData.mon && (availabilityData.id || availabilityData._id || availabilityData.trainerId || availabilityData.availability || availabilityData.weekly_slots)) {
     availObj = typeof window.getTrainerAvailability === 'function'
-      ? window.getTrainerAvailability(input)
-      : (input.availability || input.weekly_slots);
+      ? window.getTrainerAvailability(availabilityData)
+      : (availabilityData.availability || availabilityData.weekly_slots);
   } else {
-    availObj = input;
+    availObj = availabilityData;
   }
 
   if (!availObj) return 'Mon–Fri | 9 AM–5 PM';
@@ -124,8 +124,9 @@ window.getFormattedAvailability = function (input) {
 };
 
 // Aliases for global compatibility across all components
-window.formatAvailability = window.getFormattedAvailability;
-window.getAvailabilityPillText = window.getFormattedAvailability;
+window.getFormattedAvailability  = window.formatTrainerAvailability;
+window.formatAvailability        = window.formatTrainerAvailability;
+window.getAvailabilityPillText   = window.formatTrainerAvailability;
 
 /**
  * Dynamic day-of-week evaluation helper.
