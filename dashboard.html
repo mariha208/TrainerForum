@@ -13,6 +13,15 @@
   <link rel="icon" type="image/svg+xml" href="img/logo.svg">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <link rel="apple-touch-icon" sizes="180x180" href="img/logo.svg">
+
+  <!-- API Origin: always point to backend regardless of serving domain -->
+  <script>
+    window.SERVER_ORIGIN = (function() {
+      var h = window.location.hostname;
+      if (h === 'localhost' || h === '127.0.0.1') return window.location.origin;
+      return 'https://trainerforum.onrender.com';
+    })();
+  </script>
 </head>
 
 <body>
@@ -1622,7 +1631,7 @@
           var userId = typeof getLoggedInUserId === 'function' ? getLoggedInUserId() : null;
           var cache = JSON.parse(localStorage.getItem('currentTrainer')) || {};
           if (!userId) userId = cache.trainerId || cache._id || cache.id || '1';
-          var origin = window.SERVER_ORIGIN || window.location.origin || 'https://trainerforum.onrender.com';
+          var origin = window.SERVER_ORIGIN || 'https://trainerforum.onrender.com';
 
           // 1. Backend hard DELETE — only update UI AFTER success
           function _doLocalDelete() {
@@ -1822,7 +1831,7 @@
           var userId = typeof getLoggedInUserId === 'function' ? getLoggedInUserId() : null;
           var cache = JSON.parse(localStorage.getItem('currentTrainer')) || {};
           if (!userId) userId = cache.trainerId || cache._id || cache.id || '1';
-          var origin = window.SERVER_ORIGIN || window.location.origin || 'https://trainerforum.onrender.com';
+          var origin = window.SERVER_ORIGIN || 'https://trainerforum.onrender.com';
 
           function _doLocalPkgDelete() {
             var el = document.getElementById('pkg-' + targetId);
@@ -2047,7 +2056,7 @@
       window.toast && window.toast('Saving to database...', 1500);
 
       // 7. API: PUT to backend — sends trainerId and email so backend matches user record
-      var origin = window.SERVER_ORIGIN || window.location.origin || 'https://trainerforum.onrender.com';
+      var origin = window.SERVER_ORIGIN || 'https://trainerforum.onrender.com';
       var _apiPayload = JSON.stringify({ trainerId: _tid, email: _email, availability: avs, weeklyAvailability: weeklyAvailability, blockedDates: cache.blockedDates || [] });
 
       var primaryPromise = fetch(origin + '/api/trainer/availability', {
@@ -2273,7 +2282,7 @@
       localStorage.setItem('currentTrainer', JSON.stringify(cache));
 
       // Push blockedDates & availability to MongoDB
-      var _bdOrigin = window.SERVER_ORIGIN || window.location.origin || 'https://trainerforum.onrender.com';
+      var _bdOrigin = window.SERVER_ORIGIN || 'https://trainerforum.onrender.com';
       var _session = JSON.parse(localStorage.getItem('userSession') || 'null');
       var _bdTid = (_session && (_session._id || _session.id)) || cache._id || cache.id || cache.trainerId || null;
       var _bdEmail = (_session && _session.email) || cache.email || null;
@@ -2602,7 +2611,7 @@
       var cache = JSON.parse(localStorage.getItem('currentTrainer') || 'null');
       var userId = (session && (session._id || session.id)) || (cache && (cache._id || cache.id || cache.trainerId)) || null;
       if (!userId) return;
-      var origin = window.SERVER_ORIGIN || window.location.origin || 'https://trainerforum.onrender.com';
+      var origin = window.SERVER_ORIGIN || 'https://trainerforum.onrender.com';
       fetch(origin + '/api/users/' + userId)
         .then(function(res) { return res.ok ? res.json() : null; })
         .then(function(freshUser) {
