@@ -214,17 +214,14 @@ function renderHiredTrainersView() {
   const container = document.getElementById('hired-trainers-content');
   const boxCount = document.getElementById('box-hired-count');
   const pillScheduled = document.getElementById('box-pill-scheduled');
-  const pillActive = document.getElementById('box-pill-active');
   const pillCompleted = document.getElementById('box-pill-completed');
 
   const total = ORG_HIRED_TRAINERS_DATA.length;
   const scheduled = ORG_HIRED_TRAINERS_DATA.filter(t => t.status === 'Scheduled').length;
-  const active = ORG_HIRED_TRAINERS_DATA.filter(t => t.status === 'Active').length;
   const completed = ORG_HIRED_TRAINERS_DATA.filter(t => t.status === 'Completed').length;
 
   if (boxCount) boxCount.textContent = total;
   if (pillScheduled) pillScheduled.textContent = `${scheduled} Scheduled`;
-  if (pillActive) pillActive.textContent = `${active} Active`;
   if (pillCompleted) pillCompleted.textContent = `${completed} Completed`;
 
   if (!container) return;
@@ -257,7 +254,6 @@ function renderHiredTrainersView() {
         <tbody>
           ${ORG_HIRED_TRAINERS_DATA.map(t => {
             let badgeClass = 'badge-blue';
-            if (t.status === 'Active') badgeClass = 'badge-accepted';
             if (t.status === 'Completed') badgeClass = 'badge-amber';
 
             return `
