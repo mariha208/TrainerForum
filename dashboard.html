@@ -1751,7 +1751,7 @@
       }
       if (window._isSavingAvailability) return;
       window._isSavingAvailability = true;
-      setTimeout(function() { window._isSavingAvailability = false; }, 400);
+      setTimeout(function() { window._isSavingAvailability = false; }, 1000);
 
       var cont = document.getElementById('weekly-hours-container');
       var cache = JSON.parse(localStorage.getItem('currentTrainer')) || {};
@@ -1773,6 +1773,7 @@
         });
       }
 
+      // Clean up specificDates that match the weekly default (no need to persist)
       Object.keys(avs.specificDates).forEach(function (dateKey) {
         var parts = dateKey.split('-');
         if (parts.length < 3) return;
@@ -1785,58 +1786,85 @@
         }
       });
 
+      // 1. Update localStorage immediately for instant local feedback
       cache.availability = avs;
       localStorage.setItem('currentTrainer', JSON.stringify(cache));
 
-      var _tid = cache.trainerId || cache._id || cache.id || '1';
+      var _tid = cache.trainerId || cache._id || cache.id || null;
       var _avsJson = JSON.stringify(avs);
-      localStorage.setItem('tv-trainer-' + _tid + '-availability', _avsJson);
+      if (_tid) localStorage.setItem('tv-trainer-' + _tid + '-availability', _avsJson);
       localStorage.setItem('tv-trainer-1-availability', _avsJson);
 
-      if (window.bookingState) {
-        window.bookingState.trainerAvailability = avs;
-      }
-      if (Array.isArray(window.TRAINERS)) {
+      // 2. Update in-memory window.TRAINERS for public card pills
+      if (Array.isArray(window.TRAINERS) && _tid) {
         var tr = window.TRAINERS.find(function(x) { return String(x.id || x._id) === String(_tid); });
         if (tr) tr.availability = avs;
       }
 
-      renderDashboardCalendar();
-
-      // ── API CALL: Sync availability to backend database ─────────────────
-      var origin = window.SERVER_ORIGIN || window.location.origin || 'https://trainerforum.onrender.com';
-      var _apiPayload = JSON.stringify({ trainerId: _tid, availability: avs });
-
-      // Primary: dedicated endpoint
-      fetch(origin + '/api/trainer/availability', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: _apiPayload
-      }).catch(function(err) { console.warn('[Availability Sync] Primary PUT failed:', err.message); });
-
-      // Fallback: per-user endpoint (covers both ObjectId and email-keyed trainers)
-      if (_tid && _tid !== '1') {
-        fetch(origin + '/api/users/' + _tid + '/availability', {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ availability: avs })
-        }).catch(function() { });
-      }
-
-      // Sync open trainer modal if current trainer is viewing their own profile
-      if (window.currentModalTrainer) {
+      // 3. Sync open trainer modal
+      if (window.currentModalTrainer && _tid) {
         var _modalId = String(window.currentModalTrainer.id || window.currentModalTrainer._id || '');
         if (_modalId && _modalId === String(_tid)) {
           window.currentModalTrainer.availability = avs;
         }
       }
 
-      window.toast && window.toast('Saving availability to database...', 1500);
-
-      if (typeof commitLocalProfileChanges === 'function') {
-        commitLocalProfileChanges();
-        window.toast ? window.toast('\u2705 Availability synchronized globally!') : alert('Availability saved successfully!');
+      // 4. Sync bookingState
+      if (window.bookingState) {
+        window.bookingState.trainerAvailability = avs;
       }
+
+      // 5. Re-render calendar immediately
+      renderDashboardCalendar();
+
+      // 6. Expose _getAvailability so commitLocalProfileChanges always sends the object
+      window._getAvailability = function() { return avs; };
+
+      window.toast && window.toast('Saving to database...', 1500);
+
+      // 7. API: PUT to backend — awaited so we confirm before showing success
+      var origin = window.SERVER_ORIGIN || window.location.origin || 'https://trainerforum.onrender.com';
+      var _apiPayload = JSON.stringify({ trainerId: _tid, availability: avs });
+
+      var primaryPromise = fetch(origin + '/api/trainer/availability', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: _apiPayload
+      });
+
+      // Also fire per-user endpoint in parallel
+      if (_tid && _tid !== '1') {
+        fetch(origin + '/api/users/' + _tid + '/availability', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ availability: avs })
+        }).catch(function() {});
+      }
+
+      primaryPromise
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+          console.log('[AvailSync] DB confirmed save:', data);
+          window.toast ? window.toast('\u2705 Availability saved globally!') : alert('Availability saved!');
+
+          // 8. Re-fetch from DB and push to public cards / window.TRAINERS
+          if (typeof window.refreshTrainerAvailabilityFromDB === 'function' && _tid) {
+            window.refreshTrainerAvailabilityFromDB(_tid);
+          }
+
+          // 9. Full profile sync (availability already included via window._getAvailability)
+          if (typeof commitLocalProfileChanges === 'function') {
+            commitLocalProfileChanges();
+          }
+        })
+        .catch(function(err) {
+          console.warn('[AvailSync] PUT failed — saved locally only:', err.message);
+          window.toast ? window.toast('\u26A0\uFE0F Saved locally (DB offline)') : alert('Saved locally.');
+          // Still do a local-only profile commit so other fields stay in sync
+          if (typeof commitLocalProfileChanges === 'function') {
+            commitLocalProfileChanges();
+          }
+        });
     }
 
     /* ── Dashboard Calendar ── */

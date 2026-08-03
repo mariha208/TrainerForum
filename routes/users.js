@@ -285,7 +285,17 @@ router.patch('/:id', async (req, res) => {
       'isFeatured', 'displayPriority', 'profileVisibility'
     ];
     for (const key of passthrough) {
-      if (body[key] !== undefined) update[key] = body[key];
+      if (body[key] === undefined) continue; // skip — don't overwrite DB with undefined
+      if (key === 'availability') {
+        // Always store availability as an object, never as a plain string
+        let av = body[key];
+        if (typeof av === 'string') {
+          try { av = JSON.parse(av); } catch (e) { /* keep as string if not parseable */ }
+        }
+        if (av !== undefined && av !== null) update[key] = av;
+        continue;
+      }
+      update[key] = body[key];
     }
 
     const user = await User.findOneAndUpdate(query, { $set: update }, {

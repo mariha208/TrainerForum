@@ -12,44 +12,62 @@ if (typeof window !== 'undefined' && typeof window.TRAINERS === 'undefined') {
   window.TRAINERS = [];
 }
 
+// ── AVAILABILITY HELPERS ─────────────────────────────────────────────────────
+/**
+ * Resolve availability for a trainer object.
+ * Priority:
+ *   1. localStorage session override (only for the currently logged-in trainer)
+ *   2. t.availability from the server/API response  ← primary source of truth
+ *   3. Generic localStorage key tv-trainer-{id}-availability (legacy)
+ */
 window.getTrainerAvailability = function (t) {
   if (!t) return null;
   const tid = String(t.id || t._id || t.trainerId || '');
-  let avail = null;
 
+  // 1. Session override — only applied when this trainer IS the logged-in user
   if (tid) {
     try {
-      const lavail = JSON.parse(localStorage.getItem(`tv-trainer-${tid}-availability`) || 'null');
-      if (lavail) avail = lavail;
-    } catch (e) {}
-  }
-
-  if (!avail && tid) {
-    try {
-      const ct = JSON.parse(localStorage.getItem('currentTrainer') || '{}');
-      const ctId = String(ct.id || ct._id || ct.trainerId || '');
-      if (ctId && ctId === tid && ct.availability) {
-        avail = typeof ct.availability === 'string' ? JSON.parse(ct.availability) : ct.availability;
+      const session = JSON.parse(localStorage.getItem('userSession') || 'null');
+      const sessionId = session && (session._id || session.id || '');
+      // Only override from currentTrainer cache if we are looking at OUR OWN profile
+      if (sessionId && String(sessionId) === tid) {
+        const ct = JSON.parse(localStorage.getItem('currentTrainer') || '{}');
+        const ctId = String(ct.id || ct._id || ct.trainerId || '');
+        if (ctId === tid && ct.availability) {
+          let av = ct.availability;
+          if (typeof av === 'string') { try { av = JSON.parse(av); } catch (e) {} }
+          if (av && typeof av === 'object' && Object.keys(av).length) return av;
+        }
       }
     } catch (e) {}
   }
 
-  if (!avail && t.availability) {
+  // 2. Server-sourced availability on the trainer object (primary for public cards)
+  if (t.availability) {
     try {
-      avail = typeof t.availability === 'string' ? JSON.parse(t.availability) : t.availability;
+      const av = typeof t.availability === 'string' ? JSON.parse(t.availability) : t.availability;
+      if (av && (typeof av === 'object' || typeof av === 'string')) return av;
     } catch (e) {
-      avail = t.availability;
+      return t.availability;
     }
   }
 
-  return avail;
+  // 3. Legacy per-trainer localStorage key
+  if (tid) {
+    try {
+      const lavail = JSON.parse(localStorage.getItem(`tv-trainer-${tid}-availability`) || 'null');
+      if (lavail) return lavail;
+    } catch (e) {}
+  }
+
+  return null;
 };
 
 window.getAvailabilityPillText = function (t) {
   const avail = window.getTrainerAvailability(t);
   if (!avail) return 'Mon–Fri | 9 AM–5 PM';
   if (typeof avail === 'string') return avail;
-  
+
   if (typeof avail === 'object') {
     const dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
     const activeDays = dayNames.filter(d => {
@@ -63,6 +81,43 @@ window.getAvailabilityPillText = function (t) {
   }
   return 'Mon–Fri | 9 AM–5 PM';
 };
+
+/**
+ * After saving availability to the DB, call this to re-fetch the trainer's
+ * record from the API and push the fresh availability object into:
+ *   - window.TRAINERS[n].availability
+ *   - All .avail-pill DOM elements that reference this trainer
+ */
+window.refreshTrainerAvailabilityFromDB = async function (trainerId) {
+  if (!trainerId || trainerId === '1') return;
+  const origin = window.SERVER_ORIGIN || 'https://trainerforum.onrender.com';
+  try {
+    const res = await fetch(`${origin}/api/users/${trainerId}`);
+    if (!res.ok) return;
+    const freshUser = await res.json();
+    const freshAvail = freshUser.availability;
+    if (!freshAvail) return;
+
+    // Update window.TRAINERS in-memory
+    if (Array.isArray(window.TRAINERS)) {
+      window.TRAINERS.forEach(tr => {
+        if (String(tr.id || tr._id) === String(trainerId)) {
+          tr.availability = freshAvail;
+        }
+      });
+    }
+
+    // Re-render any .avail-pill spans that carry a data-trainer-id attribute
+    document.querySelectorAll(`.avail-pill[data-trainer-id="${trainerId}"]`).forEach(el => {
+      el.textContent = '\uD83D\uDCC5 ' + (window.getAvailabilityPillText({ availability: freshAvail }) || 'Available');
+    });
+
+    console.log('[AvailSync] Trainer', trainerId, 'availability refreshed from DB:', freshAvail);
+  } catch (err) {
+    console.warn('[AvailSync] Failed to refresh from DB:', err.message);
+  }
+};
+
 
 // ── MODAL BRIDGE ─────────────────────────────────────────────────────────────
 if (typeof window !== 'undefined') {

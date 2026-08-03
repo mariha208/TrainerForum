@@ -381,7 +381,15 @@ window.commitLocalProfileChanges = function commitLocalProfileChanges() {
     introVideo: document.getElementById('intro-video-url')?.value?.trim() || (typeof cached.introVideo === 'object' ? cached.introVideo.url : cached.introVideo) || "",
     testimonials: typeof window._getTestimonials === 'function' ? window._getTestimonials() : (cached.testimonials || document.getElementById("p-portfolio-links")?.value?.trim() || cached.portfolioLinks || "N/A"),
 
-    availability: typeof window._getAvailability === 'function' ? window._getAvailability() : (cached.availability || "Mon-Fri | 9:00 AM - 6:00 PM"),
+    // Availability: always send the structured object, never a plain string fallback
+    // window._getAvailability is set by saveAvailability() so it carries the latest object
+    availability: (function() {
+      if (typeof window._getAvailability === 'function') return window._getAvailability();
+      var av = cached.availability;
+      if (!av) return undefined; // omit field — don't overwrite DB with undefined
+      if (typeof av === 'string') { try { return JSON.parse(av); } catch(e) {} }
+      return av;
+    })(),
 
     // Skills / Expertise tags
     skills: (() => {
