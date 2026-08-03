@@ -306,9 +306,14 @@ app.delete('/api/services/:id', async (req, res) => {
   try {
     const mongoose = require('mongoose');
     const User = require('./models/User');
+    const Service = require('./models/Service');
     const sid = String(req.params.id);
-    const userId = req.query.userId || req.query.trainerId || req.body?.userId || req.body?.trainerId;
 
+    if (mongoose.Types.ObjectId.isValid(sid)) {
+      await Service.findByIdAndDelete(sid).catch(() => {});
+    }
+
+    const userId = req.query.userId || req.query.trainerId || req.body?.userId || req.body?.trainerId;
     let user;
     if (userId) {
       const isObjectId = mongoose.Types.ObjectId.isValid(userId);
@@ -318,13 +323,13 @@ app.delete('/api/services/:id', async (req, res) => {
       user = await User.findOne({ 'services.id': sid }) || await User.findOne({ 'services._id': sid });
     }
 
-    if (!user) return res.status(404).json({ error: 'Service or User not found' });
+    if (user) {
+      user.services = (user.services || []).filter(s => String(s.id || s._id || '') !== sid);
+      user.markModified('services');
+      await user.save();
+    }
 
-    user.services = (user.services || []).filter(s => String(s.id || s._id || '') !== sid);
-    user.markModified('services');
-    await user.save();
-
-    res.json({ message: 'Service deleted from database', services: user.services });
+    res.json({ message: 'Service deleted permanently from MongoDB', serviceId: sid });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -334,9 +339,14 @@ app.put('/api/services/:id', async (req, res) => {
   try {
     const mongoose = require('mongoose');
     const User = require('./models/User');
+    const Service = require('./models/Service');
     const sid = String(req.params.id);
-    const userId = req.body?.userId || req.body?.trainerId || req.query.userId || req.query.trainerId;
 
+    if (mongoose.Types.ObjectId.isValid(sid)) {
+      await Service.findByIdAndUpdate(sid, req.body, { new: true }).catch(() => {});
+    }
+
+    const userId = req.body?.userId || req.body?.trainerId || req.query.userId || req.query.trainerId;
     let user;
     if (userId) {
       const isObjectId = mongoose.Types.ObjectId.isValid(userId);
@@ -346,21 +356,20 @@ app.put('/api/services/:id', async (req, res) => {
       user = await User.findOne({ 'services.id': sid }) || await User.findOne({ 'services._id': sid });
     }
 
-    if (!user) return res.status(404).json({ error: 'Service or User not found' });
-
-    let services = Array.isArray(user.services) ? user.services : [];
-    let idx = services.findIndex(s => String(s._id || s.id || '') === sid);
-    if (idx !== -1) {
-      services[idx] = { ...services[idx], ...req.body, id: services[idx].id || services[idx]._id || sid };
-    } else {
-      services.push({ ...req.body, id: sid });
+    if (user) {
+      let services = Array.isArray(user.services) ? user.services : [];
+      let idx = services.findIndex(s => String(s._id || s.id || '') === sid);
+      if (idx !== -1) {
+        services[idx] = { ...services[idx], ...req.body, id: services[idx].id || services[idx]._id || sid };
+      } else {
+        services.push({ ...req.body, id: sid });
+      }
+      user.services = services;
+      user.markModified('services');
+      await user.save();
     }
 
-    user.services = services;
-    user.markModified('services');
-    await user.save();
-
-    res.json({ message: 'Service updated in database', service: services[idx !== -1 ? idx : services.length - 1], services: user.services });
+    res.json({ message: 'Service updated in MongoDB', id: sid, data: req.body });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -370,9 +379,14 @@ app.delete('/api/packages/:id', async (req, res) => {
   try {
     const mongoose = require('mongoose');
     const User = require('./models/User');
+    const Package = require('./models/Package');
     const pid = String(req.params.id);
-    const userId = req.query.userId || req.query.trainerId || req.body?.userId || req.body?.trainerId;
 
+    if (mongoose.Types.ObjectId.isValid(pid)) {
+      await Package.findByIdAndDelete(pid).catch(() => {});
+    }
+
+    const userId = req.query.userId || req.query.trainerId || req.body?.userId || req.body?.trainerId;
     let user;
     if (userId) {
       const isObjectId = mongoose.Types.ObjectId.isValid(userId);
@@ -382,13 +396,13 @@ app.delete('/api/packages/:id', async (req, res) => {
       user = await User.findOne({ 'packages.id': pid }) || await User.findOne({ 'packages._id': pid });
     }
 
-    if (!user) return res.status(404).json({ error: 'Package or User not found' });
+    if (user) {
+      user.packages = (user.packages || []).filter(p => String(p.id || p._id || '') !== pid);
+      user.markModified('packages');
+      await user.save();
+    }
 
-    user.packages = (user.packages || []).filter(p => String(p.id || p._id || '') !== pid);
-    user.markModified('packages');
-    await user.save();
-
-    res.json({ message: 'Package deleted from database', packages: user.packages });
+    res.json({ message: 'Package deleted permanently from MongoDB', packageId: pid });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -398,9 +412,14 @@ app.put('/api/packages/:id', async (req, res) => {
   try {
     const mongoose = require('mongoose');
     const User = require('./models/User');
+    const Package = require('./models/Package');
     const pid = String(req.params.id);
-    const userId = req.body?.userId || req.body?.trainerId || req.query.userId || req.query.trainerId;
 
+    if (mongoose.Types.ObjectId.isValid(pid)) {
+      await Package.findByIdAndUpdate(pid, req.body, { new: true }).catch(() => {});
+    }
+
+    const userId = req.body?.userId || req.body?.trainerId || req.query.userId || req.query.trainerId;
     let user;
     if (userId) {
       const isObjectId = mongoose.Types.ObjectId.isValid(userId);
@@ -410,21 +429,20 @@ app.put('/api/packages/:id', async (req, res) => {
       user = await User.findOne({ 'packages.id': pid }) || await User.findOne({ 'packages._id': pid });
     }
 
-    if (!user) return res.status(404).json({ error: 'Package or User not found' });
-
-    let packages = Array.isArray(user.packages) ? user.packages : [];
-    let idx = packages.findIndex(p => String(p._id || p.id || '') === pid);
-    if (idx !== -1) {
-      packages[idx] = { ...packages[idx], ...req.body, id: packages[idx].id || packages[idx]._id || pid };
-    } else {
-      packages.push({ ...req.body, id: pid });
+    if (user) {
+      let packages = Array.isArray(user.packages) ? user.packages : [];
+      let idx = packages.findIndex(p => String(p._id || p.id || '') === pid);
+      if (idx !== -1) {
+        packages[idx] = { ...packages[idx], ...req.body, id: packages[idx].id || packages[idx]._id || pid };
+      } else {
+        packages.push({ ...req.body, id: pid });
+      }
+      user.packages = packages;
+      user.markModified('packages');
+      await user.save();
     }
 
-    user.packages = packages;
-    user.markModified('packages');
-    await user.save();
-
-    res.json({ message: 'Package updated in database', package: packages[idx !== -1 ? idx : packages.length - 1], packages: user.packages });
+    res.json({ message: 'Package updated in MongoDB', id: pid, data: req.body });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

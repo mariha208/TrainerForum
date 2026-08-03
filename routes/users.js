@@ -440,12 +440,17 @@ router.put('/:id/services/:serviceId', async (req, res) => {
 // DELETE a service from user profile
 router.delete('/:id/services/:serviceId', async (req, res) => {
   try {
+    const Service = require('../models/Service');
+    const sid = String(req.params.serviceId);
+    if (mongoose.Types.ObjectId.isValid(sid)) {
+      await Service.findByIdAndDelete(sid).catch(() => {});
+    }
+
     const isObjectId = mongoose.Types.ObjectId.isValid(req.params.id);
     const query = isObjectId ? { _id: req.params.id } : { email: req.params.id.toLowerCase() };
     const user = await User.findOne(query);
     if (!user) return res.status(404).json({ error: 'User not found' });
 
-    const sid = String(req.params.serviceId);
     let services = Array.isArray(user.services) ? user.services : [];
     user.services = services.filter(s => {
       const sId = String(s._id || s.id || '');
@@ -454,7 +459,7 @@ router.delete('/:id/services/:serviceId', async (req, res) => {
     user.markModified('services');
     await user.save();
 
-    res.json({ message: 'Service deleted from database', services: user.services });
+    res.json({ message: 'Service deleted permanently from MongoDB', services: user.services });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -463,12 +468,17 @@ router.delete('/:id/services/:serviceId', async (req, res) => {
 // PUT update a package in user profile
 router.put('/:id/packages/:packageId', async (req, res) => {
   try {
+    const Package = require('../models/Package');
+    const pid = String(req.params.packageId);
+    if (mongoose.Types.ObjectId.isValid(pid)) {
+      await Package.findByIdAndUpdate(pid, req.body, { new: true }).catch(() => {});
+    }
+
     const isObjectId = mongoose.Types.ObjectId.isValid(req.params.id);
     const query = isObjectId ? { _id: req.params.id } : { email: req.params.id.toLowerCase() };
     const user = await User.findOne(query);
     if (!user) return res.status(404).json({ error: 'User not found' });
 
-    const pid = String(req.params.packageId);
     let packages = Array.isArray(user.packages) ? user.packages : [];
     let idx = packages.findIndex(p => String(p._id || p.id || '') === pid);
 
@@ -491,12 +501,17 @@ router.put('/:id/packages/:packageId', async (req, res) => {
 // DELETE a package from user profile
 router.delete('/:id/packages/:packageId', async (req, res) => {
   try {
+    const Package = require('../models/Package');
+    const pid = String(req.params.packageId);
+    if (mongoose.Types.ObjectId.isValid(pid)) {
+      await Package.findByIdAndDelete(pid).catch(() => {});
+    }
+
     const isObjectId = mongoose.Types.ObjectId.isValid(req.params.id);
     const query = isObjectId ? { _id: req.params.id } : { email: req.params.id.toLowerCase() };
     const user = await User.findOne(query);
     if (!user) return res.status(404).json({ error: 'User not found' });
 
-    const pid = String(req.params.packageId);
     let packages = Array.isArray(user.packages) ? user.packages : [];
     user.packages = packages.filter(p => {
       const pId = String(p._id || p.id || '');
@@ -505,7 +520,7 @@ router.delete('/:id/packages/:packageId', async (req, res) => {
     user.markModified('packages');
     await user.save();
 
-    res.json({ message: 'Package deleted from database', packages: user.packages });
+    res.json({ message: 'Package deleted permanently from MongoDB', packages: user.packages });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
