@@ -1298,10 +1298,12 @@ window.renderBPMCalendar = function () {
   if (typeof _bpmAvs === 'object') {
     const customBlockedList = (t && (t.customBlockedDates || t.blockedDates)) || _bpmAvs.customBlockedDates || _bpmAvs.blockedDates || [];
     const weeklySchedList = (t && (t.weeklySchedule || t.weeklyAvailability)) || _bpmAvs.weeklySchedule || _bpmAvs.weeklyAvailability || [];
+    const specDates = (t && (t.specificDates || (t.availability && t.availability.specificDates))) || _bpmAvs.specificDates || {};
     _bpmAvs.customBlockedDates = customBlockedList;
     _bpmAvs.blockedDates = customBlockedList;
     _bpmAvs.weeklySchedule = weeklySchedList;
     _bpmAvs.weeklyAvailability = weeklySchedList;
+    _bpmAvs.specificDates = specDates;
   }
 
   let cells = '';

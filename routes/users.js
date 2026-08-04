@@ -195,16 +195,26 @@ router.get('/:id', async (req, res) => {
     let obj = user.toObject();
     const customBlocked = obj.customBlockedDates || obj.blockedDates || (obj.availability && (obj.availability.customBlockedDates || obj.availability.blockedDates)) || [];
     const weekly = obj.weeklySchedule || obj.weeklyAvailability || (obj.availability && (obj.availability.weeklySchedule || obj.availability.weeklyAvailability)) || [];
+    
+    let specDates = (obj.availability && obj.availability.specificDates && typeof obj.availability.specificDates === 'object')
+      ? Object.assign({}, obj.availability.specificDates)
+      : (obj.specificDates || {});
+    if (Array.isArray(customBlocked)) {
+      customBlocked.forEach(d => { specDates[d] = false; });
+    }
+
     obj.customBlockedDates = customBlocked;
     obj.blockedDates = customBlocked;
     obj.weeklySchedule = weekly;
     obj.weeklyAvailability = weekly;
-    if (obj.availability && typeof obj.availability === 'object') {
-      obj.availability.customBlockedDates = customBlocked;
-      obj.availability.blockedDates = customBlocked;
-      obj.availability.weeklySchedule = weekly;
-      obj.availability.weeklyAvailability = weekly;
-    }
+    obj.specificDates = specDates;
+
+    if (!obj.availability || typeof obj.availability !== 'object') obj.availability = {};
+    obj.availability.customBlockedDates = customBlocked;
+    obj.availability.blockedDates = customBlocked;
+    obj.availability.weeklySchedule = weekly;
+    obj.availability.weeklyAvailability = weekly;
+    obj.availability.specificDates = specDates;
     if (Array.isArray(obj.services)) {
       obj.services = obj.services.map(s => {
         if (!s) return s;
