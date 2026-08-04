@@ -2216,7 +2216,7 @@
       var cells = '';
       for (var i = 0; i < firstDay; i++) cells += '<div></div>';
 
-      // Unified getDayStatus: reads live DOM checkboxes first, then cached blockedDates/bookedDates
+      // Unified getDayStatus: reads live DOM checkboxes first, then cached specificDates/blockedDates/bookedDates
       function getDayStatus(y2, m2, d2, dayName2) {
         var m1s = String(m2 + 1).padStart(2, '0');
         var d1s = String(d2).padStart(2, '0');
@@ -2225,8 +2225,15 @@
         // Booked check (orange) — from cache
         if (Array.isArray(avs.bookedDates) && avs.bookedDates.indexOf(isoStr) !== -1) return 'booked';
 
-        // Custom blocked date check (red) — from cache
+        // Check specificDates Object/Map from MongoDB ({ "2026-08-17": false })
+        var specificDates = avs.specificDates || (avs.availability && avs.availability.specificDates) || {};
+        if (specificDates[isoStr] === false || specificDates[isoStr] === 'false') {
+          return false; // MUST return false for unavailable/red styling
+        }
+
+        // Custom blocked date check (red) — from cache/array
         if (Array.isArray(avs.blockedDates) && avs.blockedDates.indexOf(isoStr) !== -1) return false;
+        if (Array.isArray(avs.customBlockedDates) && avs.customBlockedDates.indexOf(isoStr) !== -1) return false;
 
         // Weekly day-of-week check — read live DOM checkboxes first
         var weeklyDisabled = false;
@@ -2262,26 +2269,29 @@
 
         var isToday = (day === today.getDate() && _dbCalMonth === today.getMonth() && _dbCalYear === today.getFullYear());
 
-        var bg, bdr, clr, titleAttr;
+        var bg, bdr, clr, titleAttr, statusClass;
         if (status === 'booked') {
           bg = 'rgba(245,158,11,0.18)';
           bdr = '1px solid rgba(245,158,11,0.45)';
           clr = '#d97706';
           titleAttr = 'Booked Session';
+          statusClass = 'booked';
         } else if (status === false) {
-          bg = 'rgba(239,68,68,0.15)';
-          bdr = '1px solid rgba(239,68,68,0.3)';
-          clr = 'rgba(239,68,68,0.9)';
+          bg = 'rgba(239,68,68,0.2)';
+          bdr = '1px solid #ef4444';
+          clr = '#ef4444';
           titleAttr = 'Unavailable — click to unblock';
+          statusClass = 'unavailable';
         } else {
           bg = isToday ? 'rgba(197,160,89,0.25)' : 'rgba(16,185,129,0.12)';
           bdr = isToday ? '1.5px solid #C5A059' : '1px solid rgba(16,185,129,0.3)';
           clr = isToday ? '#C5A059' : '#10b981';
           titleAttr = 'Available — click to block';
+          statusClass = 'available';
         }
 
         // touch-action + pointer-events ensure tap works on all mobile devices
-        cells += '<div onclick="toggleSpecificDate(' + _dbCalYear + ',' + _dbCalMonth + ',' + day + ')" style="cursor:pointer;touch-action:manipulation;pointer-events:auto;-webkit-tap-highlight-color:transparent;text-align:center;padding:7px 3px;border-radius:7px;background:' + bg + ';border:' + bdr + ';font-size:.76rem;font-weight:600;color:' + clr + '" title="' + titleAttr + '">' + day + '</div>';
+        cells += '<div onclick="toggleSpecificDate(' + _dbCalYear + ',' + _dbCalMonth + ',' + day + ', event)" class="calendar-day-box cal-day-cell db-cal-day ' + statusClass + '" style="cursor:pointer !important;touch-action:manipulation !important;pointer-events:auto !important;-webkit-tap-highlight-color:transparent;text-align:center;padding:7px 3px;border-radius:7px;background:' + bg + ';border:' + bdr + ';font-size:.76rem;font-weight:600;color:' + clr + '" title="' + titleAttr + '">' + day + '</div>';
       }
       widget.innerHTML =
         '<div style="padding:10px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);background:rgba(0,0,0,0.02)">'
