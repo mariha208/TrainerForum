@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -1379,12 +1379,209 @@
         });
 
       } else if (type === 'service') {
-        title.innerText = 'Create Custom Service';
-        body.innerHTML = '<div class="form-group mb-12"><label>Service Name <span style="color:var(--red)">*</span></label><input class="form-control" type="text" id="modal-svc-name" placeholder="e.g. 1-on-1 Consultation"></div><div class="form-group mb-12"><label>Description</label><textarea class="form-control" id="modal-svc-desc" rows="2" placeholder="Brief description of the service"></textarea></div><div class="grid-2 mb-12" style="gap:12px"><div class="form-group"><label>Duration</label><input class="form-control" type="text" id="modal-svc-duration" placeholder="e.g. 60 mins"></div><div class="form-group"><label>Price (₹)</label><input class="form-control" type="number" id="modal-svc-price" placeholder="1500"></div></div><div class="grid-2 mb-16" style="gap:12px"><div class="form-group"><label>Mode</label><select class="form-control" id="modal-svc-mode"><option>Online</option><option>In-Person</option><option>Hybrid</option></select></div><div class="form-group"><label>Type</label><select class="form-control" id="modal-svc-type"><option>1-on-1</option><option>Group</option><option>Corporate</option></select></div></div><div class="form-group mb-16" style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="modal-svc-featured" style="width:18px;height:18px;accent-color:var(--gold)"> <label style="margin:0;cursor:pointer" for="modal-svc-featured">Mark as Featured Service</label></div><div style="display:flex;gap:8px"><button class="btn btn-gold" style="flex:1" onclick="saveService()">Save Service</button><button class="btn btn-dark" onclick="closeAllModals()">Cancel</button></div>';
+        if (!window._isOpeningServiceForEdit) typeof _editingServiceId !== 'undefined' && (_editingServiceId = null);
+        title.innerText = (typeof _editingServiceId !== 'undefined' && _editingServiceId) ? 'Edit Service' : 'Create Custom Service';
+        body.innerHTML = '<div class="form-group mb-12"><label>Service Name <span style="color:var(--red)">*</span></label><input class="form-control" type="text" id="modal-svc-name" placeholder="e.g. 1-on-1 Consultation"></div><div class="form-group mb-12"><label>Description</label><textarea class="form-control" id="modal-svc-desc" rows="2" placeholder="Brief description of the service"></textarea></div><div class="grid-2 mb-12" style="gap:12px"><div class="form-group"><label>Duration</label><input class="form-control" type="text" id="modal-svc-duration" placeholder="e.g. 60 mins"></div><div class="form-group"><label>Price (₹)</label><input class="form-control" type="number" id="modal-svc-price" placeholder="1500"></div></div><div class="grid-2 mb-16" style="gap:12px"><div class="form-group"><label>Mode</label><select class="form-control" id="modal-svc-mode"><option value="Online">Online</option><option value="In-Person">In-Person</option><option value="Hybrid">Hybrid</option></select></div><div class="form-group"><label>Type</label><select class="form-control" id="modal-svc-type"><option value="1-on-1">1-on-1</option><option value="Group">Group</option><option value="Corporate">Corporate</option></select></div></div><div class="form-group mb-16" style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="modal-svc-featured" style="width:18px;height:18px;accent-color:var(--gold)"> <label style="margin:0;cursor:pointer" for="modal-svc-featured">Mark as Featured Service</label></div><div style="display:flex;gap:8px"><button class="btn btn-gold" id="btn-save-svc" style="flex:1" onclick="saveService()">' + ((typeof _editingServiceId !== 'undefined' && _editingServiceId) ? 'Update Service' : 'Save Service') + '</button><button class="btn btn-dark" onclick="closeAllModals()">Cancel</button></div>';
 
       } else if (type === 'package') {
-        title.innerText = 'Create Training Package';
-        body.innerHTML = '<div class="form-group mb-12"><label>Package Name <span style="color:var(--red)">*</span></label><input class="form-control" type="text" id="modal-pkg-name" placeholder="e.g. 4-Week Transformation"></div><div class="form-group mb-12"><label>Description</label><textarea class="form-control" id="modal-pkg-desc" rows="2" placeholder="Brief description"></textarea></div><div class="grid-2 mb-12" style="gap:12px"><div class="form-group"><label>Duration</label><input class="form-control" type="text" id="modal-pkg-duration" placeholder="e.g. 4 Weeks"></div><div class="form-group"><label>Price (₹)</label><input class="form-control" type="number" id="modal-pkg-price" placeholder="12000"></div></div><div class="form-group mb-12"><label>Features (comma separated)</label><textarea class="form-control" id="modal-pkg-features" rows="2" placeholder="Diet Plan, Weekly Calls, 24/7 Support"></textarea></div><div class="form-group mb-16" style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="modal-pkg-featured" style="width:18px;height:18px;accent-color:var(--gold)"> <label style="margin:0;cursor:pointer" for="modal-pkg-featured">Mark as Featured Package</label></div><div style="display:flex;gap:8px"><button class="btn btn-gold" style="flex:1" onclick="savePackage()">Save Package</button><button class="btn btn-dark" onclick="closeAllModals()">Cancel</button></div>';
+        if (!window._isOpeningPackageForEdit) typeof _editingPackageId !== 'undefined' && (_editingPackageId = null);
+        title.innerText = (typeof _editingPackageId !== 'undefined' && _editingPackageId) ? 'Edit Package' : 'Create Training Package';
+        body.innerHTML = '<div class="form-group mb-12"><label>Package Name <span style="color:var(--red)">*</span></label><input class="form-control" type="text" id="modal-pkg-name" placeholder="e.g. 4-Week Transformation"></div><div class="form-group mb-12"><label>Description</label><textarea class="form-control" id="modal-pkg-desc" rows="2" placeholder="Brief description"></textarea></div><div class="grid-2 mb-12" style="gap:12px"><div class="form-group"><label>Duration</label><input class="form-control" type="text" id="modal-pkg-duration" placeholder="e.g. 4 Weeks"></div><div class="form-group"><label>Price (₹)</label><input class="form-control" type="number" id="modal-pkg-price" placeholder="12000"></div></div><div class="form-group mb-12"><label>Features (comma separated)</label><textarea class="form-control" id="modal-pkg-features" rows="2" placeholder="Diet Plan, Weekly Calls, 24/7 Support"></textarea></div><div class="form-group mb-16" style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="modal-pkg-featured" style="width:18px;height:18px;accent-color:var(--gold)"> <label style="margin:0;cursor:pointer" for="modal-pkg-featured">Mark as Featured Package</label></div><div style="display:flex;gap:8px"><button class="btn btn-gold" id="btn-save-pkg" style="flex:1" onclick="savePackage()">' + ((typeof _editingPackageId !== 'undefined' && _editingPackageId) ? 'Update Package' : 'Save Package') + '</button><button class="btn btn-dark" onclick="closeAllModals()">Cancel</button></div>';
+
+      } else if (type === 'portfolio') {
+        title.innerText = 'Add Portfolio Item';
+        body.innerHTML = '<div style="width:100%;height:160px;background-size:cover;background-position:center;border-radius:8px;margin-bottom:16px;border:1px solid var(--border)" id="modal-port-img"></div><div class="form-group mb-12"><label>Title <span style="color:var(--red)">*</span></label><input class="form-control" type="text" id="modal-port-title" placeholder="e.g. 90-Day Transformation"></div><div class="grid-2 mb-12" style="gap:12px"><div class="form-group"><label>Category</label><select class="form-control" id="modal-port-category"><option value="case-study">Case Study</option><option value="photo">Photo</option><option value="video">Video</option><option value="certificate">Certificate</option></select></div><div class="form-group"><label>Client / Company</label><input class="form-control" type="text" id="modal-port-client" placeholder="e.g. Acme Corp"></div></div><div class="form-group mb-16"><label>Tags (comma separated)</label><input class="form-control" type="text" id="modal-port-tags" placeholder="e.g. Weight Loss, Muscle Gain"></div><div style="display:flex;gap:8px"><button class="btn btn-gold" style="flex:1" onclick="savePortfolioItem()">Save Item</button><button class="btn btn-dark" onclick="closeAllModals()">Cancel</button></div>';
+      }
+    }
+
+    function saveCertificate() {
+      var t = (document.getElementById('modal-cert-title') || {}).value || '';
+      var s = (document.getElementById('modal-cert-issuer') || {}).value || '';
+      var f = document.getElementById('modal-cert-file');
+      t = t.trim(); s = s.trim();
+      if (!t) { alert('Please enter the Certificate Title.'); return; }
+      if (!s) { alert('Please enter the Issuing Organization.'); return; }
+
+      function _doSaveCert(imgUrl) {
+        var cache = JSON.parse(localStorage.getItem('currentTrainer')) || {};
+        if (!Array.isArray(cache.achievements)) cache.achievements = [];
+        var item = { id: Date.now(), title: t, sub: s, ico: imgUrl };
+        cache.achievements.push(item);
+        localStorage.setItem('currentTrainer', JSON.stringify(cache));
+        _renderCertificateItem(item);
+        if (typeof commitLocalProfileChanges === 'function') commitLocalProfileChanges();
+        closeAllModals();
+      }
+
+      if (f && f.files[0]) {
+        if (f.files[0].size > 10485760) { alert('Image must be under 10MB.'); return; }
+        var reader = new FileReader();
+        reader.onload = function (e) { _doSaveCert(e.target.result); };
+        reader.readAsDataURL(f.files[0]);
+      } else {
+        _doSaveCert('');
+      }
+    }
+
+    function _renderCertificateItem(item) {
+      var list = document.getElementById('achievements-list');
+      if (!list) return;
+      var ph = list.querySelector('.cert-empty-msg');
+  <div class="modal-backdrop" id="modal-backdrop" onclick="closeAllModals()"></div>
+
+  <div class="db-modal" id="global-modal">
+    <div class="modal-header">
+      <h3 id="modal-title">Modal Title</h3>
+      <button class="close-btn" onclick="closeAllModals()">✕</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       APPLICATION ROUTING ENGINE
+  ═══════════════════════════════════════════════ -->
+
+  <script src="js/dashboard.js"></script>
+  <script>
+    // ─────────────────────────────────────────────────
+    // GLOBAL FORM LABEL CLICK INTERACTION ENGINE
+    // ─────────────────────────────────────────────────
+    document.addEventListener('click', function (e) {
+      var label = e.target.closest('label, .form-group label, .toggle-label');
+      if (!label) return;
+
+      var forId = label.getAttribute('for');
+      if (forId) {
+        var target = document.getElementById(forId);
+        if (target && typeof target.focus === 'function') {
+          target.focus();
+          return;
+        }
+      }
+
+      var group = label.closest('.form-group, .photo-fields, div');
+      if (group) {
+        var input = group.querySelector('input:not([type="hidden"]), select, textarea');
+        if (input && typeof input.focus === 'function') {
+          input.focus();
+        }
+      }
+    });
+
+    // ─────────────────────────────────────────────────
+    // SECTION ROUTING
+    // ─────────────────────────────────────────────────
+    function showSection(sectionId) {
+      document.querySelectorAll('.db-section').forEach(sec => sec.classList.remove('active'));
+      document.querySelectorAll('.sidebar-nav-item').forEach(item => item.classList.remove('active'));
+
+      const targetSec = document.getElementById(`sec-${sectionId}`);
+      if (targetSec) targetSec.classList.add('active');
+
+      const activeLink = document.querySelector(`.sidebar-nav-item[data-section="${sectionId}"]`);
+      if (activeLink) activeLink.classList.add('active');
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      const sidebar = document.getElementById('db-sidebar');
+      if (sidebar && sidebar.classList.contains('mobile-open')) {
+        toggleSidebar();
+      }
+    }
+
+    function toggleSidebar() {
+      const sidebar = document.getElementById('db-sidebar');
+      const btn = document.getElementById('mob-menu-btn');
+      if (sidebar.classList.contains('mobile-open')) {
+        sidebar.classList.remove('mobile-open');
+        btn.innerHTML = "☰";
+      } else {
+        sidebar.classList.add('mobile-open');
+        btn.innerHTML = "✕";
+      }
+    }
+
+    // Sidebar logout button handler
+    function confirmLogout() {
+      if (confirm('Are you sure you want to log out?')) {
+        localStorage.removeItem('userSession');
+        localStorage.removeItem('currentTrainer');
+        window.location.href = 'index.html';
+      }
+    }
+
+    function toggleNotif() {
+      const drop = document.getElementById('notif-dropdown');
+      drop.style.display = drop.style.display === 'block' ? 'none' : 'block';
+    }
+
+    // ─────────────────────────────────────────────────
+    // MODAL FRAMEWORK
+    // ─────────────────────────────────────────────────
+    function closeAllModals() {
+      document.getElementById('modal-backdrop').classList.remove('active');
+      const modal = document.getElementById('global-modal');
+      modal.classList.remove('active');
+      // Reset edit state so reopening modal doesn't pre-fill with old data
+      _editingServiceId = null;
+      _editingPackageId = null;
+      // Purge all inputs to prevent context leakage between opens
+      setTimeout(() => {
+        document.getElementById('modal-body').innerHTML = '';
+        document.getElementById('modal-title').innerText = '';
+      }, 250);
+    }
+
+    function openModal(type) {
+      const backdrop = document.getElementById('modal-backdrop');
+      const modal = document.getElementById('global-modal');
+      const title = document.getElementById('modal-title');
+      const body = document.getElementById('modal-body');
+      backdrop.classList.add('active');
+      modal.classList.add('active');
+
+      if (type === 'payout') {
+        title.innerText = 'Request Wallet Withdrawal';
+        body.innerHTML = '<div class="form-group mb-16"><label>Amount to Withdraw (Max 45,800)</label><input type="number" class="form-control" id="withdraw-amount" value="45800" max="45800"></div><button class="btn btn-gold w-100" onclick="closeAllModals()">Submit Transfer Request</button>';
+
+      } else if (type === 'new-session') {
+        title.innerText = 'Schedule Manual Booking Slot';
+        body.innerHTML = '<div class="form-group mb-12"><label>Client Email Reference</label><input type="email" class="form-control" placeholder="client@example.com"></div><div class="form-group mb-12"><label>Date and Time</label><input type="datetime-local" class="form-control"></div><button class="btn btn-gold w-100" onclick="closeAllModals()">Lock Manual Assignment</button>';
+
+      } else if (type === 'certificate') {
+        title.innerText = 'Add Achievement or Certification';
+        body.innerHTML = '<div class="form-group mb-12"><label>Name <span style="color:var(--red)">*</span></label><input class="form-control" type="text" id="modal-cert-title" placeholder="e.g. Certified AI Trainer 2025"></div><div class="form-group mb-12"><label>Given by <span style="color:var(--red)">*</span></label><input class="form-control" type="text" id="modal-cert-issuer" placeholder="e.g. Global AI Institute 2025"></div><div class="form-group mb-16"><label>Upload Certificate</label><input type="file" id="modal-cert-file" accept="image/jpeg,image/png,image/webp" style="display:block;width:100%"><div id="modal-cert-img-preview" style="margin-top:10px;width:100%;height:0;background-size:contain;background-position:center;background-repeat:no-repeat;border-radius:6px;transition:height .3s"></div></div><div style="display:flex;gap:8px"><button class="btn btn-gold" style="flex:1" onclick="saveCertificate()">Save</button><button class="btn btn-dark" onclick="closeAllModals()">Cancel</button></div>';
+        document.getElementById('modal-cert-file').addEventListener('change', function () {
+          var file = this.files[0];
+          if (!file || !file.type.startsWith('image/')) return;
+          var prev = document.getElementById('modal-cert-img-preview');
+          prev.style.backgroundImage = 'url("' + URL.createObjectURL(file) + '")';
+          prev.style.height = '160px';
+          prev.style.border = '1px solid var(--border)';
+        });
+
+      } else if (type === 'event') {
+        title.innerText = 'Add Past Event';
+        body.innerHTML = '<div class="form-group mb-12"><label>Company Name <span style="color:var(--red)">*</span></label><input class="form-control" type="text" id="modal-event-company" placeholder="e.g. Google India"></div><div class="form-group mb-12"><label>Guest Name <span style="color:var(--red)">*</span></label><input class="form-control" type="text" id="modal-event-name" placeholder="e.g. Keynote Speaker"></div><div class="form-group mb-12"><label>Date</label><input class="form-control" type="date" id="modal-event-date"></div><div class="form-group mb-16"><label>Upload Logo</label><input type="file" id="modal-logo-file" accept="image/*" style="display:block;width:100%"><div style="margin-top:10px;display:flex;align-items:center;gap:12px"><img id="modal-logo-preview" src="#" alt="Logo" style="display:none;width:52px;height:52px;object-fit:contain;border-radius:6px;border:1px solid var(--border);"><span id="modal-logo-label" style="font-size:.78rem;color:var(--tm)"></span></div></div><div style="display:flex;gap:8px"><button class="btn btn-gold" style="flex:1" onclick="saveEvent()">Save</button><button class="btn btn-dark" onclick="closeAllModals()">Cancel</button></div>';
+        document.getElementById('modal-logo-file').addEventListener('change', function () {
+          var file = this.files[0];
+          if (!file || !file.type.startsWith('image/')) return;
+          if (file.size > 2097152) { alert('Logo must be under 2MB.'); this.value = ''; return; }
+          var img = document.getElementById('modal-logo-preview');
+          img.src = URL.createObjectURL(file);
+          img.style.display = 'block';
+          document.getElementById('modal-logo-label').textContent = file.name;
+        });
+
+      } else if (type === 'service') {
+        if (!window._isOpeningServiceForEdit) typeof _editingServiceId !== 'undefined' && (_editingServiceId = null);
+        title.innerText = (typeof _editingServiceId !== 'undefined' && _editingServiceId) ? 'Edit Service' : 'Create Custom Service';
+        body.innerHTML = '<div class="form-group mb-12"><label>Service Name <span style="color:var(--red)">*</span></label><input class="form-control" type="text" id="modal-svc-name" placeholder="e.g. 1-on-1 Consultation"></div><div class="form-group mb-12"><label>Description</label><textarea class="form-control" id="modal-svc-desc" rows="2" placeholder="Brief description of the service"></textarea></div><div class="grid-2 mb-12" style="gap:12px"><div class="form-group"><label>Duration</label><input class="form-control" type="text" id="modal-svc-duration" placeholder="e.g. 60 mins"></div><div class="form-group"><label>Price (₹)</label><input class="form-control" type="number" id="modal-svc-price" placeholder="1500"></div></div><div class="grid-2 mb-16" style="gap:12px"><div class="form-group"><label>Mode</label><select class="form-control" id="modal-svc-mode"><option value="Online">Online</option><option value="In-Person">In-Person</option><option value="Hybrid">Hybrid</option></select></div><div class="form-group"><label>Type</label><select class="form-control" id="modal-svc-type"><option value="1-on-1">1-on-1</option><option value="Group">Group</option><option value="Corporate">Corporate</option></select></div></div><div class="form-group mb-16" style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="modal-svc-featured" style="width:18px;height:18px;accent-color:var(--gold)"> <label style="margin:0;cursor:pointer" for="modal-svc-featured">Mark as Featured Service</label></div><div style="display:flex;gap:8px"><button class="btn btn-gold" id="btn-save-svc" style="flex:1" onclick="saveService()">' + ((typeof _editingServiceId !== 'undefined' && _editingServiceId) ? 'Update Service' : 'Save Service') + '</button><button class="btn btn-dark" onclick="closeAllModals()">Cancel</button></div>';
+
+      } else if (type === 'package') {
+        if (!window._isOpeningPackageForEdit) typeof _editingPackageId !== 'undefined' && (_editingPackageId = null);
+        title.innerText = (typeof _editingPackageId !== 'undefined' && _editingPackageId) ? 'Edit Package' : 'Create Training Package';
+        body.innerHTML = '<div class="form-group mb-12"><label>Package Name <span style="color:var(--red)">*</span></label><input class="form-control" type="text" id="modal-pkg-name" placeholder="e.g. 4-Week Transformation"></div><div class="form-group mb-12"><label>Description</label><textarea class="form-control" id="modal-pkg-desc" rows="2" placeholder="Brief description"></textarea></div><div class="grid-2 mb-12" style="gap:12px"><div class="form-group"><label>Duration</label><input class="form-control" type="text" id="modal-pkg-duration" placeholder="e.g. 4 Weeks"></div><div class="form-group"><label>Price (₹)</label><input class="form-control" type="number" id="modal-pkg-price" placeholder="12000"></div></div><div class="form-group mb-12"><label>Features (comma separated)</label><textarea class="form-control" id="modal-pkg-features" rows="2" placeholder="Diet Plan, Weekly Calls, 24/7 Support"></textarea></div><div class="form-group mb-16" style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="modal-pkg-featured" style="width:18px;height:18px;accent-color:var(--gold)"> <label style="margin:0;cursor:pointer" for="modal-pkg-featured">Mark as Featured Package</label></div><div style="display:flex;gap:8px"><button class="btn btn-gold" id="btn-save-pkg" style="flex:1" onclick="savePackage()">' + ((typeof _editingPackageId !== 'undefined' && _editingPackageId) ? 'Update Package' : 'Save Package') + '</button><button class="btn btn-dark" onclick="closeAllModals()">Cancel</button></div>';
 
       } else if (type === 'portfolio') {
         title.innerText = 'Add Portfolio Item';
@@ -1484,37 +1681,46 @@
 
     /* ── Services Logic ── */
     var _editingServiceId = null;
+    window._servicesMap = window._servicesMap || {};
+    window._packagesMap = window._packagesMap || {};
+
     function saveService() {
       var name = (document.getElementById('modal-svc-name').value || '').trim();
       if (!name) return alert('Service Name is required.');
       var userId = typeof getLoggedInUserId === 'function' ? getLoggedInUserId() : null;
       var cache = JSON.parse(localStorage.getItem('currentTrainer')) || {};
       if (!userId) userId = cache.trainerId || cache._id || cache.id;
-      var origin = window.SERVER_ORIGIN || 'https://trainerforum.onrender.com';
+      var origin = window.SERVER_ORIGIN || (window.location && window.location.origin ? window.location.origin : '');
 
       if (_editingServiceId) {
         // ── EDIT MODE: PUT to update existing service ──
         var editId = _editingServiceId;
         var updated = {
           name: name,
+          title: name,
           desc: document.getElementById('modal-svc-desc').value || '',
+          description: document.getElementById('modal-svc-desc').value || '',
           duration: document.getElementById('modal-svc-duration').value || '',
           price: document.getElementById('modal-svc-price').value || '0',
           mode: document.getElementById('modal-svc-mode').value,
           type: document.getElementById('modal-svc-type').value,
           featured: document.getElementById('modal-svc-featured').checked
         };
+        var fullItem = Object.assign({ id: editId, _id: editId }, updated);
+        if (window._servicesMap) window._servicesMap[editId] = fullItem;
+
         // Update local cache
         if (!Array.isArray(cache.services)) cache.services = [];
         cache.services = cache.services.map(function(s) {
-          return String(s.id || s._id || '') === editId ? Object.assign({}, s, updated) : s;
+          return String(s.id || s._id || '') === editId ? Object.assign({}, s, fullItem) : s;
         });
         localStorage.setItem('currentTrainer', JSON.stringify(cache));
-        // Re-render the card
+
+        // Re-render the card instantly in UI
         var el = document.getElementById('svc-' + editId);
         if (el) el.remove();
-        var fullItem = Object.assign({ id: editId }, updated);
         _renderServiceItem(fullItem);
+
         // Send PUT to backend
         if (userId) {
           fetch(origin + '/api/users/' + userId + '/services/' + editId, {
@@ -1522,8 +1728,16 @@
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(updated)
           }).then(function(r) {
-            if (r.ok) { window.toast && window.toast('\u2705 Service updated in database.'); }
-            else { console.warn('Service PUT failed:', r.status); }
+            if (r.ok) {
+              window.toast && window.toast('✅ Service updated in database.');
+              if (typeof window.syncDashboardFromMongoDB === 'function') window.syncDashboardFromMongoDB();
+            } else {
+              fetch(origin + '/api/services/' + editId, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(Object.assign({ userId: userId }, updated))
+              });
+            }
           }).catch(function(err) { console.warn('Service PUT error:', err); });
         }
         if (typeof commitLocalProfileChanges === 'function') commitLocalProfileChanges();
@@ -1532,10 +1746,12 @@
         return;
       }
 
-      // ── ADD MODE: POST to backend to get real MongoDB _id ──
+      // ── ADD MODE: POST to backend ──
       var newSvc = {
         name: name,
+        title: name,
         desc: document.getElementById('modal-svc-desc').value || '',
+        description: document.getElementById('modal-svc-desc').value || '',
         duration: document.getElementById('modal-svc-duration').value || '',
         price: document.getElementById('modal-svc-price').value || '0',
         mode: document.getElementById('modal-svc-mode').value,
@@ -1550,7 +1766,6 @@
           body: JSON.stringify(newSvc)
         }).then(function(r) { return r.json(); })
         .then(function(data) {
-          // Use the real MongoDB _id returned from backend
           var savedService = data.service || data;
           var realId = String(savedService._id || savedService.id || Date.now());
           var item = Object.assign({}, newSvc, { id: realId, _id: realId });
@@ -1558,30 +1773,36 @@
           cache.services.push(item);
           localStorage.setItem('currentTrainer', JSON.stringify(cache));
           _renderServiceItem(item);
-          window.toast && window.toast('\u2705 Service saved to database.');
+          window.toast && window.toast('✅ Service saved to database.');
+          if (typeof window.syncDashboardFromMongoDB === 'function') window.syncDashboardFromMongoDB();
         }).catch(function(err) {
           console.warn('Service POST error, saving locally:', err);
-          var item = Object.assign({}, newSvc, { id: Date.now() });
+          var localId = String(Date.now());
+          var item = Object.assign({}, newSvc, { id: localId, _id: localId });
           if (!Array.isArray(cache.services)) cache.services = [];
           cache.services.push(item);
           localStorage.setItem('currentTrainer', JSON.stringify(cache));
           _renderServiceItem(item);
         });
       } else {
-        var item = Object.assign({}, newSvc, { id: Date.now() });
+        var localId = String(Date.now());
+        var item = Object.assign({}, newSvc, { id: localId, _id: localId });
         if (!Array.isArray(cache.services)) cache.services = [];
         cache.services.push(item);
         localStorage.setItem('currentTrainer', JSON.stringify(cache));
         _renderServiceItem(item);
       }
     }
+
     function _renderServiceItem(item) {
       var cont = document.getElementById('services-container');
       if (!cont) return;
       var empty = cont.querySelector('.empty-msg');
       if (empty) empty.remove();
-      if (!item.id) item.id = item._id || Date.now() + Math.floor(Math.random() * 9999);
+      if (!item.id) item.id = item._id || String(Date.now() + Math.floor(Math.random() * 9999));
       var itemId = String(item.id || item._id);
+      window._servicesMap = window._servicesMap || {};
+      window._servicesMap[itemId] = item;
 
       var div = document.createElement('div');
       div.id = 'svc-' + itemId;
@@ -1592,36 +1813,41 @@
           '<button onclick="_editService(\'' + itemId + '\')" title="Edit Service" aria-label="Edit service" style="background:rgba(197,160,89,0.12);border:1px solid rgba(197,160,89,0.35);color:#c5a059;cursor:pointer;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:0.85rem;transition:all 0.18s ease;"><i class="fas fa-pencil-alt"></i></button>' +
           '<button onclick="_deleteService(\'' + itemId + '\')" title="Delete Service" aria-label="Delete service" style="background:rgba(220,53,69,0.12);border:1px solid rgba(220,53,69,0.3);color:#dc3545;cursor:pointer;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:0.9rem;transition:all 0.18s ease;"><i class="fas fa-trash-alt"></i></button>' +
         '</div>' +
-        '<div style="font-weight:700;font-size:1.05rem;color:var(--ts);margin-bottom:6px;padding-right:92px">' + item.name + (item.featured ? '<span style="font-size:0.65rem;background:rgba(197,160,89,0.2);color:var(--gold);padding:2px 6px;border-radius:4px;margin-left:6px;vertical-align:middle">Featured</span>' : '') + '</div>' +
-        '<div style="font-size:0.82rem;color:var(--tm);margin-bottom:12px;line-height:1.4">' + (item.desc || '') + '</div>' +
-        '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px"><span style="font-size:0.75rem;padding:2px 8px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;color:var(--tm)">⏱ ' + (item.duration || '') + '</span><span style="font-size:0.75rem;padding:2px 8px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;color:var(--tm)">📍 ' + (item.mode || '') + '</span><span style="font-size:0.75rem;padding:2px 8px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;color:var(--tm)">👥 ' + (item.type || '') + '</span></div>' +
+        '<div style="font-weight:700;font-size:1.05rem;color:var(--ts);margin-bottom:6px;padding-right:92px">' + (item.name || item.title || 'Service') + (item.featured ? '<span style="font-size:0.65rem;background:rgba(197,160,89,0.2);color:var(--gold);padding:2px 6px;border-radius:4px;margin-left:6px;vertical-align:middle">Featured</span>' : '') + '</div>' +
+        '<div style="font-size:0.82rem;color:var(--tm);margin-bottom:12px;line-height:1.4">' + (item.desc || item.description || '') + '</div>' +
+        '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px"><span style="font-size:0.75rem;padding:2px 8px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;color:var(--tm)">⏱ ' + (item.duration || '') + '</span><span style="font-size:0.75rem;padding:2px 8px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;color:var(--tm)">📍 ' + (item.mode || 'Online') + '</span><span style="font-size:0.75rem;padding:2px 8px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;color:var(--tm)">👥 ' + (item.type || '1-on-1') + '</span></div>' +
         '<div style="font-size:1.1rem;font-weight:700;color:var(--gold)">₹' + (item.price || '0') + '</div>';
       cont.appendChild(div);
     }
+
     function _editService(id) {
       if (!id || id === 'undefined') return;
       var cache = JSON.parse(localStorage.getItem('currentTrainer')) || {};
       var services = Array.isArray(cache.services) ? cache.services : [];
-      var svc = services.find(function(s) { return String(s.id || s._id || '') === String(id); });
-      if (!svc) return;
+      var svc = (window._servicesMap && window._servicesMap[id]) ||
+                services.find(function(s) { return String(s.id || s._id || '') === String(id); });
+      if (!svc) {
+        console.warn('Service not found for edit ID:', id);
+        return;
+      }
       _editingServiceId = String(id);
-      // Open the service modal using the dashboard's openModal function
+      window._isOpeningServiceForEdit = true;
       openModal('service');
-      setTimeout(function() {
-        var t = document.getElementById('modal-title');
-        if (t) t.innerText = 'Edit Service';
-        var nm = document.getElementById('modal-svc-name'); if (nm) nm.value = svc.name || '';
-        var ds = document.getElementById('modal-svc-desc'); if (ds) ds.value = svc.desc || '';
-        var dr = document.getElementById('modal-svc-duration'); if (dr) dr.value = svc.duration || '';
-        var pr = document.getElementById('modal-svc-price'); if (pr) pr.value = svc.price || '';
-        var md = document.getElementById('modal-svc-mode'); if (md) md.value = svc.mode || 'Online';
-        var ty = document.getElementById('modal-svc-type'); if (ty) ty.value = svc.type || '1-on-1';
-        var ft = document.getElementById('modal-svc-featured'); if (ft) ft.checked = !!svc.featured;
-        // Update save button label
-        var btn = document.querySelector('#modal-body .btn-gold');
-        if (btn) btn.textContent = 'Update Service';
-      }, 60);
+      window._isOpeningServiceForEdit = false;
+
+      var t = document.getElementById('modal-title');
+      if (t) t.innerText = 'Edit Service';
+      var nm = document.getElementById('modal-svc-name'); if (nm) nm.value = svc.name || svc.title || '';
+      var ds = document.getElementById('modal-svc-desc'); if (ds) ds.value = svc.desc || svc.description || '';
+      var dr = document.getElementById('modal-svc-duration'); if (dr) dr.value = svc.duration || '';
+      var pr = document.getElementById('modal-svc-price'); if (pr) pr.value = svc.price || '';
+      var md = document.getElementById('modal-svc-mode'); if (md) md.value = svc.mode || 'Online';
+      var ty = document.getElementById('modal-svc-type'); if (ty) ty.value = svc.type || '1-on-1';
+      var ft = document.getElementById('modal-svc-featured'); if (ft) ft.checked = !!svc.featured;
+      var btn = document.getElementById('btn-save-svc') || document.querySelector('#modal-body .btn-gold');
+      if (btn) btn.textContent = 'Update Service';
     }
+
     function _deleteService(id) {
       if (!id || id === 'undefined') return console.warn('Invalid service ID for deletion');
       var targetId = String(id);
@@ -1631,14 +1857,13 @@
           var userId = typeof getLoggedInUserId === 'function' ? getLoggedInUserId() : null;
           var cache = JSON.parse(localStorage.getItem('currentTrainer')) || {};
           if (!userId) userId = cache.trainerId || cache._id || cache.id || '1';
-          var origin = window.SERVER_ORIGIN || 'https://trainerforum.onrender.com';
+          var origin = window.SERVER_ORIGIN || (window.location && window.location.origin ? window.location.origin : '');
 
-          // 1. Backend hard DELETE — only update UI AFTER success
           function _doLocalDelete() {
-            // Remove DOM card
             var el = document.getElementById('svc-' + targetId);
             if (el) el.remove();
-            // Filter local cache
+            if (window._servicesMap) delete window._servicesMap[targetId];
+
             var ch = JSON.parse(localStorage.getItem('currentTrainer')) || {};
             if (Array.isArray(ch.services)) {
               ch.services = ch.services.filter(function (s) {
@@ -1647,37 +1872,37 @@
               });
               localStorage.setItem('currentTrainer', JSON.stringify(ch));
             }
-            // Filter window.TRAINERS
             if (Array.isArray(window.TRAINERS)) {
               var t = window.TRAINERS.find(function(x) { return String(x.id || x._id) === String(userId); });
               if (t && Array.isArray(t.services)) {
                 t.services = t.services.filter(function(s) { return String(s.id || s._id || '') !== targetId; });
               }
             }
-            // Check if container is empty
             var c = document.getElementById('services-container');
             if (c && c.querySelectorAll('.db-card').length === 0) {
               c.innerHTML = '<div class="empty-msg" style="grid-column:1/-1;text-align:center;padding:20px;color:var(--tm);font-size:.85rem">No services defined.</div>';
             }
             if (typeof commitLocalProfileChanges === 'function') commitLocalProfileChanges();
-            window.toast && window.toast('\u2713 Service permanently deleted.');
+            window.toast && window.toast('✓ Service permanently deleted.');
+            if (typeof window.syncDashboardFromMongoDB === 'function') window.syncDashboardFromMongoDB();
           }
 
-          fetch(origin + '/api/services/' + targetId + '?userId=' + userId, {
+          fetch(origin + '/api/users/' + userId + '/services/' + targetId, {
             method: 'DELETE',
             headers: { 'Content-Type': 'application/json' }
           }).then(function(res) {
             if (res.ok) {
               _doLocalDelete();
             } else {
-              // Try fallback endpoint /api/users/:userId/services/:serviceId
-              fetch(origin + '/api/users/' + userId + '/services/' + targetId, { method: 'DELETE' })
-                .then(function() { _doLocalDelete(); })
-                .catch(function() { _doLocalDelete(); });
+              fetch(origin + '/api/services/' + targetId + '?userId=' + userId, { method: 'DELETE' })
+                .then(function(r) {
+                  if (r.ok) { _doLocalDelete(); }
+                  else { alert('Failed to delete service from database.'); }
+                }).catch(function() { alert('Failed to delete service from database.'); });
             }
           }).catch(function(err) {
             console.warn('Backend DELETE service error:', err);
-            _doLocalDelete();
+            alert('Network error while deleting service. Please try again.');
           });
         }
       );
@@ -1692,35 +1917,50 @@
       var userId = typeof getLoggedInUserId === 'function' ? getLoggedInUserId() : null;
       var cache = JSON.parse(localStorage.getItem('currentTrainer')) || {};
       if (!userId) userId = cache.trainerId || cache._id || cache.id;
-      var origin = window.SERVER_ORIGIN || 'https://trainerforum.onrender.com';
+      var origin = window.SERVER_ORIGIN || (window.location && window.location.origin ? window.location.origin : '');
 
       if (_editingPackageId) {
         // ── EDIT MODE: PUT to update existing package ──
         var editId = _editingPackageId;
         var updated = {
           name: name,
+          title: name,
           desc: document.getElementById('modal-pkg-desc').value || '',
+          description: document.getElementById('modal-pkg-desc').value || '',
           duration: document.getElementById('modal-pkg-duration').value || '',
           price: document.getElementById('modal-pkg-price').value || '0',
           features: feats.split(',').map(function (s) { return s.trim(); }).filter(Boolean),
           featured: document.getElementById('modal-pkg-featured').checked
         };
+        var fullItem = Object.assign({ id: editId, _id: editId }, updated);
+        if (window._packagesMap) window._packagesMap[editId] = fullItem;
+
         if (!Array.isArray(cache.packages)) cache.packages = [];
         cache.packages = cache.packages.map(function(p) {
-          return String(p.id || p._id || '') === editId ? Object.assign({}, p, updated) : p;
+          return String(p.id || p._id || '') === editId ? Object.assign({}, p, fullItem) : p;
         });
         localStorage.setItem('currentTrainer', JSON.stringify(cache));
+
         var el = document.getElementById('pkg-' + editId);
         if (el) el.remove();
-        _renderPackageItem(Object.assign({ id: editId }, updated));
+        _renderPackageItem(fullItem);
+
         if (userId) {
           fetch(origin + '/api/users/' + userId + '/packages/' + editId, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(updated)
           }).then(function(r) {
-            if (r.ok) { window.toast && window.toast('\u2705 Package updated in database.'); }
-            else { console.warn('Package PUT failed:', r.status); }
+            if (r.ok) {
+              window.toast && window.toast('✅ Package updated in database.');
+              if (typeof window.syncDashboardFromMongoDB === 'function') window.syncDashboardFromMongoDB();
+            } else {
+              fetch(origin + '/api/packages/' + editId, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(Object.assign({ userId: userId }, updated))
+              });
+            }
           }).catch(function(err) { console.warn('Package PUT error:', err); });
         }
         if (typeof commitLocalProfileChanges === 'function') commitLocalProfileChanges();
@@ -1729,10 +1969,12 @@
         return;
       }
 
-      // -- ADD MODE: POST to backend to get real MongoDB _id --
+      // ── ADD MODE: POST to backend ──
       var newPkg = {
         name: name,
+        title: name,
         desc: document.getElementById('modal-pkg-desc').value || '',
+        description: document.getElementById('modal-pkg-desc').value || '',
         duration: document.getElementById('modal-pkg-duration').value || '',
         price: document.getElementById('modal-pkg-price').value || '0',
         features: feats.split(',').map(function (s) { return s.trim() }).filter(Boolean),
@@ -1753,73 +1995,26 @@
           cache.packages.push(item);
           localStorage.setItem('currentTrainer', JSON.stringify(cache));
           _renderPackageItem(item);
-          window.toast && window.toast('\u2705 Package saved to database.');
+          window.toast && window.toast('✅ Package saved to database.');
+          if (typeof window.syncDashboardFromMongoDB === 'function') window.syncDashboardFromMongoDB();
         }).catch(function(err) {
           console.warn('Package POST error, saving locally:', err);
-          var item = Object.assign({}, newPkg, { id: Date.now() });
+          var localId = String(Date.now());
+          var item = Object.assign({}, newPkg, { id: localId, _id: localId });
           if (!Array.isArray(cache.packages)) cache.packages = [];
           cache.packages.push(item);
           localStorage.setItem('currentTrainer', JSON.stringify(cache));
           _renderPackageItem(item);
         });
       } else {
-        var item = Object.assign({}, newPkg, { id: Date.now() });
+        var localId = String(Date.now());
+        var item = Object.assign({}, newPkg, { id: localId, _id: localId });
         if (!Array.isArray(cache.packages)) cache.packages = [];
         cache.packages.push(item);
         localStorage.setItem('currentTrainer', JSON.stringify(cache));
         _renderPackageItem(item);
       }
     }
-        function _renderPackageItem(item) {
-      var cont = document.getElementById('packages-container');
-      if (!cont) return;
-      var empty = cont.querySelector('.empty-msg');
-      if (empty) empty.remove();
-      if (!item.id) item.id = item._id || Date.now() + Math.floor(Math.random() * 9999);
-      var itemId = String(item.id || item._id);
-
-      if (!Array.isArray(item.features)) {
-        item.features = typeof item.features === 'string' ? item.features.split(',').map(function (s) { return s.trim(); }).filter(Boolean) : [];
-      }
-      var div = document.createElement('div');
-      div.id = 'pkg-' + itemId;
-      div.className = 'db-card';
-      div.style.position = 'relative';
-      if (item.featured) div.style.borderColor = 'var(--gold)';
-      var featsHtml = item.features.map(function (f) { return '<li style="font-size:0.8rem;color:var(--tm);margin-bottom:4px;display:flex;gap:6px"><span style="color:var(--gold)">\u2713</span> ' + f + '</li>'; }).join('');
-      var descHtml = item.desc ? '<div style="font-size:0.82rem;color:var(--tm);margin-bottom:12px;line-height:1.4">' + item.desc + '</div>' : '';
-      div.innerHTML =
-        '<div class="card-action-group" style="position: absolute; top: 12px; right: 12px; display: flex; align-items: center; gap: 8px; z-index: 10;">' +
-          '<button onclick="_editPackage(\'' + itemId + '\')" title="Edit Package" aria-label="Edit package" style="background:rgba(197,160,89,0.12);border:1px solid rgba(197,160,89,0.35);color:#c5a059;cursor:pointer;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:0.85rem;transition:all 0.18s ease;"><i class="fas fa-pencil-alt"></i></button>' +
-          '<button onclick="_deletePackage(\'' + itemId + '\')" title="Delete Package" aria-label="Delete package" style="background:rgba(220,53,69,0.12);border:1px solid rgba(220,53,69,0.3);color:#dc3545;cursor:pointer;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:0.9rem;transition:all 0.18s ease;"><i class="fas fa-trash-alt"></i></button>' +
-        '</div>' +
-        (item.featured ? '<div style="font-size:0.65rem;color:var(--gold);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;padding-right:92px">\u2b50 Featured Package</div>' : '') +
-        '<div style="font-weight:700;font-size:1.1rem;color:var(--ts);margin-bottom:6px;padding-right:92px">' + (item.name || 'Package') + '</div>' +
-        '<div style="font-size:1.2rem;font-weight:700;color:var(--ts);margin-bottom:12px">\u20b9' + (item.price || '0') + ' <span style="font-size:0.8rem;color:var(--tm);font-weight:400">/ ' + (item.duration || '') + '</span></div>' +
-        descHtml +
-        '<ul style="list-style:none;padding:0;margin:0">' + featsHtml + '</ul>';
-      cont.appendChild(div);
-    }
-    function _editPackage(id) {
-      if (!id || id === 'undefined') return;
-      var cache = JSON.parse(localStorage.getItem('currentTrainer')) || {};
-      var packages = Array.isArray(cache.packages) ? cache.packages : [];
-      var pkg = packages.find(function(p) { return String(p.id || p._id || '') === String(id); });
-      if (!pkg) return;
-      _editingPackageId = String(id);
-      openModal('package');
-      setTimeout(function() {
-        var t = document.getElementById('modal-title');
-        if (t) t.innerText = 'Edit Package';
-        var nm = document.getElementById('modal-pkg-name'); if (nm) nm.value = pkg.name || '';
-        var ds = document.getElementById('modal-pkg-desc'); if (ds) ds.value = pkg.desc || '';
-        var dr = document.getElementById('modal-pkg-duration'); if (dr) dr.value = pkg.duration || '';
-        var pr = document.getElementById('modal-pkg-price'); if (pr) pr.value = pkg.price || '';
-        var ft = document.getElementById('modal-pkg-featured'); if (ft) ft.checked = !!pkg.featured;
-        var fv = document.getElementById('modal-pkg-features');
-        if (fv) fv.value = Array.isArray(pkg.features) ? pkg.features.join(', ') : (pkg.features || '');
-        var btn = document.querySelector('#modal-body .btn-gold');
-        if (btn) btn.textContent = 'Update Package';
       }, 60);
     }
     function _deletePackage(id) {

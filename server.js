@@ -326,11 +326,21 @@ app.delete('/api/services/:id', async (req, res) => {
       const query = isObjectId ? { _id: userId } : { email: String(userId).toLowerCase() };
       user = await User.findOne(query);
     } else {
-      user = await User.findOne({ 'services.id': sid }) || await User.findOne({ 'services._id': sid });
+      user = await User.findOne({
+        $or: [
+          { 'services.id': sid },
+          { 'services._id': sid },
+          { 'services.name': new RegExp('^' + sid + '$', 'i') },
+          { 'services.title': new RegExp('^' + sid + '$', 'i') }
+        ]
+      });
     }
 
     if (user) {
-      user.services = (user.services || []).filter(s => String(s.id || s._id || '') !== sid);
+      user.services = (user.services || []).filter(s => {
+        const key = String(s.id || s._id || '');
+        return key !== sid && String(s.name || s.title || '').toLowerCase() !== sid.toLowerCase();
+      });
       user.markModified('services');
       await user.save();
     }
@@ -359,16 +369,23 @@ app.put('/api/services/:id', async (req, res) => {
       const query = isObjectId ? { _id: userId } : { email: String(userId).toLowerCase() };
       user = await User.findOne(query);
     } else {
-      user = await User.findOne({ 'services.id': sid }) || await User.findOne({ 'services._id': sid });
+      user = await User.findOne({
+        $or: [
+          { 'services.id': sid },
+          { 'services._id': sid },
+          { 'services.name': new RegExp('^' + sid + '$', 'i') },
+          { 'services.title': new RegExp('^' + sid + '$', 'i') }
+        ]
+      });
     }
 
     if (user) {
       let services = Array.isArray(user.services) ? user.services : [];
-      let idx = services.findIndex(s => String(s._id || s.id || '') === sid);
+      let idx = services.findIndex(s => String(s._id || s.id || '') === sid || String(s.name || s.title || '').toLowerCase() === sid.toLowerCase());
       if (idx !== -1) {
-        services[idx] = { ...services[idx], ...req.body, id: services[idx].id || services[idx]._id || sid };
+        services[idx] = { ...services[idx], ...req.body, id: services[idx].id || services[idx]._id || sid, _id: services[idx]._id || services[idx].id || sid };
       } else {
-        services.push({ ...req.body, id: sid });
+        services.push({ ...req.body, id: sid, _id: sid });
       }
       user.services = services;
       user.markModified('services');
@@ -399,11 +416,21 @@ app.delete('/api/packages/:id', async (req, res) => {
       const query = isObjectId ? { _id: userId } : { email: String(userId).toLowerCase() };
       user = await User.findOne(query);
     } else {
-      user = await User.findOne({ 'packages.id': pid }) || await User.findOne({ 'packages._id': pid });
+      user = await User.findOne({
+        $or: [
+          { 'packages.id': pid },
+          { 'packages._id': pid },
+          { 'packages.name': new RegExp('^' + pid + '$', 'i') },
+          { 'packages.title': new RegExp('^' + pid + '$', 'i') }
+        ]
+      });
     }
 
     if (user) {
-      user.packages = (user.packages || []).filter(p => String(p.id || p._id || '') !== pid);
+      user.packages = (user.packages || []).filter(p => {
+        const key = String(p.id || p._id || '');
+        return key !== pid && String(p.name || p.title || '').toLowerCase() !== pid.toLowerCase();
+      });
       user.markModified('packages');
       await user.save();
     }
@@ -432,16 +459,23 @@ app.put('/api/packages/:id', async (req, res) => {
       const query = isObjectId ? { _id: userId } : { email: String(userId).toLowerCase() };
       user = await User.findOne(query);
     } else {
-      user = await User.findOne({ 'packages.id': pid }) || await User.findOne({ 'packages._id': pid });
+      user = await User.findOne({
+        $or: [
+          { 'packages.id': pid },
+          { 'packages._id': pid },
+          { 'packages.name': new RegExp('^' + pid + '$', 'i') },
+          { 'packages.title': new RegExp('^' + pid + '$', 'i') }
+        ]
+      });
     }
 
     if (user) {
       let packages = Array.isArray(user.packages) ? user.packages : [];
-      let idx = packages.findIndex(p => String(p._id || p.id || '') === pid);
+      let idx = packages.findIndex(p => String(p._id || p.id || '') === pid || String(p.name || p.title || '').toLowerCase() === pid.toLowerCase());
       if (idx !== -1) {
-        packages[idx] = { ...packages[idx], ...req.body, id: packages[idx].id || packages[idx]._id || pid };
+        packages[idx] = { ...packages[idx], ...req.body, id: packages[idx].id || packages[idx]._id || pid, _id: packages[idx]._id || packages[idx].id || pid };
       } else {
-        packages.push({ ...req.body, id: pid });
+        packages.push({ ...req.body, id: pid, _id: pid });
       }
       user.packages = packages;
       user.markModified('packages');

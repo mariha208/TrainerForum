@@ -191,7 +191,23 @@ router.get('/:id', async (req, res) => {
     const query = isObjectId ? { _id: req.params.id } : { email: req.params.id.toLowerCase() };
     const user = await User.findOne(query).select('-passwordHash');
     if (!user) return res.status(404).json({ error: 'User not found' });
-    res.json(user);
+    
+    let obj = user.toObject();
+    if (Array.isArray(obj.services)) {
+      obj.services = obj.services.map(s => {
+        if (!s) return s;
+        const key = String(s._id || s.id || new mongoose.Types.ObjectId());
+        return { ...s, _id: key, id: key, name: s.name || s.title || '', desc: s.desc || s.description || '' };
+      });
+    }
+    if (Array.isArray(obj.packages)) {
+      obj.packages = obj.packages.map(p => {
+        if (!p) return p;
+        const key = String(p._id || p.id || new mongoose.Types.ObjectId());
+        return { ...p, _id: key, id: key, name: p.name || p.title || '', desc: p.desc || p.description || '' };
+      });
+    }
+    res.json(obj);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -418,6 +434,7 @@ router.put('/:id/availability', async (req, res) => {
 });
 
 // POST create a new service for a user profile
+// POST create a new service for a user profile
 router.post('/:id/services', async (req, res) => {
   try {
     const isObjectId = mongoose.Types.ObjectId.isValid(req.params.id);
@@ -425,18 +442,29 @@ router.post('/:id/services', async (req, res) => {
     const user = await User.findOne(query);
     if (!user) return res.status(404).json({ error: 'User not found' });
 
+    const newId = new mongoose.Types.ObjectId();
     const newService = {
-      _id: new mongoose.Types.ObjectId(),
-      id: undefined,
-      ...req.body,
+      _id: newId,
+      id: String(newId),
+      name: req.body.name || req.body.title || 'Service',
+      title: req.body.title || req.body.name || 'Service',
+      desc: req.body.desc || req.body.description || '',
+      description: req.body.description || req.body.desc || '',
+      duration: req.body.duration || '',
+      price: req.body.price || 0,
+      mode: req.body.mode || 'Online',
+      type: req.body.type || '1-on-1',
+      featured: !!req.body.featured,
       createdAt: new Date()
     };
-    newService.id = String(newService._id);
 
     if (!Array.isArray(user.services)) user.services = [];
     user.services.push(newService);
     user.markModified('services');
     await user.save();
+
+    const Service = require('../models/Service');
+    await Service.create({ ...newService, userId: user._id }).catch(() => {});
 
     res.status(201).json({ message: 'Service created in MongoDB', service: newService, services: user.services });
   } catch (err) {
@@ -452,18 +480,28 @@ router.post('/:id/packages', async (req, res) => {
     const user = await User.findOne(query);
     if (!user) return res.status(404).json({ error: 'User not found' });
 
+    const newId = new mongoose.Types.ObjectId();
     const newPackage = {
-      _id: new mongoose.Types.ObjectId(),
-      id: undefined,
-      ...req.body,
+      _id: newId,
+      id: String(newId),
+      name: req.body.name || req.body.title || 'Package',
+      title: req.body.title || req.body.name || 'Package',
+      desc: req.body.desc || req.body.description || '',
+      description: req.body.description || req.body.desc || '',
+      duration: req.body.duration || '',
+      price: req.body.price || 0,
+      features: Array.isArray(req.body.features) ? req.body.features : (req.body.features || '').split(',').map(s => s.trim()).filter(Boolean),
+      featured: !!req.body.featured,
       createdAt: new Date()
     };
-    newPackage.id = String(newPackage._id);
 
     if (!Array.isArray(user.packages)) user.packages = [];
     user.packages.push(newPackage);
     user.markModified('packages');
     await user.save();
+
+    const Package = require('../models/Package');
+    await Package.create({ ...newPackage, userId: user._id }).catch(() => {});
 
     res.status(201).json({ message: 'Package created in MongoDB', package: newPackage, packages: user.packages });
   } catch (err) {
@@ -481,19 +519,32 @@ router.put('/:id/services/:serviceId', async (req, res) => {
 
     const sid = String(req.params.serviceId);
     let services = Array.isArray(user.services) ? user.services : [];
-    let idx = services.findIndex(s => String(s._id || s.id || '') === sid);
-    
+    let idx = services.findIndex(s => String(s._id || s.id || '') === sid || String(s.name || s.title || '').toLowerCase() === sid.toLowerCase());
+
+    const updatedService = {
+      ...(idx !== -1 ? services[idx] : {}),
+      ...req.body,
+      id: sid,
+      _id: sid,
+      updatedAt: new Date()
+    };
+
     if (idx !== -1) {
-      services[idx] = { ...services[idx], ...req.body, id: services[idx].id || services[idx]._id || sid };
+      services[idx] = updatedService;
     } else {
-      services.push({ ...req.body, id: sid });
+      services.push(updatedService);
     }
 
     user.services = services;
     user.markModified('services');
     await user.save();
 
-    res.json({ message: 'Service updated in database', service: services[idx !== -1 ? idx : services.length - 1], services: user.services });
+    if (mongoose.Types.ObjectId.isValid(sid)) {
+      const Service = require('../models/Service');
+      await Service.findByIdAndUpdate(sid, req.body, { new: true }).catch(() => {});
+    }
+
+    res.json({ message: 'Service updated in database', service: updatedService, services: user.services });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -502,9 +553,9 @@ router.put('/:id/services/:serviceId', async (req, res) => {
 // DELETE a service from user profile
 router.delete('/:id/services/:serviceId', async (req, res) => {
   try {
-    const Service = require('../models/Service');
     const sid = String(req.params.serviceId);
     if (mongoose.Types.ObjectId.isValid(sid)) {
+      const Service = require('../models/Service');
       await Service.findByIdAndDelete(sid).catch(() => {});
     }
 
@@ -516,7 +567,7 @@ router.delete('/:id/services/:serviceId', async (req, res) => {
     let services = Array.isArray(user.services) ? user.services : [];
     user.services = services.filter(s => {
       const sId = String(s._id || s.id || '');
-      return sId !== sid && String(s.id || '') !== sid && String(s._id || '') !== sid;
+      return sId !== sid && String(s.id || '') !== sid && String(s._id || '') !== sid && String(s.name || s.title || '').toLowerCase() !== sid.toLowerCase();
     });
     user.markModified('services');
     await user.save();
@@ -530,9 +581,9 @@ router.delete('/:id/services/:serviceId', async (req, res) => {
 // PUT update a package in user profile
 router.put('/:id/packages/:packageId', async (req, res) => {
   try {
-    const Package = require('../models/Package');
     const pid = String(req.params.packageId);
     if (mongoose.Types.ObjectId.isValid(pid)) {
+      const Package = require('../models/Package');
       await Package.findByIdAndUpdate(pid, req.body, { new: true }).catch(() => {});
     }
 
@@ -542,19 +593,27 @@ router.put('/:id/packages/:packageId', async (req, res) => {
     if (!user) return res.status(404).json({ error: 'User not found' });
 
     let packages = Array.isArray(user.packages) ? user.packages : [];
-    let idx = packages.findIndex(p => String(p._id || p.id || '') === pid);
+    let idx = packages.findIndex(p => String(p._id || p.id || '') === pid || String(p.name || p.title || '').toLowerCase() === pid.toLowerCase());
+
+    const updatedPackage = {
+      ...(idx !== -1 ? packages[idx] : {}),
+      ...req.body,
+      id: pid,
+      _id: pid,
+      updatedAt: new Date()
+    };
 
     if (idx !== -1) {
-      packages[idx] = { ...packages[idx], ...req.body, id: packages[idx].id || packages[idx]._id || pid };
+      packages[idx] = updatedPackage;
     } else {
-      packages.push({ ...req.body, id: pid });
+      packages.push(updatedPackage);
     }
 
     user.packages = packages;
     user.markModified('packages');
     await user.save();
 
-    res.json({ message: 'Package updated in database', package: packages[idx !== -1 ? idx : packages.length - 1], packages: user.packages });
+    res.json({ message: 'Package updated in database', package: updatedPackage, packages: user.packages });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -563,9 +622,9 @@ router.put('/:id/packages/:packageId', async (req, res) => {
 // DELETE a package from user profile
 router.delete('/:id/packages/:packageId', async (req, res) => {
   try {
-    const Package = require('../models/Package');
     const pid = String(req.params.packageId);
     if (mongoose.Types.ObjectId.isValid(pid)) {
+      const Package = require('../models/Package');
       await Package.findByIdAndDelete(pid).catch(() => {});
     }
 
@@ -577,7 +636,7 @@ router.delete('/:id/packages/:packageId', async (req, res) => {
     let packages = Array.isArray(user.packages) ? user.packages : [];
     user.packages = packages.filter(p => {
       const pId = String(p._id || p.id || '');
-      return pId !== pid && String(p.id || '') !== pid && String(p._id || '') !== pid;
+      return pId !== pid && String(p.id || '') !== pid && String(p._id || '') !== pid && String(p.name || p.title || '').toLowerCase() !== pid.toLowerCase();
     });
     user.markModified('packages');
     await user.save();

@@ -252,15 +252,24 @@ function populateDashboardInputs(data) {
   // ── Normalize packages from API (array OR pipe-string) ────────────────────
   function _normalizePkgsFromData(raw) {
     if (Array.isArray(raw) && raw.length > 0) {
-      return raw.map(p => ({
-        name: p.title || p.name || '',
-        price: String(p.price || '0'),
-        duration: p.duration || '',
-        features: Array.isArray(p.features) ? p.features : (p.features || '').split(',').map(s => s.trim()).filter(Boolean),
-        desc: p.desc || '',
-        featured: p.featured || false,
-        active: p.active !== false
-      })).filter(p => p.name);
+      return raw.map(p => {
+        const itemKey = String(p._id || p.id || '');
+        return {
+          id: itemKey,
+          _id: itemKey,
+          name: p.name || p.title || '',
+          title: p.title || p.name || '',
+          price: String(p.price || '0'),
+          duration: p.duration || '',
+          mode: p.mode || 'Online',
+          type: p.type || '1-on-1',
+          features: Array.isArray(p.features) ? p.features : (p.features || '').split(',').map(s => s.trim()).filter(Boolean),
+          desc: p.desc || p.description || '',
+          description: p.desc || p.description || '',
+          featured: p.featured || false,
+          active: p.active !== false
+        };
+      }).filter(p => p.name);
     }
     if (typeof raw === 'string' && raw.trim() && raw.trim() !== 'N/A') {
       const trimmed = raw.trim();
