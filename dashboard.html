@@ -2227,6 +2227,20 @@
         var d1s = String(d2).padStart(2, '0');
         var isoStr = y2 + '-' + m1s + '-' + d1s;
 
+        // Helper to normalize ISO datetimes: "2026-08-11T00:00:00.000Z" → "2026-08-11"
+        function _n(bd) { return (typeof bd === 'string' && bd.indexOf('T') !== -1) ? bd.split('T')[0] : String(bd); }
+
+        // ── TOP PRIORITY: Direct blockedDates array check ────────────────────
+        // Reads directly from cache (root-level) to guarantee we never miss it
+        var rawCache = JSON.parse(localStorage.getItem('currentTrainer') || '{}');
+        var directBlocked = Array.isArray(rawCache.blockedDates) ? rawCache.blockedDates
+          : (Array.isArray(rawCache.customBlockedDates) ? rawCache.customBlockedDates : []);
+        if (directBlocked.some(function(bd) { return _n(bd) === isoStr; })) return false;
+
+        // Also check avs.blockedDates (already normalized by _getAvailMap)
+        if (Array.isArray(avs.blockedDates) && avs.blockedDates.some(function(bd) { return _n(bd) === isoStr; })) return false;
+        if (Array.isArray(avs.customBlockedDates) && avs.customBlockedDates.some(function(bd) { return _n(bd) === isoStr; })) return false;
+
         // Booked check (orange) — from cache
         if (Array.isArray(avs.bookedDates) && avs.bookedDates.indexOf(isoStr) !== -1) return 'booked';
 
@@ -2235,11 +2249,6 @@
         if (specificDates[isoStr] === false || specificDates[isoStr] === 'false') {
           return false; // MUST return false for unavailable/red styling
         }
-
-        // Custom blocked date check (red) — also handles full ISO datetime strings from MongoDB
-        function _normDate(bd) { return (typeof bd === 'string' && bd.indexOf('T') !== -1) ? bd.split('T')[0] : bd; }
-        if (Array.isArray(avs.blockedDates) && avs.blockedDates.some(function(bd) { return _normDate(bd) === isoStr; })) return false;
-        if (Array.isArray(avs.customBlockedDates) && avs.customBlockedDates.some(function(bd) { return _normDate(bd) === isoStr; })) return false;
 
         // Weekly day-of-week check — read live DOM checkboxes first
         var weeklyDisabled = false;
