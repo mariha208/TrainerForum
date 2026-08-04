@@ -151,20 +151,6 @@ window.formatTrainerAvailability = function (availabilityData) {
       mainText = 'By Appointment';
     }
 
-    // Calculate blocked dates count from specificDates object & customBlockedDates array
-    const customBlocked = availObj.customBlockedDates || availObj.blockedDates || (trainerObj && (trainerObj.customBlockedDates || trainerObj.blockedDates)) || [];
-    const specificDates = availObj.specificDates || (trainerObj && (trainerObj.specificDates || (trainerObj.availability && trainerObj.availability.specificDates)));
-    
-    let blockedCount = Array.isArray(customBlocked) ? customBlocked.length : 0;
-    if (specificDates && typeof specificDates === 'object' && !Array.isArray(specificDates)) {
-      const keys = Object.keys(specificDates).filter(k => specificDates[k] === false || specificDates[k] === 'false');
-      if (keys.length > blockedCount) blockedCount = keys.length;
-    }
-
-    if (blockedCount > 0) {
-      mainText += ` (${blockedCount} Date${blockedCount > 1 ? 's' : ''} Blocked)`;
-    }
-
     return mainText;
   }
 
