@@ -591,14 +591,7 @@ window.refreshTrainerAvailabilityFromDB = async function (trainerId) {
       }
     } catch (e) {}
 
-    // 3. Update all Mobile & Desktop card availability pill badges
-    const formattedText = window.formatTrainerAvailability(freshUser);
-    const targetId = freshUser._id || freshUser.id || trainerId;
-    document.querySelectorAll(`.avail-pill[data-trainer-id="${targetId}"], .avail-pill[data-trainer-id="${trainerId}"]`).forEach(el => {
-      el.textContent = '📅 ' + formattedText;
-    });
-
-    // 4. Update bookingState if modal is open for this trainer
+    // 3. Update bookingState if modal is open for this trainer
     if (window.bookingState && String(window.bookingState.trainerId) === String(trainerId)) {
       window.bookingState.trainerAvailability = freshAvail;
       window.bookingState.blockedDates = freshBlocked;
@@ -1322,9 +1315,6 @@ function subscribeToTrainers() {
                   </span>
                   <span style="background: #f1f5f9; border-radius: 10px; padding: 3px 10px; font-size: 11px; font-weight: 600; color: #475569;">
                     ${parseInt(normalizedTrainer.experience || '0') || 0}+ yrs
-                  </span>
-                  <span class="avail-pill" data-trainer-id="${normalizedTrainer.id}" style="background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 10px; padding: 3px 10px; font-size: 11px; font-weight: 600; color: #047857;">
-                    📅 ${window.formatAvailability ? window.formatAvailability(normalizedTrainer) : 'Available'}
                   </span>
                 </div>
 
