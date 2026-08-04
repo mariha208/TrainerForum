@@ -1699,7 +1699,7 @@
 .bpm-cal-day.selected { background: linear-gradient(135deg, #C5A059, #A8863D); color: #0D1117; font-weight: 700; border-color: transparent; box-shadow: 0 4px 12px rgba(197, 160, 89, 0.4); }
 .bpm-cal-day.other-month { opacity: 0.25; cursor: default; }
 .bpm-cal-day.other-month:hover { background: transparent; }
-.bpm-cal-day.booked { background: rgba(252, 129, 129, 0.08); color: rgba(237, 242, 247, 0.3); cursor: not-allowed; text-decoration: line-through; }
+.bpm-cal-day.booked, .bpm-cal-day.unavailable { background: rgba(239, 68, 68, 0.22) !important; color: #f87171 !important; border: 1px solid rgba(239, 68, 68, 0.4) !important; cursor: not-allowed !important; text-decoration: line-through; pointer-events: none !important; }
 
 /* Booking summary */
 .bpm-summary-row {

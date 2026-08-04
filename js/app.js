@@ -166,73 +166,78 @@ window.isDayAvailable = function (avs, dayName, year, month, day) {
     }
   }
 
-  const m1 = month + 1; // month param is 0-based
-  const isoDate = `${year}-${String(m1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+  // Local date components (avoids UTC timezone shifts)
+  const dObj = new Date(year, month, day);
+  const yStr = dObj.getFullYear();
+  const mStr = String(dObj.getMonth() + 1).padStart(2, '0');
+  const dStr = String(dObj.getDate()).padStart(2, '0');
+  const dateStr = `${yStr}-${mStr}-${dStr}`;
+
+  const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const dayOfWeek = (dayName && dayName.length === 3) ? dayName : DAYS[dObj.getDay()];
 
   // 1. Check bookedDates ISO array (Orange / Booked status)
-  const bookedDates = avs.bookedDates;
+  const bookedDates = avs.bookedDates || avs.customBookedDates || avs.booked_dates;
   if (Array.isArray(bookedDates) && bookedDates.length > 0) {
-    if (bookedDates.indexOf(isoDate) !== -1) return 'booked';
+    if (bookedDates.includes(dateStr)) return 'booked';
   }
 
-  // 2. Check blockedDates ISO array (Red / Blocked status)
-  const blockedDates = avs.blockedDates;
-  if (Array.isArray(blockedDates) && blockedDates.length > 0) {
-    if (blockedDates.indexOf(isoDate) !== -1) return false; // explicitly blocked
+  // 2. Check customBlockedDates / blockedDates ISO array (Red / Blocked status)
+  const customBlocked = avs.customBlockedDates || avs.blockedDates || avs.blocked_dates;
+  if (Array.isArray(customBlocked) && customBlocked.length > 0) {
+    if (customBlocked.includes(dateStr)) return false; // explicitly blocked
   }
 
   // 3. Check specific dates override
   const spec = avs.specificDates || (avs.weeklyAvailability && avs.weeklyAvailability.specificDates);
   if (spec && typeof spec === 'object') {
-    const m0 = month;
-    const k0 = `${year}-${m0}-${day}`;
-    const k1 = `${year}-${m1}-${day}`;
-
+    const k0 = `${year}-${month}-${day}`;
+    const k1 = `${year}-${month + 1}-${day}`;
     if (typeof spec[k0] !== 'undefined') return !!spec[k0];
     if (typeof spec[k1] !== 'undefined') return !!spec[k1];
-    if (typeof spec[isoDate] !== 'undefined') return !!spec[isoDate];
+    if (typeof spec[dateStr] !== 'undefined') return !!spec[dateStr];
   }
 
   // 4. Check availableDays map (e.g. { monday: true, tuesday: false, ... })
   const availDays = avs.availableDays;
   const fullDayMap = { Sun: 'sunday', Mon: 'monday', Tue: 'tuesday', Wed: 'wednesday', Thu: 'thursday', Fri: 'friday', Sat: 'saturday' };
-  const dayKeyLower = fullDayMap[dayName] || String(dayName).toLowerCase();
+  const dayKeyLower = fullDayMap[dayOfWeek] || String(dayOfWeek).toLowerCase();
 
   if (availDays && typeof availDays === 'object' && typeof availDays[dayKeyLower] !== 'undefined') {
     return !!availDays[dayKeyLower];
   }
 
   // 5. Check direct day property on avs (e.g. avs['Mon'] = { available: false })
-  const dayShort = dayName.substring(0, 3);
-  const directConf = avs[dayShort] || avs[dayName] || avs[dayKeyLower];
+  const directConf = avs[dayOfWeek] || avs[dayKeyLower];
   if (directConf && typeof directConf === 'object') {
     if (typeof directConf.available !== 'undefined') return !!directConf.available;
     if (typeof directConf.enabled !== 'undefined') return !!directConf.enabled;
   }
 
-  // 6. Check weekly recurring schedule (array of objects)
-  const weekly = avs.weeklyAvailability || avs.weeklyHours;
-  if (Array.isArray(weekly) && weekly.length > 0) {
-    const found = weekly.find(function(w) {
-      if (!w || !w.day) return false;
-      var d = String(w.day).toLowerCase();
-      var dn = String(dayName).toLowerCase();
-      return d === dn || d.substring(0, 3) === dn.substring(0, 3);
-    });
-    if (found) {
-      if (typeof found.enabled !== 'undefined') return !!found.enabled;
-      if (typeof found.available !== 'undefined') return !!found.available;
+  // 6. Check weekly recurring schedule (weeklySchedule or weeklyAvailability)
+  const weeklySchedule = avs.weeklySchedule || avs.weeklyAvailability || avs.weeklyHours;
+  if (weeklySchedule && typeof weeklySchedule === 'object') {
+    if (Array.isArray(weeklySchedule)) {
+      const found = weeklySchedule.find(w => {
+        if (!w || !w.day) return false;
+        const d = String(w.day).toLowerCase();
+        const dn = String(dayOfWeek).toLowerCase();
+        return d === dn || d.substring(0, 3) === dn.substring(0, 3);
+      });
+      if (found) {
+        if (typeof found.enabled !== 'undefined') return !!found.enabled;
+        if (typeof found.available !== 'undefined') return !!found.available;
+      }
+    } else {
+      const dayConfig = weeklySchedule[dayOfWeek] || weeklySchedule[dayKeyLower];
+      if (dayConfig) {
+        if (typeof dayConfig.enabled !== 'undefined') return !!dayConfig.enabled;
+        if (typeof dayConfig.available !== 'undefined') return !!dayConfig.available;
+      }
     }
   }
 
-  const dayConf = avs[dayShort] || avs[dayName];
-  if (typeof dayConf !== 'undefined') {
-    if (typeof dayConf === 'boolean') return dayConf;
-    if (typeof dayConf === 'string') return dayConf === 'true';
-  }
-
-  // 6. Default fallback: Mon-Fri available, Sat-Sun unavailable
-  return dayName !== 'Sat' && dayName !== 'Sun';
+  return dayOfWeek !== 'Sat' && dayOfWeek !== 'Sun';
 };
 
 /**
