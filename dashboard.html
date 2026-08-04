@@ -1971,14 +1971,20 @@
         });
       }
 
-      if (!avs.Mon && !avs.Tue && !avs.Wed && !avs.Thu && !avs.Fri && !avs.Sat && !avs.Sun) {
-        avs = {
-          Mon: { available: true, start: '09:00', end: '18:00' }, Tue: { available: true, start: '09:00', end: '18:00' },
-          Wed: { available: true, start: '09:00', end: '17:00' }, Thu: { available: true, start: '10:00', end: '18:00' },
-          Fri: { available: true, start: '09:00', end: '17:00' }, Sat: { available: true, start: '10:00', end: '14:00' },
-          Sun: { available: false, start: '10:00', end: '14:00' }
-        };
-      }
+      // Safe per-day defaults: only fill in days that are completely missing
+      // Default follows User.js schema: Mon-Fri=true, Sat=false, Sun=false
+      var schemaDefaults = {
+        Mon: { available: true,  start: '09:00', end: '18:00' },
+        Tue: { available: true,  start: '09:00', end: '18:00' },
+        Wed: { available: true,  start: '09:00', end: '17:00' },
+        Thu: { available: true,  start: '10:00', end: '18:00' },
+        Fri: { available: true,  start: '09:00', end: '17:00' },
+        Sat: { available: false, start: '10:00', end: '14:00' },
+        Sun: { available: false, start: '10:00', end: '14:00' }
+      };
+      days.forEach(function(d) {
+        if (!avs[d]) avs[d] = Object.assign({}, schemaDefaults[d]);
+      });
 
       cont.innerHTML = days.map(function (d) {
         var info = avs[d] || { available: false, start: '09:00', end: '17:00' };
@@ -2722,6 +2728,15 @@
           }
 
           // Re-render Availability & Calendar
+          // DB values must win — explicitly overwrite cache availability fields
+          // before calling _renderAvailabilitySettings so it reads fresh DB data.
+          if (freshUser.availability !== undefined) updatedCache.availability = freshUser.availability;
+          if (Array.isArray(freshUser.weeklyAvailability)) updatedCache.weeklyAvailability = freshUser.weeklyAvailability;
+          if (freshUser.availableDays && typeof freshUser.availableDays === 'object') updatedCache.availableDays = freshUser.availableDays;
+          if (Array.isArray(freshUser.blockedDates)) updatedCache.blockedDates = freshUser.blockedDates;
+          if (Array.isArray(freshUser.bookedDates)) updatedCache.bookedDates = freshUser.bookedDates;
+          localStorage.setItem('currentTrainer', JSON.stringify(updatedCache));
+
           if (typeof _renderAvailabilitySettings === 'function') _renderAvailabilitySettings();
           renderDashboardCalendar();
         })
