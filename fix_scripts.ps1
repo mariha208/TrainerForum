@@ -4,7 +4,7 @@
   <div id="auth-modal"></div>
 
   <script src="js/app.js?v=4"></script>
-  <script src="js/trainer-modal.js?v=5"></script>
+  <script src="js/trainer-modal.js?v=6"></script>
   <script src="js/auth-modal.js"></script>
   <script src="js/theme.js"></script>
   <script>applyTheme();</script>

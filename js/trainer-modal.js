@@ -893,59 +893,103 @@ function buildPremiumModal(t, isOwner = false) {
     }).join('')}
             </div>
 
-            <!-- Public Availability Calendar -->
+            <!-- Public Availability Calendar — Mobile-aligned render -->
             ${(() => {
+      // ── Build _avMap from weekly schedule (same avs already resolved above) ──
       const _avMap = {};
       Object.entries(avs).forEach(([d, info]) => {
-        let isAvail = typeof info === 'object' ? (typeof info.available !== 'undefined' ? info.available : info.enabled) : true;
+        const isAvail = typeof info === 'object' ? (typeof info.available !== 'undefined' ? info.available : info.enabled) : true;
         _avMap[d] = isAvail !== false;
       });
 
-      // Read specificDates: if this is the logged-in trainer's own profile,
-      // always read from currentTrainer localStorage (most up-to-date, set by dashboard).
-      // For other trainers, read from t.availability.
-      let _specificDates = {};
-      let _blockedList = [];
+      // ── Build a unified availability object that matches the structure
+      //    window.isDayAvailable / window.isDateBlocked expect ──────────────────
+      //    This is the exact same shape as _bpmAvs used in renderBPMCalendar.
       const tid = String(t.id || t._id || t.trainerId || '');
 
+      // Seed from trainer object (primary DB source)
+      let _cardAvs = {};
       try {
-        // 1. Primary source: shared localStorage key trainer_availability_${tid}
+        let _rawTA = t.availability;
+        if (typeof _rawTA === 'string') _rawTA = JSON.parse(_rawTA);
+        if (_rawTA && typeof _rawTA === 'object') _cardAvs = Object.assign({}, _rawTA);
+      } catch(e) {}
+
+      // Merge root-level fields from trainer object (MongoDB top-level fields win)
+      const _rootBlocked = [
+        ...(Array.isArray(t.blockedDates) ? t.blockedDates : []),
+        ...(Array.isArray(t.customBlockedDates) ? t.customBlockedDates : []),
+        ...(Array.isArray(_cardAvs.blockedDates) ? _cardAvs.blockedDates : []),
+        ...(Array.isArray(_cardAvs.customBlockedDates) ? _cardAvs.customBlockedDates : []),
+      ];
+      // De-duplicate
+      const _dedupedBlocked = [...new Set(_rootBlocked)];
+      _cardAvs.blockedDates = _dedupedBlocked;
+      _cardAvs.customBlockedDates = _dedupedBlocked;
+
+      // Merge bookedDates
+      const _rootBooked = [
+        ...(Array.isArray(t.bookedDates) ? t.bookedDates : []),
+        ...(Array.isArray(_cardAvs.bookedDates) ? _cardAvs.bookedDates : []),
+      ];
+      _cardAvs.bookedDates = [...new Set(_rootBooked)];
+
+      // Merge specificDates
+      const _tSpec = (t.availability && typeof t.availability === 'object' && t.availability.specificDates) || {};
+      _cardAvs.specificDates = Object.assign({}, _cardAvs.specificDates || {}, _tSpec);
+
+      // Merge weeklySchedule
+      const _weeklyFromT = t.weeklySchedule || t.weeklyAvailability;
+      if (_weeklyFromT) {
+        _cardAvs.weeklySchedule = _weeklyFromT;
+        _cardAvs.weeklyAvailability = _weeklyFromT;
+      }
+
+      // Supplement with shared localStorage key (set by dashboard on save)
+      try {
         if (tid) {
           const shared = JSON.parse(localStorage.getItem('trainer_availability_' + tid) || 'null');
-          if (shared && (Array.isArray(shared.unavailable) || Array.isArray(shared.blockedDates))) {
-            _blockedList = shared.unavailable || shared.blockedDates;
+          if (shared) {
+            if (Array.isArray(shared.unavailable) && shared.unavailable.length) {
+              _cardAvs.blockedDates = [...new Set([..._cardAvs.blockedDates, ...shared.unavailable])];
+              _cardAvs.customBlockedDates = _cardAvs.blockedDates;
+            }
+            if (Array.isArray(shared.blockedDates) && shared.blockedDates.length) {
+              _cardAvs.blockedDates = [...new Set([..._cardAvs.blockedDates, ...shared.blockedDates])];
+              _cardAvs.customBlockedDates = _cardAvs.blockedDates;
+            }
           }
         }
+      } catch(e) {}
 
-        // 2. Owner or currentTrainer source
+      // For owner: currentTrainer localStorage is most up-to-date (dashboard edits)
+      try {
         const _ctData = JSON.parse(localStorage.getItem('currentTrainer') || '{}');
         const _ctId = String(_ctData.id || _ctData._id || _ctData.trainerId || '');
         if (isOwner || (_ctId && _ctId === tid)) {
           let _ctAvail = _ctData.availability;
           if (typeof _ctAvail === 'string') _ctAvail = JSON.parse(_ctAvail);
-          if (_ctAvail && _ctAvail.specificDates) _specificDates = _ctAvail.specificDates;
-          if (!_blockedList.length) {
-            _blockedList = _ctData.blockedDates || _ctData.customBlockedDates || (_ctAvail && (_ctAvail.blockedDates || _ctAvail.customBlockedDates)) || [];
+          const _ctBlocked = [
+            ...(Array.isArray(_ctData.blockedDates) ? _ctData.blockedDates : []),
+            ...(Array.isArray(_ctData.customBlockedDates) ? _ctData.customBlockedDates : []),
+            ...((_ctAvail && Array.isArray(_ctAvail.blockedDates)) ? _ctAvail.blockedDates : []),
+            ...((_ctAvail && Array.isArray(_ctAvail.customBlockedDates)) ? _ctAvail.customBlockedDates : []),
+          ];
+          if (_ctBlocked.length) {
+            _cardAvs.blockedDates = [...new Set([..._cardAvs.blockedDates, ..._ctBlocked])];
+            _cardAvs.customBlockedDates = _cardAvs.blockedDates;
           }
-        } else {
-          let _parsed = typeof t.availability === 'string' ? JSON.parse(t.availability) : t.availability;
-          if (_parsed && _parsed.specificDates) _specificDates = _parsed.specificDates;
-        }
-
-        // 3. Fallback to trainer object
-        if (!_blockedList.length && t) {
-          let _parsed = typeof t.availability === 'string' ? JSON.parse(t.availability || '{}') : (t.availability || {});
-          _blockedList = t.blockedDates || t.customBlockedDates || _parsed.blockedDates || _parsed.customBlockedDates || _parsed.unavailable || [];
+          if (_ctAvail && _ctAvail.specificDates) {
+            _cardAvs.specificDates = Object.assign({}, _cardAvs.specificDates, _ctAvail.specificDates);
+          }
         }
       } catch(e) {}
-
-      if (!Array.isArray(_blockedList)) _blockedList = [];
 
       const _shortDay = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
       const now = new Date();
       const y = now.getFullYear(), m = now.getMonth();
       const firstDay = new Date(y, m, 1).getDay();
-      const days = new Date(y, m + 1, 0).getDate();
+      const daysInMonth = new Date(y, m + 1, 0).getDate();
       const mLabel = now.toLocaleString('default', { month: 'long', year: 'numeric' });
       const dnHdr = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map(n =>
         `<div style="text-align:center;font-size:.66rem;font-weight:700;color:rgba(237,242,247,0.3);padding:4px 0">${n}</div>`
@@ -954,40 +998,28 @@ function buildPremiumModal(t, isOwner = false) {
       let cells = '';
       for (let i = 0; i < firstDay; i++) cells += '<div></div>';
 
-      for (let d = 1; d <= days; d++) {
+      for (let d = 1; d <= daysInMonth; d++) {
         const cellDate = new Date(y, m, d);
         const dk = _shortDay[cellDate.getDay()];
         const m1 = String(m + 1).padStart(2, '0');
         const d1 = String(d).padStart(2, '0');
         const isoDate = `${y}-${m1}-${d1}`;
-        const dateKey = `${y}-${m}-${d}`;
 
-        // 1. Cross-reference trainer's weekly working schedule (_avMap)
-        // _avMap[dk] is true if working/available (e.g. "10:00 AM – 2:00 PM"), false if "Unavailable"
-        const isWeeklyAvailable = _avMap[dk] !== false;
+        // ── USE THE SAME EVALUATION FUNCTIONS AS renderBPMCalendar ──
+        // window.isDayAvailable checks: bookedDates, blockedDates, specificDates, weeklySchedule
+        // window.isDateBlocked normalises timestamps and unpadded formats
+        const dayAvailResult = typeof window.isDayAvailable === 'function'
+          ? window.isDayAvailable(_cardAvs, dk, y, m, d)
+          : _avMap[dk] !== false;
 
-        // 2. Check custom date override / blocked dates list
-        const isCustomBlocked = _blockedList.includes(isoDate);
+        const explicitBlocked = typeof window.isDateBlocked === 'function'
+          ? window.isDateBlocked(cellDate, _cardAvs)
+          : false;
 
-        let isSpecificOverride = undefined;
-        if (typeof _specificDates[isoDate] !== 'undefined') {
-          isSpecificOverride = _specificDates[isoDate] !== false;
-        } else if (typeof _specificDates[dateKey] !== 'undefined') {
-          isSpecificOverride = _specificDates[dateKey] !== false;
-        }
+        // Also check weekly _avMap as a cross-reference
+        const isWeeklyUnavailable = _avMap[dk] === false;
 
-        // Determine final blocked state:
-        // Custom blocked dates & specific false overrides -> UNAVAILABLE
-        // Specific true overrides -> AVAILABLE
-        // Otherwise -> Follow Weekly Working Schedule (_avMap)
-        let isBlocked = false;
-        if (isCustomBlocked) {
-          isBlocked = true;
-        } else if (typeof isSpecificOverride !== 'undefined') {
-          isBlocked = !isSpecificOverride;
-        } else {
-          isBlocked = !isWeeklyAvailable;
-        }
+        const isBlocked = (dayAvailResult === false || dayAvailResult === 'booked' || explicitBlocked || isWeeklyUnavailable);
 
         const isToday = d === now.getDate() && m === now.getMonth() && y === now.getFullYear();
 
