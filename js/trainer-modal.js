@@ -1072,14 +1072,28 @@ window.openBookingModal = async function (tid) {
     return;
   }
 
-  // Normalize name with fallbacks
+  // Normalize name and rate with fallbacks
   t.name = t.name || t.fullName || t.n || t.trainerName || (t.firstName ? (t.firstName + ' ' + (t.lastName || '')).trim() : '') || 'Trainer';
+  
+  const trainerRate = (function(tr) {
+    if (!tr) return 5000;
+    let val = tr.rate || tr.price || tr.hourlyRate || tr.p || tr.pr || tr.pn;
+    if (!val && tr.pricing) val = tr.pricing.hourlyRate || tr.pricing.price || tr.pricing.rate;
+    if (!val && Array.isArray(tr.packages) && tr.packages.length > 0 && tr.packages[0].price) {
+      val = tr.packages[0].price;
+    }
+    if (typeof val === 'string') val = parseFloat(String(val).replace(/[^\d.]/g, ''));
+    return (val && !isNaN(val) && val > 0) ? val : 5000;
+  })(t);
+  t.rate = trainerRate;
+  t.price = trainerRate;
+  t.pn = trainerRate;
 
   // 4. Once fetched, replace spinner content with active booking form data smoothly
   window.bookingState.trainerId = tid;
   window.bookingState.selectedDay = null;
   window.bookingState.selectedTime = null;
-  window.bookingState.selectedPkg = t.pn || 5000;
+  window.bookingState.selectedPkg = trainerRate;
   window.bookingState.selectedPkgName = 'Introductory Session';
 
   // ── Resolve the booked trainer's availability ──
@@ -1109,9 +1123,9 @@ window.openBookingModal = async function (tid) {
   window.bookingState.trainerAvailability = _trainerAvailability;
 
   const basePkgs = t.packages && t.packages.length > 0 ? t.packages : [
-    { name: 'Introductory Session', desc: '60-min 1-on-1', price: t.pn || 5000 },
-    { name: 'Deep Dive Programme', desc: '4 weeks · 8 sessions', price: (t.pn || 5000) * 12 },
-    { name: 'Monthly Retainer', desc: '8 sessions/month', price: (t.pn || 5000) * 20 },
+    { name: 'Introductory Session', desc: '60-min 1-on-1', price: trainerRate },
+    { name: 'Deep Dive Programme', desc: '4 weeks · 8 sessions', price: trainerRate * 12 },
+    { name: 'Monthly Retainer', desc: '8 sessions/month', price: trainerRate * 20 },
   ];
   const services = t.services && t.services.length > 0 ? t.services.map(s => ({
     name: s.name,
@@ -1134,7 +1148,7 @@ window.openBookingModal = async function (tid) {
         <div class="bpm-trainer-mini">
           <div>
             <div style="font-weight:700;font-size:0.9rem;color:rgba(237,242,247,0.95)">${t.name}</div>
-            <div style="font-size:0.74rem;color:rgba(237,242,247,0.45)">${fmtINR(t.pn || 5000)}/hr</div>
+            <div style="font-size:0.74rem;color:rgba(237,242,247,0.45)">${fmtINR(trainerRate)}/hr</div>
           </div>
         </div>
       </div>
@@ -1227,7 +1241,7 @@ window.openBookingModal = async function (tid) {
         </div>
         <div class="bpm-total">
           <div class="bpm-total-label">Total Amount</div>
-          <div class="bpm-total-amt" id="bpm-total-amt">${fmtINR(t.pn || 5000)}</div>
+          <div class="bpm-total-amt" id="bpm-total-amt">${fmtINR(trainerRate)}</div>
         </div>
         <button class="tpm-btn tpm-btn-gold" id="bpm-confirm-btn"
           style="width:100%;justify-content:center;margin-top:16px;padding:14px;font-size:0.95rem;opacity:0.4;cursor:not-allowed;background:#475569"
