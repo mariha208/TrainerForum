@@ -1999,13 +1999,11 @@
             if (to) to.disabled = !toggle.checked;
           }
           renderDashboardCalendar();
-          clearTimeout(_availSaveTimer);
-          _availSaveTimer = setTimeout(function() { saveAvailability(); }, 300);
         });
       });
       renderDashboardCalendar();
     }
-        function saveAvailability(e) {
+    function saveAvailability(e) {
       if (e && e.type === 'touchstart') {
         if (e.cancelable) e.preventDefault();
       }
@@ -2035,6 +2033,7 @@
           var sTo = row.querySelector('.avail-to').value;
           avs[d] = {
             available: isChk,
+            enabled: isChk,
             start: sFrom,
             end: sTo
           };
@@ -2042,6 +2041,7 @@
           weeklyAvailability.push({
             day: d,
             enabled: isChk,
+            available: isChk,
             startTime: sFrom,
             endTime: sTo
           });
@@ -2052,9 +2052,12 @@
       var _tid = (session && (session._id || session.id)) || cache._id || cache.id || cache.trainerId || null;
       var _email = (session && session.email) || cache.email || null;
 
+      var blockedDates = Array.isArray(cache.blockedDates) ? Array.from(new Set(cache.blockedDates)) : [];
+
       cache.availability = avs;
       cache.weeklyAvailability = weeklyAvailability;
       cache.availableDays = availableDays;
+      cache.blockedDates = blockedDates;
       localStorage.setItem('currentTrainer', JSON.stringify(cache));
 
       var _avsJson = JSON.stringify(avs);
@@ -2063,7 +2066,12 @@
 
       if (Array.isArray(window.TRAINERS) && _tid) {
         var tr = window.TRAINERS.find(function(x) { return String(x.id || x._id) === String(_tid); });
-        if (tr) { tr.availability = avs; tr.weeklyAvailability = weeklyAvailability; tr.availableDays = availableDays; }
+        if (tr) {
+          tr.availability = avs;
+          tr.weeklyAvailability = weeklyAvailability;
+          tr.availableDays = availableDays;
+          tr.blockedDates = blockedDates;
+        }
       }
 
       renderDashboardCalendar();
@@ -2077,7 +2085,7 @@
         availability: avs,
         weeklyAvailability: weeklyAvailability,
         availableDays: availableDays,
-        blockedDates: cache.blockedDates || [],
+        blockedDates: blockedDates,
         bookedDates: cache.bookedDates || []
       });
 
@@ -2123,6 +2131,7 @@
       var cache = JSON.parse(localStorage.getItem('currentTrainer')) || {};
       var avs = {};
       var availableDays = {};
+      var weeklyAvailability = [];
       var cont = document.getElementById('weekly-hours-container');
       var fullDayMap = { Sun: 'sunday', Mon: 'monday', Tue: 'tuesday', Wed: 'wednesday', Thu: 'thursday', Fri: 'friday', Sat: 'saturday' };
 
@@ -2130,32 +2139,37 @@
         cont.querySelectorAll('.avail-row').forEach(function (row) {
           var d = row.dataset.day;
           var toggle = row.querySelector('.avail-toggle');
+          var fromInp = row.querySelector('.avail-from');
+          var toInp = row.querySelector('.avail-to');
           if (d && toggle) {
-            avs[d] = { available: toggle.checked };
-            if (fullDayMap[d]) availableDays[fullDayMap[d]] = toggle.checked;
+            var isChk = toggle.checked;
+            var sFrom = fromInp ? fromInp.value : '09:00';
+            var sTo = toInp ? toInp.value : '18:00';
+            avs[d] = { available: isChk, enabled: isChk, start: sFrom, end: sTo };
+            if (fullDayMap[d]) availableDays[fullDayMap[d]] = isChk;
+            weeklyAvailability.push({
+              day: d,
+              enabled: isChk,
+              available: isChk,
+              startTime: sFrom,
+              endTime: sTo
+            });
           }
         });
+        avs.availableDays = availableDays;
+        avs.weeklyAvailability = weeklyAvailability;
+      } else {
+        var stored = cache.availability;
+        if (typeof stored === 'string') { try { stored = JSON.parse(stored); } catch (e) { stored = {}; } }
+        avs = stored || {};
+        if (cache.availableDays) avs.availableDays = Object.assign({}, cache.availableDays, avs.availableDays);
+        if (cache.weeklyAvailability) avs.weeklyAvailability = cache.weeklyAvailability;
       }
-      var stored = cache.availability;
-      if (typeof stored === 'string') { try { stored = JSON.parse(stored); } catch (e) { stored = {}; } }
-      stored = stored || {};
-      if (stored.specificDates) avs.specificDates = stored.specificDates;
-      if (cache.blockedDates) avs.blockedDates = cache.blockedDates;
-      if (stored.blockedDates) avs.blockedDates = stored.blockedDates;
-      if (cache.bookedDates) avs.bookedDates = cache.bookedDates;
-      if (stored.bookedDates) avs.bookedDates = stored.bookedDates;
-      if (cache.weeklyAvailability) avs.weeklyAvailability = cache.weeklyAvailability;
-      if (cache.availableDays) avs.availableDays = Object.assign({}, cache.availableDays, availableDays);
-      else avs.availableDays = availableDays;
 
-      Object.keys(stored).forEach(function (d) {
-        if (d === 'specificDates' || d === 'blockedDates' || d === 'bookedDates' || d === 'availableDays') return;
-        if (!avs[d]) {
-          var info = stored[d] || {};
-          var isAvail = typeof info.available !== 'undefined' ? info.available : (info.enabled !== false);
-          avs[d] = { available: isAvail !== false };
-        }
-      });
+      var blocked = Array.isArray(cache.blockedDates) ? cache.blockedDates : [];
+      avs.blockedDates = Array.from(new Set(blocked));
+      if (cache.bookedDates) avs.bookedDates = cache.bookedDates;
+
       return avs;
     }
 
@@ -2201,13 +2215,13 @@
           bg = 'rgba(239,68,68,0.15)';
           bdr = '1px solid rgba(239,68,68,0.3)';
           clr = 'rgba(239,68,68,0.9)';
-          titleAttr = 'Unavailable (Click to unblock)';
+          titleAttr = 'Unavailable (Click to toggle block)';
         } else {
           // GREEN: Available Weekday
           bg = isToday ? 'rgba(197,160,89,0.25)' : 'rgba(16,185,129,0.12)';
           bdr = isToday ? '1.5px solid #C5A059' : '1px solid rgba(16,185,129,0.3)';
           clr = isToday ? '#C5A059' : '#10b981';
-          titleAttr = 'Available (Click to block this date)';
+          titleAttr = 'Available (Click to toggle block)';
         }
 
         cells += '<div onclick="toggleSpecificDate(' + _dbCalYear + ',' + _dbCalMonth + ',' + day + ')" style="cursor:pointer;text-align:center;padding:7px 3px;border-radius:7px;background:' + bg + ';border:' + bdr + ';font-size:.76rem;font-weight:600;color:' + clr + '" title="' + titleAttr + '">' + day + '</div>';
@@ -2240,54 +2254,18 @@
       var idx = blocked.indexOf(isoDate);
 
       if (idx !== -1) {
-        // Unblock: remove ISO date string
+        // Unblock ISO date
         blocked.splice(idx, 1);
       } else {
-        // Block: add ISO date string (preventing duplicates)
+        // Block ISO date
         blocked.push(isoDate);
       }
 
-      cache.blockedDates = blocked;
+      cache.blockedDates = Array.from(new Set(blocked));
       localStorage.setItem('currentTrainer', JSON.stringify(cache));
 
-      var _bdOrigin = window.SERVER_ORIGIN || 'https://trainerforum.onrender.com';
-      var _session = JSON.parse(localStorage.getItem('userSession') || 'null');
-      var _bdTid = (_session && (_session._id || _session.id)) || cache._id || cache.id || cache.trainerId || null;
-      var _bdEmail = (_session && _session.email) || cache.email || null;
-
-      if (_bdTid || _bdEmail) {
-        var payload = {
-          trainerId: _bdTid,
-          email: _bdEmail,
-          blockedDates: blocked,
-          availability: cache.availability || {},
-          weeklyAvailability: cache.weeklyAvailability || [],
-          availableDays: cache.availableDays || {},
-          bookedDates: cache.bookedDates || []
-        };
-
-        fetch(_bdOrigin + '/api/trainer/blocked-dates', {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        }).catch(function(err) { console.warn('[Calendar] blocked-dates sync error:', err); });
-
-        fetch(_bdOrigin + '/api/trainer/availability', {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        }).then(function(res) {
-          if (res.ok) {
-            console.log('[Calendar] Availability synced to MongoDB');
-            if (typeof window.refreshTrainerAvailabilityFromDB === 'function' && _bdTid) {
-              window.refreshTrainerAvailabilityFromDB(_bdTid);
-            }
-          }
-        }).catch(function(err) { console.warn('[Calendar] availability sync error:', err); });
-      }
-
+      // Dynamically re-render month calendar preview
       renderDashboardCalendar();
-      if (typeof commitLocalProfileChanges === 'function') commitLocalProfileChanges();
     };
     /* ── Portfolio Logic ── */
     window.tempPortfolioImgUrl = '';

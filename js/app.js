@@ -184,17 +184,24 @@ window.isDayAvailable = function (avs, dayName, year, month, day) {
 
   // 4. Check availableDays map (e.g. { monday: true, tuesday: false, ... })
   const availDays = avs.availableDays;
-  if (availDays && typeof availDays === 'object') {
-    const fullDayMap = { Sun: 'sunday', Mon: 'monday', Tue: 'tuesday', Wed: 'wednesday', Thu: 'thursday', Fri: 'friday', Sat: 'saturday' };
-    const dayKeyLower = fullDayMap[dayName] || String(dayName).toLowerCase();
-    if (typeof availDays[dayKeyLower] !== 'undefined') {
-      return !!availDays[dayKeyLower];
-    }
+  const fullDayMap = { Sun: 'sunday', Mon: 'monday', Tue: 'tuesday', Wed: 'wednesday', Thu: 'thursday', Fri: 'friday', Sat: 'saturday' };
+  const dayKeyLower = fullDayMap[dayName] || String(dayName).toLowerCase();
+
+  if (availDays && typeof availDays === 'object' && typeof availDays[dayKeyLower] !== 'undefined') {
+    return !!availDays[dayKeyLower];
   }
 
-  // 5. Check weekly recurring schedule (array of objects)
-  const weekly = avs.weeklyAvailability || avs.weeklyHours || avs;
-  if (Array.isArray(weekly)) {
+  // 5. Check direct day property on avs (e.g. avs['Mon'] = { available: false })
+  const dayShort = dayName.substring(0, 3);
+  const directConf = avs[dayShort] || avs[dayName] || avs[dayKeyLower];
+  if (directConf && typeof directConf === 'object') {
+    if (typeof directConf.available !== 'undefined') return !!directConf.available;
+    if (typeof directConf.enabled !== 'undefined') return !!directConf.enabled;
+  }
+
+  // 6. Check weekly recurring schedule (array of objects)
+  const weekly = avs.weeklyAvailability || avs.weeklyHours;
+  if (Array.isArray(weekly) && weekly.length > 0) {
     const found = weekly.find(function(w) {
       if (!w || !w.day) return false;
       var d = String(w.day).toLowerCase();
@@ -207,16 +214,10 @@ window.isDayAvailable = function (avs, dayName, year, month, day) {
     }
   }
 
-  const dayKey = dayName; // e.g. 'Mon', 'Sat'
-  const dayConf = weekly[dayKey] || weekly[dayKey.toLowerCase()] || weekly[dayKey.toUpperCase()];
-
+  const dayConf = avs[dayShort] || avs[dayName];
   if (typeof dayConf !== 'undefined') {
     if (typeof dayConf === 'boolean') return dayConf;
     if (typeof dayConf === 'string') return dayConf === 'true';
-    if (dayConf && typeof dayConf === 'object') {
-      if (typeof dayConf.available !== 'undefined') return !!dayConf.available;
-      if (typeof dayConf.enabled !== 'undefined') return !!dayConf.enabled;
-    }
   }
 
   // 6. Default fallback: Mon-Fri available, Sat-Sun unavailable
