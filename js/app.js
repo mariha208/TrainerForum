@@ -151,6 +151,48 @@ window.formatTrainerAvailability = function (availabilityData) {
       mainText = 'By Appointment';
     }
 
+    // Extract and format specific blocked dates (e.g. Excl. Aug 11, Aug 23, Aug 25)
+    const customBlocked = availObj.customBlockedDates || availObj.blockedDates || (trainerObj && (trainerObj.customBlockedDates || trainerObj.blockedDates)) || [];
+    let blockedDateStrs = [];
+
+    if (Array.isArray(customBlocked)) {
+      blockedDateStrs = [...customBlocked];
+    }
+    const spec = availObj.specificDates || (trainerObj && (trainerObj.specificDates || (trainerObj.availability && trainerObj.availability.specificDates)));
+    if (spec && typeof spec === 'object' && !Array.isArray(spec)) {
+      Object.keys(spec).forEach(k => {
+        if ((spec[k] === false || spec[k] === 'false') && !blockedDateStrs.includes(k)) {
+          blockedDateStrs.push(k);
+        }
+      });
+    }
+
+    const formattedBlockedDates = blockedDateStrs
+      .map(ds => {
+        if (typeof ds !== 'string') return null;
+        const parts = ds.split('-');
+        if (parts.length !== 3) return null;
+        const y = parseInt(parts[0]);
+        const m = parseInt(parts[1]) - 1;
+        const d = parseInt(parts[2]);
+        if (isNaN(y) || isNaN(m) || isNaN(d)) return null;
+        const dObj = new Date(y, m, d);
+        const monthShort = dObj.toLocaleString('default', { month: 'short' });
+        return { year: y, month: m, day: d, label: `${monthShort} ${d}` };
+      })
+      .filter(Boolean)
+      .sort((a, b) => (a.year - b.year || a.month - b.month || a.day - b.day));
+
+    if (formattedBlockedDates.length > 0) {
+      if (formattedBlockedDates.length <= 3) {
+        const labels = formattedBlockedDates.map(x => x.label).join(', ');
+        mainText += ` (Excl. ${labels})`;
+      } else {
+        const labels = formattedBlockedDates.slice(0, 2).map(x => x.label).join(', ');
+        mainText += ` (Excl. ${labels} +${formattedBlockedDates.length - 2} more)`;
+      }
+    }
+
     return mainText;
   }
 
