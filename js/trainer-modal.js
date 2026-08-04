@@ -114,8 +114,8 @@ window.openTrainerModal = function (idOrObj) {
         || null;
       if (_sched) window.renderWeeklySchedule(_sched, _grid);
     }
-    if (typeof window.renderMobileTrainerCardCalendar === 'function') {
-      window.renderMobileTrainerCardCalendar(t.id || t._id || trainerId);
+    if (typeof window.renderAutomatedMonthlyGrid === 'function') {
+      window.renderAutomatedMonthlyGrid(t.id || t._id || trainerId);
     }
   }, 0);
 
@@ -187,9 +187,9 @@ window.switchTPMTab = function (btn, id) {
   const panel = document.getElementById('tpm-' + id);
   if (panel) panel.classList.add('on');
 
-  if (id === 'availability' && typeof window.renderMobileTrainerCardCalendar === 'function') {
+  if (id === 'availability' && typeof window.renderAutomatedMonthlyGrid === 'function') {
     const tid = window.currentTrainer ? (window.currentTrainer.id || window.currentTrainer._id) : null;
-    window.renderMobileTrainerCardCalendar(tid);
+    window.renderAutomatedMonthlyGrid(tid);
   }
 };
 
@@ -292,14 +292,15 @@ window.renderWeeklySchedule = function renderWeeklySchedule(rawSchedule, contain
   targets.forEach(el => { if (el) el.innerHTML = rowsHtml; });
 };
 
-// ── MOBILE & DESKTOP TRAINER CARD MONTHLY CALENDAR RENDERER ────────────────────
-// Direct data binding to live availability state object (same as Book Session modal)
-window.renderMobileTrainerCardCalendar = function (trainerId, container) {
+// ── SINGLE UNIVERSAL AUTOMATED MONTHLY GRID RENDERER ───────────────────────────
+// Automates monthly calendar grid rendering across desktop cards, mobile cards & modals.
+// Enforces Rules A (Weekly Schedule), B (Custom Blocked Dates), C (Default Available).
+window.renderAutomatedMonthlyGrid = function (trainerId, containerElement) {
   const tid = String(trainerId || (window.currentTrainer && (window.currentTrainer.id || window.currentTrainer._id)) || '');
   const TRAINERS = window.TRAINERS || [];
   const t = TRAINERS.find(x => String(x.id || x._id) === String(tid)) || window.currentTrainer || {};
 
-  // 1. Dynamic Data Binding: Fetch live availability state object used by Book Session modal
+  // 1. Resolve live availability data
   let avsObj = (window.bookingState && window.bookingState.trainerAvailability) || null;
   if (!avsObj && typeof window.getTrainerAvailability === 'function') {
     avsObj = window.getTrainerAvailability(t.id ? t : tid);
@@ -308,79 +309,156 @@ window.renderMobileTrainerCardCalendar = function (trainerId, container) {
     avsObj = (t && t.availability && typeof t.availability === 'object') ? t.availability : {};
   }
 
-  // Ensure root-level blocked dates from trainer object are merged in
-  if (t && (Array.isArray(t.blockedDates) || Array.isArray(t.customBlockedDates))) {
-    const tBlocked = [...(t.blockedDates || []), ...(t.customBlockedDates || [])];
-    if (!avsObj.blockedDates) avsObj.blockedDates = tBlocked;
-    else avsObj.blockedDates = [...new Set([...(avsObj.blockedDates || []), ...tBlocked])];
-    avsObj.customBlockedDates = avsObj.blockedDates;
+  // 2. Build normalized Set for Rule B (Custom Blocked Dates)
+  const normDate = d => {
+    if (!d) return '';
+    const str = String(d).trim();
+    return str.includes('T') ? str.split('T')[0] : str;
+  };
+
+  const rawBlocked = [
+    ...(Array.isArray(t.blockedDates) ? t.blockedDates : []),
+    ...(Array.isArray(t.customBlockedDates) ? t.customBlockedDates : []),
+    ...(Array.isArray(t.unavailableDates) ? t.unavailableDates : []),
+    ...(Array.isArray(avsObj.blockedDates) ? avsObj.blockedDates : []),
+    ...(Array.isArray(avsObj.customBlockedDates) ? avsObj.customBlockedDates : []),
+    ...(Array.isArray(avsObj.unavailable) ? avsObj.unavailable : []),
+  ];
+  const blockedSet = new Set(rawBlocked.map(normDate).filter(Boolean));
+
+  // Merge localStorage trainer_availability_${tid}
+  if (tid) {
+    try {
+      const shared = JSON.parse(localStorage.getItem('trainer_availability_' + tid) || 'null');
+      if (shared) {
+        const sharedArr = shared.unavailable || shared.blockedDates || [];
+        if (Array.isArray(sharedArr)) sharedArr.forEach(d => blockedSet.add(normDate(d)));
+      }
+    } catch (e) {}
   }
 
-  // 2. DOM Selector Fix: target all .monthly-calendar-grid elements across desktop & mobile
-  let grids = [];
-  if (container) {
-    if (typeof container === 'string') grids = Array.from(document.querySelectorAll(container));
-    else if (container instanceof Element) grids = [container];
-    else if (container.length) grids = Array.from(container);
+  // Owner localStorage currentTrainer overrides
+  try {
+    const _ctData = JSON.parse(localStorage.getItem('currentTrainer') || '{}');
+    const _ctId = String(_ctData.id || _ctData._id || _ctData.trainerId || '');
+    const isOwner = window.loggedInTrainerId != null && String(window.loggedInTrainerId) === tid;
+    if (isOwner || (_ctId && _ctId === tid)) {
+      const ctArr = [...(_ctData.blockedDates || []), ...(_ctData.customBlockedDates || [])];
+      ctArr.forEach(d => blockedSet.add(normDate(d)));
+    }
+  } catch (e) {}
+
+  // 3. Resolve Weekly Schedule for Rule A
+  const weeklySchedule = t.weeklySchedule || t.weeklyAvailability
+    || (avsObj.weeklySchedule || avsObj.weeklyAvailability)
+    || (t.availability && (t.availability.weeklySchedule || t.availability.weeklyAvailability))
+    || {};
+
+  // 4. Resolve Target Containers
+  let containers = [];
+  if (containerElement) {
+    if (typeof containerElement === 'string') containers = Array.from(document.querySelectorAll(containerElement));
+    else if (containerElement instanceof Element) containers = [containerElement];
+    else if (containerElement.length) containers = Array.from(containerElement);
   }
-  if (!grids.length) {
-    grids = Array.from(document.querySelectorAll('.monthly-calendar-grid'));
+  if (!containers.length) {
+    containers = Array.from(document.querySelectorAll('.monthly-calendar-grid'));
   }
-  if (!grids.length) return;
+  if (!containers.length) return;
 
   const now = new Date();
-  const y = now.getFullYear(), m = now.getMonth();
-  const daysInMonth = new Date(y, m + 1, 0).getDate();
-  const _shortDay = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const year = (window.bookingState && window.bookingState.year) || now.getFullYear();
+  const month = (window.bookingState !== undefined && window.bookingState.month !== undefined) ? window.bookingState.month : now.getMonth();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const fullDayMap = { Sun: 'sunday', Mon: 'monday', Tue: 'tuesday', Wed: 'wednesday', Thu: 'thursday', Fri: 'friday', Sat: 'saturday' };
 
-  // 3. Re-evaluates day cells 1–31 against full list of unavailable dates
-  grids.forEach(grid => {
-    const dayCells = grid.querySelectorAll('.day-cell');
+  containers.forEach(container => {
+    const dayCells = container.querySelectorAll('.day-cell');
+    if (!dayCells.length) return;
+
     dayCells.forEach(cell => {
       const d = parseInt(cell.textContent.trim(), 10);
       if (isNaN(d) || d < 1 || d > daysInMonth) return;
 
-      const cellDate = new Date(y, m, d);
-      const dk = _shortDay[cellDate.getDay()];
+      const cellDate = new Date(year, month, d);
+      const dayOfWeek = dayNames[cellDate.getDay()];
+      const dayLower = fullDayMap[dayOfWeek] || dayOfWeek.toLowerCase();
 
-      const dayAvailResult = typeof window.isDayAvailable === 'function'
-        ? window.isDayAvailable(avsObj, dk, y, m, d)
-        : true;
+      const mStr = String(month + 1).padStart(2, '0');
+      const dStr = String(d).padStart(2, '0');
+      const isoDate = `${year}-${mStr}-${dStr}`;
+      const unpaddedDate = `${year}-${month + 1}-${d}`;
 
-      const explicitBlocked = typeof window.isDateBlocked === 'function'
-        ? window.isDateBlocked(cellDate, avsObj)
-        : false;
+      // ── RULE A: Check Weekly Schedule ───────────────────────────────────────
+      let isRuleABlocked = false;
+      let dayConfig = null;
+      if (Array.isArray(weeklySchedule)) {
+        dayConfig = weeklySchedule.find(w => {
+          if (!w) return false;
+          const dw = String(w.day || w.dayName || '').toLowerCase();
+          return dw === dayLower || dw.slice(0, 3) === dayOfWeek.toLowerCase();
+        });
+      } else if (weeklySchedule && typeof weeklySchedule === 'object') {
+        dayConfig = weeklySchedule[dayOfWeek] || weeklySchedule[dayLower];
+      }
 
-      const isBlocked = (dayAvailResult === false || dayAvailResult === 'booked' || explicitBlocked);
+      if (dayConfig) {
+        if (typeof dayConfig === 'object') {
+          if (dayConfig.available === false || dayConfig.enabled === false) isRuleABlocked = true;
+        } else if (typeof dayConfig === 'string') {
+          if (dayConfig.toLowerCase().includes('unavail')) isRuleABlocked = true;
+        } else if (typeof dayConfig === 'boolean') {
+          if (!dayConfig) isRuleABlocked = true;
+        }
+      }
 
-      // Apply classes and styles
+      // ── RULE B: Check Custom Blocked Dates ──────────────────────────────────
+      let isRuleBBlocked = blockedSet.has(isoDate) || blockedSet.has(unpaddedDate);
+
+      // Check specific date overrides if any
+      const spec = t.specificDates || (avsObj && avsObj.specificDates);
+      if (spec && typeof spec === 'object') {
+        if (spec[isoDate] === false || spec[isoDate] === 'false' || spec[unpaddedDate] === false) isRuleBBlocked = true;
+        else if (spec[isoDate] === true || spec[isoDate] === 'true' || spec[unpaddedDate] === true) isRuleBBlocked = false;
+      }
+
+      // ── RULE C: Default Available ───────────────────────────────────────────
+      // If neither Rule A nor Rule B is triggered, day D MUST render as available.
+      const isBlocked = isRuleABlocked || isRuleBBlocked;
+
+      const isToday = d === now.getDate() && month === now.getMonth() && year === now.getFullYear();
+
+      // Apply classes dynamically based ONLY on Rules A, B, C
       if (isBlocked) {
-        cell.classList.add('dark-unavailable', 'unavailable', 'is-unavailable');
-        cell.classList.remove('dark-available', 'available');
+        cell.className = 'day-cell dark-unavailable unavailable is-unavailable';
         cell.style.background = 'rgba(239,68,68,0.2)';
         cell.style.border = '1px solid rgba(239,68,68,0.4)';
         cell.style.color = '#f87171';
         cell.style.textDecoration = 'line-through';
         cell.setAttribute('title', 'Unavailable');
+      } else if (isToday) {
+        cell.className = 'day-cell dark-today today';
+        cell.style.background = 'rgba(197,160,89,0.22)';
+        cell.style.border = '1.5px solid #C5A059';
+        cell.style.color = '#C5A059';
+        cell.style.textDecoration = 'none';
+        cell.setAttribute('title', 'Today');
       } else {
-        cell.classList.remove('dark-unavailable', 'unavailable', 'is-unavailable');
-        const isToday = d === now.getDate() && m === now.getMonth() && y === now.getFullYear();
-        if (isToday) {
-          cell.classList.add('dark-today', 'today');
-          cell.style.background = 'rgba(197,160,89,0.22)';
-          cell.style.border = '1.5px solid #C5A059';
-          cell.style.color = '#C5A059';
-        } else {
-          cell.classList.add('dark-available', 'available');
-          cell.style.background = 'rgba(255,255,255,0.04)';
-          cell.style.border = '1px solid rgba(255,255,255,0.07)';
-          cell.style.color = 'rgba(237,242,247,0.85)';
-        }
+        cell.className = 'day-cell dark-available available';
+        cell.style.background = 'rgba(255,255,255,0.04)';
+        cell.style.border = '1px solid rgba(255,255,255,0.07)';
+        cell.style.color = 'rgba(237,242,247,0.85)';
         cell.style.textDecoration = 'none';
         cell.setAttribute('title', 'Available');
       }
     });
   });
+};
+
+// Backwards compatibility alias: renderMobileTrainerCardCalendar calls renderAutomatedMonthlyGrid
+window.renderMobileTrainerCardCalendar = function (trainerId, container) {
+  return window.renderAutomatedMonthlyGrid(trainerId, container);
 };
 
 function randomBetween(a, b) {
@@ -1112,10 +1190,7 @@ function buildPremiumModal(t, isOwner = false) {
           ? window.isDateBlocked(cellDate, _cardAvs)
           : false;
 
-        // Also check weekly _avMap as a cross-reference
-        const isWeeklyUnavailable = _avMap[dk] === false;
-
-        const isBlocked = (dayAvailResult === false || dayAvailResult === 'booked' || explicitBlocked || isWeeklyUnavailable);
+        const isBlocked = (dayAvailResult === false || dayAvailResult === 'booked' || explicitBlocked);
 
         const isToday = d === now.getDate() && m === now.getMonth() && y === now.getFullYear();
 

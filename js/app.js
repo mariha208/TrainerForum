@@ -159,8 +159,8 @@ window.renderDarkUserCardCalendar = function (trainerId) {
   if (typeof window.renderBPMCalendar === 'function') {
     window.renderBPMCalendar();
   }
-  if (typeof window.renderMobileTrainerCardCalendar === 'function') {
-    window.renderMobileTrainerCardCalendar(trainerId);
+  if (typeof window.renderAutomatedMonthlyGrid === 'function') {
+    window.renderAutomatedMonthlyGrid(trainerId);
   }
 };
 
@@ -502,34 +502,43 @@ window.isDayAvailable = function (avs, dayName, year, month, day) {
     return !!availDays[dayKeyLower];
   }
 
-  // 5. Check direct day property on avs (e.g. avs['Mon'] = { available: false })
-  const directConf = avs[dayOfWeek] || avs[dayKeyLower];
-  if (directConf && typeof directConf === 'object') {
-    if (typeof directConf.available !== 'undefined') return !!directConf.available;
-    if (typeof directConf.enabled !== 'undefined') return !!directConf.enabled;
-  }
-
-  // 6. Check weekly recurring schedule (weeklySchedule or weeklyAvailability)
+  // 5. Check weekly recurring schedule (weeklySchedule or weeklyAvailability) - HIGHER PRIORITY
   const weeklySchedule = avs.weeklySchedule || avs.weeklyAvailability || avs.weeklyHours;
   if (weeklySchedule && typeof weeklySchedule === 'object') {
     if (Array.isArray(weeklySchedule)) {
       const found = weeklySchedule.find(w => {
-        if (!w || !w.day) return false;
-        const d = String(w.day).toLowerCase();
+        if (!w) return false;
+        const d = String(w.day || w.dayName || '').toLowerCase();
         const dn = String(dayOfWeek).toLowerCase();
-        return d === dn || d.substring(0, 3) === dn.substring(0, 3);
+        return d === dn || (d.length >= 3 && d.substring(0, 3) === dn.substring(0, 3));
       });
       if (found) {
-        if (typeof found.enabled !== 'undefined') return !!found.enabled;
         if (typeof found.available !== 'undefined') return !!found.available;
+        if (typeof found.enabled !== 'undefined') return !!found.enabled;
+        if (found.start && found.end) return true;
       }
     } else {
       const dayConfig = weeklySchedule[dayOfWeek] || weeklySchedule[dayKeyLower];
       if (dayConfig) {
-        if (typeof dayConfig.enabled !== 'undefined') return !!dayConfig.enabled;
-        if (typeof dayConfig.available !== 'undefined') return !!dayConfig.available;
+        if (typeof dayConfig === 'object') {
+          if (typeof dayConfig.available !== 'undefined') return !!dayConfig.available;
+          if (typeof dayConfig.enabled !== 'undefined') return !!dayConfig.enabled;
+          if (dayConfig.start && dayConfig.end) return true;
+        } else if (typeof dayConfig === 'string') {
+          if (dayConfig.toLowerCase().includes('unavail')) return false;
+          if (dayConfig.includes(':')) return true;
+        } else if (typeof dayConfig === 'boolean') {
+          return dayConfig;
+        }
       }
     }
+  }
+
+  // 6. Check direct day property on avs
+  const directConf = avs[dayOfWeek] || avs[dayKeyLower];
+  if (directConf && typeof directConf === 'object') {
+    if (typeof directConf.available !== 'undefined') return !!directConf.available;
+    if (typeof directConf.enabled !== 'undefined') return !!directConf.enabled;
   }
 
   return true;
