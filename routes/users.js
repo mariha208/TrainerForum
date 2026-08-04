@@ -412,12 +412,13 @@ router.put('/availability', async (req, res) => {
     avsObj.specificDates = specDates;
     avsObj.blockedDates = datesToBlock;
     avsObj.customBlockedDates = datesToBlock;
+    if (schedToSave) {
+      avsObj.weeklySchedule = schedToSave;
+      avsObj.weeklyAvailability = schedToSave;
+    }
 
     const update = {
       availability: avsObj,
-      'availability.specificDates': specDates,
-      'availability.blockedDates': datesToBlock,
-      'availability.customBlockedDates': datesToBlock,
       blockedDates: datesToBlock,
       customBlockedDates: datesToBlock
     };
@@ -425,15 +426,13 @@ router.put('/availability', async (req, res) => {
     if (schedToSave) {
       update.weeklySchedule = schedToSave;
       update.weeklyAvailability = schedToSave;
-      update.availability.weeklySchedule = schedToSave;
-      update.availability.weeklyAvailability = schedToSave;
     }
     if (availableDays) update.availableDays = availableDays;
 
     const user = await User.findOneAndUpdate(
       query,
       { $set: update },
-      { new: true, runValidators: true }
+      { new: true }
     ).select('-passwordHash');
 
     if (!user) return res.status(404).json({ error: 'Trainer not found' });
@@ -460,12 +459,13 @@ router.put('/:id/availability', async (req, res) => {
     avsObj.specificDates = specDates;
     avsObj.blockedDates = datesToBlock;
     avsObj.customBlockedDates = datesToBlock;
+    if (schedToSave) {
+      avsObj.weeklySchedule = schedToSave;
+      avsObj.weeklyAvailability = schedToSave;
+    }
 
     const update = {
       availability: avsObj,
-      'availability.specificDates': specDates,
-      'availability.blockedDates': datesToBlock,
-      'availability.customBlockedDates': datesToBlock,
       blockedDates: datesToBlock,
       customBlockedDates: datesToBlock
     };
@@ -473,15 +473,13 @@ router.put('/:id/availability', async (req, res) => {
     if (schedToSave) {
       update.weeklySchedule = schedToSave;
       update.weeklyAvailability = schedToSave;
-      update.availability.weeklySchedule = schedToSave;
-      update.availability.weeklyAvailability = schedToSave;
     }
     if (availableDays) update.availableDays = availableDays;
 
     const user = await User.findOneAndUpdate(
       query,
       { $set: update },
-      { new: true, runValidators: true }
+      { new: true }
     ).select('-passwordHash');
 
     if (!user) return res.status(404).json({ error: 'Trainer not found' });

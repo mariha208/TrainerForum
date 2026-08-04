@@ -2089,6 +2089,11 @@
 
       console.log('[AvailSync] Saving availability to MongoDB...', { customBlockedDates: blockedDates, weeklySchedule: weeklyAvailability });
 
+      var origin = 'https://trainerforum.onrender.com';
+      if (window.location && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+        origin = window.location.origin;
+      }
+
       var _apiPayload = JSON.stringify({
         trainerId: _tid,
         email: _email,
@@ -2344,7 +2349,10 @@
       var headers = { 'Content-Type': 'application/json' };
       if (token) headers['Authorization'] = 'Bearer ' + token;
 
-      var origin = window.SERVER_ORIGIN || 'https://trainerforum.onrender.com';
+      var origin = 'https://trainerforum.onrender.com';
+      if (window.location && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+        origin = window.location.origin;
+      }
 
       // Re-build full availability payload from DOM (same as saveAvailability)
       var oldAvs = cache.availability;
