@@ -2020,9 +2020,8 @@
       var avs = {};
       avs.specificDates = oldAvs.specificDates || {};
       var weeklyAvailability = [];
-      var availableDays = {
-        monday: true, tuesday: true, wednesday: true, thursday: true, friday: true, saturday: false, sunday: false
-      };
+      // Build availableDays from actual checkbox state (not hardcoded defaults)
+      var availableDays = {};
       var fullDayMap = { Sun: 'sunday', Mon: 'monday', Tue: 'tuesday', Wed: 'wednesday', Thu: 'thursday', Fri: 'friday', Sat: 'saturday' };
 
       if (cont) {
@@ -2192,39 +2191,72 @@
       var cells = '';
       for (var i = 0; i < firstDay; i++) cells += '<div></div>';
 
+      // Unified getDayStatus: reads live DOM checkboxes first, then cached blockedDates/bookedDates
+      function getDayStatus(y2, m2, d2, dayName2) {
+        var m1s = String(m2 + 1).padStart(2, '0');
+        var d1s = String(d2).padStart(2, '0');
+        var isoStr = y2 + '-' + m1s + '-' + d1s;
+
+        // Booked check (orange) — from cache
+        if (Array.isArray(avs.bookedDates) && avs.bookedDates.indexOf(isoStr) !== -1) return 'booked';
+
+        // Custom blocked date check (red) — from cache
+        if (Array.isArray(avs.blockedDates) && avs.blockedDates.indexOf(isoStr) !== -1) return false;
+
+        // Weekly day-of-week check — read live DOM checkboxes first
+        var weeklyDisabled = false;
+        var cont2 = document.getElementById('weekly-hours-container');
+        if (cont2) {
+          var matchRow = cont2.querySelector('.avail-row[data-day="' + dayName2 + '"]');
+          if (matchRow) {
+            var toggleEl = matchRow.querySelector('.avail-toggle');
+            if (toggleEl && !toggleEl.checked) weeklyDisabled = true;
+          }
+        } else {
+          // Fall back to cached avs map
+          var fullDayMap2 = { Sun: 'sunday', Mon: 'monday', Tue: 'tuesday', Wed: 'wednesday', Thu: 'thursday', Fri: 'friday', Sat: 'saturday' };
+          var dk = fullDayMap2[dayName2] || String(dayName2).toLowerCase();
+          if (avs.availableDays && typeof avs.availableDays[dk] !== 'undefined') {
+            weeklyDisabled = !avs.availableDays[dk];
+          } else if (avs[dayName2] && typeof avs[dayName2].available !== 'undefined') {
+            weeklyDisabled = !avs[dayName2].available;
+          } else {
+            // Default: Sat & Sun unavailable
+            weeklyDisabled = (dayName2 === 'Sat' || dayName2 === 'Sun');
+          }
+        }
+
+        return weeklyDisabled ? false : true;
+      }
+
       for (var day = 1; day <= daysInMonth; day++) {
         var dObj = new Date(_dbCalYear, _dbCalMonth, day);
         var dayName = fullDayNames[dObj.getDay()];
 
-        // Dynamic Day-of-Week & Specific Date evaluation via isDayAvailable
-        var status = typeof window.isDayAvailable === 'function'
-          ? window.isDayAvailable(avs, dayName, _dbCalYear, _dbCalMonth, day)
-          : (dayName !== 'Sat' && dayName !== 'Sun');
+        var status = getDayStatus(_dbCalYear, _dbCalMonth, day, dayName);
 
         var isToday = (day === today.getDate() && _dbCalMonth === today.getMonth() && _dbCalYear === today.getFullYear());
-        
+
         var bg, bdr, clr, titleAttr;
         if (status === 'booked') {
-          // ORANGE: Booked Session
           bg = 'rgba(245,158,11,0.18)';
           bdr = '1px solid rgba(245,158,11,0.45)';
           clr = '#d97706';
           titleAttr = 'Booked Session';
         } else if (status === false) {
-          // RED: Unavailable Weekday or Blocked Date
           bg = 'rgba(239,68,68,0.15)';
           bdr = '1px solid rgba(239,68,68,0.3)';
           clr = 'rgba(239,68,68,0.9)';
-          titleAttr = 'Unavailable (Click to toggle block)';
+          titleAttr = 'Unavailable — click to unblock';
         } else {
-          // GREEN: Available Weekday
           bg = isToday ? 'rgba(197,160,89,0.25)' : 'rgba(16,185,129,0.12)';
           bdr = isToday ? '1.5px solid #C5A059' : '1px solid rgba(16,185,129,0.3)';
           clr = isToday ? '#C5A059' : '#10b981';
-          titleAttr = 'Available (Click to toggle block)';
+          titleAttr = 'Available — click to block';
         }
 
-        cells += '<div onclick="toggleSpecificDate(' + _dbCalYear + ',' + _dbCalMonth + ',' + day + ')" style="cursor:pointer;text-align:center;padding:7px 3px;border-radius:7px;background:' + bg + ';border:' + bdr + ';font-size:.76rem;font-weight:600;color:' + clr + '" title="' + titleAttr + '">' + day + '</div>';
+        // touch-action + pointer-events ensure tap works on all mobile devices
+        cells += '<div onclick="toggleSpecificDate(' + _dbCalYear + ',' + _dbCalMonth + ',' + day + ')" style="cursor:pointer;touch-action:manipulation;pointer-events:auto;-webkit-tap-highlight-color:transparent;text-align:center;padding:7px 3px;border-radius:7px;background:' + bg + ';border:' + bdr + ';font-size:.76rem;font-weight:600;color:' + clr + '" title="' + titleAttr + '">' + day + '</div>';
       }
       widget.innerHTML =
         '<div style="padding:10px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);background:rgba(0,0,0,0.02)">'
@@ -2254,18 +2286,87 @@
       var idx = blocked.indexOf(isoDate);
 
       if (idx !== -1) {
-        // Unblock ISO date
-        blocked.splice(idx, 1);
+        blocked.splice(idx, 1); // Unblock
       } else {
-        // Block ISO date
-        blocked.push(isoDate);
+        blocked.push(isoDate); // Block
       }
 
       cache.blockedDates = Array.from(new Set(blocked));
       localStorage.setItem('currentTrainer', JSON.stringify(cache));
 
-      // Dynamically re-render month calendar preview
+      // Re-render calendar preview immediately (no save toast)
       renderDashboardCalendar();
+
+      // ── Persist blocked dates to MongoDB ──────────────────────────────────
+      var session = JSON.parse(localStorage.getItem('userSession') || 'null');
+      var _tid = (session && (session._id || session.id)) || cache._id || cache.id || cache.trainerId || null;
+      var _email = (session && session.email) || cache.email || null;
+      if (!_tid && !_email) return; // no auth — skip network request
+
+      var origin = window.SERVER_ORIGIN || 'https://trainerforum.onrender.com';
+
+      // Re-build full availability payload from DOM (same as saveAvailability)
+      var oldAvs = cache.availability;
+      if (typeof oldAvs === 'string') { try { oldAvs = JSON.parse(oldAvs); } catch (ex) {} }
+      oldAvs = oldAvs || {};
+      var domAvs = {};
+      domAvs.specificDates = oldAvs.specificDates || {};
+      var domWeekly = [];
+      var domDays = {};
+      var fDayMap = { Sun: 'sunday', Mon: 'monday', Tue: 'tuesday', Wed: 'wednesday', Thu: 'thursday', Fri: 'friday', Sat: 'saturday' };
+      var contEl = document.getElementById('weekly-hours-container');
+      if (contEl) {
+        contEl.querySelectorAll('.avail-row').forEach(function (row) {
+          var rd = row.dataset.day;
+          var isChk = row.querySelector('.avail-toggle') ? row.querySelector('.avail-toggle').checked : false;
+          var sFrom = row.querySelector('.avail-from') ? row.querySelector('.avail-from').value : '09:00';
+          var sTo = row.querySelector('.avail-to') ? row.querySelector('.avail-to').value : '18:00';
+          domAvs[rd] = { available: isChk, enabled: isChk, start: sFrom, end: sTo };
+          if (fDayMap[rd]) domDays[fDayMap[rd]] = isChk;
+          domWeekly.push({ day: rd, enabled: isChk, available: isChk, startTime: sFrom, endTime: sTo });
+        });
+      } else {
+        domAvs = oldAvs;
+        domWeekly = cache.weeklyAvailability || [];
+        domDays = cache.availableDays || {};
+      }
+
+      var payload = JSON.stringify({
+        trainerId: _tid,
+        email: _email,
+        availability: domAvs,
+        weeklyAvailability: domWeekly,
+        availableDays: domDays,
+        blockedDates: cache.blockedDates,
+        bookedDates: cache.bookedDates || []
+      });
+
+      fetch(origin + '/api/trainer/availability', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: payload
+      }).then(function (res) {
+        if (!res.ok) throw new Error('Status ' + res.status);
+        return res.json();
+      }).then(function () {
+        // Silent success — no toast (not a full save action)
+        var targetIdOrEmail = _tid || _email;
+        if (typeof window.refreshTrainerAvailabilityFromDB === 'function' && targetIdOrEmail) {
+          window.refreshTrainerAvailabilityFromDB(targetIdOrEmail);
+        }
+      }).catch(function (err) {
+        console.warn('[BlockedDate] DB sync failed:', err.message);
+      });
+
+      // Also fire secondary users/:id/availability endpoint
+      var targetIdOrEmail2 = _tid || _email;
+      if (targetIdOrEmail2 && targetIdOrEmail2 !== '1') {
+        fetch(origin + '/api/users/' + targetIdOrEmail2 + '/availability', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: payload
+        }).catch(function () {});
+      }
     };
     /* ── Portfolio Logic ── */
     window.tempPortfolioImgUrl = '';
