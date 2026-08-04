@@ -297,32 +297,32 @@ function renderRequirementsTrack(customData) {
 
   if (tbody) {
     tbody.innerHTML = reqData.map(r => {
-    const statusRaw = String(r.approvalStatus || r.status || 'Pending').trim().toUpperCase();
+      const statusRaw = String(r.approvalStatus || r.status || 'Pending').trim().toUpperCase();
 
-    let badgeClass = 'badge-pending';
-    let badgeText = '⏳ PENDING';
+      let badgeClass = 'badge-pending';
+      let badgeText = '⏳ PENDING';
 
-    if (statusRaw === 'APPROVED' || statusRaw === 'ACCEPTED') {
-      badgeClass = 'badge-accepted';
-      badgeText = '✅ APPROVED';
-    } else if (statusRaw === 'REJECTED') {
-      badgeClass = 'badge-rejected';
-      badgeText = '❌ REJECTED';
-    } else {
-      badgeClass = 'badge-pending';
-      badgeText = '⏳ PENDING';
-    }
+      if (statusRaw === 'APPROVED' || statusRaw === 'ACCEPTED') {
+        badgeClass = 'badge-accepted';
+        badgeText = '✅ APPROVED';
+      } else if (statusRaw === 'REJECTED') {
+        badgeClass = 'badge-rejected';
+        badgeText = '❌ REJECTED';
+      } else {
+        badgeClass = 'badge-pending';
+        badgeText = '⏳ PENDING';
+      }
 
-    const reqId = r.reqId || r.id || 'REQ-001';
-    const topic = r.topic || r.trainingTopic || 'N/A';
-    const orgName = r.orgName || r.organizationName || 'N/A';
-    const loc = r.locationType || r.locationPlace || 'N/A';
-    const city = r.cityDetails || r.cityAddress || '';
-    const cleanDate = formatSimpleDate(r.targetDate || r.targetDates || '');
-    const duration = r.duration || r.timeDuration || 'N/A';
-    const budget = Number(r.budget || 0).toLocaleString();
+      const reqId = r.reqId || r.id || 'REQ-001';
+      const topic = r.topic || r.trainingTopic || 'N/A';
+      const orgName = r.orgName || r.organizationName || 'N/A';
+      const loc = r.locationType || r.locationPlace || 'N/A';
+      const city = r.cityDetails || r.cityAddress || '';
+      const cleanDate = formatSimpleDate(r.targetDate || r.targetDates || '');
+      const duration = r.duration || r.timeDuration || 'N/A';
+      const budget = Number(r.budget || 0).toLocaleString();
 
-    return `
+      return `
       <tr>
         <td>
           <div style="font-size:11px;font-weight:700;color:#c5a57b;letter-spacing:0.5px">${escHtml(reqId)}</div>
@@ -350,7 +350,7 @@ function renderRequirementsTrack(customData) {
         </td>
       </tr>
     `;
-  }).join('');
+    }).join('');
   }
 
   // ── RENDER MOBILE CARDS VIEW ──────────────────────────────────────────────
