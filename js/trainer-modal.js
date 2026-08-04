@@ -801,15 +801,36 @@ function buildPremiumModal(t, isOwner = false) {
         const isoDate = `${y}-${m1}-${d1}`;
         const dateKey = `${y}-${m}-${d}`;
 
-        // Check EXCLUSIVELY if date exists in trainer's custom unavailable / blocked dates array or specificDates override
-        const isExplicitBlocked = _blockedList.includes(isoDate) || 
-          (_specificDates && (_specificDates[isoDate] === false || _specificDates[dateKey] === false)) ||
-          (typeof window.isDateBlocked === 'function' && window.isDateBlocked(cellDate, { blockedDates: _blockedList }));
+        // 1. Cross-reference trainer's weekly working schedule (_avMap)
+        // _avMap[dk] is true if working/available (e.g. "10:00 AM – 2:00 PM"), false if "Unavailable"
+        const isWeeklyAvailable = _avMap[dk] !== false;
 
-        const isBlocked = !!isExplicitBlocked;
+        // 2. Check custom date override / blocked dates list
+        const isCustomBlocked = _blockedList.includes(isoDate);
+
+        let isSpecificOverride = undefined;
+        if (typeof _specificDates[isoDate] !== 'undefined') {
+          isSpecificOverride = _specificDates[isoDate] !== false;
+        } else if (typeof _specificDates[dateKey] !== 'undefined') {
+          isSpecificOverride = _specificDates[dateKey] !== false;
+        }
+
+        // Determine final blocked state:
+        // Custom blocked dates & specific false overrides -> UNAVAILABLE
+        // Specific true overrides -> AVAILABLE
+        // Otherwise -> Follow Weekly Working Schedule (_avMap)
+        let isBlocked = false;
+        if (isCustomBlocked) {
+          isBlocked = true;
+        } else if (typeof isSpecificOverride !== 'undefined') {
+          isBlocked = !isSpecificOverride;
+        } else {
+          isBlocked = !isWeeklyAvailable;
+        }
+
         const isToday = d === now.getDate() && m === now.getMonth() && y === now.getFullYear();
 
-        // Styling Rules matching Image 2 & Image 3:
+        // Styling Rules:
         // Unavailable/Blocked: dark-red background tint (rgba(239, 68, 68, 0.2)), light-red text (#f87171), strikethrough
         const bg = isBlocked ? 'rgba(239,68,68,0.2)' : (isToday ? 'rgba(197,160,89,0.22)' : 'rgba(255,255,255,0.04)');
         const bdr = isBlocked ? '1px solid rgba(239,68,68,0.4)' : (isToday ? '1.5px solid #C5A059' : '1px solid rgba(255,255,255,0.07)');
