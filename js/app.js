@@ -24,6 +24,8 @@ window.getTrainerAvailability = function (t) {
   if (!t) return null;
   const tid = String(t.id || t._id || t.trainerId || '');
 
+  let av = null;
+
   // 1. Session override — only applied when this trainer IS the logged-in user
   if (tid) {
     try {
@@ -34,33 +36,42 @@ window.getTrainerAvailability = function (t) {
         const ct = JSON.parse(localStorage.getItem('currentTrainer') || '{}');
         const ctId = String(ct.id || ct._id || ct.trainerId || '');
         if (ctId === tid && ct.availability) {
-          let av = ct.availability;
-          if (typeof av === 'string') { try { av = JSON.parse(av); } catch (e) {} }
-          if (av && typeof av === 'object' && Object.keys(av).length) return av;
+          let ctAv = ct.availability;
+          if (typeof ctAv === 'string') { try { ctAv = JSON.parse(ctAv); } catch (e) {} }
+          if (ctAv && typeof ctAv === 'object' && Object.keys(ctAv).length) av = ctAv;
         }
       }
     } catch (e) {}
   }
 
   // 2. Server-sourced availability on the trainer object (primary for public cards)
-  if (t.availability) {
+  if (!av && t.availability) {
     try {
-      const av = typeof t.availability === 'string' ? JSON.parse(t.availability) : t.availability;
-      if (av && (typeof av === 'object' || typeof av === 'string')) return av;
+      av = typeof t.availability === 'string' ? JSON.parse(t.availability) : t.availability;
     } catch (e) {
-      return t.availability;
+      av = t.availability;
     }
   }
 
   // 3. Legacy per-trainer localStorage key
-  if (tid) {
+  if (!av && tid) {
     try {
       const lavail = JSON.parse(localStorage.getItem(`tv-trainer-${tid}-availability`) || 'null');
-      if (lavail) return lavail;
+      if (lavail) av = lavail;
     } catch (e) {}
   }
 
-  return null;
+  if (!av) av = {};
+  if (typeof av === 'object') {
+    const blockedList = t.customBlockedDates || t.blockedDates || av.customBlockedDates || av.blockedDates || [];
+    const weeklyList = t.weeklySchedule || t.weeklyAvailability || av.weeklySchedule || av.weeklyAvailability || [];
+    av.customBlockedDates = blockedList;
+    av.blockedDates = blockedList;
+    av.weeklySchedule = weeklyList;
+    av.weeklyAvailability = weeklyList;
+  }
+
+  return av;
 };
 
 /**

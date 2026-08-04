@@ -1294,6 +1294,16 @@ window.renderBPMCalendar = function () {
     }
   }
 
+  if (!_bpmAvs) _bpmAvs = {};
+  if (typeof _bpmAvs === 'object') {
+    const customBlockedList = (t && (t.customBlockedDates || t.blockedDates)) || _bpmAvs.customBlockedDates || _bpmAvs.blockedDates || [];
+    const weeklySchedList = (t && (t.weeklySchedule || t.weeklyAvailability)) || _bpmAvs.weeklySchedule || _bpmAvs.weeklyAvailability || [];
+    _bpmAvs.customBlockedDates = customBlockedList;
+    _bpmAvs.blockedDates = customBlockedList;
+    _bpmAvs.weeklySchedule = weeklySchedList;
+    _bpmAvs.weeklyAvailability = weeklySchedList;
+  }
+
   let cells = '';
   for (let i = firstDay - 1; i >= 0; i--) {
     cells += `<div class="bpm-cal-day other-month">${prevDays - i}</div>`;
@@ -1306,16 +1316,16 @@ window.renderBPMCalendar = function () {
     const isSelected = d === state.selectedDay;
     const isPast = cellDate < new Date(today.getFullYear(), today.getMonth(), today.getDate());
 
-    // Dynamic day-of-week evaluation via isDayAvailable
+    // Dynamic day-of-week & customBlockedDates evaluation via isDayAvailable
     const available = typeof window.isDayAvailable === 'function'
       ? window.isDayAvailable(_bpmAvs, dayName, year, month, d)
       : (dayName !== 'Sat' && dayName !== 'Sun');
 
-    const isBlocked = !available;
+    const isBlocked = (available === false || available === 'booked');
 
     let cls = 'bpm-cal-day';
     if (isPast) cls += ' other-month';
-    else if (isBlocked) cls += ' booked';
+    else if (isBlocked) cls += ' unavailable booked';
     else if (isSelected) cls += ' selected';
     else if (isToday) cls += ' today';
 

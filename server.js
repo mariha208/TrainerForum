@@ -84,10 +84,56 @@ app.get('/api/trainers', async (req, res) => {
     }
 
     const trainers = await User.find(filter).sort({ displayPriority: 1 }).select('-passwordHash');
-    res.json(trainers);
+    const result = trainers.map(tr => {
+      const obj = tr.toObject();
+      const customBlocked = obj.customBlockedDates || obj.blockedDates || (obj.availability && (obj.availability.customBlockedDates || obj.availability.blockedDates)) || [];
+      const weekly = obj.weeklySchedule || obj.weeklyAvailability || (obj.availability && (obj.availability.weeklySchedule || obj.availability.weeklyAvailability)) || [];
+      obj.customBlockedDates = customBlocked;
+      obj.blockedDates = customBlocked;
+      obj.weeklySchedule = weekly;
+      obj.weeklyAvailability = weekly;
+      if (obj.availability && typeof obj.availability === 'object') {
+        obj.availability.customBlockedDates = customBlocked;
+        obj.availability.blockedDates = customBlocked;
+        obj.availability.weeklySchedule = weekly;
+        obj.availability.weeklyAvailability = weekly;
+      }
+      return obj;
+    });
+    res.json(result);
   } catch (err) {
     console.error('[Trainers API] Error:', err.message);
     res.json([]);
+  }
+});
+
+// ── GET single trainer public endpoint ───────────────────────────────────────
+app.get(['/api/trainers/:id', '/api/trainers/public/:id'], async (req, res) => {
+  try {
+    const mongoose = require('mongoose');
+    const User = require('./models/User');
+    const tid = req.params.id;
+    const isObjectId = mongoose.Types.ObjectId.isValid(tid);
+    const query = isObjectId ? { _id: tid } : { email: String(tid).toLowerCase() };
+    const user = await User.findOne(query).select('-passwordHash');
+    if (!user) return res.status(404).json({ error: 'Trainer not found' });
+    
+    const obj = user.toObject();
+    const customBlocked = obj.customBlockedDates || obj.blockedDates || (obj.availability && (obj.availability.customBlockedDates || obj.availability.blockedDates)) || [];
+    const weekly = obj.weeklySchedule || obj.weeklyAvailability || (obj.availability && (obj.availability.weeklySchedule || obj.availability.weeklyAvailability)) || [];
+    obj.customBlockedDates = customBlocked;
+    obj.blockedDates = customBlocked;
+    obj.weeklySchedule = weekly;
+    obj.weeklyAvailability = weekly;
+    if (obj.availability && typeof obj.availability === 'object') {
+      obj.availability.customBlockedDates = customBlocked;
+      obj.availability.blockedDates = customBlocked;
+      obj.availability.weeklySchedule = weekly;
+      obj.availability.weeklyAvailability = weekly;
+    }
+    res.json({ trainer: obj, ...obj });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 });
 
