@@ -925,18 +925,19 @@
 </head>
 
 <body> <!-- Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â NAVBAR Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â -->
+    <!-- â•â•â• NAVBAR â•â•â• -->
   <nav id="nav">
     <a class="logo" href="index.html">
-      <img src="img/logo.svg" alt="World Trainer Forum Logo" class="logo-nav-img">World Trainer <span
+      <img src="img/logo.svg" alt="World Trainer Forum Logo" class="logo-nav-img" onerror="this.onerror=null;this.src='bglogo.png';">World Trainer <span
         class="g">Forum</span>
     </a>
     <ul class="nav-links">
       <li><a id="nl-home" href="index.html">Home</a></li>
       <li><a id="nl-about" href="about.html">About</a></li>
       <li><a id="nl-browse" href="find-trainers.html">Find Trainers</a></li>
-      <li><a id="nl-cats" href="certificates.html">Certificates</a></li>
-      <li><a id="nl-pricing" href="news-events.html">News & Events</a></li>
-      <li><a id="nl-blog" href="blog.html" class="active">Blog</a></li>
+      <li><a id="nl-certs" href="certificates.html">Certificates</a></li>
+      <li><a id="nl-news" href="news-events.html">News &amp; Events</a></li>
+      <li><a id="nl-blog" href="blog.html">Blog</a></li>
       <li><a id="nl-contact" href="contact.html">Contact</a></li>
       <li><a id="nl-dash" href="dashboard.html" target="_blank" style="display:none;">Dashboard</a></li>
     </ul>
@@ -949,22 +950,25 @@
         </svg><span class="notif-dot"></span></button>
       <button class="btn btn-ghost btn-sm" id="btn-signup" onclick="openModal('register')">Sign Up</button>
       <button class="btn btn-gold btn-sm" id="btn-login" onclick="openModal('login')">Log In</button>
+      <!-- User Avatar Dropdown (shown when logged in) -->
       <div class="user-avatar-wrap" id="user-avatar-wrap">
         <button class="user-av-btn" id="user-av-btn" onclick="toggleUserMenu(event)" aria-label="User menu"
-          aria-haspopup="true">MK</button>
-        <div class="user-dropdown" id="user-dropdown" role="menu">
+          aria-haspopup="true" aria-expanded="false">MK</button>
+        <div class="user-dropdown" id="user-dropdown" role="menu" aria-label="User account menu">
           <div class="ud-header">
-            <div class="ud-avatar">MK</div>
+            <div class="ud-avatar" id="ud-av-initials">MK</div>
             <div class="ud-info">
-              <span class="ud-name">My Account</span>
-              <span class="ud-email">user@email.com</span>
+              <span class="ud-name" id="ud-display-name">My Account</span>
+              <span class="ud-email" id="ud-display-email">user@example.com</span>
             </div>
           </div>
           <hr>
-          <a href="dashboard.html" class="ud-link" role="menuitem"><i class="fa-solid fa-pen-to-square"></i> Edit
-            Profile</a>
-          <a href="#" class="ud-link ud-logout" role="menuitem" onclick="handleLogout(); return false;"><i
-              class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
+          <a href="dashboard.html" class="ud-link" role="menuitem">
+            <i class="fa-solid fa-pen-to-square" style="pointer-events:none"></i> Edit Profile
+          </a>
+          <a href="#" class="ud-link ud-logout" role="menuitem" onclick="handleLogout(); return false;">
+            <i class="fa-solid fa-arrow-right-from-bracket" style="pointer-events:none"></i> Logout
+          </a>
         </div>
       </div>
       <button class="ham-btn" id="ham-btn" onclick="toggleMobileMenu()" aria-label="Toggle Menu">

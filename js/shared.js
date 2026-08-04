@@ -13,39 +13,66 @@
   var NAV_HTML = `
 <nav id="nav">
   <a class="logo" href="index.html">
-    <img src="img/logo.svg" alt="World Trainer Forum Logo" style="height:42px;margin-right:10px;">
+    <img src="img/logo.svg" alt="World Trainer Forum Logo" class="logo-nav-img" onerror="this.onerror=null;this.src='bglogo.png';">
     World Trainer <span class="g">Forum</span>
   </a>
   <ul class="nav-links">
-    <li><a href="about.html" ${currentPage==='about.html'?'class="active"':''}>About</a></li>
-    <li><a href="find-trainers.html" ${currentPage==='find-trainers.html'?'class="active"':''}>Find Trainers</a></li>
-    <li><a href="categories.html" ${currentPage==='categories.html'?'class="active"':''}>Categories</a></li>
-    <li><a href="pricing.html" ${currentPage==='pricing.html'?'class="active"':''}>Pricing</a></li>
-    <li><a href="blog.html" ${currentPage==='blog.html'?'class="active"':''}>Blog</a></li>
-    <li><a href="contact.html" ${currentPage==='contact.html'?'class="active"':''}>Contact</a></li>
+    <li><a id="nl-home" href="index.html" ${currentPage==='index.html'?'class="active"':''}>Home</a></li>
+    <li><a id="nl-about" href="about.html" ${currentPage==='about.html'?'class="active"':''}>About</a></li>
+    <li><a id="nl-browse" href="find-trainers.html" ${currentPage==='find-trainers.html'?'class="active"':''}>Find Trainers</a></li>
+    <li><a id="nl-certs" href="certificates.html" ${currentPage==='certificates.html'?'class="active"':''}>Certificates</a></li>
+    <li><a id="nl-news" href="news-events.html" ${currentPage==='news-events.html'?'class="active"':''}>News &amp; Events</a></li>
+    <li><a id="nl-blog" href="blog.html" ${currentPage==='blog.html'?'class="active"':''}>Blog</a></li>
+    <li><a id="nl-contact" href="contact.html" ${currentPage==='contact.html'?'class="active"':''}>Contact</a></li>
+    <li><a id="nl-dash" href="dashboard.html" target="_blank" style="display:none;">Dashboard</a></li>
   </ul>
   <div class="nav-r">
-    <button class="btn btn-ghost btn-sm" onclick="window.location.href='index.html'">Sign Up</button>
-    <button class="btn btn-gold btn-sm" onclick="window.location.href='index.html'">Log In</button>
+    <button class="notif-btn" id="notif-btn" onclick="toggleNotif()"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg><span class="notif-dot"></span></button>
+    <button class="btn btn-ghost btn-sm" id="btn-signup" onclick="openModal('register')">Sign Up</button>
+    <button class="btn btn-gold btn-sm" id="btn-login" onclick="openModal('login')">Log In</button>
+    <div class="user-avatar-wrap" id="user-avatar-wrap">
+      <button class="user-av-btn" id="user-av-btn" onclick="toggleUserMenu(event)" aria-label="User menu" aria-haspopup="true" aria-expanded="false">MK</button>
+      <div class="user-dropdown" id="user-dropdown" role="menu" aria-label="User account menu">
+        <div class="ud-header">
+          <div class="ud-avatar" id="ud-av-initials">MK</div>
+          <div class="ud-info">
+            <span class="ud-name" id="ud-display-name">My Account</span>
+            <span class="ud-email" id="ud-display-email">user@example.com</span>
+          </div>
+        </div>
+        <hr>
+        <a href="dashboard.html" class="ud-link" role="menuitem">
+          <i class="fa-solid fa-pen-to-square" style="pointer-events:none"></i> Edit Profile
+        </a>
+        <a href="#" class="ud-link ud-logout" role="menuitem" onclick="handleLogout(); return false;">
+          <i class="fa-solid fa-arrow-right-from-bracket" style="pointer-events:none"></i> Logout
+        </a>
+      </div>
+    </div>
     <button class="ham-btn" id="ham-btn" onclick="toggleMobileMenu()" aria-label="Toggle Menu">
-      <span></span><span></span><span></span>
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
     </button>
   </div>
 </nav>
 <div class="mobile-nav" id="mobile-nav">
-  <div style="display:flex;justify-content:flex-end;margin-bottom:20px;">
-    <button onclick="toggleMobileMenu()" style="background:none;border:none;color:#fff;font-size:2rem;cursor:pointer;" aria-label="Close">×</button>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;border-bottom:1px solid rgba(255,255,255,0.1);padding-bottom:12px;">
+    <a href="index.html" onclick="toggleMobileMenu()" style="display:flex;align-items:center;text-decoration:none;">
+      <img src="img/logo.svg" alt="World Trainer Forum Logo" style="height:32px;margin-right:8px;" onerror="this.onerror=null;this.src='bglogo.png';">
+      <span style="color:#fff;font-weight:700;font-size:1.05rem;">World Trainer <span style="color:#C5A059;">Forum</span></span>
+    </a>
+    <button onclick="toggleMobileMenu()" style="background:none;border:none;color:#fff;font-size:1.8rem;cursor:pointer;padding:4px;" aria-label="Close">&times;</button>
   </div>
   <a href="index.html">Home</a>
   <a href="about.html">About</a>
   <a href="find-trainers.html">Find Trainers</a>
-  <a href="certificate.html">Certificates</a>
+  <a href="certificates.html">Certificates</a>
   <a href="news-events.html">News &amp; Events</a>
   <a href="blog.html">Blog</a>
   <a href="contact.html">Contact</a>
-  <div style="margin-top:30px;display:flex;flex-direction:column;gap:12px;">
-    <button class="btn btn-ghost" onclick="toggleMobileMenu();window.location.href='index.html'">Sign Up</button>
-    <button class="btn btn-gold" onclick="toggleMobileMenu();window.location.href='index.html'">Log In</button>
+  <div class="mn-actions" style="margin-top:30px;display:flex;flex-direction:column;gap:12px;">
+    <button class="btn btn-ghost" id="mn-btn-signup" onclick="toggleMobileMenu();openModal('register')">Sign Up</button>
+    <button class="btn btn-gold" id="mn-btn-login" onclick="toggleMobileMenu();openModal('login')">Log In</button>
+    <button class="btn btn-dark" id="mn-btn-logout" onclick="handleLogout()" style="display:none;">Log Out</button>
   </div>
 </div>`;
 
