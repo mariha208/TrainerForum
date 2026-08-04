@@ -88,19 +88,23 @@ window.formatTrainerAvailability = function (availabilityData) {
   if (!availabilityData) return 'Mon–Fri | 9 AM–5 PM';
 
   let availObj = null;
+  let trainerObj = null;
 
-  // If input is a trainer object, resolve availability using getTrainerAvailability or properties
-  if (typeof availabilityData === 'object' && availabilityData !== null && !availabilityData.Mon && !availabilityData.mon && (availabilityData.id || availabilityData._id || availabilityData.trainerId || availabilityData.availability || availabilityData.weekly_slots)) {
-    availObj = typeof window.getTrainerAvailability === 'function'
-      ? window.getTrainerAvailability(availabilityData)
-      : (availabilityData.availability || availabilityData.weekly_slots);
+  if (typeof availabilityData === 'object' && availabilityData !== null) {
+    if (availabilityData.availability || availabilityData.weeklySchedule || availabilityData.weeklyAvailability || availabilityData.weekly_slots || availabilityData.id || availabilityData._id || availabilityData.trainerId) {
+      trainerObj = availabilityData;
+      availObj = typeof window.getTrainerAvailability === 'function'
+        ? window.getTrainerAvailability(availabilityData)
+        : (availabilityData.availability || availabilityData);
+    } else {
+      availObj = availabilityData;
+    }
   } else {
     availObj = availabilityData;
   }
 
   if (!availObj) return 'Mon–Fri | 9 AM–5 PM';
 
-  // If JSON string, try parsing
   if (typeof availObj === 'string') {
     const trimmed = availObj.trim();
     if (trimmed.startsWith('{') || trimmed.startsWith('[')) {
@@ -110,25 +114,58 @@ window.formatTrainerAvailability = function (availabilityData) {
     }
   }
 
-  // If structured object
   if (typeof availObj === 'object' && availObj !== null) {
     const dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    const fullDayMap = { Mon: 'monday', Tue: 'tuesday', Wed: 'wednesday', Thu: 'thursday', Fri: 'friday', Sat: 'saturday', Sun: 'sunday' };
+    
+    const weekly = availObj.weeklySchedule || availObj.weeklyAvailability || (trainerObj && (trainerObj.weeklySchedule || trainerObj.weeklyAvailability));
+    const availDays = availObj.availableDays || (trainerObj && trainerObj.availableDays);
+
     const activeDays = dayNames.filter(d => {
+      // 1. Check array structure (e.g. [{ day: 'Mon', enabled: true }, ...])
+      if (Array.isArray(weekly) && weekly.length > 0) {
+        const found = weekly.find(w => w && w.day && (String(w.day).toLowerCase() === d.toLowerCase() || String(w.day).substring(0,3).toLowerCase() === d.toLowerCase()));
+        if (found) return found.enabled !== false && found.available !== false;
+      }
+      // 2. Check availableDays map (e.g. { monday: true, tuesday: true, saturday: false })
+      const dk = fullDayMap[d];
+      if (availDays && typeof availDays === 'object' && typeof availDays[dk] !== 'undefined') {
+        return !!availDays[dk];
+      }
+      // 3. Check direct object keys (e.g. { Mon: { available: true } })
       const c = availObj[d] || availObj[d.toLowerCase()] || availObj[d.toUpperCase()];
-      if (!c) return false;
       if (typeof c === 'boolean') return c;
       if (typeof c === 'string') return c === 'true';
-      return c.available !== false && c.enabled !== false;
+      if (c && typeof c === 'object') return c.available !== false && c.enabled !== false;
+
+      return d !== 'Sat' && d !== 'Sun';
     });
 
-    if (activeDays.length === 7) return 'Everyday';
-    if (activeDays.length === 5 && activeDays.includes('Mon') && activeDays.includes('Fri') && activeDays.includes('Tue') && activeDays.includes('Wed') && activeDays.includes('Thu')) {
-      return 'Mon–Fri';
+    let mainText = '';
+    if (activeDays.length === 7) mainText = 'Everyday';
+    else if (activeDays.length === 5 && activeDays.includes('Mon') && activeDays.includes('Fri') && activeDays.includes('Tue') && activeDays.includes('Wed') && activeDays.includes('Thu')) {
+      mainText = 'Mon–Fri';
+    } else if (activeDays.length > 0) {
+      mainText = activeDays.join(', ');
+    } else {
+      mainText = 'By Appointment';
     }
-    if (activeDays.length > 0) {
-      return activeDays.join(', ');
+
+    // Calculate blocked dates count from specificDates object & customBlockedDates array
+    const customBlocked = availObj.customBlockedDates || availObj.blockedDates || (trainerObj && (trainerObj.customBlockedDates || trainerObj.blockedDates)) || [];
+    const specificDates = availObj.specificDates || (trainerObj && (trainerObj.specificDates || (trainerObj.availability && trainerObj.availability.specificDates)));
+    
+    let blockedCount = Array.isArray(customBlocked) ? customBlocked.length : 0;
+    if (specificDates && typeof specificDates === 'object' && !Array.isArray(specificDates)) {
+      const keys = Object.keys(specificDates).filter(k => specificDates[k] === false || specificDates[k] === 'false');
+      if (keys.length > blockedCount) blockedCount = keys.length;
     }
-    return 'By Appointment';
+
+    if (blockedCount > 0) {
+      mainText += ` (${blockedCount} Date${blockedCount > 1 ? 's' : ''} Blocked)`;
+    }
+
+    return mainText;
   }
 
   return 'Mon–Fri | 9 AM–5 PM';
