@@ -193,6 +193,7 @@ router.get('/:id', async (req, res) => {
     if (!user) return res.status(404).json({ error: 'User not found' });
     
     let obj = user.toObject();
+    obj.name = obj.name || obj.fullName || obj.n || obj.trainerName || (obj.firstName ? (obj.firstName + ' ' + (obj.lastName || '')).trim() : '') || 'Trainer';
     const customBlocked = obj.customBlockedDates || obj.blockedDates || (obj.availability && (obj.availability.customBlockedDates || obj.availability.blockedDates)) || [];
     const weekly = obj.weeklySchedule || obj.weeklyAvailability || (obj.availability && (obj.availability.weeklySchedule || obj.availability.weeklyAvailability)) || [];
     

@@ -212,6 +212,7 @@ function animateCounters() {
 // ── BUILD PREMIUM MODAL HTML ───────────────────────────────────────────────────
 function buildPremiumModal(t, isOwner = false) {
   t = t || {};
+  t.name = t.name || t.fullName || t.n || t.trainerName || (t.firstName ? (t.firstName + ' ' + (t.lastName || '')).trim() : '') || 'Trainer';
   t.cat = t.cat || 'Professional';
   t.lang = t.lang || 'English';
   t.sessions = String(t.sessions || '0');
@@ -1070,6 +1071,9 @@ window.openBookingModal = async function (tid) {
     </div>`;
     return;
   }
+
+  // Normalize name with fallbacks
+  t.name = t.name || t.fullName || t.n || t.trainerName || (t.firstName ? (t.firstName + ' ' + (t.lastName || '')).trim() : '') || 'Trainer';
 
   // 4. Once fetched, replace spinner content with active booking form data smoothly
   window.bookingState.trainerId = tid;
