@@ -1714,6 +1714,78 @@
     }
 
     /* ── Packages Logic ── */
+    function _renderPackageItem(item) {
+      var cont = document.getElementById('packages-container');
+      if (!cont || !item) return;
+      if (typeof item === 'string') {
+        try { item = JSON.parse(item); } catch(e) { item = { name: item }; }
+      }
+      var empty = cont.querySelector('.empty-msg');
+      if (empty) empty.remove();
+
+      if (!item.id) item.id = item._id || String(Date.now() + Math.floor(Math.random() * 9999));
+      var itemId = String(item.id || item._id);
+      window._packagesMap = window._packagesMap || {};
+      window._packagesMap[itemId] = item;
+
+      var feats = Array.isArray(item.features)
+        ? item.features
+        : (typeof item.features === 'string' ? item.features.split(',').map(function (s) { return s.trim(); }).filter(Boolean) : []);
+
+      var featTags = feats.map(function (f) {
+        return '<span style="font-size:0.75rem;padding:2px 8px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;color:var(--tm)">✓ ' + f + '</span>';
+      }).join(' ');
+
+      var div = document.createElement('div');
+      div.id = 'pkg-' + itemId;
+      div.className = 'db-card';
+      div.style.position = 'relative';
+      div.innerHTML =
+        '<div class="card-action-group" style="position: absolute; top: 12px; right: 12px; display: flex; align-items: center; gap: 8px; z-index: 10;">' +
+          '<button onclick="_editPackage(\'' + itemId + '\')" title="Edit Package" aria-label="Edit package" style="background:rgba(197,160,89,0.12);border:1px solid rgba(197,160,89,0.35);color:#c5a059;cursor:pointer;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:0.85rem;transition:all 0.18s ease;"><i class="fas fa-pencil-alt"></i></button>' +
+          '<button onclick="_deletePackage(\'' + itemId + '\')" title="Delete Package" aria-label="Delete package" style="background:rgba(220,53,69,0.12);border:1px solid rgba(220,53,69,0.3);color:#dc3545;cursor:pointer;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:0.9rem;transition:all 0.18s ease;"><i class="fas fa-trash-alt"></i></button>' +
+        '</div>' +
+        '<div style="font-weight:700;font-size:1.05rem;color:var(--ts);margin-bottom:6px;padding-right:92px">' + (item.name || item.title || 'Package') + (item.featured ? '<span style="font-size:0.65rem;background:rgba(197,160,89,0.2);color:var(--gold);padding:2px 6px;border-radius:4px;margin-left:6px;vertical-align:middle">Featured</span>' : '') + '</div>' +
+        '<div style="font-size:0.82rem;color:var(--tm);margin-bottom:12px;line-height:1.4">' + (item.desc || item.description || '') + '</div>' +
+        (item.duration ? '<div style="margin-bottom:10px;"><span style="font-size:0.75rem;padding:2px 8px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;color:var(--tm)">⏱ ' + item.duration + '</span></div>' : '') +
+        (featTags ? '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">' + featTags + '</div>' : '') +
+        '<div style="font-size:1.1rem;font-weight:700;color:var(--gold)">₹' + (item.price || '0') + '</div>';
+      cont.appendChild(div);
+    }
+    window._renderPackageItem = _renderPackageItem;
+
+    function _editPackage(id) {
+      if (!id || id === 'undefined') return;
+      var cache = JSON.parse(localStorage.getItem('currentTrainer')) || {};
+      var packages = Array.isArray(cache.packages) ? cache.packages : [];
+      var pkg = (window._packagesMap && window._packagesMap[id]) ||
+                packages.find(function(p) { return String(p.id || p._id || '') === String(id); });
+      if (!pkg) {
+        console.warn('Package not found for edit ID:', id);
+        return;
+      }
+      _editingPackageId = String(id);
+      window._isOpeningPackageForEdit = true;
+      openModal('package');
+      window._isOpeningPackageForEdit = false;
+
+      var t = document.getElementById('modal-title');
+      if (t) t.innerText = 'Edit Package';
+      var nm = document.getElementById('modal-pkg-name'); if (nm) nm.value = pkg.name || pkg.title || '';
+      var ds = document.getElementById('modal-pkg-desc'); if (ds) ds.value = pkg.desc || pkg.description || '';
+      var dr = document.getElementById('modal-pkg-duration'); if (dr) dr.value = pkg.duration || '';
+      var pr = document.getElementById('modal-pkg-price'); if (pr) pr.value = pkg.price || '';
+      var ft = document.getElementById('modal-pkg-features');
+      if (ft) {
+        var featArr = Array.isArray(pkg.features) ? pkg.features : (typeof pkg.features === 'string' ? pkg.features.split(',') : []);
+        ft.value = featArr.join(', ');
+      }
+      var ftd = document.getElementById('modal-pkg-featured'); if (ftd) ftd.checked = !!pkg.featured;
+      var btn = document.getElementById('btn-save-pkg') || document.querySelector('#modal-body .btn-gold');
+      if (btn) btn.textContent = 'Update Package';
+    }
+    window._editPackage = _editPackage;
+
     var _editingPackageId = null;
     function savePackage() {
       var name = (document.getElementById('modal-pkg-name').value || '').trim();
@@ -1834,6 +1906,7 @@
           function _doLocalPkgDelete() {
             var el = document.getElementById('pkg-' + targetId);
             if (el) el.remove();
+            if (window._packagesMap) delete window._packagesMap[targetId];
             var ch = JSON.parse(localStorage.getItem('currentTrainer')) || {};
             if (Array.isArray(ch.packages)) {
               ch.packages = ch.packages.filter(function (p) {
@@ -2535,8 +2608,16 @@
           var sCont = document.getElementById('services-container');
           if (sCont) {
             sCont.innerHTML = '';
-            if (Array.isArray(freshUser.services) && freshUser.services.length > 0) {
-              freshUser.services.forEach(function(s) { _renderServiceItem(s); });
+            var svcs = freshUser.services;
+            if (typeof svcs === 'string' && svcs.trim() && svcs.trim() !== 'N/A') {
+              if (svcs.trim().startsWith('[')) {
+                try { svcs = JSON.parse(svcs); } catch(e) {}
+              } else if (typeof _normalizePkgsFromData === 'function') {
+                svcs = _normalizePkgsFromData(svcs);
+              }
+            }
+            if (Array.isArray(svcs) && svcs.length > 0) {
+              svcs.forEach(function(s) { _renderServiceItem(s); });
             } else {
               sCont.innerHTML = '<div class="empty-msg" style="grid-column:1/-1;text-align:center;padding:20px;color:var(--tm);font-size:.85rem">No services defined.</div>';
             }
@@ -2546,8 +2627,16 @@
           var pCont = document.getElementById('packages-container');
           if (pCont) {
             pCont.innerHTML = '';
-            if (Array.isArray(freshUser.packages) && freshUser.packages.length > 0) {
-              freshUser.packages.forEach(function(p) { _renderPackageItem(p); });
+            var pkgs = freshUser.packages;
+            if (typeof pkgs === 'string' && pkgs.trim() && pkgs.trim() !== 'N/A') {
+              if (pkgs.trim().startsWith('[')) {
+                try { pkgs = JSON.parse(pkgs); } catch(e) {}
+              } else if (typeof _normalizePkgsFromData === 'function') {
+                pkgs = _normalizePkgsFromData(pkgs);
+              }
+            }
+            if (Array.isArray(pkgs) && pkgs.length > 0) {
+              pkgs.forEach(function(p) { _renderPackageItem(p); });
             } else {
               pCont.innerHTML = '<div class="empty-msg" style="grid-column:1/-1;text-align:center;padding:20px;color:var(--tm);font-size:.85rem">No packages defined.</div>';
             }
