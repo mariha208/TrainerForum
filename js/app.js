@@ -242,7 +242,7 @@ window.formatTrainerAvailability = function (availabilityData) {
       if (typeof c === 'string') return c === 'true';
       if (c && typeof c === 'object') return c.available !== false && c.enabled !== false;
 
-      return d !== 'Sat' && d !== 'Sun';
+      return true;
     });
 
     let mainText = '';
@@ -342,7 +342,7 @@ function getDayAvailabilityStatus(date, availability) {
     if (dayConfig.enabled === true || dayConfig.available === true) return 'available';
   }
 
-  return (dayName === 'Sat' || dayName === 'Sun') ? 'unavailable' : 'available';
+  return 'available';
 }
 
 window.getDayAvailabilityStatus = getDayAvailabilityStatus;
