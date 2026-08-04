@@ -189,7 +189,7 @@ if (typeof window !== 'undefined') {
  * Returns a standardized day string (e.g. "Mon, Tue, Wed, Thu", "Mon–Fri", "Everyday", "By Appointment").
  */
 window.formatTrainerAvailability = function (availabilityData) {
-  if (!availabilityData) return 'Mon–Fri | 9 AM–5 PM';
+  if (!availabilityData) return 'Mon – Fri';
 
   let availObj = null;
   let trainerObj = null;
@@ -207,7 +207,7 @@ window.formatTrainerAvailability = function (availabilityData) {
     availObj = availabilityData;
   }
 
-  if (!availObj) return 'Mon–Fri | 9 AM–5 PM';
+  if (!availObj) return 'Mon – Fri';
 
   if (typeof availObj === 'string') {
     const trimmed = availObj.trim();
@@ -231,24 +231,36 @@ window.formatTrainerAvailability = function (availabilityData) {
         const found = weekly.find(w => w && w.day && (String(w.day).toLowerCase() === d.toLowerCase() || String(w.day).substring(0,3).toLowerCase() === d.toLowerCase()));
         if (found) return found.enabled !== false && found.available !== false;
       }
-      // 2. Check availableDays map (e.g. { monday: true, tuesday: true, saturday: false })
+      // 2. Check availableDays map (e.g. { monday: true, tuesday: true, sunday: false })
       const dk = fullDayMap[d];
       if (availDays && typeof availDays === 'object' && typeof availDays[dk] !== 'undefined') {
         return !!availDays[dk];
       }
-      // 3. Check direct object keys (e.g. { Mon: { available: true } })
+      // 3. Check direct object keys (e.g. { Mon: { available: true }, Sun: { available: false } })
       const c = availObj[d] || availObj[d.toLowerCase()] || availObj[d.toUpperCase()];
       if (typeof c === 'boolean') return c;
-      if (typeof c === 'string') return c === 'true';
+      if (typeof c === 'string') return c !== 'false' && !c.toLowerCase().includes('unavail');
       if (c && typeof c === 'object') return c.available !== false && c.enabled !== false;
 
-      return true;
+      // 4. Default for unconfigured days: Mon-Sat true, Sun false if not explicitly set
+      return d !== 'Sun';
     });
 
+    const hasMon = activeDays.includes('Mon');
+    const hasTue = activeDays.includes('Tue');
+    const hasWed = activeDays.includes('Wed');
+    const hasThu = activeDays.includes('Thu');
+    const hasFri = activeDays.includes('Fri');
+    const hasSat = activeDays.includes('Sat');
+    const hasSun = activeDays.includes('Sun');
+
     let mainText = '';
-    if (activeDays.length === 7) mainText = 'Everyday';
-    else if (activeDays.length === 5 && activeDays.includes('Mon') && activeDays.includes('Fri') && activeDays.includes('Tue') && activeDays.includes('Wed') && activeDays.includes('Thu')) {
-      mainText = 'Mon–Fri';
+    if (activeDays.length === 7) {
+      mainText = 'Everyday';
+    } else if (activeDays.length === 6 && hasMon && hasTue && hasWed && hasThu && hasFri && hasSat && !hasSun) {
+      mainText = 'Mon – Sat';
+    } else if (activeDays.length === 5 && hasMon && hasTue && hasWed && hasThu && hasFri && !hasSat && !hasSun) {
+      mainText = 'Mon – Fri';
     } else if (activeDays.length > 0) {
       mainText = activeDays.join(', ');
     } else {
@@ -258,7 +270,7 @@ window.formatTrainerAvailability = function (availabilityData) {
     return mainText;
   }
 
-  return 'Mon–Fri | 9 AM–5 PM';
+  return 'Mon – Fri';
 };
 
 // Aliases for global compatibility across all components
