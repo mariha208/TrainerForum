@@ -744,19 +744,41 @@ function buildPremiumModal(t, isOwner = false) {
       // always read from currentTrainer localStorage (most up-to-date, set by dashboard).
       // For other trainers, read from t.availability.
       let _specificDates = {};
+      let _blockedList = [];
+      const tid = String(t.id || t._id || t.trainerId || '');
+
       try {
-        if (isOwner) {
-          // Own profile — pull fresh from localStorage
-          const _ctData = JSON.parse(localStorage.getItem('currentTrainer') || '{}');
+        // 1. Primary source: shared localStorage key trainer_availability_${tid}
+        if (tid) {
+          const shared = JSON.parse(localStorage.getItem('trainer_availability_' + tid) || 'null');
+          if (shared && (Array.isArray(shared.unavailable) || Array.isArray(shared.blockedDates))) {
+            _blockedList = shared.unavailable || shared.blockedDates;
+          }
+        }
+
+        // 2. Owner or currentTrainer source
+        const _ctData = JSON.parse(localStorage.getItem('currentTrainer') || '{}');
+        const _ctId = String(_ctData.id || _ctData._id || _ctData.trainerId || '');
+        if (isOwner || (_ctId && _ctId === tid)) {
           let _ctAvail = _ctData.availability;
           if (typeof _ctAvail === 'string') _ctAvail = JSON.parse(_ctAvail);
           if (_ctAvail && _ctAvail.specificDates) _specificDates = _ctAvail.specificDates;
+          if (!_blockedList.length) {
+            _blockedList = _ctData.blockedDates || _ctData.customBlockedDates || (_ctAvail && (_ctAvail.blockedDates || _ctAvail.customBlockedDates)) || [];
+          }
         } else {
-          // Another trainer's profile — use t.availability
           let _parsed = typeof t.availability === 'string' ? JSON.parse(t.availability) : t.availability;
           if (_parsed && _parsed.specificDates) _specificDates = _parsed.specificDates;
         }
+
+        // 3. Fallback to trainer object
+        if (!_blockedList.length && t) {
+          let _parsed = typeof t.availability === 'string' ? JSON.parse(t.availability || '{}') : (t.availability || {});
+          _blockedList = t.blockedDates || t.customBlockedDates || _parsed.blockedDates || _parsed.customBlockedDates || _parsed.unavailable || [];
+        }
       } catch(e) {}
+
+      if (!Array.isArray(_blockedList)) _blockedList = [];
 
       const _shortDay = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
       const now = new Date();
@@ -767,22 +789,44 @@ function buildPremiumModal(t, isOwner = false) {
       const dnHdr = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map(n =>
         `<div style="text-align:center;font-size:.66rem;font-weight:700;color:rgba(237,242,247,0.3);padding:4px 0">${n}</div>`
       ).join('');
+      
       let cells = '';
       for (let i = 0; i < firstDay; i++) cells += '<div></div>';
+
       for (let d = 1; d <= days; d++) {
-        const dk = _shortDay[new Date(y, m, d).getDay()];
-        const dateKey = y + '-' + m + '-' + d;
-        let en = _avMap[dk] !== false;
-        // Apply specific date override if exists
-        if (typeof _specificDates[dateKey] !== 'undefined') en = _specificDates[dateKey];
-        const isToday = d === now.getDate();
-        const bg = en ? (isToday ? 'rgba(197,160,89,0.22)' : 'rgba(255,255,255,0.04)') : 'rgba(239,68,68,0.16)';
-        const bdr = en ? (isToday ? '1.5px solid #C5A059' : '1px solid rgba(255,255,255,0.07)') : '1px solid rgba(239,68,68,0.32)';
-        const clr = en ? (isToday ? '#C5A059' : 'rgba(237,242,247,0.8)') : 'rgba(239,68,68,0.9)';
-        cells += `<div style="text-align:center;padding:6px 2px;border-radius:7px;background:${bg};border:${bdr};font-size:.74rem;font-weight:600;color:${clr}">${d}</div>`;
+        const cellDate = new Date(y, m, d);
+        const dk = _shortDay[cellDate.getDay()];
+        const m1 = String(m + 1).padStart(2, '0');
+        const d1 = String(d).padStart(2, '0');
+        const isoDate = `${y}-${m1}-${d1}`;
+        const dateKey = `${y}-${m}-${d}`;
+
+        let isAvailable = _avMap[dk] !== false;
+        if (typeof _specificDates[isoDate] !== 'undefined') {
+          isAvailable = _specificDates[isoDate] !== false;
+        } else if (typeof _specificDates[dateKey] !== 'undefined') {
+          isAvailable = _specificDates[dateKey] !== false;
+        }
+
+        const isExplicitBlocked = _blockedList.includes(isoDate) || 
+          (typeof window.isDateBlocked === 'function' && window.isDateBlocked(cellDate, { blockedDates: _blockedList }));
+
+        const isBlocked = !isAvailable || isExplicitBlocked;
+        const isToday = d === now.getDate() && m === now.getMonth() && y === now.getFullYear();
+
+        // Styling Rules matching Image 3:
+        // Unavailable/Blocked: dark-red background tint (rgba(239, 68, 68, 0.2)), light-red text (#f87171), strikethrough
+        const bg = isBlocked ? 'rgba(239,68,68,0.2)' : (isToday ? 'rgba(197,160,89,0.22)' : 'rgba(255,255,255,0.04)');
+        const bdr = isBlocked ? '1px solid rgba(239,68,68,0.4)' : (isToday ? '1.5px solid #C5A059' : '1px solid rgba(255,255,255,0.07)');
+        const clr = isBlocked ? '#f87171' : (isToday ? '#C5A059' : 'rgba(237,242,247,0.85)');
+        const textDecor = isBlocked ? 'text-decoration:line-through;' : '';
+        const titleAttr = isBlocked ? 'Unavailable' : 'Available';
+
+        cells += `<div data-date="${isoDate}" class="day-cell ${isBlocked ? 'dark-unavailable unavailable' : (isToday ? 'dark-today today' : 'dark-available available')}" style="text-align:center;padding:6px 2px;border-radius:7px;background:${bg};border:${bdr};font-size:.74rem;font-weight:600;color:${clr};${textDecor}" title="${titleAttr}">${d}</div>`;
       }
+
       return `
-      <div style="margin-top:22px">
+      <div style="margin-top:22px" class="dark-theme" data-trainer-id="${t.id || t._id || ''}">
         <div style="font-size:0.78rem;font-weight:700;color:rgba(237,242,247,0.5);text-transform:uppercase;letter-spacing:.07em;margin-bottom:12px">📆 Monthly View — ${mLabel}</div>
         <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:12px;overflow:hidden">
           <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;padding:10px">${dnHdr}${cells}</div>
