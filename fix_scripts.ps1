@@ -1,10 +1,10 @@
-$files = Get-ChildItem -Filter *.html -Exclude "dashboard.html","admin.html","trainer-cards.html","public-profile.html"; $inject = @"
+﻿$files = Get-ChildItem -Filter *.html -Exclude "dashboard.html","admin.html","trainer-cards.html","public-profile.html"; $inject = @"
   <!-- Modals -->
   <div id="trainer-modal"></div>
   <div id="auth-modal"></div>
 
   <script src="js/app.js?v=4"></script>
-  <script src="js/trainer-modal.js?v=4"></script>
+  <script src="js/trainer-modal.js?v=5"></script>
   <script src="js/auth-modal.js"></script>
   <script src="js/theme.js"></script>
   <script>applyTheme();</script>

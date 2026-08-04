@@ -103,6 +103,22 @@ window.openTrainerModal = function (idOrObj) {
     alert('Failed to load trainer profile: ' + err.stack);
   }
 
+  // ── Live-render weekly schedule from real API data ──────────────────────────
+  // This runs AFTER buildPremiumModal sets innerHTML, overwriting any cached/stale
+  // template data with the trainer's actual saved weeklySchedule.
+  // Uses window.renderWeeklySchedule which is device/timezone agnostic.
+  setTimeout(() => {
+    const _grid = modal.querySelector('.weekly-schedule-container');
+    if (_grid) {
+      // Priority: weeklySchedule > weeklyAvailability > availability.weeklySchedule
+      const _sched = t.weeklySchedule || t.weeklyAvailability
+        || (t.availability && (t.availability.weeklySchedule || t.availability.weeklyAvailability))
+        || t.availability
+        || null;
+      if (_sched) window.renderWeeklySchedule(_sched, _grid);
+    }
+  }, 0);
+
   // Activate first tab
   setTimeout(() => {
     switchTPMTab(null, 'overview');
@@ -182,6 +198,94 @@ function fmtTime(t24) {
 function fmtINR(n) {
   return '₹' + Number(n).toLocaleString('en-IN');
 }
+
+// ── UNIFIED WEEKLY SCHEDULE RENDERER ───────────────────────────────────────────
+// Public API: window.renderWeeklySchedule(rawSchedule, containerEl)
+// rawSchedule: the trainer's weeklySchedule / weeklyAvailability data in ANY format:
+//   - Named-day object: { Mon: { available: true, start: '09:00', end: '18:00' }, ... }
+//   - Array with day key: [{ day: 'Mon', available: true, start: '09:00', end: '18:00' }, ...]
+//   - Positional array: [{ available: true, start: '09:00', end: '18:00' }, ...] (index 0=Mon)
+// containerEl: the DOM element whose innerHTML will be replaced (.tpm-avail-grid)
+// If null/omitted, targets ALL .weekly-schedule-container elements in the document.
+window.renderWeeklySchedule = function renderWeeklySchedule(rawSchedule, containerEl) {
+  const _DAY_NAMES = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+  // ── Step 1: Parse rawSchedule into a canonical named-day map ─────────────────
+  // Canonical shape: { Mon: { available: bool, start: 'HH:MM', end: 'HH:MM' }, ... }
+  const canonical = {};
+  // Seed with all unavailable as neutral baseline
+  _DAY_NAMES.forEach(d => { canonical[d] = { available: false, start: '09:00', end: '18:00' }; });
+
+  let parsed = rawSchedule;
+  if (typeof parsed === 'string') { try { parsed = JSON.parse(parsed); } catch(e) { parsed = null; } }
+
+  // Unwrap nested weeklySchedule / weeklyAvailability keys
+  if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+    const nested = parsed.weeklySchedule || parsed.weeklyAvailability;
+    if (nested) parsed = nested;
+  }
+
+  if (parsed && typeof parsed === 'object') {
+    if (Array.isArray(parsed)) {
+      // Check if entries carry a 'day' string key (dashboard format)
+      const hasDayKey = parsed.some(e => e && typeof e === 'object' && typeof e.day === 'string');
+      if (hasDayKey) {
+        parsed.forEach(entry => {
+          if (!entry || typeof entry !== 'object') return;
+          const dk = _DAY_NAMES.find(d => d.toLowerCase() === String(entry.day || '').toLowerCase().slice(0, 3));
+          if (!dk) return;
+          const merged = Object.assign({}, canonical[dk], entry);
+          delete merged.day;
+          canonical[dk] = merged;
+        });
+      } else {
+        // Positional: index 0 = Mon ... 6 = Sun
+        parsed.slice(0, 7).forEach((entry, i) => {
+          if (!_DAY_NAMES[i] || !entry || typeof entry !== 'object') return;
+          canonical[_DAY_NAMES[i]] = Object.assign({}, canonical[_DAY_NAMES[i]], entry);
+        });
+      }
+    } else {
+      // Named-day object: check for Mon/Tue/... keys (case-insensitive)
+      _DAY_NAMES.forEach(d => {
+        const val = parsed[d] !== undefined ? parsed[d] : parsed[d.toLowerCase()];
+        if (val === undefined || val === null) {
+          // Day absent from saved object → unavailable
+          canonical[d] = Object.assign({}, canonical[d], { available: false });
+        } else if (typeof val === 'object') {
+          canonical[d] = Object.assign({}, canonical[d], val);
+        } else if (typeof val === 'boolean') {
+          canonical[d] = Object.assign({}, canonical[d], { available: val });
+        }
+      });
+    }
+  }
+
+  // ── Step 2: Generate HTML rows ───────────────────────────────────────────────
+  const rowsHtml = _DAY_NAMES.map(day => {
+    const info = canonical[day];
+    // Resolve available flag — support both 'available' and legacy 'enabled' keys
+    const isEnabled = info.available === true || info.enabled === true;
+    // Use server-side IST strings; NEVER use new Date().getDay() for scheduling logic
+    const timeStr = isEnabled
+      ? `${fmtTime(info.start || '09:00')} \u2013 ${fmtTime(info.end || '18:00')}`
+      : 'Unavailable';
+    return `<div class="tpm-avail-row ${isEnabled ? 'available' : 'unavailable'}">
+              <div class="tpm-avail-day">
+                <div class="tpm-avail-day-dot">${day[0]}</div>
+                <span class="tpm-avail-day-name">${day}</span>
+              </div>
+              <span class="tpm-avail-time">${timeStr}</span>
+            </div>`;
+  }).join('');
+
+  // ── Step 3: Inject into target container(s) ──────────────────────────────────
+  const targets = containerEl
+    ? [containerEl]
+    : Array.from(document.querySelectorAll('.weekly-schedule-container'));
+
+  targets.forEach(el => { if (el) el.innerHTML = rowsHtml; });
+};
 
 function randomBetween(a, b) {
   return Math.floor(Math.random() * (b - a + 1)) + a;
@@ -771,7 +875,7 @@ function buildPremiumModal(t, isOwner = false) {
           <div class="tpm-section">
             <div class="tpm-section-title"><span class="tpm-sec-icon">📅</span> Weekly Availability</div>
             <div style="font-size:0.78rem;color:rgba(237,242,247,0.4);margin-bottom:16px">All times shown in IST (Indian Standard Time, UTC+5:30)</div>
-            <div class="tpm-avail-grid">
+            <div class="tpm-avail-grid weekly-schedule-container">
               ${Object.entries(avs).map(([day, info]) => {
       const en = typeof info === 'object' ? (typeof info.available !== 'undefined' ? info.available : info.enabled) : true;
       const from = typeof info === 'object' ? (info.start || info.from || '09:00') : '09:00';
