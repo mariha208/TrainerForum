@@ -20,18 +20,33 @@ if (typeof window !== 'undefined' && typeof window.TRAINERS === 'undefined') {
  *   2. t.availability from the server/API response  ← primary source of truth
  *   3. Generic localStorage key tv-trainer-{id}-availability (legacy)
  */
-window.getTrainerAvailability = function (t) {
-  if (!t) return null;
-  const tid = String(t.id || t._id || t.trainerId || '');
+window.getTrainerAvailability = function (tOrId) {
+  if (!tOrId) return null;
+  let tid = '';
+  let t = null;
+
+  if (typeof tOrId === 'object' && tOrId !== null) {
+    t = tOrId;
+    tid = String(t.id || t._id || t.trainerId || '');
+  } else if (typeof tOrId === 'string' || typeof tOrId === 'number') {
+    tid = String(tOrId);
+  }
 
   let av = null;
 
-  // 1. Session override — only applied when this trainer IS the logged-in user
+  // 1. Primary Shared Storage Key: trainer_availability_${tid}
   if (tid) {
+    try {
+      const shared = JSON.parse(localStorage.getItem('trainer_availability_' + tid) || 'null');
+      if (shared) av = shared;
+    } catch (e) {}
+  }
+
+  // 2. Session override — if looking at logged in trainer's profile
+  if (!av && tid) {
     try {
       const session = JSON.parse(localStorage.getItem('userSession') || 'null');
       const sessionId = session && (session._id || session.id || '');
-      // Only override from currentTrainer cache if we are looking at OUR OWN profile
       if (sessionId && String(sessionId) === tid) {
         const ct = JSON.parse(localStorage.getItem('currentTrainer') || '{}');
         const ctId = String(ct.id || ct._id || ct.trainerId || '');
@@ -44,8 +59,8 @@ window.getTrainerAvailability = function (t) {
     } catch (e) {}
   }
 
-  // 2. Server-sourced availability on the trainer object (primary for public cards)
-  if (!av && t.availability) {
+  // 3. Server-sourced availability on the trainer object
+  if (!av && t && t.availability) {
     try {
       av = typeof t.availability === 'string' ? JSON.parse(t.availability) : t.availability;
     } catch (e) {
@@ -53,7 +68,7 @@ window.getTrainerAvailability = function (t) {
     }
   }
 
-  // 3. Legacy per-trainer localStorage key
+  // 4. Legacy per-trainer localStorage key
   if (!av && tid) {
     try {
       const lavail = JSON.parse(localStorage.getItem(`tv-trainer-${tid}-availability`) || 'null');
@@ -63,16 +78,105 @@ window.getTrainerAvailability = function (t) {
 
   if (!av) av = {};
   if (typeof av === 'object') {
-    const blockedList = t.customBlockedDates || t.blockedDates || av.customBlockedDates || av.blockedDates || [];
-    const weeklyList = t.weeklySchedule || t.weeklyAvailability || av.weeklySchedule || av.weeklyAvailability || [];
-    av.customBlockedDates = blockedList;
+    const blockedList = av.unavailable || av.blockedDates || av.customBlockedDates || (t && (t.customBlockedDates || t.blockedDates)) || [];
+    const bookedList = av.booked || av.bookedDates || (t && t.bookedDates) || [];
+    const weeklyList = t ? (t.weeklySchedule || t.weeklyAvailability) : (av.weeklySchedule || av.weeklyAvailability || []);
+    
+    av.unavailable = blockedList;
     av.blockedDates = blockedList;
+    av.customBlockedDates = blockedList;
+    av.booked = bookedList;
+    av.bookedDates = bookedList;
+    av.today = av.today || new Date().toISOString().split('T')[0];
     av.weeklySchedule = weeklyList;
     av.weeklyAvailability = weeklyList;
   }
 
   return av;
 };
+
+// ── LIVE PUBLIC DARK VIEW CALENDAR RENDERER & SYNC ENGINE ──────────────────────
+window.renderDarkUserCardCalendar = function (trainerId) {
+  if (!trainerId) {
+    try {
+      const session = JSON.parse(localStorage.getItem('userSession') || 'null');
+      const ct = JSON.parse(localStorage.getItem('currentTrainer') || '{}');
+      trainerId = (session && (session._id || session.id)) || ct._id || ct.id || ct.trainerId || '';
+    } catch (e) {}
+  }
+  if (!trainerId) return;
+
+  const data = window.getTrainerAvailability(trainerId) || {};
+  const unavailableList = data.unavailable || data.blockedDates || [];
+  const bookedList = data.booked || data.bookedDates || [];
+  const todayStr = data.today || new Date().toISOString().split('T')[0];
+
+  // Query all public dark calendar day cells across trainer cards and modals
+  const darkCells = document.querySelectorAll(
+    `.trainer-card[data-id="${trainerId}"] .dark-theme .day-cell, ` +
+    `.trainer-card[data-id="${trainerId}"] .dark-theme .cal-day, ` +
+    `.dark-theme[data-trainer-id="${trainerId}"] .day-cell, ` +
+    `.dark-theme[data-trainer-id="${trainerId}"] .cal-day, ` +
+    `#bpm-calendar .bpm-cal-day`
+  );
+
+  darkCells.forEach((cell) => {
+    const dateStr = cell.dataset.date || cell.getAttribute('data-date');
+    const dayNum = parseInt(cell.textContent.trim(), 10);
+
+    // Reset status classes
+    cell.classList.remove("dark-unavailable", "dark-booked", "dark-today", "dark-available", "unavailable", "booked", "today");
+
+    if (dateStr) {
+      if (unavailableList.includes(dateStr)) {
+        cell.classList.add("dark-unavailable", "unavailable");
+      } else if (bookedList.includes(dateStr)) {
+        cell.classList.add("dark-booked", "booked");
+      } else {
+        cell.classList.add("dark-available");
+      }
+
+      if (dateStr === todayStr) {
+        cell.classList.add("dark-today", "today");
+      }
+    } else if (!isNaN(dayNum) && dayNum > 0) {
+      const month = window.bookingState ? window.bookingState.month : new Date().getMonth();
+      const year = window.bookingState ? window.bookingState.year : new Date().getFullYear();
+      const calcIso = `${year}-${String(month + 1).padStart(2, '0')}-${String(dayNum).padStart(2, '0')}`;
+
+      if (unavailableList.includes(calcIso)) {
+        cell.classList.add("dark-unavailable", "unavailable");
+      } else if (bookedList.includes(calcIso)) {
+        cell.classList.add("dark-booked", "booked");
+      }
+
+      if (calcIso === todayStr) {
+        cell.classList.add("dark-today", "today");
+      }
+    }
+  });
+
+  if (typeof window.renderBPMCalendar === 'function') {
+    window.renderBPMCalendar();
+  }
+};
+
+// Global event listeners for live cross-tab & cross-component sync
+if (typeof window !== 'undefined') {
+  window.addEventListener('storage', function (e) {
+    if (e.key && e.key.startsWith('trainer_availability_')) {
+      const tid = e.key.replace('trainer_availability_', '');
+      window.renderDarkUserCardCalendar(tid);
+      if (typeof window.renderDashboardCalendar === 'function') window.renderDashboardCalendar();
+    }
+  });
+
+  window.addEventListener('trainerAvailabilityUpdated', function (e) {
+    const tid = e.detail && e.detail.trainerId;
+    window.renderDarkUserCardCalendar(tid);
+    if (typeof window.renderDashboardCalendar === 'function') window.renderDashboardCalendar();
+  });
+}
 
 /**
  * MASTER AVAILABILITY FORMATTER FUNCTION: formatTrainerAvailability(availabilityData)

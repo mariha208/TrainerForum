@@ -2361,12 +2361,34 @@
       cache.availability.customBlockedDates = cache.blockedDates;
       localStorage.setItem('currentTrainer', JSON.stringify(cache));
 
-      // Re-render calendar preview immediately (no save toast)
+      // Re-render Light Dashboard calendar preview immediately
       renderDashboardCalendar();
 
-      // ── Persist blocked dates to MongoDB ──────────────────────────────────
       var session = JSON.parse(localStorage.getItem('userSession') || 'null');
       var _tid = (session && (session._id || session.id)) || cache._id || cache.id || cache.trainerId || null;
+
+      // Update shared state key trainer_availability_${trainerId}
+      if (_tid) {
+        var sharedState = {
+          unavailable: cache.blockedDates,
+          booked: cache.bookedDates || [],
+          available: cache.availableDays || [],
+          today: new Date().toISOString().split('T')[0],
+          blockedDates: cache.blockedDates,
+          customBlockedDates: cache.blockedDates
+        };
+        localStorage.setItem('trainer_availability_' + _tid, JSON.stringify(sharedState));
+
+        // Live Re-rendering of Public Dark User Card Calendar
+        if (typeof window.renderDarkUserCardCalendar === 'function') {
+          window.renderDarkUserCardCalendar(_tid);
+        }
+        window.dispatchEvent(new CustomEvent('trainerAvailabilityUpdated', {
+          detail: { trainerId: _tid, availability: sharedState }
+        }));
+      }
+
+      // ── Persist blocked dates to MongoDB ──────────────────────────────────
       var _email = (session && session.email) || cache.email || null;
       if (!_tid && !_email) return; // no auth — skip network request
 

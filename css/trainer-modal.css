@@ -1699,7 +1699,10 @@
 .bpm-cal-day.selected { background: linear-gradient(135deg, #C5A059, #A8863D); color: #0D1117; font-weight: 700; border-color: transparent; box-shadow: 0 4px 12px rgba(197, 160, 89, 0.4); }
 .bpm-cal-day.other-month { opacity: 0.25; cursor: default; }
 .bpm-cal-day.other-month:hover { background: transparent; }
-.bpm-cal-day.booked, .bpm-cal-day.unavailable { background: rgba(239, 68, 68, 0.22) !important; color: #f87171 !important; border: 1px solid rgba(239, 68, 68, 0.4) !important; cursor: not-allowed !important; text-decoration: line-through; pointer-events: none !important; }
+.bpm-cal-day.booked, .bpm-cal-day.unavailable, .dark-theme .day-cell.dark-unavailable, .dark-theme .day-cell.unavailable { background: rgba(239, 68, 68, 0.22) !important; color: #f87171 !important; border: 1px solid rgba(239, 68, 68, 0.45) !important; cursor: not-allowed !important; text-decoration: line-through; pointer-events: none !important; }
+.dark-theme .day-cell.dark-booked, .dark-theme .day-cell.booked, .bpm-cal-day.dark-booked { background: rgba(245, 158, 11, 0.25) !important; color: #fbbf24 !important; border: 1.5px solid rgba(245, 158, 11, 0.6) !important; cursor: not-allowed !important; }
+.dark-theme .day-cell.dark-today, .bpm-cal-day.dark-today { border: 1.5px solid #C5A059 !important; color: #C5A059 !important; font-weight: 700; box-shadow: 0 0 10px rgba(197, 160, 89, 0.3); }
+.dark-theme .day-cell.dark-available, .bpm-cal-day.dark-available { background: rgba(255, 255, 255, 0.05); color: rgba(250, 246, 236, 0.85); border: 1px solid rgba(255, 255, 255, 0.08); }
 
 /* Booking summary */
 .bpm-summary-row {

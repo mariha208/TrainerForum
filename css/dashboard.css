@@ -3831,10 +3831,30 @@ html.dark-mode .calendar-day-box.unavailable,
 html.dark-mode .calendar-cell.unavailable,
 html.dark-mode .cal-day-cell.unavailable,
 .cal-day-cell.unavailable,
-.db-cal-day.unavailable {
+.db-cal-day.unavailable,
+.day-cell.dark-unavailable {
   background-color: rgba(239, 68, 68, 0.25) !important;
   border: 1px solid #ef4444 !important;
-  color: #ef4444 !important;
+  color: #f87171 !important;
+  text-decoration: line-through;
+}
+
+.day-cell.dark-booked {
+  background-color: rgba(245, 158, 11, 0.25) !important;
+  border: 1.5px solid rgba(245, 158, 11, 0.6) !important;
+  color: #fbbf24 !important;
+}
+
+.day-cell.dark-today {
+  border: 1.5px solid #C5A059 !important;
+  color: #C5A059 !important;
+  font-weight: 700;
+}
+
+.day-cell.dark-available {
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(250, 246, 236, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 html.dark-mode .cal-day-cell.today {
