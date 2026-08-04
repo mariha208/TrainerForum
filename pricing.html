@@ -559,15 +559,15 @@
   <!-- ═══ NAVBAR ═══ -->
   <nav id="nav">
     <a class="logo" href="index.html">
-      <img src="img/logo.svg" alt="World Trainer Forum Logo" class="logo-nav-img">World Trainer <span
+      <img src="img/logo.svg" alt="World Trainer Forum Logo" class="logo-nav-img" onerror="this.onerror=null;this.src='bglogo.png';">World Trainer <span
         class="g">Forum</span>
     </a>
     <ul class="nav-links">
       <li><a id="nl-home" href="index.html">Home</a></li>
       <li><a id="nl-about" href="about.html">About</a></li>
       <li><a id="nl-browse" href="find-trainers.html">Find Trainers</a></li>
-      <li><a id="nl-cats" href="certificates.html">Certificates</a></li>
-      <li><a id="nl-pricing" href="news-events.html">News &amp; Events</a></li>
+      <li><a id="nl-certs" href="certificates.html">Certificates</a></li>
+      <li><a id="nl-news" href="news-events.html">News &amp; Events</a></li>
       <li><a id="nl-blog" href="blog.html">Blog</a></li>
       <li><a id="nl-contact" href="contact.html">Contact</a></li>
       <li><a id="nl-dash" href="dashboard.html" target="_blank" style="display:none;">Dashboard</a></li>
@@ -581,8 +581,35 @@
         </svg><span class="notif-dot"></span></button>
       <button class="btn btn-ghost btn-sm" id="btn-signup" onclick="openModal('register')">Sign Up</button>
       <button class="btn btn-gold btn-sm" id="btn-login" onclick="openModal('login')">Log In</button>
-      <button class="btn btn-dark btn-sm" id="btn-logout" onclick="handleLogout()" style="display:none;">Log
-        Out</button>
+      <!-- User Avatar Dropdown (shown when logged in) -->
+      <div class="user-avatar-wrap" id="user-avatar-wrap">
+        <button class="user-av-btn" id="user-av-btn" onclick="toggleUserMenu(event)" aria-label="User menu"
+          aria-haspopup="true" aria-expanded="false">MK</button>
+        <div class="user-dropdown" id="user-dropdown" role="menu" aria-label="User account menu">
+          <div class="ud-header">
+            <div class="ud-avatar" id="ud-av-initials">MK</div>
+            <div class="ud-info">
+              <span class="ud-name" id="ud-display-name">My Account</span>
+              <span class="ud-email" id="ud-display-email">user@example.com</span>
+            </div>
+          </div>
+          <hr>
+          <a href="dashboard.html" class="ud-link" role="menuitem">
+            <i class="fa-solid fa-pen-to-square" style="pointer-events:none"></i> Edit Profile
+          </a>
+          <a href="#" class="ud-link ud-logout" role="menuitem" onclick="handleLogout(); return false;">
+            <i class="fa-solid fa-arrow-right-from-bracket" style="pointer-events:none"></i> Logout
+          </a>
+        </div>
+      </div>
+      <button class="ham-btn" id="ham-btn" onclick="toggleMobileMenu()" aria-label="Toggle Menu">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="4" x2="20" y1="12" y2="12" />
+          <line x1="4" x2="20" y1="6" y2="6" />
+          <line x1="4" x2="20" y1="18" y2="18" />
+        </svg>
+      </button>
     </div>
   </nav>
 
@@ -611,7 +638,7 @@
           <li><span class="pf-icon"><i class="fa-solid fa-check"></i></span>Training Program Updates</li>
           <li><span class="pf-icon"><i class="fa-solid fa-check"></i></span>Community News &amp; Announcements</li>
         </ul>
-        <button class="pc-cta outline" onclick="openModal('register-trainer')">Start Free</button>
+        <button class="pc-cta outline" onclick="selectPricingPlan('Starter Plan')">Start Free</button>
       </div>
 
       <!-- ── Professional Plan ── -->
@@ -639,7 +666,7 @@
           <li><span class="pf-icon"><i class="fa-solid fa-check"></i></span>Collaboration Opportunities with Other
             Trainers</li>
         </ul>
-        <button class="pc-cta gold" onclick="openModal('register-trainer')">Choose Plan</button>
+        <button class="pc-cta gold" onclick="selectPricingPlan('Professional Membership')">Choose Plan</button>
       </div>
 
       <!-- ── Elite Featured Plan ── -->
@@ -668,7 +695,7 @@
           <li><span class="pf-icon"><i class="fa-solid fa-check"></i></span>Dedicated Relationship Manager</li>
           <li><span class="pf-icon"><i class="fa-solid fa-check"></i></span>Maximum Visibility Across WTF Platforms</li>
         </ul>
-        <button class="pc-cta dark" onclick="openModal('register-trainer')">Go Premium</button>
+        <button class="pc-cta dark" onclick="selectPricingPlan('ELITE Member')">Go Premium</button>
       </div>
 
     </div><!-- /pricing-grid -->
@@ -779,10 +806,13 @@
     <h2>Ready to Grow Your Practice?</h2>
     <p>Join 2,800+ trainers already thriving on World Trainer Forum.</p>
     <div class="cta-btns">
-      <button class="btn btn-gold btn-xl" onclick="openModal('register-trainer')">Start Free Profile →</button>
+      <button class="btn btn-gold btn-xl" onclick="selectPricingPlan('Free Profile')">Start Free Profile →</button>
       <a href="find-trainers.html" class="btn btn-ghost btn-xl">Browse Trainers</a>
     </div>
   </div>
+
+  <!-- — PREMIUM AUTH MODAL — -->
+  <div id="auth-modal" aria-modal="true" role="dialog" aria-label="Authentication"></div>
 
   <!-- ═══ FOOTER ═══ -->
   <footer id="site-footer">
