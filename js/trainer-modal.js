@@ -249,49 +249,106 @@ function buildPremiumModal(t, isOwner = false) {
   const pkgs = _arr(t.packages, []).filter(p => p.active !== false);
 
   // Normalise availability — ensure exactly 7 days
+  // IMPORTANT: defaults are all neutral/unavailable so we never show fake hardcoded hours
+  // when the trainer hasn't saved a schedule yet.  Real data always wins.
   const _DAY_NAMES = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
   let avs = {
-    Mon: { available: true, start: '09:00', end: '18:00' },
-    Tue: { available: true, start: '09:00', end: '18:00' },
-    Wed: { available: true, start: '09:00', end: '17:00' },
-    Thu: { available: true, start: '10:00', end: '18:00' },
-    Fri: { available: true, start: '09:00', end: '17:00' },
-    Sat: { available: true, start: '10:00', end: '14:00' },
+    Mon: { available: false, start: '09:00', end: '18:00' },
+    Tue: { available: false, start: '09:00', end: '18:00' },
+    Wed: { available: false, start: '09:00', end: '17:00' },
+    Thu: { available: false, start: '10:00', end: '18:00' },
+    Fri: { available: false, start: '09:00', end: '17:00' },
+    Sat: { available: false, start: '10:00', end: '14:00' },
     Sun: { available: false, start: '10:00', end: '14:00' },
   };
+  let _avsLoaded = false;
 
-  let _rawAvs = t.availability;
-  if (typeof _rawAvs === 'string') {
-    try { _rawAvs = JSON.parse(_rawAvs); } catch (e) { _rawAvs = null; }
+  // ── Helper: apply a named-day object {Mon:{available,start,end},...} onto avs ──
+  function _applyNamedAvs(src) {
+    if (!src || typeof src !== 'object' || Array.isArray(src)) return false;
+    const hasNamed = _DAY_NAMES.some(d => src[d] !== undefined || src[d.toLowerCase()] !== undefined);
+    if (!hasNamed) return false;
+    _DAY_NAMES.forEach(d => {
+      const val = (src[d] !== undefined) ? src[d] : src[d.toLowerCase()];
+      if (val !== undefined && val !== null) {
+        if (typeof val === 'object') avs[d] = Object.assign({}, avs[d], val);
+        else if (typeof val === 'boolean') avs[d] = Object.assign({}, avs[d], { available: val });
+      } else {
+        // Day explicitly absent from saved object => treat as unavailable
+        avs[d] = Object.assign({}, avs[d], { available: false });
+      }
+    });
+    return true;
   }
 
-  // If this is the logged-in trainer's own profile, always use currentTrainer localStorage
-  // so the front-end matches exactly what was saved in the dashboard.
+  // ── Helper: apply an array-format schedule [{day:'Mon',available:true,...}] or positional ──
+  function _applyArrayAvs(arr) {
+    if (!Array.isArray(arr) || arr.length === 0) return false;
+    const hasDayKey = arr.some(e => e && typeof e === 'object' && typeof e.day === 'string');
+    if (hasDayKey) {
+      // Reset all to unavailable; only days present in the saved array get real values
+      _DAY_NAMES.forEach(d => { avs[d] = Object.assign({}, avs[d], { available: false }); });
+      arr.forEach(entry => {
+        if (!entry || typeof entry !== 'object') return;
+        const dayKey = _DAY_NAMES.find(d => d.toLowerCase() === String(entry.day || '').toLowerCase().slice(0, 3));
+        if (dayKey) { const merged = Object.assign({}, avs[dayKey], entry); delete merged.day; avs[dayKey] = merged; }
+      });
+      return true;
+    }
+    // Positional array: index 0 = Mon ... 6 = Sun
+    arr.slice(0, 7).forEach((info, i) => {
+      if (!_DAY_NAMES[i] || info === undefined || info === null) return;
+      if (typeof info === 'object') avs[_DAY_NAMES[i]] = Object.assign({}, avs[_DAY_NAMES[i]], info);
+      else if (typeof info === 'boolean') avs[_DAY_NAMES[i]] = Object.assign({}, avs[_DAY_NAMES[i]], { available: info });
+    });
+    return arr.length > 0;
+  }
+
+  // ── Source 1: weeklySchedule / weeklyAvailability (primary — dashboard saves here) ──
+  let _rawWeekly = t.weeklySchedule || t.weeklyAvailability;
+  if (typeof _rawWeekly === 'string') { try { _rawWeekly = JSON.parse(_rawWeekly); } catch(e) { _rawWeekly = null; } }
+  if (_rawWeekly) {
+    _avsLoaded = Array.isArray(_rawWeekly) ? _applyArrayAvs(_rawWeekly) : _applyNamedAvs(_rawWeekly);
+  }
+
+  // ── Source 2: t.availability (may be the weekly map or wrap it inside nested key) ──
+  let _rawAvs = t.availability;
+  if (typeof _rawAvs === 'string') { try { _rawAvs = JSON.parse(_rawAvs); } catch(e) { _rawAvs = null; } }
+  if (!_avsLoaded && _rawAvs && typeof _rawAvs === 'object') {
+    const _nested = _rawAvs.weeklySchedule || _rawAvs.weeklyAvailability;
+    if (_nested) {
+      _avsLoaded = Array.isArray(_nested) ? _applyArrayAvs(_nested) : _applyNamedAvs(_nested);
+    }
+    if (!_avsLoaded) {
+      if (Array.isArray(_rawAvs)) _avsLoaded = _applyArrayAvs(_rawAvs);
+      else _avsLoaded = _applyNamedAvs(_rawAvs);
+      if (!_avsLoaded) {
+        const vals = Object.values(_rawAvs);
+        if (vals.length) { vals.slice(0, 7).forEach((info, i) => { if (info && _DAY_NAMES[i]) avs[_DAY_NAMES[i]] = typeof info === 'object' ? Object.assign({}, avs[_DAY_NAMES[i]], info) : avs[_DAY_NAMES[i]]; }); _avsLoaded = true; }
+      }
+    }
+  }
+
+  // ── Source 3 (owner only): currentTrainer localStorage — most up-to-date after dashboard edits ──
   if (isOwner) {
     try {
       const _ctOwner = JSON.parse(localStorage.getItem('currentTrainer') || '{}');
-      let _ctOwnerAvail = _ctOwner.availability;
-      if (typeof _ctOwnerAvail === 'string') _ctOwnerAvail = JSON.parse(_ctOwnerAvail);
-      if (_ctOwnerAvail && typeof _ctOwnerAvail === 'object') _rawAvs = _ctOwnerAvail;
-    } catch(e) {}
-  }
-
-  if (_rawAvs && typeof _rawAvs === 'object') {
-    if (Array.isArray(_rawAvs)) {
-      _rawAvs.forEach((info, i) => { if (_DAY_NAMES[i] && info) avs[_DAY_NAMES[i]] = info; });
-    } else {
-      const hasNamed = _DAY_NAMES.some(d => _rawAvs[d] || _rawAvs[d.toLowerCase()]);
-      if (hasNamed) {
-        _DAY_NAMES.forEach(d => {
-          const val = _rawAvs[d] || _rawAvs[d.toLowerCase()];
-          if (val) avs[d] = val;
-        });
+      let _ctWeekly = _ctOwner.weeklySchedule || _ctOwner.weeklyAvailability;
+      if (typeof _ctWeekly === 'string') _ctWeekly = JSON.parse(_ctWeekly);
+      if (_ctWeekly) {
+        if (Array.isArray(_ctWeekly)) _applyArrayAvs(_ctWeekly); else _applyNamedAvs(_ctWeekly);
+        _avsLoaded = true;
       } else {
-        // Fallback for weird numeric keys like "20", "21"
-        const vals = Object.values(_rawAvs);
-        vals.slice(0, 7).forEach((info, i) => { if (info) avs[_DAY_NAMES[i]] = info; });
+        let _ctOwnerAvail = _ctOwner.availability;
+        if (typeof _ctOwnerAvail === 'string') _ctOwnerAvail = JSON.parse(_ctOwnerAvail);
+        if (_ctOwnerAvail && typeof _ctOwnerAvail === 'object') {
+          const _ctNested = _ctOwnerAvail.weeklySchedule || _ctOwnerAvail.weeklyAvailability;
+          if (_ctNested) { if (Array.isArray(_ctNested)) _applyArrayAvs(_ctNested); else _applyNamedAvs(_ctNested); }
+          else { if (Array.isArray(_ctOwnerAvail)) _applyArrayAvs(_ctOwnerAvail); else _applyNamedAvs(_ctOwnerAvail); }
+          _avsLoaded = true;
+        }
       }
-    }
+    } catch(e) {}
   }
 
   const timeSlots = ['9:00 AM', '11:00 AM', '1:00 PM', '3:00 PM', '5:00 PM', '7:00 PM'];
