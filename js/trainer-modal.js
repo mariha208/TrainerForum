@@ -1044,7 +1044,10 @@ window.openBookingModal = async function (tid) {
   // 3. Execute fetch or async trainer resolution
   let t = null;
   try {
-    const res = await fetch(`/api/trainers/${tid}`);
+    const origin = (typeof window !== 'undefined' && window.location && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'))
+      ? window.location.origin
+      : 'https://trainerforum.onrender.com';
+    const res = await fetch(`${origin}/api/trainers/${tid}`);
     if (res.ok) {
       const data = await res.json();
       t = data.trainer || data;
@@ -1055,7 +1058,7 @@ window.openBookingModal = async function (tid) {
 
   if (!t) {
     const TRAINERS = window.TRAINERS || [];
-    t = TRAINERS.find(x => x.id === tid) || window.currentTrainer;
+    t = TRAINERS.find(x => String(x.id || x._id || x.trainerId) === String(tid)) || window.currentTrainer;
   }
 
   if (!t) {
@@ -1077,16 +1080,28 @@ window.openBookingModal = async function (tid) {
 
   // ── Resolve the booked trainer's availability ──
   let _trainerAvailability = null;
-  try {
-    const _lavail = JSON.parse(localStorage.getItem(`tv-trainer-${tid}-availability`) || 'null');
-    if (_lavail) {
-      _trainerAvailability = _lavail;
-    } else {
-      let _tAvail = t.availability;
-      if (typeof _tAvail === 'string') _tAvail = JSON.parse(_tAvail);
-      _trainerAvailability = _tAvail;
+  if (t) {
+    if (typeof window.getTrainerAvailability === 'function') {
+      _trainerAvailability = window.getTrainerAvailability(t);
+    } else if (t.availability) {
+      try {
+        _trainerAvailability = typeof t.availability === 'string' ? JSON.parse(t.availability) : t.availability;
+      } catch (e) {
+        _trainerAvailability = t.availability;
+      }
     }
-  } catch(e) {}
+  }
+  if (!_trainerAvailability) _trainerAvailability = {};
+  if (typeof _trainerAvailability === 'object') {
+    const customBlockedList = (t && (t.customBlockedDates || t.blockedDates)) || _trainerAvailability.customBlockedDates || _trainerAvailability.blockedDates || [];
+    const weeklySchedList = (t && (t.weeklySchedule || t.weeklyAvailability)) || _trainerAvailability.weeklySchedule || _trainerAvailability.weeklyAvailability || [];
+    const specDates = (t && (t.specificDates || (t.availability && t.availability.specificDates))) || _trainerAvailability.specificDates || {};
+    _trainerAvailability.customBlockedDates = customBlockedList;
+    _trainerAvailability.blockedDates = customBlockedList;
+    _trainerAvailability.weeklySchedule = weeklySchedList;
+    _trainerAvailability.weeklyAvailability = weeklySchedList;
+    _trainerAvailability.specificDates = specDates;
+  }
   window.bookingState.trainerAvailability = _trainerAvailability;
 
   const basePkgs = t.packages && t.packages.length > 0 ? t.packages : [
