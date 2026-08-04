@@ -2088,8 +2088,10 @@
         trainerId: _tid,
         email: _email,
         availability: avs,
+        weeklySchedule: weeklyAvailability,
         weeklyAvailability: weeklyAvailability,
         availableDays: availableDays,
+        customBlockedDates: blockedDates,
         blockedDates: blockedDates,
         bookedDates: cache.bookedDates || []
       });
@@ -2341,8 +2343,10 @@
         trainerId: _tid,
         email: _email,
         availability: domAvs,
+        weeklySchedule: domWeekly,
         weeklyAvailability: domWeekly,
         availableDays: domDays,
+        customBlockedDates: cache.blockedDates,
         blockedDates: cache.blockedDates,
         bookedDates: cache.bookedDates || []
       });

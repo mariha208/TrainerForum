@@ -280,36 +280,52 @@ app.post('/api/upload-image', upload.single('image'), async (req, res) => {
 });
 
 // ── Direct Trainer Availability & Blocked Dates API Endpoints ──────────────────
-app.put('/api/trainer/availability', async (req, res) => {
+app.put(['/api/trainer/availability', '/api/trainers/availability'], async (req, res) => {
   try {
     const mongoose = require('mongoose');
     const User = require('./models/User');
-    const { trainerId, email, availability, blockedDates, weeklyAvailability, availableDays, bookedDates } = req.body;
+    const { trainerId, email, availability, blockedDates, customBlockedDates, weeklyAvailability, weeklySchedule, availableDays, bookedDates } = req.body;
     let userId = trainerId || email || (req.user && req.user.id);
     
+    const datesToBlock = Array.isArray(customBlockedDates) ? customBlockedDates : (Array.isArray(blockedDates) ? blockedDates : []);
+    const schedToSave = weeklySchedule || weeklyAvailability;
+
     if (!userId || mongoose.connection.readyState !== 1) {
-      return res.json({ message: 'Availability stored locally', availability, blockedDates });
+      return res.json({ message: 'Availability stored locally', availability, blockedDates: datesToBlock, customBlockedDates: datesToBlock });
     }
 
     const isObjectId = mongoose.Types.ObjectId.isValid(userId);
     const query = isObjectId ? { _id: userId } : { email: String(userId).toLowerCase() };
 
     const update = { availability: availability || {} };
-    if (Array.isArray(blockedDates)) update.blockedDates = blockedDates;
+    update.blockedDates = datesToBlock;
+    update.customBlockedDates = datesToBlock;
     if (Array.isArray(bookedDates)) update.bookedDates = bookedDates;
-    if (weeklyAvailability) update.weeklyAvailability = weeklyAvailability;
+    if (schedToSave) {
+      update.weeklySchedule = schedToSave;
+      update.weeklyAvailability = schedToSave;
+    }
     if (availableDays) update.availableDays = availableDays;
+
+    if (update.availability && typeof update.availability === 'object') {
+      update.availability.customBlockedDates = datesToBlock;
+      update.availability.blockedDates = datesToBlock;
+      if (schedToSave) {
+        update.availability.weeklySchedule = schedToSave;
+        update.availability.weeklyAvailability = schedToSave;
+      }
+    }
 
     const user = await User.findOneAndUpdate(
       query,
       { $set: update },
-      { new: true }
+      { new: true, runValidators: true }
     ).select('-passwordHash');
 
     if (!user) {
-      return res.json({ message: 'Availability updated', availability, blockedDates });
+      return res.json({ message: 'Availability updated', availability, blockedDates: datesToBlock, customBlockedDates: datesToBlock });
     }
-    res.json({ message: 'Availability updated in database', availability: user.availability, blockedDates: user.blockedDates, weeklyAvailability: user.weeklyAvailability, availableDays: user.availableDays, bookedDates: user.bookedDates, user });
+    res.json({ message: 'Availability updated in database', availability: user.availability, blockedDates: user.blockedDates, customBlockedDates: user.customBlockedDates, weeklySchedule: user.weeklySchedule, weeklyAvailability: user.weeklyAvailability, availableDays: user.availableDays, bookedDates: user.bookedDates, user });
   } catch (err) {
     console.warn('[Availability API] Error:', err.message);
     res.status(500).json({ error: err.message });
@@ -320,33 +336,40 @@ app.put('/api/trainer/blocked-dates', async (req, res) => {
   try {
     const mongoose = require('mongoose');
     const User = require('./models/User');
-    const { trainerId, email, blockedDates, availability, weeklyAvailability, availableDays, bookedDates } = req.body;
+    const { trainerId, email, blockedDates, customBlockedDates, availability, weeklyAvailability, weeklySchedule, availableDays, bookedDates } = req.body;
     let userId = trainerId || email || (req.user && req.user.id);
 
+    const datesToBlock = Array.isArray(customBlockedDates) ? customBlockedDates : (Array.isArray(blockedDates) ? blockedDates : []);
+    const schedToSave = weeklySchedule || weeklyAvailability;
+
     if (!userId || mongoose.connection.readyState !== 1) {
-      return res.json({ message: 'Blocked dates stored locally', blockedDates, availability });
+      return res.json({ message: 'Blocked dates stored locally', blockedDates: datesToBlock, customBlockedDates: datesToBlock, availability });
     }
 
     const isObjectId = mongoose.Types.ObjectId.isValid(userId);
     const query = isObjectId ? { _id: userId } : { email: String(userId).toLowerCase() };
 
     const update = {};
-    if (Array.isArray(blockedDates)) update.blockedDates = blockedDates;
+    update.blockedDates = datesToBlock;
+    update.customBlockedDates = datesToBlock;
     if (Array.isArray(bookedDates)) update.bookedDates = bookedDates;
     if (availability) update.availability = availability;
-    if (weeklyAvailability) update.weeklyAvailability = weeklyAvailability;
+    if (schedToSave) {
+      update.weeklySchedule = schedToSave;
+      update.weeklyAvailability = schedToSave;
+    }
     if (availableDays) update.availableDays = availableDays;
 
     const user = await User.findOneAndUpdate(
       query,
       { $set: update },
-      { new: true }
+      { new: true, runValidators: true }
     ).select('-passwordHash');
 
     if (!user) {
-      return res.json({ message: 'Blocked dates updated', blockedDates, availability });
+      return res.json({ message: 'Blocked dates updated', blockedDates: datesToBlock, customBlockedDates: datesToBlock, availability });
     }
-    res.json({ message: 'Blocked dates updated in database', blockedDates: user.blockedDates, availability: user.availability, weeklyAvailability: user.weeklyAvailability, availableDays: user.availableDays, bookedDates: user.bookedDates, user });
+    res.json({ message: 'Blocked dates updated in database', blockedDates: user.blockedDates, customBlockedDates: user.customBlockedDates, availability: user.availability, weeklySchedule: user.weeklySchedule, weeklyAvailability: user.weeklyAvailability, availableDays: user.availableDays, bookedDates: user.bookedDates, user });
   } catch (err) {
     console.warn('[Blocked Dates API] Error:', err.message);
     res.status(500).json({ error: err.message });
