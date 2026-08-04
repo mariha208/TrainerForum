@@ -177,7 +177,16 @@ function getDayAvailabilityStatus(date, availability) {
   const dateStr = `${year}-${month}-${day}`;
   const unpaddedStr = `${year}-${date.getMonth() + 1}-${date.getDate()}`;
 
-  // 2. CHECK SPECIFIC BLOCKED DATES FIRST
+  // Helper: strip ISO timestamp suffix so "2026-08-11T00:00:00.000Z" matches "2026-08-11"
+  const _normD = bd => (typeof bd === 'string' && bd.indexOf('T') !== -1) ? bd.split('T')[0] : bd;
+
+  // 2. CHECK ROOT-LEVEL blockedDates FIRST (top-level MongoDB array)
+  const rootBlocked = availability.blockedDates || availability.customBlockedDates;
+  if (Array.isArray(rootBlocked) && rootBlocked.some(bd => _normD(bd) === dateStr || _normD(bd) === unpaddedStr)) {
+    return 'unavailable';
+  }
+
+  // CHECK specificDates (Object or Array)
   const specificDates = availability.specificDates || (availability.availability && availability.availability.specificDates);
 
   if (specificDates) {
@@ -189,20 +198,20 @@ function getDayAvailabilityStatus(date, availability) {
         return 'available';
       }
     }
-    if (Array.isArray(specificDates) && (specificDates.includes(dateStr) || specificDates.includes(unpaddedStr))) {
+    if (Array.isArray(specificDates) && specificDates.some(d => _normD(d) === dateStr || _normD(d) === unpaddedStr)) {
       return 'unavailable';
     }
   }
 
-  // CHECK customBlockedDates / blockedDates array
-  const customBlocked = availability.customBlockedDates || availability.blockedDates || (availability.availability && (availability.availability.customBlockedDates || availability.availability.blockedDates));
-  if (Array.isArray(customBlocked) && (customBlocked.includes(dateStr) || customBlocked.includes(unpaddedStr))) {
+  // CHECK nested customBlockedDates / blockedDates array
+  const customBlocked = (availability.availability && (availability.availability.customBlockedDates || availability.availability.blockedDates));
+  if (Array.isArray(customBlocked) && customBlocked.some(bd => _normD(bd) === dateStr || _normD(bd) === unpaddedStr)) {
     return 'unavailable';
   }
 
   // CHECK bookedDates array
   const bookedDates = availability.bookedDates || availability.customBookedDates || (availability.availability && availability.availability.bookedDates);
-  if (Array.isArray(bookedDates) && (bookedDates.includes(dateStr) || bookedDates.includes(unpaddedStr))) {
+  if (Array.isArray(bookedDates) && bookedDates.some(bd => _normD(bd) === dateStr || _normD(bd) === unpaddedStr)) {
     return 'booked';
   }
 
@@ -247,20 +256,28 @@ window.isDateBlocked = function (dateObj, availability) {
   const month = String(dateObj.getMonth() + 1).padStart(2, '0');
   const day = String(dateObj.getDate()).padStart(2, '0');
   const dateStr = `${year}-${month}-${day}`;
+  const unpaddedStr = `${year}-${dateObj.getMonth() + 1}-${dateObj.getDate()}`;
 
-  // 2. Check specificDates (Object or Array)
+  // Helper: strip ISO timestamp suffix
+  const _normD = bd => (typeof bd === 'string' && bd.indexOf('T') !== -1) ? bd.split('T')[0] : bd;
+
+  // 2. Check root-level blockedDates FIRST (top-level MongoDB array)
+  const rootBlocked = availability.blockedDates || availability.customBlockedDates;
+  if (Array.isArray(rootBlocked) && rootBlocked.some(bd => _normD(bd) === dateStr || _normD(bd) === unpaddedStr)) return true;
+
+  // 3. Check specificDates (Object or Array)
   const specific = availability.specificDates || (availability.availability && availability.availability.specificDates);
   if (specific) {
     if (typeof specific === 'object' && !Array.isArray(specific)) {
-      if (specific[dateStr] === false || specific[dateStr] === 'false') return true;
-      if (specific[dateStr] === true || specific[dateStr] === 'true') return false;
+      if (specific[dateStr] === false || specific[dateStr] === 'false' || specific[unpaddedStr] === false || specific[unpaddedStr] === 'false') return true;
+      if (specific[dateStr] === true || specific[dateStr] === 'true' || specific[unpaddedStr] === true || specific[unpaddedStr] === 'true') return false;
     }
-    if (Array.isArray(specific) && specific.includes(dateStr)) return true;
+    if (Array.isArray(specific) && specific.some(d => _normD(d) === dateStr || _normD(d) === unpaddedStr)) return true;
   }
 
-  // 3. Check customBlockedDates / blockedDates array
-  const customBlocked = availability.customBlockedDates || availability.blockedDates || (availability.availability && (availability.availability.customBlockedDates || availability.availability.blockedDates));
-  if (Array.isArray(customBlocked) && customBlocked.includes(dateStr)) return true;
+  // 4. Check nested customBlockedDates / blockedDates array
+  const nestedBlocked = (availability.availability && (availability.availability.customBlockedDates || availability.availability.blockedDates));
+  if (Array.isArray(nestedBlocked) && nestedBlocked.some(bd => _normD(bd) === dateStr || _normD(bd) === unpaddedStr)) return true;
 
   // 4. Fallback to weekly schedule check
   const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -326,16 +343,19 @@ window.isDayAvailable = function (avs, dayName, year, month, day) {
   const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   const dayOfWeek = (dayName && dayName.length === 3) ? dayName : DAYS[dObj.getDay()];
 
+  // Helper: strip ISO timestamp suffix so "2026-08-11T00:00:00.000Z" matches "2026-08-11"
+  const _normD = bd => (typeof bd === 'string' && bd.indexOf('T') !== -1) ? bd.split('T')[0] : bd;
+
   // 1. Check bookedDates ISO array (Orange / Booked status)
   const bookedDates = avs.bookedDates || avs.customBookedDates || avs.booked_dates;
   if (Array.isArray(bookedDates) && bookedDates.length > 0) {
-    if (bookedDates.includes(dateStr) || bookedDates.includes(unpaddedStr)) return 'booked';
+    if (bookedDates.some(bd => _normD(bd) === dateStr || _normD(bd) === unpaddedStr)) return 'booked';
   }
 
-  // 2. Check customBlockedDates / blockedDates ISO array (Red / Blocked status)
+  // 2. Check root-level blockedDates / customBlockedDates array (Red / Blocked status)
   const customBlocked = avs.customBlockedDates || avs.blockedDates || avs.blocked_dates || (avs.availability && (avs.availability.customBlockedDates || avs.availability.blockedDates));
   if (Array.isArray(customBlocked) && customBlocked.length > 0) {
-    if (customBlocked.includes(dateStr) || customBlocked.includes(unpaddedStr)) return false; // explicitly blocked
+    if (customBlocked.some(bd => _normD(bd) === dateStr || _normD(bd) === unpaddedStr)) return false; // explicitly blocked
   }
 
   // 3. Check specific dates override (Object or Array)
@@ -349,7 +369,7 @@ window.isDayAvailable = function (avs, dayName, year, month, day) {
         return true; // Explicitly available
       }
     }
-    if (Array.isArray(spec) && (spec.includes(dateStr) || spec.includes(unpaddedStr))) {
+    if (Array.isArray(spec) && (spec.some(d => _normD(d) === dateStr || _normD(d) === unpaddedStr))) {
       return false; // Blocked
     }
   }

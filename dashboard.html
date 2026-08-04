@@ -2184,13 +2184,18 @@
       }
 
       var blocked = Array.isArray(cache.blockedDates) ? cache.blockedDates : (Array.isArray(cache.customBlockedDates) ? cache.customBlockedDates : []);
+      // Normalize blocked dates: strip ISO timestamp suffix (e.g. "2026-08-11T00:00:00.000Z" → "2026-08-11")
+      var normalizedBlocked = blocked.map(function(bd) {
+        if (typeof bd === 'string' && bd.indexOf('T') !== -1) return bd.split('T')[0];
+        return bd;
+      });
       var specDates = (cache.availability && cache.availability.specificDates && typeof cache.availability.specificDates === 'object')
         ? Object.assign({}, cache.availability.specificDates)
         : {};
-      blocked.forEach(function (d) { specDates[d] = false; });
+      normalizedBlocked.forEach(function (d) { specDates[d] = false; });
 
       avs.specificDates = specDates;
-      avs.blockedDates = Array.from(new Set(blocked));
+      avs.blockedDates = Array.from(new Set(normalizedBlocked));
       avs.customBlockedDates = avs.blockedDates;
       if (cache.bookedDates) avs.bookedDates = cache.bookedDates;
 
@@ -2231,9 +2236,10 @@
           return false; // MUST return false for unavailable/red styling
         }
 
-        // Custom blocked date check (red) — from cache/array
-        if (Array.isArray(avs.blockedDates) && avs.blockedDates.indexOf(isoStr) !== -1) return false;
-        if (Array.isArray(avs.customBlockedDates) && avs.customBlockedDates.indexOf(isoStr) !== -1) return false;
+        // Custom blocked date check (red) — also handles full ISO datetime strings from MongoDB
+        function _normDate(bd) { return (typeof bd === 'string' && bd.indexOf('T') !== -1) ? bd.split('T')[0] : bd; }
+        if (Array.isArray(avs.blockedDates) && avs.blockedDates.some(function(bd) { return _normDate(bd) === isoStr; })) return false;
+        if (Array.isArray(avs.customBlockedDates) && avs.customBlockedDates.some(function(bd) { return _normDate(bd) === isoStr; })) return false;
 
         // Weekly day-of-week check — read live DOM checkboxes first
         var weeklyDisabled = false;
