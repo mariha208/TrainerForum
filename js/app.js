@@ -159,6 +159,9 @@ window.renderDarkUserCardCalendar = function (trainerId) {
   if (typeof window.renderBPMCalendar === 'function') {
     window.renderBPMCalendar();
   }
+  if (typeof window.renderMobileTrainerCardCalendar === 'function') {
+    window.renderMobileTrainerCardCalendar(trainerId);
+  }
 };
 
 // Global event listeners for live cross-tab & cross-component sync

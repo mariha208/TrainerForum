@@ -103,10 +103,7 @@ window.openTrainerModal = function (idOrObj) {
     alert('Failed to load trainer profile: ' + err.stack);
   }
 
-  // ── Live-render weekly schedule from real API data ──────────────────────────
-  // This runs AFTER buildPremiumModal sets innerHTML, overwriting any cached/stale
-  // template data with the trainer's actual saved weeklySchedule.
-  // Uses window.renderWeeklySchedule which is device/timezone agnostic.
+  // ── Live-render weekly schedule & monthly card calendar from real API data ──
   setTimeout(() => {
     const _grid = modal.querySelector('.weekly-schedule-container');
     if (_grid) {
@@ -116,6 +113,9 @@ window.openTrainerModal = function (idOrObj) {
         || t.availability
         || null;
       if (_sched) window.renderWeeklySchedule(_sched, _grid);
+    }
+    if (typeof window.renderMobileTrainerCardCalendar === 'function') {
+      window.renderMobileTrainerCardCalendar(t.id || t._id || trainerId);
     }
   }, 0);
 
@@ -186,6 +186,11 @@ window.switchTPMTab = function (btn, id) {
   }
   const panel = document.getElementById('tpm-' + id);
   if (panel) panel.classList.add('on');
+
+  if (id === 'availability' && typeof window.renderMobileTrainerCardCalendar === 'function') {
+    const tid = window.currentTrainer ? (window.currentTrainer.id || window.currentTrainer._id) : null;
+    window.renderMobileTrainerCardCalendar(tid);
+  }
 };
 
 // ── HELPER FUNCTIONS ───────────────────────────────────────────────────────────
@@ -285,6 +290,97 @@ window.renderWeeklySchedule = function renderWeeklySchedule(rawSchedule, contain
     : Array.from(document.querySelectorAll('.weekly-schedule-container'));
 
   targets.forEach(el => { if (el) el.innerHTML = rowsHtml; });
+};
+
+// ── MOBILE & DESKTOP TRAINER CARD MONTHLY CALENDAR RENDERER ────────────────────
+// Direct data binding to live availability state object (same as Book Session modal)
+window.renderMobileTrainerCardCalendar = function (trainerId, container) {
+  const tid = String(trainerId || (window.currentTrainer && (window.currentTrainer.id || window.currentTrainer._id)) || '');
+  const TRAINERS = window.TRAINERS || [];
+  const t = TRAINERS.find(x => String(x.id || x._id) === String(tid)) || window.currentTrainer || {};
+
+  // 1. Dynamic Data Binding: Fetch live availability state object used by Book Session modal
+  let avsObj = (window.bookingState && window.bookingState.trainerAvailability) || null;
+  if (!avsObj && typeof window.getTrainerAvailability === 'function') {
+    avsObj = window.getTrainerAvailability(t.id ? t : tid);
+  }
+  if (!avsObj) {
+    avsObj = (t && t.availability && typeof t.availability === 'object') ? t.availability : {};
+  }
+
+  // Ensure root-level blocked dates from trainer object are merged in
+  if (t && (Array.isArray(t.blockedDates) || Array.isArray(t.customBlockedDates))) {
+    const tBlocked = [...(t.blockedDates || []), ...(t.customBlockedDates || [])];
+    if (!avsObj.blockedDates) avsObj.blockedDates = tBlocked;
+    else avsObj.blockedDates = [...new Set([...(avsObj.blockedDates || []), ...tBlocked])];
+    avsObj.customBlockedDates = avsObj.blockedDates;
+  }
+
+  // 2. DOM Selector Fix: target all .monthly-calendar-grid elements across desktop & mobile
+  let grids = [];
+  if (container) {
+    if (typeof container === 'string') grids = Array.from(document.querySelectorAll(container));
+    else if (container instanceof Element) grids = [container];
+    else if (container.length) grids = Array.from(container);
+  }
+  if (!grids.length) {
+    grids = Array.from(document.querySelectorAll('.monthly-calendar-grid'));
+  }
+  if (!grids.length) return;
+
+  const now = new Date();
+  const y = now.getFullYear(), m = now.getMonth();
+  const daysInMonth = new Date(y, m + 1, 0).getDate();
+  const _shortDay = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+  // 3. Re-evaluates day cells 1–31 against full list of unavailable dates
+  grids.forEach(grid => {
+    const dayCells = grid.querySelectorAll('.day-cell');
+    dayCells.forEach(cell => {
+      const d = parseInt(cell.textContent.trim(), 10);
+      if (isNaN(d) || d < 1 || d > daysInMonth) return;
+
+      const cellDate = new Date(y, m, d);
+      const dk = _shortDay[cellDate.getDay()];
+
+      const dayAvailResult = typeof window.isDayAvailable === 'function'
+        ? window.isDayAvailable(avsObj, dk, y, m, d)
+        : true;
+
+      const explicitBlocked = typeof window.isDateBlocked === 'function'
+        ? window.isDateBlocked(cellDate, avsObj)
+        : false;
+
+      const isBlocked = (dayAvailResult === false || dayAvailResult === 'booked' || explicitBlocked);
+
+      // Apply classes and styles
+      if (isBlocked) {
+        cell.classList.add('dark-unavailable', 'unavailable', 'is-unavailable');
+        cell.classList.remove('dark-available', 'available');
+        cell.style.background = 'rgba(239,68,68,0.2)';
+        cell.style.border = '1px solid rgba(239,68,68,0.4)';
+        cell.style.color = '#f87171';
+        cell.style.textDecoration = 'line-through';
+        cell.setAttribute('title', 'Unavailable');
+      } else {
+        cell.classList.remove('dark-unavailable', 'unavailable', 'is-unavailable');
+        const isToday = d === now.getDate() && m === now.getMonth() && y === now.getFullYear();
+        if (isToday) {
+          cell.classList.add('dark-today', 'today');
+          cell.style.background = 'rgba(197,160,89,0.22)';
+          cell.style.border = '1.5px solid #C5A059';
+          cell.style.color = '#C5A059';
+        } else {
+          cell.classList.add('dark-available', 'available');
+          cell.style.background = 'rgba(255,255,255,0.04)';
+          cell.style.border = '1px solid rgba(255,255,255,0.07)';
+          cell.style.color = 'rgba(237,242,247,0.85)';
+        }
+        cell.style.textDecoration = 'none';
+        cell.setAttribute('title', 'Available');
+      }
+    });
+  });
 };
 
 function randomBetween(a, b) {
@@ -1031,14 +1127,14 @@ function buildPremiumModal(t, isOwner = false) {
         const textDecor = isBlocked ? 'text-decoration:line-through;' : '';
         const titleAttr = isBlocked ? 'Unavailable' : 'Available';
 
-        cells += `<div data-date="${isoDate}" class="day-cell ${isBlocked ? 'dark-unavailable unavailable' : (isToday ? 'dark-today today' : 'dark-available available')}" style="text-align:center;padding:6px 2px;border-radius:7px;background:${bg};border:${bdr};font-size:.74rem;font-weight:600;color:${clr};${textDecor}" title="${titleAttr}">${d}</div>`;
+        cells += `<div data-date="${isoDate}" class="day-cell ${isBlocked ? 'dark-unavailable unavailable is-unavailable' : (isToday ? 'dark-today today' : 'dark-available available')}" style="text-align:center;padding:6px 2px;border-radius:7px;background:${bg};border:${bdr};font-size:.74rem;font-weight:600;color:${clr};${textDecor}" title="${titleAttr}">${d}</div>`;
       }
 
       return `
       <div style="margin-top:22px" class="dark-theme" data-trainer-id="${t.id || t._id || ''}">
         <div style="font-size:0.78rem;font-weight:700;color:rgba(237,242,247,0.5);text-transform:uppercase;letter-spacing:.07em;margin-bottom:12px">📆 Monthly View — ${mLabel}</div>
         <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:12px;overflow:hidden">
-          <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;padding:10px">${dnHdr}${cells}</div>
+          <div class="monthly-calendar-grid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;padding:10px">${dnHdr}${cells}</div>
           <div style="padding:4px 12px 10px;display:flex;gap:14px;font-size:.66rem;color:rgba(237,242,247,0.35)">
             <span style="display:flex;align-items:center;gap:4px"><span style="width:8px;height:8px;border-radius:2px;background:rgba(239,68,68,0.4);display:inline-block"></span>Unavailable</span>
             <span style="display:flex;align-items:center;gap:4px"><span style="width:8px;height:8px;border-radius:2px;background:rgba(197,160,89,0.25);display:inline-block"></span>Today</span>
