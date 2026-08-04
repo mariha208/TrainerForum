@@ -249,6 +249,7 @@ window.isDayAvailable = function (avs, dayName, year, month, day) {
   const mStr = String(dObj.getMonth() + 1).padStart(2, '0');
   const dStr = String(dObj.getDate()).padStart(2, '0');
   const dateStr = `${yStr}-${mStr}-${dStr}`;
+  const unpaddedStr = `${yStr}-${dObj.getMonth() + 1}-${dObj.getDate()}`;
 
   const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   const dayOfWeek = (dayName && dayName.length === 3) ? dayName : DAYS[dObj.getDay()];
@@ -256,23 +257,29 @@ window.isDayAvailable = function (avs, dayName, year, month, day) {
   // 1. Check bookedDates ISO array (Orange / Booked status)
   const bookedDates = avs.bookedDates || avs.customBookedDates || avs.booked_dates;
   if (Array.isArray(bookedDates) && bookedDates.length > 0) {
-    if (bookedDates.includes(dateStr)) return 'booked';
+    if (bookedDates.includes(dateStr) || bookedDates.includes(unpaddedStr)) return 'booked';
   }
 
   // 2. Check customBlockedDates / blockedDates ISO array (Red / Blocked status)
-  const customBlocked = avs.customBlockedDates || avs.blockedDates || avs.blocked_dates;
+  const customBlocked = avs.customBlockedDates || avs.blockedDates || avs.blocked_dates || (avs.availability && (avs.availability.customBlockedDates || avs.availability.blockedDates));
   if (Array.isArray(customBlocked) && customBlocked.length > 0) {
-    if (customBlocked.includes(dateStr)) return false; // explicitly blocked
+    if (customBlocked.includes(dateStr) || customBlocked.includes(unpaddedStr)) return false; // explicitly blocked
   }
 
-  // 3. Check specific dates override
-  const spec = avs.specificDates || (avs.weeklyAvailability && avs.weeklyAvailability.specificDates);
-  if (spec && typeof spec === 'object') {
-    const k0 = `${year}-${month}-${day}`;
-    const k1 = `${year}-${month + 1}-${day}`;
-    if (typeof spec[k0] !== 'undefined') return !!spec[k0];
-    if (typeof spec[k1] !== 'undefined') return !!spec[k1];
-    if (typeof spec[dateStr] !== 'undefined') return !!spec[dateStr];
+  // 3. Check specific dates override (Object or Array)
+  const spec = avs.specificDates || (avs.availability && avs.availability.specificDates);
+  if (spec) {
+    if (typeof spec === 'object' && !Array.isArray(spec)) {
+      if (spec[dateStr] === false || spec[dateStr] === 'false' || spec[unpaddedStr] === false || spec[unpaddedStr] === 'false') {
+        return false; // Blocked
+      }
+      if (spec[dateStr] === true || spec[dateStr] === 'true' || spec[unpaddedStr] === true || spec[unpaddedStr] === 'true') {
+        return true; // Explicitly available
+      }
+    }
+    if (Array.isArray(spec) && (spec.includes(dateStr) || spec.includes(unpaddedStr))) {
+      return false; // Blocked
+    }
   }
 
   // 4. Check availableDays map (e.g. { monday: true, tuesday: false, ... })

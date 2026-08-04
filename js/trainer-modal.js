@@ -1351,12 +1351,16 @@ window.renderBPMCalendar = function () {
     const isSelected = d === state.selectedDay;
     const isPast = cellDate < new Date(today.getFullYear(), today.getMonth(), today.getDate());
 
-    // Dynamic day-of-week & customBlockedDates evaluation via isDayAvailable
+    // Dynamic day-of-week & customBlockedDates evaluation via isDayAvailable & isDateBlocked
     const available = typeof window.isDayAvailable === 'function'
       ? window.isDayAvailable(_bpmAvs, dayName, year, month, d)
       : (dayName !== 'Sat' && dayName !== 'Sun');
 
-    const isBlocked = (available === false || available === 'booked');
+    const explicitBlocked = typeof window.isDateBlocked === 'function'
+      ? window.isDateBlocked(cellDate, _bpmAvs)
+      : false;
+
+    const isBlocked = (available === false || available === 'booked' || explicitBlocked);
 
     let cls = 'bpm-cal-day';
     if (isPast) cls += ' other-month';
