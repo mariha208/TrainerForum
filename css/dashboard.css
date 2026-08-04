@@ -3825,8 +3825,10 @@ html.dark-mode .cal-day-cell.booked {
   color: #fcd34d !important;
 }
 
-html.dark-mode .cal-day-cell.unavailable {
-  color: #64748b !important;
+html.dark-mode .cal-day-cell.unavailable, .cal-day-cell.unavailable, .db-cal-day.unavailable {
+  background: rgba(239, 68, 68, 0.2) !important;
+  color: #f87171 !important;
+  border: 1px solid rgba(239, 68, 68, 0.35) !important;
 }
 
 html.dark-mode .cal-day-cell.today {

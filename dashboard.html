@@ -2775,11 +2775,25 @@
           // Re-render Availability & Calendar
           // DB values must win — explicitly overwrite cache availability fields
           // before calling _renderAvailabilitySettings so it reads fresh DB data.
-          if (freshUser.availability !== undefined) updatedCache.availability = freshUser.availability;
+          if (freshUser.availability !== undefined) {
+            var freshAvail = freshUser.availability;
+            if (typeof freshAvail === 'string') { try { freshAvail = JSON.parse(freshAvail); } catch(e){} }
+            updatedCache.availability = freshAvail || {};
+          }
           if (Array.isArray(freshUser.weeklyAvailability)) updatedCache.weeklyAvailability = freshUser.weeklyAvailability;
           if (freshUser.availableDays && typeof freshUser.availableDays === 'object') updatedCache.availableDays = freshUser.availableDays;
           if (Array.isArray(freshUser.blockedDates)) updatedCache.blockedDates = freshUser.blockedDates;
+          if (Array.isArray(freshUser.customBlockedDates)) updatedCache.customBlockedDates = freshUser.customBlockedDates;
           if (Array.isArray(freshUser.bookedDates)) updatedCache.bookedDates = freshUser.bookedDates;
+
+          // Ensure specificDates in availability is loaded from freshUser.availability.specificDates
+          if (updatedCache.availability && typeof updatedCache.availability === 'object') {
+            var spec = updatedCache.availability.specificDates;
+            if (typeof spec === 'string') { try { spec = JSON.parse(spec); } catch(e){} }
+            if (spec && typeof spec === 'object') {
+              updatedCache.availability.specificDates = spec;
+            }
+          }
           localStorage.setItem('currentTrainer', JSON.stringify(updatedCache));
 
           if (typeof _renderAvailabilitySettings === 'function') _renderAvailabilitySettings();
