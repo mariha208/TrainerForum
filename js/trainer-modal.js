@@ -801,20 +801,15 @@ function buildPremiumModal(t, isOwner = false) {
         const isoDate = `${y}-${m1}-${d1}`;
         const dateKey = `${y}-${m}-${d}`;
 
-        let isAvailable = _avMap[dk] !== false;
-        if (typeof _specificDates[isoDate] !== 'undefined') {
-          isAvailable = _specificDates[isoDate] !== false;
-        } else if (typeof _specificDates[dateKey] !== 'undefined') {
-          isAvailable = _specificDates[dateKey] !== false;
-        }
-
+        // Check EXCLUSIVELY if date exists in trainer's custom unavailable / blocked dates array or specificDates override
         const isExplicitBlocked = _blockedList.includes(isoDate) || 
+          (_specificDates && (_specificDates[isoDate] === false || _specificDates[dateKey] === false)) ||
           (typeof window.isDateBlocked === 'function' && window.isDateBlocked(cellDate, { blockedDates: _blockedList }));
 
-        const isBlocked = !isAvailable || isExplicitBlocked;
+        const isBlocked = !!isExplicitBlocked;
         const isToday = d === now.getDate() && m === now.getMonth() && y === now.getFullYear();
 
-        // Styling Rules matching Image 3:
+        // Styling Rules matching Image 2 & Image 3:
         // Unavailable/Blocked: dark-red background tint (rgba(239, 68, 68, 0.2)), light-red text (#f87171), strikethrough
         const bg = isBlocked ? 'rgba(239,68,68,0.2)' : (isToday ? 'rgba(197,160,89,0.22)' : 'rgba(255,255,255,0.04)');
         const bdr = isBlocked ? '1px solid rgba(239,68,68,0.4)' : (isToday ? '1.5px solid #C5A059' : '1px solid rgba(255,255,255,0.07)');
@@ -1398,7 +1393,7 @@ window.renderBPMCalendar = function () {
     // Dynamic day-of-week & customBlockedDates evaluation via isDayAvailable & isDateBlocked
     const available = typeof window.isDayAvailable === 'function'
       ? window.isDayAvailable(_bpmAvs, dayName, year, month, d)
-      : (dayName !== 'Sat' && dayName !== 'Sun');
+      : true;
 
     const explicitBlocked = typeof window.isDateBlocked === 'function'
       ? window.isDateBlocked(cellDate, _bpmAvs)

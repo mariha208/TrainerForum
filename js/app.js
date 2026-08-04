@@ -419,7 +419,7 @@ window.isDateBlocked = function (dateObj, availability) {
  */
 window.isDayAvailable = function (avs, dayName, year, month, day) {
   if (!avs) {
-    return dayName !== 'Sat' && dayName !== 'Sun';
+    return true;
   }
 
   // Parse if avs is JSON string
@@ -432,7 +432,7 @@ window.isDayAvailable = function (avs, dayName, year, month, day) {
       if (str.includes('everyday')) return true;
       if (str.includes('mon-fri') || str.includes('mon–fri')) return dayName !== 'Sat' && dayName !== 'Sun';
       if (str.includes(dayName.toLowerCase())) return true;
-      return dayName !== 'Sat' && dayName !== 'Sun';
+      return true;
     }
   }
 
@@ -517,7 +517,7 @@ window.isDayAvailable = function (avs, dayName, year, month, day) {
     }
   }
 
-  return dayOfWeek !== 'Sat' && dayOfWeek !== 'Sun';
+  return true;
 };
 
 /**
