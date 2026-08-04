@@ -6,22 +6,10 @@
 /* ── Page wrapper padding for fixed nav ── */
 .sp-page { padding-top: var(--nav, 70px); min-height: 100vh; }
 
-/* ── Breadcrumb ── */
+/* ── Breadcrumb — hidden: all pages share the single main navbar ── */
 .sp-breadcrumb {
-  padding: 14px 5%;
-  background: rgba(255,255,255,0.03);
-  border-bottom: 1px solid rgba(255,255,255,0.06);
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex-wrap: wrap;
-  font-size: .75rem;
-  color: var(--tm);
+  display: none;
 }
-.sp-breadcrumb a { color: var(--tm); text-decoration: none; transition: color .2s; }
-.sp-breadcrumb a:hover { color: var(--gold); }
-.sp-breadcrumb .bc-sep { color: rgba(255,255,255,0.2); font-size: .65rem; }
-.sp-breadcrumb .bc-cur { color: var(--gold); font-weight: 500; }
 
 /* ── Page Hero ── */
 .sp-hero {

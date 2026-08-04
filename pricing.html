@@ -28,20 +28,22 @@
       position: relative;
       overflow: hidden;
     }
+
     .pricing-hero::before {
       content: '';
       position: absolute;
       inset: 0;
       background:
-        radial-gradient(ellipse 60% 50% at 20% 80%, rgba(197,160,89,.18) 0%, transparent 70%),
-        radial-gradient(ellipse 50% 60% at 80% 20%, rgba(36,85,201,.15) 0%, transparent 70%);
+        radial-gradient(ellipse 60% 50% at 20% 80%, rgba(197, 160, 89, .18) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 60% at 80% 20%, rgba(36, 85, 201, .15) 0%, transparent 70%);
       pointer-events: none;
     }
+
     .pricing-hero .section-label {
       display: inline-block;
-      background: rgba(197,160,89,.12);
+      background: rgba(197, 160, 89, .12);
       color: #C5A059;
-      border: 1px solid rgba(197,160,89,.35);
+      border: 1px solid rgba(197, 160, 89, .35);
       font-size: .72rem;
       font-weight: 700;
       letter-spacing: .12em;
@@ -50,6 +52,7 @@
       border-radius: 999px;
       margin-bottom: 22px;
     }
+
     .pricing-hero h1 {
       font-family: 'Cormorant Garamond', serif;
       font-size: clamp(2.2rem, 5vw, 3.4rem);
@@ -58,10 +61,14 @@
       line-height: 1.2;
       margin-bottom: 16px;
     }
-    .pricing-hero h1 span { color: #C5A059; }
+
+    .pricing-hero h1 span {
+      color: #C5A059;
+    }
+
     .pricing-hero p {
       font-size: 1.05rem;
-      color: rgba(255,255,255,.6);
+      color: rgba(255, 255, 255, .6);
       max-width: 520px;
       margin: 0 auto;
     }
@@ -86,37 +93,40 @@
     .pc {
       background: #fff;
       border-radius: 22px;
-      border: 1.5px solid rgba(11,27,50,.09);
-      box-shadow: 0 4px 24px rgba(11,27,50,.07);
+      border: 1.5px solid rgba(11, 27, 50, .09);
+      box-shadow: 0 4px 24px rgba(11, 27, 50, .07);
       padding: 40px 32px 32px;
       display: flex;
       flex-direction: column;
       position: relative;
-      transition: transform .35s cubic-bezier(.34,1.56,.64,1), box-shadow .3s ease;
+      transition: transform .35s cubic-bezier(.34, 1.56, .64, 1), box-shadow .3s ease;
     }
+
     .pc:hover {
       transform: translateY(-10px);
-      box-shadow: 0 20px 56px rgba(11,27,50,.13);
+      box-shadow: 0 20px 56px rgba(11, 27, 50, .13);
     }
 
     /* ── Featured card (Professional) ── */
     .pc.featured {
       background: linear-gradient(150deg, #0b2040 0%, #0e2d52 60%, #071428 100%);
-      border-color: rgba(197,160,89,.4);
-      box-shadow: 0 8px 40px rgba(0,0,0,.28), 0 0 0 1px rgba(197,160,89,.2);
+      border-color: rgba(197, 160, 89, .4);
+      box-shadow: 0 8px 40px rgba(0, 0, 0, .28), 0 0 0 1px rgba(197, 160, 89, .2);
     }
+
     .pc.featured:hover {
-      box-shadow: 0 24px 64px rgba(0,0,0,.38), 0 0 32px rgba(197,160,89,.2);
+      box-shadow: 0 24px 64px rgba(0, 0, 0, .38), 0 0 32px rgba(197, 160, 89, .2);
     }
 
     /* ── Elite card ── */
     .pc.elite {
       background: linear-gradient(150deg, #111827 0%, #1a2336 60%, #0d1420 100%);
-      border-color: rgba(197,160,89,.25);
-      box-shadow: 0 6px 32px rgba(0,0,0,.2);
+      border-color: rgba(197, 160, 89, .25);
+      box-shadow: 0 6px 32px rgba(0, 0, 0, .2);
     }
+
     .pc.elite:hover {
-      box-shadow: 0 20px 60px rgba(0,0,0,.32), 0 0 24px rgba(197,160,89,.12);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, .32), 0 0 24px rgba(197, 160, 89, .12);
     }
 
     /* ── Plan Badge (Popular / Best Seller) ── */
@@ -132,12 +142,14 @@
       padding: 5px 18px;
       border-radius: 999px;
       white-space: nowrap;
-      box-shadow: 0 4px 16px rgba(197,160,89,.35);
+      box-shadow: 0 4px 16px rgba(197, 160, 89, .35);
     }
+
     .pc-badge.popular {
       background: linear-gradient(90deg, #C5A059, #F5C842);
       color: #0D1117;
     }
+
     .pc-badge.bestseller {
       background: linear-gradient(90deg, #C5A059, #e8b84b);
       color: #0D1117;
@@ -152,9 +164,18 @@
       margin-bottom: 10px;
       margin-top: 8px;
     }
-    .pc .pc-label        { color: rgba(11,27,50,.45); }
-    .pc.featured .pc-label { color: rgba(197,160,89,.7); }
-    .pc.elite .pc-label  { color: rgba(197,160,89,.6); }
+
+    .pc .pc-label {
+      color: rgba(11, 27, 50, .45);
+    }
+
+    .pc.featured .pc-label {
+      color: rgba(197, 160, 89, .7);
+    }
+
+    .pc.elite .pc-label {
+      color: rgba(197, 160, 89, .6);
+    }
 
     /* ── Price ── */
     .pc-price {
@@ -164,35 +185,71 @@
       line-height: 1;
       margin-bottom: 4px;
     }
-    .pc .pc-price        { color: #0B1B32; }
-    .pc.featured .pc-price { color: #fff; }
-    .pc.elite .pc-price  { color: #fff; }
+
+    .pc .pc-price {
+      color: #0B1B32;
+    }
+
+    .pc.featured .pc-price {
+      color: #fff;
+    }
+
+    .pc.elite .pc-price {
+      color: #fff;
+    }
 
     .pc-price-sub {
       font-size: .88rem;
       font-weight: 400;
     }
-    .pc .pc-price-sub        { color: rgba(11,27,50,.45); }
-    .pc.featured .pc-price-sub { color: rgba(255,255,255,.55); }
-    .pc.elite .pc-price-sub  { color: rgba(255,255,255,.5); }
+
+    .pc .pc-price-sub {
+      color: rgba(11, 27, 50, .45);
+    }
+
+    .pc.featured .pc-price-sub {
+      color: rgba(255, 255, 255, .55);
+    }
+
+    .pc.elite .pc-price-sub {
+      color: rgba(255, 255, 255, .5);
+    }
 
     /* ── Plan tagline ── */
     .pc-tagline {
       font-size: .82rem;
       margin: 10px 0 24px;
     }
-    .pc .pc-tagline        { color: rgba(11,27,50,.5); }
-    .pc.featured .pc-tagline { color: rgba(255,255,255,.55); }
-    .pc.elite .pc-tagline  { color: rgba(255,255,255,.5); }
+
+    .pc .pc-tagline {
+      color: rgba(11, 27, 50, .5);
+    }
+
+    .pc.featured .pc-tagline {
+      color: rgba(255, 255, 255, .55);
+    }
+
+    .pc.elite .pc-tagline {
+      color: rgba(255, 255, 255, .5);
+    }
 
     /* ── Divider ── */
     .pc-divider {
       height: 1px;
       margin-bottom: 20px;
     }
-    .pc .pc-divider        { background: rgba(11,27,50,.07); }
-    .pc.featured .pc-divider { background: rgba(255,255,255,.1); }
-    .pc.elite .pc-divider  { background: rgba(255,255,255,.08); }
+
+    .pc .pc-divider {
+      background: rgba(11, 27, 50, .07);
+    }
+
+    .pc.featured .pc-divider {
+      background: rgba(255, 255, 255, .1);
+    }
+
+    .pc.elite .pc-divider {
+      background: rgba(255, 255, 255, .08);
+    }
 
     /* ── Feature list ── */
     .pc-features {
@@ -204,6 +261,7 @@
       gap: 10px;
       flex: 1;
     }
+
     .pc-features li {
       display: flex;
       align-items: flex-start;
@@ -211,9 +269,18 @@
       font-size: .84rem;
       line-height: 1.45;
     }
-    .pc .pc-features li        { color: rgba(11,27,50,.75); }
-    .pc.featured .pc-features li { color: rgba(255,255,255,.88); }
-    .pc.elite .pc-features li  { color: rgba(255,255,255,.82); }
+
+    .pc .pc-features li {
+      color: rgba(11, 27, 50, .75);
+    }
+
+    .pc.featured .pc-features li {
+      color: rgba(255, 255, 255, .88);
+    }
+
+    .pc.elite .pc-features li {
+      color: rgba(255, 255, 255, .82);
+    }
 
     .pc-features li .pf-icon {
       flex-shrink: 0;
@@ -226,9 +293,21 @@
       justify-content: center;
       font-size: .62rem;
     }
-    .pc .pf-icon        { background: rgba(16,185,129,.15); color: #10b981; }
-    .pc.featured .pf-icon { background: rgba(197,160,89,.2); color: #C5A059; }
-    .pc.elite .pf-icon  { background: rgba(197,160,89,.18); color: #C5A059; }
+
+    .pc .pf-icon {
+      background: rgba(16, 185, 129, .15);
+      color: #10b981;
+    }
+
+    .pc.featured .pf-icon {
+      background: rgba(197, 160, 89, .2);
+      color: #C5A059;
+    }
+
+    .pc.elite .pf-icon {
+      background: rgba(197, 160, 89, .18);
+      color: #C5A059;
+    }
 
     /* ── CTA Button ── */
     .pc-cta {
@@ -245,32 +324,38 @@
       text-align: center;
       margin-top: auto;
     }
+
     .pc-cta.outline {
       background: transparent;
-      border: 1.5px solid rgba(11,27,50,.2);
+      border: 1.5px solid rgba(11, 27, 50, .2);
       color: #0B1B32;
     }
+
     .pc-cta.outline:hover {
-      background: rgba(11,27,50,.06);
-      border-color: rgba(11,27,50,.35);
+      background: rgba(11, 27, 50, .06);
+      border-color: rgba(11, 27, 50, .35);
     }
+
     .pc-cta.gold {
       background: linear-gradient(90deg, #C5A059, #F5C842);
       color: #0D1117;
-      box-shadow: 0 4px 18px rgba(197,160,89,.4);
+      box-shadow: 0 4px 18px rgba(197, 160, 89, .4);
     }
+
     .pc-cta.gold:hover {
-      box-shadow: 0 8px 28px rgba(197,160,89,.55);
+      box-shadow: 0 8px 28px rgba(197, 160, 89, .55);
       transform: translateY(-1px);
     }
+
     .pc-cta.dark {
       background: linear-gradient(135deg, #1a2d4a, #0B1B32);
       color: #fff;
-      border: 1px solid rgba(197,160,89,.25);
+      border: 1px solid rgba(197, 160, 89, .25);
     }
+
     .pc-cta.dark:hover {
       background: linear-gradient(135deg, #243d62, #122644);
-      box-shadow: 0 6px 22px rgba(0,0,0,.28);
+      box-shadow: 0 6px 22px rgba(0, 0, 0, .28);
     }
 
     /* ═══ COMPARISON TABLE ═══ */
@@ -279,8 +364,9 @@
       margin: 0 auto 80px;
       overflow-x: auto;
       border-radius: 18px;
-      box-shadow: 0 6px 32px rgba(11,27,50,.08);
+      box-shadow: 0 6px 32px rgba(11, 27, 50, .08);
     }
+
     .pricing-table {
       width: 100%;
       border-collapse: collapse;
@@ -289,7 +375,11 @@
       border-radius: 18px;
       overflow: hidden;
     }
-    .pricing-table thead tr { background: #f5f0e8; }
+
+    .pricing-table thead tr {
+      background: #f5f0e8;
+    }
+
     .pricing-table th {
       padding: 22px 24px;
       font-size: .82rem;
@@ -297,42 +387,75 @@
       letter-spacing: .04em;
       text-transform: uppercase;
       color: #0B1B32;
-      border-bottom: 2px solid rgba(11,27,50,.07);
+      border-bottom: 2px solid rgba(11, 27, 50, .07);
     }
-    .pricing-table th.gold-col { color: #C5A059; }
-    .pricing-table th:not(:first-child) { text-align: center; }
+
+    .pricing-table th.gold-col {
+      color: #C5A059;
+    }
+
+    .pricing-table th:not(:first-child) {
+      text-align: center;
+    }
+
     .pricing-table td {
       padding: 15px 24px;
       font-size: .84rem;
-      color: rgba(11,27,50,.7);
-      border-bottom: 1px solid rgba(11,27,50,.05);
+      color: rgba(11, 27, 50, .7);
+      border-bottom: 1px solid rgba(11, 27, 50, .05);
     }
-    .pricing-table td:not(:first-child) { text-align: center; }
-    .pricing-table tbody tr:nth-child(even) { background: rgba(11,27,50,.018); }
-    .pricing-table tbody tr:hover { background: rgba(197,160,89,.05); }
-    .pricing-table td.dim { color: rgba(11,27,50,.35); }
-    .pricing-table td.highlight { color: #C5A059; font-weight: 600; }
-    .pricing-table td.std { color: rgba(11,27,50,.75); font-weight: 500; }
+
+    .pricing-table td:not(:first-child) {
+      text-align: center;
+    }
+
+    .pricing-table tbody tr:nth-child(even) {
+      background: rgba(11, 27, 50, .018);
+    }
+
+    .pricing-table tbody tr:hover {
+      background: rgba(197, 160, 89, .05);
+    }
+
+    .pricing-table td.dim {
+      color: rgba(11, 27, 50, .35);
+    }
+
+    .pricing-table td.highlight {
+      color: #C5A059;
+      font-weight: 600;
+    }
+
+    .pricing-table td.std {
+      color: rgba(11, 27, 50, .75);
+      font-weight: 500;
+    }
 
     /* ═══ FAQ ═══ */
     .pricing-faq-wrap {
       max-width: 700px;
       margin: 0 auto;
     }
+
     .pricing-faq-wrap .section-title {
       text-align: center;
       margin-bottom: 36px;
       font-size: 1.8rem;
     }
+
     .faq-item {
       background: #fff;
       border-radius: 14px;
-      border: 1px solid rgba(11,27,50,.07);
+      border: 1px solid rgba(11, 27, 50, .07);
       margin-bottom: 12px;
       overflow: hidden;
       transition: box-shadow .2s;
     }
-    .faq-item:hover { box-shadow: 0 4px 20px rgba(11,27,50,.08); }
+
+    .faq-item:hover {
+      box-shadow: 0 4px 20px rgba(11, 27, 50, .08);
+    }
+
     .faq-q {
       padding: 18px 22px;
       font-size: .9rem;
@@ -345,22 +468,30 @@
       gap: 12px;
       user-select: none;
     }
+
     .faq-arrow {
       color: #C5A059;
       font-size: .75rem;
       transition: transform .25s;
       flex-shrink: 0;
     }
+
     .faq-a {
       display: none;
       padding: 0 22px 18px;
       font-size: .85rem;
-      color: rgba(11,27,50,.6);
+      color: rgba(11, 27, 50, .6);
       line-height: 1.65;
-      border-top: 1px solid rgba(11,27,50,.05);
+      border-top: 1px solid rgba(11, 27, 50, .05);
     }
-    .faq-item.open .faq-a { display: block; }
-    .faq-item.open .faq-arrow { transform: rotate(180deg); }
+
+    .faq-item.open .faq-a {
+      display: block;
+    }
+
+    .faq-item.open .faq-arrow {
+      transform: rotate(180deg);
+    }
 
     /* ═══ CTA BAND ═══ */
     .cta-band {
@@ -370,25 +501,29 @@
       position: relative;
       overflow: hidden;
     }
+
     .cta-band::before {
       content: '';
       position: absolute;
       inset: 0;
-      background: radial-gradient(ellipse 80% 80% at 50% 50%, rgba(197,160,89,.1) 0%, transparent 70%);
+      background: radial-gradient(ellipse 80% 80% at 50% 50%, rgba(197, 160, 89, .1) 0%, transparent 70%);
       pointer-events: none;
     }
+
     .cta-band h2 {
       font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(1.8rem,4vw,2.8rem);
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
       color: #fff;
       font-weight: 700;
       margin-bottom: 12px;
     }
+
     .cta-band p {
       font-size: .95rem;
-      color: rgba(255,255,255,.6);
+      color: rgba(255, 255, 255, .6);
       margin-bottom: 32px;
     }
+
     .cta-band .cta-btns {
       display: flex;
       gap: 14px;
@@ -397,13 +532,24 @@
     }
 
     /* Section title helper */
-    .pricing-section .section-title { color: #0B1B32; }
-    .pricing-section .section-title .a { color: #C5A059; }
+    .pricing-section .section-title {
+      color: #0B1B32;
+    }
+
+    .pricing-section .section-title .a {
+      color: #C5A059;
+    }
 
     /* ── Responsive ── */
     @media (max-width: 768px) {
-      .pricing-grid { grid-template-columns: 1fr; max-width: 480px; }
-      .pc { padding: 36px 24px 28px; }
+      .pricing-grid {
+        grid-template-columns: 1fr;
+        max-width: 480px;
+      }
+
+      .pc {
+        padding: 36px 24px 28px;
+      }
     }
   </style>
 </head>
@@ -413,23 +559,30 @@
   <!-- ═══ NAVBAR ═══ -->
   <nav id="nav">
     <a class="logo" href="index.html">
-      <img src="img/logo.svg" alt="World Trainer Forum Logo" class="logo-nav-img">World Trainer <span class="g">Forum</span>
+      <img src="img/logo.svg" alt="World Trainer Forum Logo" class="logo-nav-img">World Trainer <span
+        class="g">Forum</span>
     </a>
     <ul class="nav-links">
       <li><a id="nl-home" href="index.html">Home</a></li>
       <li><a id="nl-about" href="about.html">About</a></li>
       <li><a id="nl-browse" href="find-trainers.html">Find Trainers</a></li>
       <li><a id="nl-cats" href="certificates.html">Certificates</a></li>
-      <li><a id="nl-pricing" href="news-events.html" class="active">News &amp; Events</a></li>
+      <li><a id="nl-pricing" href="news-events.html">News &amp; Events</a></li>
       <li><a id="nl-blog" href="blog.html">Blog</a></li>
       <li><a id="nl-contact" href="contact.html">Contact</a></li>
       <li><a id="nl-dash" href="dashboard.html" target="_blank" style="display:none;">Dashboard</a></li>
     </ul>
     <div class="nav-r">
-      <button class="notif-btn" id="notif-btn" onclick="toggleNotif()"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg><span class="notif-dot"></span></button>
+      <button class="notif-btn" id="notif-btn" onclick="toggleNotif()"><svg xmlns="http://www.w3.org/2000/svg"
+          width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+        </svg><span class="notif-dot"></span></button>
       <button class="btn btn-ghost btn-sm" id="btn-signup" onclick="openModal('register')">Sign Up</button>
       <button class="btn btn-gold btn-sm" id="btn-login" onclick="openModal('login')">Log In</button>
-      <button class="btn btn-dark btn-sm" id="btn-logout" onclick="handleLogout()" style="display:none;">Log Out</button>
+      <button class="btn btn-dark btn-sm" id="btn-logout" onclick="handleLogout()" style="display:none;">Log
+        Out</button>
     </div>
   </nav>
 
@@ -471,16 +624,20 @@
         <ul class="pc-features">
           <li><span class="pf-icon"><i class="fa-solid fa-check"></i></span>Professional Dashboard Access</li>
           <li><span class="pf-icon"><i class="fa-solid fa-check"></i></span>Priority Event Updates</li>
-          <li><span class="pf-icon"><i class="fa-solid fa-check"></i></span>20% Discount on All WTF Trainings &amp; Workshops</li>
+          <li><span class="pf-icon"><i class="fa-solid fa-check"></i></span>20% Discount on All WTF Trainings &amp;
+            Workshops</li>
           <li><span class="pf-icon"><i class="fa-solid fa-check"></i></span>Trainer Support &amp; Guidance</li>
-          <li><span class="pf-icon"><i class="fa-solid fa-check"></i></span>Corporate Training Opportunity Referrals</li>
+          <li><span class="pf-icon"><i class="fa-solid fa-check"></i></span>Corporate Training Opportunity Referrals
+          </li>
           <li><span class="pf-icon"><i class="fa-solid fa-check"></i></span>Business Profile Promotion</li>
           <li><span class="pf-icon"><i class="fa-solid fa-check"></i></span>Access to Premium Networking Events</li>
           <li><span class="pf-icon"><i class="fa-solid fa-check"></i></span>Trainer Resource Library</li>
           <li><span class="pf-icon"><i class="fa-solid fa-check"></i></span>Member Verification Badge</li>
           <li><span class="pf-icon"><i class="fa-solid fa-check"></i></span>Dedicated Support Team</li>
-          <li><span class="pf-icon"><i class="fa-solid fa-check"></i></span>Speaking Opportunities in Community Events</li>
-          <li><span class="pf-icon"><i class="fa-solid fa-check"></i></span>Collaboration Opportunities with Other Trainers</li>
+          <li><span class="pf-icon"><i class="fa-solid fa-check"></i></span>Speaking Opportunities in Community Events
+          </li>
+          <li><span class="pf-icon"><i class="fa-solid fa-check"></i></span>Collaboration Opportunities with Other
+            Trainers</li>
         </ul>
         <button class="pc-cta gold" onclick="openModal('register-trainer')">Choose Plan</button>
       </div>
@@ -496,7 +653,8 @@
           <li><span class="pf-icon"><i class="fa-solid fa-check"></i></span>Premium Elite Badge &amp; Recognition</li>
           <li><span class="pf-icon"><i class="fa-solid fa-check"></i></span>Priority Corporate Training Referrals</li>
           <li><span class="pf-icon"><i class="fa-solid fa-check"></i></span>Personal Branding Support</li>
-          <li><span class="pf-icon"><i class="fa-solid fa-check"></i></span>Featured Listing on Website &amp; Directory</li>
+          <li><span class="pf-icon"><i class="fa-solid fa-check"></i></span>Featured Listing on Website &amp; Directory
+          </li>
           <li><span class="pf-icon"><i class="fa-solid fa-check"></i></span>Exclusive Elite Mastermind Sessions</li>
           <li><span class="pf-icon"><i class="fa-solid fa-check"></i></span>Event Speaking Priority</li>
           <li><span class="pf-icon"><i class="fa-solid fa-check"></i></span>Trainer Portfolio Development Support</li>
@@ -505,7 +663,8 @@
           <li><span class="pf-icon"><i class="fa-solid fa-check"></i></span>Strategic Partnership Opportunities</li>
           <li><span class="pf-icon"><i class="fa-solid fa-check"></i></span>Exclusive VIP Networking Events</li>
           <li><span class="pf-icon"><i class="fa-solid fa-check"></i></span>Special Recognition at Major Events</li>
-          <li><span class="pf-icon"><i class="fa-solid fa-check"></i></span>Early Access to All Programs &amp; Certifications</li>
+          <li><span class="pf-icon"><i class="fa-solid fa-check"></i></span>Early Access to All Programs &amp;
+            Certifications</li>
           <li><span class="pf-icon"><i class="fa-solid fa-check"></i></span>Dedicated Relationship Manager</li>
           <li><span class="pf-icon"><i class="fa-solid fa-check"></i></span>Maximum Visibility Across WTF Platforms</li>
         </ul>
@@ -516,7 +675,8 @@
 
     <!-- ── Comparison Table ── -->
     <div class="pricing-table-wrap">
-      <h2 class="section-title" style="text-align:center;margin-bottom:32px;padding-top:8px">Compare <span class="a">Memberships</span></h2>
+      <h2 class="section-title" style="text-align:center;margin-bottom:32px;padding-top:8px">Compare <span
+          class="a">Memberships</span></h2>
       <table class="pricing-table">
         <thead>
           <tr>
@@ -583,24 +743,32 @@
     <div class="pricing-faq-wrap">
       <h2 class="section-title">Frequently Asked <span class="a">Questions</span></h2>
       <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">Is there a free trial for the Professional plan? <span class="faq-arrow">▼</span></div>
-        <div class="faq-a">Yes! 14 days free on the Professional plan — no credit card required. After the trial, subscribe or downgrade to the free Starter plan.</div>
+        <div class="faq-q" onclick="toggleFaq(this)">Is there a free trial for the Professional plan? <span
+            class="faq-arrow">▼</span></div>
+        <div class="faq-a">Yes! 14 days free on the Professional plan — no credit card required. After the trial,
+          subscribe or downgrade to the free Starter plan.</div>
       </div>
       <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">How does the commission work? <span class="faq-arrow">▼</span></div>
-        <div class="faq-a">We charge a percentage of each completed booking — 20% on Starter and 12% on Professional. Enterprise clients negotiate custom rates. No hidden fees.</div>
+        <div class="faq-q" onclick="toggleFaq(this)">How does the commission work? <span class="faq-arrow">▼</span>
+        </div>
+        <div class="faq-a">We charge a percentage of each completed booking — 20% on Starter and 12% on Professional.
+          Enterprise clients negotiate custom rates. No hidden fees.</div>
       </div>
       <div class="faq-item">
         <div class="faq-q" onclick="toggleFaq(this)">When do I receive my payout? <span class="faq-arrow">▼</span></div>
-        <div class="faq-a">Payouts are processed within 48 hours of session completion directly to your bank account via Razorpay. International payouts via Stripe take 7–10 business days.</div>
+        <div class="faq-a">Payouts are processed within 48 hours of session completion directly to your bank account via
+          Razorpay. International payouts via Stripe take 7–10 business days.</div>
       </div>
       <div class="faq-item">
         <div class="faq-q" onclick="toggleFaq(this)">Can I cancel anytime? <span class="faq-arrow">▼</span></div>
-        <div class="faq-a">Yes. Cancel the Professional plan at any time. Your profile reverts to the free Starter plan and all data, reviews, and bookings are preserved.</div>
+        <div class="faq-a">Yes. Cancel the Professional plan at any time. Your profile reverts to the free Starter plan
+          and all data, reviews, and bookings are preserved.</div>
       </div>
       <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">Is World Trainer Forum available for corporate clients? <span class="faq-arrow">▼</span></div>
-        <div class="faq-a">Yes! Organisations can book multiple trainers, manage team-wide training, and get dedicated GST-compliant invoicing. Contact our sales team for enterprise pricing.</div>
+        <div class="faq-q" onclick="toggleFaq(this)">Is World Trainer Forum available for corporate clients? <span
+            class="faq-arrow">▼</span></div>
+        <div class="faq-a">Yes! Organisations can book multiple trainers, manage team-wide training, and get dedicated
+          GST-compliant invoicing. Contact our sales team for enterprise pricing.</div>
       </div>
     </div>
 
@@ -628,7 +796,8 @@
             <img src="img/logo.svg" alt="World Trainer Forum Logo">
             <span>World Trainer <span class="g">Forum</span></span>
           </a>
-          <p class="footer-tagline">Connecting organizations with world-class trainers, coaches, mentors, and speakers worldwide.</p>
+          <p class="footer-tagline">Connecting organizations with world-class trainers, coaches, mentors, and speakers
+            worldwide.</p>
           <ul class="footer-trust-list">
             <li><i class="fa-solid fa-circle-check"></i> Verified Trainers</li>
             <li><i class="fa-solid fa-globe"></i> Global Community</li>
@@ -637,17 +806,25 @@
             <li><i class="fa-solid fa-headset"></i> 24/7 Support</li>
           </ul>
           <div class="footer-stats">
-            <div class="footer-stat-card"><i class="fa-solid fa-users"></i><span class="fsc-num">50K+</span><span class="fsc-lbl">Trainers</span></div>
-            <div class="footer-stat-card"><i class="fa-solid fa-earth-asia"></i><span class="fsc-num">120+</span><span class="fsc-lbl">Countries</span></div>
-            <div class="footer-stat-card"><i class="fa-solid fa-graduation-cap"></i><span class="fsc-num">1M+</span><span class="fsc-lbl">Learners</span></div>
-            <div class="footer-stat-card"><i class="fa-solid fa-calendar-check"></i><span class="fsc-num">10K+</span><span class="fsc-lbl">Sessions</span></div>
+            <div class="footer-stat-card"><i class="fa-solid fa-users"></i><span class="fsc-num">50K+</span><span
+                class="fsc-lbl">Trainers</span></div>
+            <div class="footer-stat-card"><i class="fa-solid fa-earth-asia"></i><span class="fsc-num">120+</span><span
+                class="fsc-lbl">Countries</span></div>
+            <div class="footer-stat-card"><i class="fa-solid fa-graduation-cap"></i><span
+                class="fsc-num">1M+</span><span class="fsc-lbl">Learners</span></div>
+            <div class="footer-stat-card"><i class="fa-solid fa-calendar-check"></i><span
+                class="fsc-num">10K+</span><span class="fsc-lbl">Sessions</span></div>
           </div>
           <div class="footer-social">
-            <a href="#" class="fsoc-btn" aria-label="LinkedIn" title="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
-            <a href="#" class="fsoc-btn" aria-label="Facebook" title="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
-            <a href="#" class="fsoc-btn" aria-label="Instagram" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
+            <a href="#" class="fsoc-btn" aria-label="LinkedIn" title="LinkedIn"><i
+                class="fa-brands fa-linkedin-in"></i></a>
+            <a href="#" class="fsoc-btn" aria-label="Facebook" title="Facebook"><i
+                class="fa-brands fa-facebook-f"></i></a>
+            <a href="#" class="fsoc-btn" aria-label="Instagram" title="Instagram"><i
+                class="fa-brands fa-instagram"></i></a>
             <a href="#" class="fsoc-btn" aria-label="YouTube" title="YouTube"><i class="fa-brands fa-youtube"></i></a>
-            <a href="#" class="fsoc-btn" aria-label="X / Twitter" title="X / Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+            <a href="#" class="fsoc-btn" aria-label="X / Twitter" title="X / Twitter"><i
+                class="fa-brands fa-x-twitter"></i></a>
           </div>
         </div>
 
@@ -714,7 +891,8 @@
             <form class="fnl-form" onsubmit="return false;">
               <div class="fnl-input-wrap">
                 <i class="fa-regular fa-envelope fnl-input-ico"></i>
-                <input type="email" class="fnl-input" placeholder="Your email address" aria-label="Email for newsletter">
+                <input type="email" class="fnl-input" placeholder="Your email address"
+                  aria-label="Email for newsletter">
                 <button type="submit" class="fnl-btn">Subscribe</button>
               </div>
             </form>
