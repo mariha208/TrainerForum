@@ -3825,8 +3825,14 @@ html.dark-mode .cal-day-cell.booked {
   color: #fcd34d !important;
 }
 
-.calendar-day-box.unavailable, html.dark-mode .calendar-day-box.unavailable, html.dark-mode .cal-day-cell.unavailable, .cal-day-cell.unavailable, .db-cal-day.unavailable {
-  background-color: rgba(239, 68, 68, 0.2) !important;
+.calendar-day-box.unavailable,
+.calendar-cell.unavailable,
+html.dark-mode .calendar-day-box.unavailable,
+html.dark-mode .calendar-cell.unavailable,
+html.dark-mode .cal-day-cell.unavailable,
+.cal-day-cell.unavailable,
+.db-cal-day.unavailable {
+  background-color: rgba(239, 68, 68, 0.25) !important;
   border: 1px solid #ef4444 !important;
   color: #ef4444 !important;
 }

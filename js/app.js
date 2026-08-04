@@ -140,6 +140,60 @@ window.formatAvailability        = window.formatTrainerAvailability;
 window.getAvailabilityPillText   = window.formatTrainerAvailability;
 
 /**
+ * Shared Date Evaluation Helper: isDateBlocked(dateObj, availability)
+ * Evaluates whether a specific Date is blocked/unavailable.
+ * Returns true if blocked, false if available.
+ */
+window.isDateBlocked = function (dateObj, availability) {
+  if (!availability) return false;
+
+  // 1. Format date into local YYYY-MM-DD string
+  const year = dateObj.getFullYear();
+  const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+  const day = String(dateObj.getDate()).padStart(2, '0');
+  const dateStr = `${year}-${month}-${day}`;
+
+  // 2. Check specificDates (Object or Array)
+  const specific = availability.specificDates || (availability.availability && availability.availability.specificDates);
+  if (specific) {
+    if (typeof specific === 'object' && !Array.isArray(specific)) {
+      if (specific[dateStr] === false || specific[dateStr] === 'false') return true;
+      if (specific[dateStr] === true || specific[dateStr] === 'true') return false;
+    }
+    if (Array.isArray(specific) && specific.includes(dateStr)) return true;
+  }
+
+  // 3. Check customBlockedDates / blockedDates array
+  const customBlocked = availability.customBlockedDates || availability.blockedDates || (availability.availability && (availability.availability.customBlockedDates || availability.availability.blockedDates));
+  if (Array.isArray(customBlocked) && customBlocked.includes(dateStr)) return true;
+
+  // 4. Fallback to weekly schedule check
+  const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const dayName = dayNames[dateObj.getDay()];
+
+  if (typeof document !== 'undefined') {
+    const cont = document.getElementById('weekly-hours-container');
+    if (cont) {
+      const matchRow = cont.querySelector('.avail-row[data-day="' + dayName + '"]');
+      if (matchRow) {
+        const toggleEl = matchRow.querySelector('.avail-toggle');
+        if (toggleEl && !toggleEl.checked) return true;
+      }
+    }
+  }
+
+  const weekly = availability.weeklySchedule || availability.weeklyAvailability || availability;
+  const dayConfig = availability[dayName] || (weekly && (weekly[dayName] || (Array.isArray(weekly) && weekly.find(w => w && (w.day === dayName || String(w.day).substring(0,3) === dayName)))));
+
+  if (dayConfig) {
+    if (dayConfig.enabled === false || dayConfig.available === false) return true;
+    if (dayConfig.enabled === true || dayConfig.available === true) return false;
+  }
+
+  return dayName === 'Sat' || dayName === 'Sun';
+};
+
+/**
  * Dynamic day-of-week evaluation helper.
  * Evaluates whether a given date is available based on:
  *   0. blockedDates ISO array from MongoDB (highest priority — always blocks)
