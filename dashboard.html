@@ -2083,7 +2083,12 @@
       window._getAvailability = function() { return avs; };
       window.toast && window.toast('Saving to database...', 1500);
 
-      var origin = window.SERVER_ORIGIN || 'https://trainerforum.onrender.com';
+      var token = (session && session.token) || localStorage.getItem('token') || '';
+      var headers = { 'Content-Type': 'application/json' };
+      if (token) headers['Authorization'] = 'Bearer ' + token;
+
+      console.log('[AvailSync] Saving availability to MongoDB...', { customBlockedDates: blockedDates, weeklySchedule: weeklyAvailability });
+
       var _apiPayload = JSON.stringify({
         trainerId: _tid,
         email: _email,
@@ -2098,7 +2103,7 @@
 
       var primaryPromise = fetch(origin + '/api/trainer/availability', {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: headers,
         body: _apiPayload
       });
 
@@ -2106,7 +2111,7 @@
       if (targetIdOrEmail && targetIdOrEmail !== '1') {
         fetch(origin + '/api/users/' + targetIdOrEmail + '/availability', {
           method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
+          headers: headers,
           body: _apiPayload
         }).catch(function() {});
       }
@@ -2284,22 +2289,29 @@
     function _dbCalPrev() { if (--_dbCalMonth < 0) { _dbCalMonth = 11; _dbCalYear--; } renderDashboardCalendar(); }
     function _dbCalNext() { if (++_dbCalMonth > 11) { _dbCalMonth = 0; _dbCalYear++; } renderDashboardCalendar(); }
 
-    window.toggleSpecificDate = function (y, m, d) {
+    window.toggleSpecificDate = function (y, m, d, e) {
+      if (e) {
+        if (typeof e.stopPropagation === 'function') e.stopPropagation();
+        if (e.type === 'touchstart' && e.cancelable) e.preventDefault();
+      }
       var cache = JSON.parse(localStorage.getItem('currentTrainer')) || {};
       var m1 = String(m + 1).padStart(2, '0');
       var d1 = String(d).padStart(2, '0');
       var isoDate = y + '-' + m1 + '-' + d1;
 
-      var blocked = Array.isArray(cache.blockedDates) ? cache.blockedDates.slice() : [];
+      var blocked = Array.isArray(cache.blockedDates) ? cache.blockedDates.slice() : (Array.isArray(cache.customBlockedDates) ? cache.customBlockedDates.slice() : []);
       var idx = blocked.indexOf(isoDate);
 
       if (idx !== -1) {
         blocked.splice(idx, 1); // Unblock
+        console.log('[BlockedDate] Unblocked date:', isoDate, 'Current list:', blocked);
       } else {
         blocked.push(isoDate); // Block
+        console.log('[BlockedDate] Blocked date:', isoDate, 'Current list:', blocked);
       }
 
       cache.blockedDates = Array.from(new Set(blocked));
+      cache.customBlockedDates = cache.blockedDates;
       localStorage.setItem('currentTrainer', JSON.stringify(cache));
 
       // Re-render calendar preview immediately (no save toast)
@@ -2310,6 +2322,10 @@
       var _tid = (session && (session._id || session.id)) || cache._id || cache.id || cache.trainerId || null;
       var _email = (session && session.email) || cache.email || null;
       if (!_tid && !_email) return; // no auth — skip network request
+
+      var token = (session && session.token) || localStorage.getItem('token') || '';
+      var headers = { 'Content-Type': 'application/json' };
+      if (token) headers['Authorization'] = 'Bearer ' + token;
 
       var origin = window.SERVER_ORIGIN || 'https://trainerforum.onrender.com';
 
@@ -2353,13 +2369,13 @@
 
       fetch(origin + '/api/trainer/availability', {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: headers,
         body: payload
       }).then(function (res) {
         if (!res.ok) throw new Error('Status ' + res.status);
         return res.json();
-      }).then(function () {
-        // Silent success — no toast (not a full save action)
+      }).then(function (data) {
+        console.log('[BlockedDate] MongoDB Save Response:', data);
         var targetIdOrEmail = _tid || _email;
         if (typeof window.refreshTrainerAvailabilityFromDB === 'function' && targetIdOrEmail) {
           window.refreshTrainerAvailabilityFromDB(targetIdOrEmail);
@@ -2373,7 +2389,7 @@
       if (targetIdOrEmail2 && targetIdOrEmail2 !== '1') {
         fetch(origin + '/api/users/' + targetIdOrEmail2 + '/availability', {
           method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
+          headers: headers,
           body: payload
         }).catch(function () {});
       }
