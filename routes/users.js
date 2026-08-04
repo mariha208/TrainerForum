@@ -395,26 +395,49 @@ router.put('/:id/blocked-dates', async (req, res) => {
 // PUT update trainer availability
 router.put('/availability', async (req, res) => {
   try {
-    const { trainerId, email, availability, blockedDates, weeklyAvailability, availableDays, bookedDates } = req.body;
+    const { trainerId, email, availability, blockedDates, customBlockedDates, weeklyAvailability, weeklySchedule, availableDays, bookedDates } = req.body;
     let userId = trainerId || email || (req.user && req.user.id);
     if (!userId) return res.status(400).json({ error: 'trainerId or user authentication required' });
     const isObjectId = mongoose.Types.ObjectId.isValid(userId);
     const query = isObjectId ? { _id: userId } : { email: String(userId).toLowerCase() };
 
-    const update = { availability: availability || {} };
-    if (Array.isArray(blockedDates)) update.blockedDates = blockedDates;
+    const datesToBlock = Array.isArray(customBlockedDates) ? customBlockedDates : (Array.isArray(blockedDates) ? blockedDates : []);
+    const schedToSave = weeklySchedule || weeklyAvailability;
+
+    let avsObj = (availability && typeof availability === 'object') ? Object.assign({}, availability) : {};
+    let specDates = (avsObj.specificDates && typeof avsObj.specificDates === 'object') ? Object.assign({}, avsObj.specificDates) : {};
+    datesToBlock.forEach(d => {
+      specDates[d] = false;
+    });
+    avsObj.specificDates = specDates;
+    avsObj.blockedDates = datesToBlock;
+    avsObj.customBlockedDates = datesToBlock;
+
+    const update = {
+      availability: avsObj,
+      'availability.specificDates': specDates,
+      'availability.blockedDates': datesToBlock,
+      'availability.customBlockedDates': datesToBlock,
+      blockedDates: datesToBlock,
+      customBlockedDates: datesToBlock
+    };
     if (Array.isArray(bookedDates)) update.bookedDates = bookedDates;
-    if (weeklyAvailability) update.weeklyAvailability = weeklyAvailability;
+    if (schedToSave) {
+      update.weeklySchedule = schedToSave;
+      update.weeklyAvailability = schedToSave;
+      update.availability.weeklySchedule = schedToSave;
+      update.availability.weeklyAvailability = schedToSave;
+    }
     if (availableDays) update.availableDays = availableDays;
 
     const user = await User.findOneAndUpdate(
       query,
       { $set: update },
-      { new: true }
+      { new: true, runValidators: true }
     ).select('-passwordHash');
 
     if (!user) return res.status(404).json({ error: 'Trainer not found' });
-    res.json({ message: 'Availability updated in database', availability: user.availability, blockedDates: user.blockedDates, bookedDates: user.bookedDates, weeklyAvailability: user.weeklyAvailability, availableDays: user.availableDays, user });
+    res.json({ message: 'Availability updated in database', availability: user.availability, blockedDates: user.blockedDates, customBlockedDates: user.customBlockedDates, weeklySchedule: user.weeklySchedule, weeklyAvailability: user.weeklyAvailability, availableDays: user.availableDays, bookedDates: user.bookedDates, user });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -422,24 +445,47 @@ router.put('/availability', async (req, res) => {
 
 router.put('/:id/availability', async (req, res) => {
   try {
-    const { availability, blockedDates, weeklyAvailability, availableDays, bookedDates } = req.body;
+    const { availability, blockedDates, customBlockedDates, weeklyAvailability, weeklySchedule, availableDays, bookedDates } = req.body;
     const isObjectId = mongoose.Types.ObjectId.isValid(req.params.id);
     const query = isObjectId ? { _id: req.params.id } : { email: req.params.id.toLowerCase() };
 
-    const update = { availability: availability || {} };
-    if (Array.isArray(blockedDates)) update.blockedDates = blockedDates;
+    const datesToBlock = Array.isArray(customBlockedDates) ? customBlockedDates : (Array.isArray(blockedDates) ? blockedDates : []);
+    const schedToSave = weeklySchedule || weeklyAvailability;
+
+    let avsObj = (availability && typeof availability === 'object') ? Object.assign({}, availability) : {};
+    let specDates = (avsObj.specificDates && typeof avsObj.specificDates === 'object') ? Object.assign({}, avsObj.specificDates) : {};
+    datesToBlock.forEach(d => {
+      specDates[d] = false;
+    });
+    avsObj.specificDates = specDates;
+    avsObj.blockedDates = datesToBlock;
+    avsObj.customBlockedDates = datesToBlock;
+
+    const update = {
+      availability: avsObj,
+      'availability.specificDates': specDates,
+      'availability.blockedDates': datesToBlock,
+      'availability.customBlockedDates': datesToBlock,
+      blockedDates: datesToBlock,
+      customBlockedDates: datesToBlock
+    };
     if (Array.isArray(bookedDates)) update.bookedDates = bookedDates;
-    if (weeklyAvailability) update.weeklyAvailability = weeklyAvailability;
+    if (schedToSave) {
+      update.weeklySchedule = schedToSave;
+      update.weeklyAvailability = schedToSave;
+      update.availability.weeklySchedule = schedToSave;
+      update.availability.weeklyAvailability = schedToSave;
+    }
     if (availableDays) update.availableDays = availableDays;
 
     const user = await User.findOneAndUpdate(
       query,
       { $set: update },
-      { new: true }
+      { new: true, runValidators: true }
     ).select('-passwordHash');
 
     if (!user) return res.status(404).json({ error: 'Trainer not found' });
-    res.json({ message: 'Availability updated in database', availability: user.availability, blockedDates: user.blockedDates, bookedDates: user.bookedDates, weeklyAvailability: user.weeklyAvailability, availableDays: user.availableDays, user });
+    res.json({ message: 'Availability updated in database', availability: user.availability, blockedDates: user.blockedDates, customBlockedDates: user.customBlockedDates, weeklySchedule: user.weeklySchedule, weeklyAvailability: user.weeklyAvailability, availableDays: user.availableDays, bookedDates: user.bookedDates, user });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

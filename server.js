@@ -297,24 +297,31 @@ app.put(['/api/trainer/availability', '/api/trainers/availability'], async (req,
     const isObjectId = mongoose.Types.ObjectId.isValid(userId);
     const query = isObjectId ? { _id: userId } : { email: String(userId).toLowerCase() };
 
-    const update = { availability: availability || {} };
-    update.blockedDates = datesToBlock;
-    update.customBlockedDates = datesToBlock;
+    let avsObj = (availability && typeof availability === 'object') ? Object.assign({}, availability) : {};
+    let specDates = (avsObj.specificDates && typeof avsObj.specificDates === 'object') ? Object.assign({}, avsObj.specificDates) : {};
+    datesToBlock.forEach(d => {
+      specDates[d] = false;
+    });
+    avsObj.specificDates = specDates;
+    avsObj.blockedDates = datesToBlock;
+    avsObj.customBlockedDates = datesToBlock;
+
+    const update = {
+      availability: avsObj,
+      'availability.specificDates': specDates,
+      'availability.blockedDates': datesToBlock,
+      'availability.customBlockedDates': datesToBlock,
+      blockedDates: datesToBlock,
+      customBlockedDates: datesToBlock
+    };
     if (Array.isArray(bookedDates)) update.bookedDates = bookedDates;
     if (schedToSave) {
       update.weeklySchedule = schedToSave;
       update.weeklyAvailability = schedToSave;
+      update.availability.weeklySchedule = schedToSave;
+      update.availability.weeklyAvailability = schedToSave;
     }
     if (availableDays) update.availableDays = availableDays;
-
-    if (update.availability && typeof update.availability === 'object') {
-      update.availability.customBlockedDates = datesToBlock;
-      update.availability.blockedDates = datesToBlock;
-      if (schedToSave) {
-        update.availability.weeklySchedule = schedToSave;
-        update.availability.weeklyAvailability = schedToSave;
-      }
-    }
 
     const user = await User.findOneAndUpdate(
       query,

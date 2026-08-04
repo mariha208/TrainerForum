@@ -2178,8 +2178,15 @@
         if (cache.weeklyAvailability) avs.weeklyAvailability = cache.weeklyAvailability;
       }
 
-      var blocked = Array.isArray(cache.blockedDates) ? cache.blockedDates : [];
+      var blocked = Array.isArray(cache.blockedDates) ? cache.blockedDates : (Array.isArray(cache.customBlockedDates) ? cache.customBlockedDates : []);
+      var specDates = (cache.availability && cache.availability.specificDates && typeof cache.availability.specificDates === 'object')
+        ? Object.assign({}, cache.availability.specificDates)
+        : {};
+      blocked.forEach(function (d) { specDates[d] = false; });
+
+      avs.specificDates = specDates;
       avs.blockedDates = Array.from(new Set(blocked));
+      avs.customBlockedDates = avs.blockedDates;
       if (cache.bookedDates) avs.bookedDates = cache.bookedDates;
 
       return avs;
@@ -2299,19 +2306,29 @@
       var d1 = String(d).padStart(2, '0');
       var isoDate = y + '-' + m1 + '-' + d1;
 
+      var spec = (cache.availability && cache.availability.specificDates && typeof cache.availability.specificDates === 'object')
+        ? Object.assign({}, cache.availability.specificDates)
+        : {};
+
       var blocked = Array.isArray(cache.blockedDates) ? cache.blockedDates.slice() : (Array.isArray(cache.customBlockedDates) ? cache.customBlockedDates.slice() : []);
       var idx = blocked.indexOf(isoDate);
 
-      if (idx !== -1) {
-        blocked.splice(idx, 1); // Unblock
+      if (idx !== -1 || spec[isoDate] !== undefined) {
+        if (idx !== -1) blocked.splice(idx, 1);
+        delete spec[isoDate]; // Unblock
         console.log('[BlockedDate] Unblocked date:', isoDate, 'Current list:', blocked);
       } else {
         blocked.push(isoDate); // Block
+        spec[isoDate] = false; // Block (false = unavailable)
         console.log('[BlockedDate] Blocked date:', isoDate, 'Current list:', blocked);
       }
 
       cache.blockedDates = Array.from(new Set(blocked));
       cache.customBlockedDates = cache.blockedDates;
+      if (!cache.availability || typeof cache.availability !== 'object') cache.availability = {};
+      cache.availability.specificDates = spec;
+      cache.availability.blockedDates = cache.blockedDates;
+      cache.availability.customBlockedDates = cache.blockedDates;
       localStorage.setItem('currentTrainer', JSON.stringify(cache));
 
       // Re-render calendar preview immediately (no save toast)
